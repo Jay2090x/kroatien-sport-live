@@ -1,0 +1,130 @@
+{
+  "Meta": {
+    "title": "Hrvatska Sport Live – hrvatski nogometaši i utakmice uživo",
+    "description": "Rezultati uživo, tracker, vijesti i TV savjeti za hrvatske nogometaše u Premier ligi, Bundesligi, Serie A, HNL-u i Ligi nacija.",
+    "keywords": "Hrvatska, nogomet, uživo, Modrić, Gvardiol, HNL, Vatreni, rezultati, vijesti"
+  },
+  "Nav": {
+    "home": "Početna",
+    "vatreni": "Reprezentacija",
+    "news": "Vijesti",
+    "matches": "Utakmice",
+    "players": "Igrači",
+    "tv": "TV i streamovi",
+    "moreSports": "Više sportova",
+    "search": "Traži utakmice, igrače, klubove…",
+    "settings": "Postavke",
+    "theme": "Tema",
+    "language": "Jezik"
+  },
+  "Hero": {
+    "badge": "Vatreni · diljem Europe",
+    "title": "Hrvatske nogometne zvijezde.",
+    "titleHighlight": "Uživo na dlanu.",
+    "subtitle": "Rezultati, vijesti i iduće utakmice Modrića, Gvardiola i ostalih – u svim top ligama.",
+    "ctaMatches": "Pogledaj utakmice",
+    "ctaPlayers": "Tracker igrača",
+    "statsLive": "Uživo sada",
+    "statsPlayers": "Igrača u trackeru",
+    "statsLeagues": "Liga"
+  },
+  "News": {
+    "title": "Vijesti",
+    "subtitle": "Vatreni i klubovi · live termini · auto feed · DE/EN/HR",
+    "daily": "Dnevni update",
+    "today": "Danas",
+    "readMore": "Pročitaj više",
+    "readLess": "Manje",
+    "showAll": "Svih {count} vijesti",
+    "showLess": "Prikaži manje",
+    "source": "Izvor slike",
+    "allNews": "Sve vijesti",
+    "backHome": "Na početnu",
+    "originalSource": "Otvori izvor"
+  },
+  "Dashboard": {
+    "title": "Uživo i nadolazeće utakmice",
+    "subtitle": "Utakmice s hrvatskim igračima",
+    "empty": "Nema utakmica za ove filtere.",
+    "emptyHint": "Resetiraj filtere ili odaberi drugi period.",
+    "watch": "Pogledaj",
+    "croatianPlayers": "Hrvati na utakmici",
+    "lastUpdated": "Ažurirano",
+    "source": "Izvor podataka",
+    "resetFilters": "Resetiraj filtere"
+  },
+  "Players": {
+    "title": "Tracker igrača",
+    "subtitle": "Klikni na igrača za njegove utakmice",
+    "nextMatches": "Iduće utakmice",
+    "noMatches": "Nema nadolazećih utakmica",
+    "clearSelection": "Poništi odabir",
+    "club": "Klub",
+    "league": "Liga",
+    "position": "Pozicija"
+  },
+  "Calendar": {
+    "title": "Nadolazeće utakmice",
+    "subtitle": "Pregled idućih termina"
+  },
+  "TV": {
+    "title": "TV i streamovi",
+    "subtitle": "Službeni emitatori i streaming usluge",
+    "disclaimerTitle": "Važna napomena",
+    "vpnTitle": "VPN preporuke",
+    "vpnSubtitle": "Za legalni geo-pristup – affiliate linkovi s provizijom",
+    "affiliateDisclosure": "Oglas: Neki linkovi su affiliate. Moguće je da primimo proviziju bez dodatnih troškova za tebe.",
+    "free": "Besplatno",
+    "paid": "Pretplata",
+    "streaming": "Streaming",
+    "visit": "Otvori"
+  },
+  "Settings": {
+    "title": "Postavke",
+    "apiKeys": "API ključevi",
+    "apiHint": "Opcionalno – za live podatke s TheSportsDB i football-data.org. Sprema se lokalno i po želji u Supabase.",
+    "theSportsDb": "TheSportsDB API ključ",
+    "footballData": "football-data.org API ključ",
+    "onesignal": "OneSignal App ID (Web Push)",
+    "save": "Spremi",
+    "saved": "Postavke spremljene",
+    "notifications": "Obavijesti",
+    "notifLive": "Golovi uživo",
+    "notifStart": "Početak utakmice",
+    "notifLineup": "Sastavi",
+    "enablePush": "Uključi push",
+    "language": "Jezik",
+    "close": "Zatvori"
+  },
+  "Match": {
+    "live": "UŽIVO",
+    "halftime": "Poluvrijeme",
+    "finished": "Završeno",
+    "scheduled": "Zakazano",
+    "venue": "Stadion",
+    "kickoff": "Početak",
+    "tvOptions": "TV i stream opcije",
+    "lineup": "Hrvatski igrači",
+    "starter": "Prva postava",
+    "bench": "Klupa"
+  },
+  "Notifications": {
+    "title": "Obavijesti",
+    "enabled": "Push obavijesti uključene",
+    "denied": "Dozvola odbijena",
+    "unsupported": "Preglednik ne podržava push obavijesti",
+    "prompt": "Primaj obavijesti o golovima i početku utakmica"
+  },
+  "Footer": {
+    "rights": "Sva prava pridržana.",
+    "disclaimer": "Bez ilegalnih streamova. Samo službeni izvori.",
+    "madeWith": "S ❤️ za Vatrene"
+  },
+  "Common": {
+    "loading": "Učitavanje…",
+    "error": "Nešto je pošlo po zlu",
+    "retry": "Pokušaj ponovno",
+    "today": "Danas",
+    "tomorrow": "Sutra"
+  }
+}

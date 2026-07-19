@@ -1,0 +1,130 @@
+{
+  "Meta": {
+    "title": "Kroatien Sport Live – Kroatische Fußballspieler & Spiele live",
+    "description": "Live-Ergebnisse, Vatreni-News, Spieler-Tracker und TV-Tipps zu kroatischen Fußballspielern – Bilić, Modrić, Gvardiol, HNL, Premier League, Nations League.",
+    "keywords": "Kroatien Fußball, Vatreni News, Slaven Bilić, Luka Modrić, Gvardiol, Live Ergebnisse, HNL, Nations League, kroatische Spieler"
+  },
+  "Nav": {
+    "home": "Start",
+    "vatreni": "Nationalteam",
+    "news": "News",
+    "matches": "Spiele",
+    "players": "Spieler",
+    "tv": "TV & Streams",
+    "moreSports": "Mehr Sport",
+    "search": "Spiele, Spieler, Clubs suchen…",
+    "settings": "Einstellungen",
+    "theme": "Design",
+    "language": "Sprache"
+  },
+  "Hero": {
+    "badge": "Vatreni · Europaweit",
+    "title": "Kroatische Fußballstars.",
+    "titleHighlight": "Live im Blick.",
+    "subtitle": "Ergebnisse, News und nächste Spiele von Modrić, Gvardiol & Co. – in allen Top-Ligen.",
+    "ctaMatches": "Live-Spiele ansehen",
+    "ctaPlayers": "Spieler-Tracker",
+    "statsLive": "Live jetzt",
+    "statsPlayers": "Spieler im Tracker",
+    "statsLeagues": "Ligen"
+  },
+  "News": {
+    "title": "News",
+    "subtitle": "Aktuelle Vatreni- & Club-Meldungen · Live-Anker · Auto-Feed · DE/EN/HR",
+    "daily": "Tages-Update",
+    "today": "Heute",
+    "readMore": "Mehr lesen",
+    "readLess": "Weniger",
+    "showAll": "Alle {count} News",
+    "showLess": "Weniger anzeigen",
+    "source": "Bildquelle",
+    "allNews": "Alle News",
+    "backHome": "Zur Startseite",
+    "originalSource": "Originalquelle öffnen"
+  },
+  "Dashboard": {
+    "title": "Live & anstehende Spiele",
+    "subtitle": "Spiele mit kroatischen Spielern",
+    "empty": "Keine Spiele für diese Filter gefunden.",
+    "emptyHint": "Filter zurücksetzen oder anderen Zeitraum wählen.",
+    "watch": "Ansehen",
+    "croatianPlayers": "Kroaten im Spiel",
+    "lastUpdated": "Aktualisiert",
+    "source": "Datenquelle",
+    "resetFilters": "Filter zurücksetzen"
+  },
+  "Players": {
+    "title": "Spieler-Tracker",
+    "subtitle": "Klicke auf einen Spieler, um seine Spiele zu sehen",
+    "nextMatches": "Nächste Spiele",
+    "noMatches": "Keine anstehenden Spiele",
+    "clearSelection": "Auswahl aufheben",
+    "club": "Club",
+    "league": "Liga",
+    "position": "Position"
+  },
+  "Calendar": {
+    "title": "Kommende Spiele",
+    "subtitle": "Überblick der nächsten Termine"
+  },
+  "TV": {
+    "title": "TV & Streams",
+    "subtitle": "Offizielle Sender und Streaming-Dienste",
+    "disclaimerTitle": "Wichtiger Hinweis",
+    "vpnTitle": "VPN-Empfehlungen",
+    "vpnSubtitle": "Für legalen Geo-Zugriff – Affiliate-Links mit Provision",
+    "affiliateDisclosure": "Werbehinweis: Einige Links sind Affiliate-Links. Bei einem Kauf erhalten wir ggf. eine Provision – ohne Mehrkosten für dich.",
+    "free": "Kostenlos",
+    "paid": "Abo",
+    "streaming": "Streaming",
+    "visit": "Öffnen"
+  },
+  "Settings": {
+    "title": "Einstellungen",
+    "apiKeys": "API-Schlüssel",
+    "apiHint": "Optional – für Live-Daten von TheSportsDB und football-data.org. Werden lokal und optional in Supabase gespeichert.",
+    "theSportsDb": "TheSportsDB API Key",
+    "footballData": "football-data.org API Key",
+    "onesignal": "OneSignal App ID (Web Push)",
+    "save": "Speichern",
+    "saved": "Einstellungen gespeichert",
+    "notifications": "Benachrichtigungen",
+    "notifLive": "Live-Tore",
+    "notifStart": "Anstoß",
+    "notifLineup": "Aufstellungen",
+    "enablePush": "Push aktivieren",
+    "language": "Sprache",
+    "close": "Schließen"
+  },
+  "Match": {
+    "live": "LIVE",
+    "halftime": "Halbzeit",
+    "finished": "Beendet",
+    "scheduled": "Geplant",
+    "venue": "Stadion",
+    "kickoff": "Anstoß",
+    "tvOptions": "TV & Stream-Optionen",
+    "lineup": "Kroatische Spieler",
+    "starter": "Startelf",
+    "bench": "Bank"
+  },
+  "Notifications": {
+    "title": "Benachrichtigungen",
+    "enabled": "Push-Benachrichtigungen aktiv",
+    "denied": "Berechtigung verweigert",
+    "unsupported": "Browser unterstützt keine Push-Nachrichten",
+    "prompt": "Lass dich bei Live-Toren und Anstößen erinnern"
+  },
+  "Footer": {
+    "rights": "Alle Rechte vorbehalten.",
+    "disclaimer": "Keine illegalen Streams. Offizielle Quellen only.",
+    "madeWith": "Mit ❤️ für die Vatreni"
+  },
+  "Common": {
+    "loading": "Lädt…",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen",
+    "today": "Heute",
+    "tomorrow": "Morgen"
+  }
+}

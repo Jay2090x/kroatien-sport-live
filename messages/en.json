@@ -1,0 +1,130 @@
+{
+  "Meta": {
+    "title": "Croatia Sport Live – Croatian footballers & matches live",
+    "description": "Live scores, tracker, news and TV tips for Croatian footballers in Premier League, Bundesliga, Serie A, HNL and Nations League.",
+    "keywords": "Croatia, football, live, Modric, Gvardiol, HNL, Vatreni, scores, news"
+  },
+  "Nav": {
+    "home": "Home",
+    "vatreni": "National team",
+    "news": "News",
+    "matches": "Matches",
+    "players": "Players",
+    "tv": "TV & Streams",
+    "moreSports": "More sports",
+    "search": "Search matches, players, clubs…",
+    "settings": "Settings",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "Hero": {
+    "badge": "Vatreni · Across Europe",
+    "title": "Croatian football stars.",
+    "titleHighlight": "Live at a glance.",
+    "subtitle": "Scores, news and upcoming matches of Modrić, Gvardiol & Co. – across all top leagues.",
+    "ctaMatches": "Watch live matches",
+    "ctaPlayers": "Player tracker",
+    "statsLive": "Live now",
+    "statsPlayers": "Players tracked",
+    "statsLeagues": "Leagues"
+  },
+  "News": {
+    "title": "News",
+    "subtitle": "Vatreni & club updates · live fixtures · auto feed · DE/EN/HR",
+    "daily": "Daily update",
+    "today": "Today",
+    "readMore": "Read more",
+    "readLess": "Show less",
+    "showAll": "All {count} stories",
+    "showLess": "Show less",
+    "source": "Image credit",
+    "allNews": "All news",
+    "backHome": "Back home",
+    "originalSource": "Open original source"
+  },
+  "Dashboard": {
+    "title": "Live & upcoming matches",
+    "subtitle": "Matches featuring Croatian players",
+    "empty": "No matches found for these filters.",
+    "emptyHint": "Reset filters or choose another date range.",
+    "watch": "Watch",
+    "croatianPlayers": "Croatians in this match",
+    "lastUpdated": "Updated",
+    "source": "Data source",
+    "resetFilters": "Reset filters"
+  },
+  "Players": {
+    "title": "Player tracker",
+    "subtitle": "Click a player to see their matches",
+    "nextMatches": "Upcoming matches",
+    "noMatches": "No upcoming matches",
+    "clearSelection": "Clear selection",
+    "club": "Club",
+    "league": "League",
+    "position": "Position"
+  },
+  "Calendar": {
+    "title": "Upcoming matches",
+    "subtitle": "Overview of the next fixtures"
+  },
+  "TV": {
+    "title": "TV & Streams",
+    "subtitle": "Official broadcasters and streaming services",
+    "disclaimerTitle": "Important notice",
+    "vpnTitle": "VPN recommendations",
+    "vpnSubtitle": "For legal geo-access – affiliate links with commission",
+    "affiliateDisclosure": "Advertising disclosure: Some links are affiliate links. We may earn a commission at no extra cost to you.",
+    "free": "Free",
+    "paid": "Subscription",
+    "streaming": "Streaming",
+    "visit": "Open"
+  },
+  "Settings": {
+    "title": "Settings",
+    "apiKeys": "API keys",
+    "apiHint": "Optional – for live data from TheSportsDB and football-data.org. Stored locally and optionally in Supabase.",
+    "theSportsDb": "TheSportsDB API Key",
+    "footballData": "football-data.org API Key",
+    "onesignal": "OneSignal App ID (Web Push)",
+    "save": "Save",
+    "saved": "Settings saved",
+    "notifications": "Notifications",
+    "notifLive": "Live goals",
+    "notifStart": "Kick-off",
+    "notifLineup": "Lineups",
+    "enablePush": "Enable push",
+    "language": "Language",
+    "close": "Close"
+  },
+  "Match": {
+    "live": "LIVE",
+    "halftime": "Half-time",
+    "finished": "Finished",
+    "scheduled": "Scheduled",
+    "venue": "Venue",
+    "kickoff": "Kick-off",
+    "tvOptions": "TV & stream options",
+    "lineup": "Croatian players",
+    "starter": "Starting XI",
+    "bench": "Bench"
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "enabled": "Push notifications enabled",
+    "denied": "Permission denied",
+    "unsupported": "Browser does not support push notifications",
+    "prompt": "Get notified about live goals and kick-offs"
+  },
+  "Footer": {
+    "rights": "All rights reserved.",
+    "disclaimer": "No illegal streams. Official sources only.",
+    "madeWith": "Made with ❤️ for the Vatreni"
+  },
+  "Common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "today": "Today",
+    "tomorrow": "Tomorrow"
+  }
+}

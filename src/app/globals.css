@@ -1,26 +1,212 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens: Premium Sport Portal ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f6f8;
+  --foreground: #0b1220;
+  --card: #ffffff;
+  --card-foreground: #0b1220;
+  --popover: #ffffff;
+  --popover-foreground: #0b1220;
+  --primary: #c8102e;
+  --primary-foreground: #ffffff;
+  --secondary: #e8edf2;
+  --secondary-foreground: #0b1220;
+  --muted: #e8edf2;
+  --muted-foreground: #5b6b7c;
+  --accent: #0a5c36;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #d5dde5;
+  --input: #d5dde5;
+  --ring: #c8102e;
+  --live: #ef4444;
+  --radius: 0.75rem;
+  --sahovnica-red: #c8102e;
+  --sahovnica-white: #f8fafc;
+}
+
+.dark {
+  --background: #070b12;
+  --foreground: #eef2f6;
+  --card: #0f1623;
+  --card-foreground: #eef2f6;
+  --popover: #121a28;
+  --popover-foreground: #eef2f6;
+  --primary: #e11d3a;
+  --primary-foreground: #ffffff;
+  --secondary: #1a2435;
+  --secondary-foreground: #eef2f6;
+  --muted: #1a2435;
+  --muted-foreground: #8b9bb0;
+  --accent: #16a34a;
+  --accent-foreground: #ffffff;
+  --destructive: #f87171;
+  --destructive-foreground: #0b1220;
+  /* Hellere Borders – im Dark Mode besser sichtbar */
+  --border: #2d3b52;
+  --input: #2d3b52;
+  --ring: #e11d3a;
+  --live: #f43f5e;
+  --sahovnica-red: #c8102e;
+  --sahovnica-white: #1a2435;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-live: var(--live);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ─── */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Šahovnica subtle pattern (checkerboard) ─── */
+.sahovnica-bg {
+  background-image:
+    linear-gradient(45deg, color-mix(in oklab, var(--sahovnica-red) 6%, transparent) 25%, transparent 25%),
+    linear-gradient(-45deg, color-mix(in oklab, var(--sahovnica-red) 6%, transparent) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, color-mix(in oklab, var(--sahovnica-red) 6%, transparent) 75%),
+    linear-gradient(-45deg, transparent 75%, color-mix(in oklab, var(--sahovnica-red) 6%, transparent) 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+
+.sahovnica-badge {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--foreground) 15%, transparent);
+  flex-shrink: 0;
+}
+
+.sahovnica-badge span:nth-child(1),
+.sahovnica-badge span:nth-child(4) {
+  background: var(--sahovnica-red);
+}
+
+.sahovnica-badge span:nth-child(2),
+.sahovnica-badge span:nth-child(3) {
+  background: #f8fafc;
+}
+
+.dark .sahovnica-badge span:nth-child(2),
+.dark .sahovnica-badge span:nth-child(3) {
+  background: #e8eef5;
+}
+
+/* ─── Live pulse ─── */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--live) 60%, transparent);
+  }
+  50% {
+    opacity: 0.85;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+.live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--live);
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: white;
+  background: var(--live);
+}
+
+/* ─── Focus & a11y ─── */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ─── Scrollbar ─── */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--muted-foreground) 35%, transparent);
+    border-radius: 9999px;
+  }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .live-dot {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
