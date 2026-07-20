@@ -25,6 +25,7 @@ import {
   buildMinimalProfile,
 } from "@/lib/data/player-profiles";
 import { cn, formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
+import { localizeTeamName } from "@/lib/team-names";
 import type { Match } from "@/types";
 import type { Locale } from "@/i18n/routing";
 import type { LocaleText, CareerSeasonStat } from "@/types/player-profile";
@@ -351,6 +352,7 @@ export function PlayerDetailPanel() {
                       match={m}
                       onOpen={() => setSelectedMatch(m)}
                       liveLabel={tMatch("live")}
+                      locale={locale}
                     />
                   ))}
                 </ul>
@@ -368,6 +370,7 @@ export function PlayerDetailPanel() {
                       match={m}
                       onOpen={() => setSelectedMatch(m)}
                       liveLabel={tMatch("live")}
+                      locale={locale}
                     />
                   ))}
                 </ul>
@@ -425,10 +428,12 @@ function MiniMatch({
   match,
   onOpen,
   liveLabel,
+  locale,
 }: {
   match: Match;
   onOpen: () => void;
   liveLabel: string;
+  locale: string;
 }) {
   const live = isLiveStatus(match.status);
   return (
@@ -439,14 +444,15 @@ function MiniMatch({
         className="flex w-full items-center justify-between gap-2 rounded-lg border border-border px-2 py-1.5 text-left text-xs hover:bg-secondary/50"
       >
         <span className="min-w-0 truncate font-medium">
-          {match.homeTeam} – {match.awayTeam}
+          {localizeTeamName(match.homeTeam, locale)} –{" "}
+          {localizeTeamName(match.awayTeam, locale)}
         </span>
         <span className="shrink-0 tabular-nums text-muted-foreground">
           {live
             ? liveLabel
             : match.status === "finished"
               ? scoreDisplay(match.homeScore, match.awayScore)
-              : formatKickoff(match.kickoff, "d.M. HH:mm")}
+              : formatKickoff(match.kickoff, "d.M. HH:mm", locale)}
         </span>
       </button>
     </li>

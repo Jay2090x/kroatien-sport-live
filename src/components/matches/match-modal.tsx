@@ -21,6 +21,10 @@ import {
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
+import {
+  localizeCompetitionLabel,
+  localizeTeamName,
+} from "@/lib/team-names";
 import { cn } from "@/lib/utils";
 
 interface MatchModalProps {
@@ -39,12 +43,15 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
 
   const live = isLiveStatus(match.status);
   const channels = match.tvChannels ?? [];
+  const homeName = localizeTeamName(match.homeTeam, locale);
+  const awayName = localizeTeamName(match.awayTeam, locale);
+  const leagueLabel = localizeCompetitionLabel(match.leagueName, locale);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        title={`${match.homeTeam} – ${match.awayTeam}`}
-        description={match.leagueName}
+        title={`${homeName} – ${awayName}`}
+        description={leagueLabel}
         onClose={() => onOpenChange(false)}
         className="sm:max-w-xl"
       >
@@ -66,7 +73,8 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
             {scoreDisplay(match.homeScore, match.awayScore)}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("kickoff")}: {formatKickoff(match.kickoff)}
+            {t("kickoff")}:{" "}
+            {formatKickoff(match.kickoff, "EEE, d. MMM · HH:mm", locale)}
           </p>
           {match.venue && (
             <p className="mt-1 flex items-center justify-center gap-1 text-xs text-muted-foreground">
@@ -121,7 +129,7 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
 
                     <div className="mt-2 flex flex-wrap items-center gap-2 pl-1 text-xs text-muted-foreground">
                       <span>
-                        {p.teamSide === "home" ? match.homeTeam : match.awayTeam}
+                        {p.teamSide === "home" ? homeName : awayName}
                         {p.position ? ` · ${p.position}` : ""}
                       </span>
 

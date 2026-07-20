@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { User, X } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
+import { localizeTeamName } from "@/lib/team-names";
 import type { Match, Player, PlayerAvailability } from "@/types";
 import {
   getAvailabilityMeta,
@@ -22,6 +23,7 @@ import { useMemo } from "react";
 export function PlayerTracker() {
   const t = useTranslations("Players");
   const tMatch = useTranslations("Match");
+  const locale = useLocale();
   const {
     filteredPlayers,
     filters,
@@ -115,6 +117,7 @@ export function PlayerTracker() {
                 onSelect={() => setPlayerId(player.id)}
                 nextPrefix={t("nextPrefix")}
                 liveLabel={tMatch("live")}
+                locale={locale}
                 statusText={t(
                   statusKey(player.availability) as
                     | "statusFit"
@@ -162,6 +165,7 @@ function PlayerCard({
   nextMatch,
   nextPrefix,
   liveLabel,
+  locale,
   statusText,
 }: {
   player: Player;
@@ -170,6 +174,7 @@ function PlayerCard({
   nextMatch?: Match;
   nextPrefix: string;
   liveLabel: string;
+  locale: string;
   statusText: string;
 }) {
   const meta = getAvailabilityMeta(player.availability);
@@ -177,7 +182,7 @@ function PlayerCard({
   const profile = getPlayerProfile(player.id);
   const hl = profile?.highlight;
   const nextLine = nextMatch
-    ? formatNextLine(nextMatch, player, nextPrefix, liveLabel)
+    ? formatNextLine(nextMatch, player, nextPrefix, liveLabel, locale)
     : null;
 
   return (
@@ -260,9 +265,10 @@ function formatNextLine(
   m: Match,
   player: Player,
   prefix: string,
-  liveLabel: string
+  liveLabel: string,
+  locale: string
 ): string {
-  const opp =
+  const rawOpp =
     /croatia|kroatien|hrvatska/i.test(m.homeTeam) ||
     m.homeTeam.toLowerCase().includes(player.club.toLowerCase().slice(0, 6))
       ? m.awayTeam
@@ -276,9 +282,10 @@ function formatNextLine(
           ? m.awayTeam
           : m.homeTeam;
 
+  const opp = localizeTeamName(rawOpp, locale);
   const when = isLiveStatus(m.status)
     ? liveLabel
-    : formatKickoff(m.kickoff, "d. MMM HH:mm");
+    : formatKickoff(m.kickoff, "d. MMM HH:mm", locale);
 
   return `${prefix}: ${when} · vs ${opp}`;
 }

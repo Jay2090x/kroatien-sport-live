@@ -4,17 +4,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
-import { de, enGB, hr } from "date-fns/locale";
 import type { Locale as DateFnsLocale } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { formatTime, isLiveStatus } from "@/lib/utils";
+import { dateFnsLocale, formatTime, isLiveStatus } from "@/lib/utils";
+import { localizeTeamName } from "@/lib/team-names";
 import type { Match } from "@/types";
-
-function dateFnsLocale(locale: string): DateFnsLocale {
-  if (locale === "en") return enGB;
-  if (locale === "hr") return hr;
-  return de;
-}
 
 export function UpcomingCalendar() {
   const t = useTranslations("Calendar");
@@ -81,14 +75,14 @@ export function UpcomingCalendar() {
                           {tMatch("live")}
                         </span>
                       ) : (
-                        formatTime(m.kickoff)
+                        formatTime(m.kickoff, locale)
                       )}
                     </time>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium">
-                        {m.homeTeam}{" "}
+                        {localizeTeamName(m.homeTeam, locale)}{" "}
                         <span className="text-muted-foreground">–</span>{" "}
-                        {m.awayTeam}
+                        {localizeTeamName(m.awayTeam, locale)}
                       </p>
                       {m.croatianPlayers.length > 0 && (
                         <p className="truncate text-[10px] text-muted-foreground">

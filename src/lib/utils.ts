@@ -9,27 +9,40 @@ import {
   format,
   parseISO,
 } from "date-fns";
-import { de } from "date-fns/locale";
+import { de, enGB, hr } from "date-fns/locale";
+import type { Locale as DateFnsLocale } from "date-fns";
 import type { DateFilter, Match, MatchFilters, MatchStatus } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatKickoff(iso: string, pattern = "EEE, d. MMM · HH:mm"): string {
+export function dateFnsLocale(locale?: string | null): DateFnsLocale {
+  if (locale === "en") return enGB;
+  if (locale === "hr") return hr;
+  return de;
+}
+
+export function formatKickoff(
+  iso: string,
+  pattern = "EEE, d. MMM · HH:mm",
+  locale?: string | null
+): string {
   try {
-    return format(parseISO(iso), pattern, { locale: de });
+    return format(parseISO(iso), pattern, {
+      locale: dateFnsLocale(locale),
+    });
   } catch {
     return iso;
   }
 }
 
-export function formatTime(iso: string): string {
-  return formatKickoff(iso, "HH:mm");
+export function formatTime(iso: string, locale?: string | null): string {
+  return formatKickoff(iso, "HH:mm", locale);
 }
 
-export function formatDateShort(iso: string): string {
-  return formatKickoff(iso, "d. MMM");
+export function formatDateShort(iso: string, locale?: string | null): string {
+  return formatKickoff(iso, "d. MMM", locale);
 }
 
 export function matchesDateFilter(kickoff: string, filter: DateFilter): boolean {

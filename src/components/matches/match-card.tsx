@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Eye, MapPin, Users } from "lucide-react";
 import type { Match } from "@/types";
@@ -11,6 +11,10 @@ import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchPlayerChip } from "@/components/players/match-player-chip";
 import { TvChips } from "@/components/matches/tv-chips";
 import { teamLogoUrl } from "@/lib/team-logos";
+import {
+  localizeCompetitionLabel,
+  localizeTeamName,
+} from "@/lib/team-names";
 import {
   cn,
   formatKickoff,
@@ -29,8 +33,15 @@ interface MatchCardProps {
 export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
   const t = useTranslations("Match");
   const tDash = useTranslations("Dashboard");
+  const locale = useLocale();
   const { players, setPlayerId } = useDashboard();
   const live = isLiveStatus(match.status);
+  const homeName = localizeTeamName(match.homeTeam, locale);
+  const awayName = localizeTeamName(match.awayTeam, locale);
+  const leagueLabel = localizeCompetitionLabel(
+    match.leagueName.replace(/ · .*$/, ""),
+    locale
+  );
   // Max. 4 Chips, Rest als +N (kein riesiger Kader)
   const shown = match.croatianPlayers.slice(0, 4);
   const extra = match.croatianPlayers.length - shown.length;
@@ -53,7 +64,7 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-1.5">
             <Badge variant="secondary" className="shrink-0 text-[10px] font-medium px-2 py-0">
-              {match.leagueName.replace(/ · .*$/, "")}
+              {leagueLabel}
             </Badge>
             {live ? (
               <span className="live-badge shrink-0 !text-[10px] !py-0">
@@ -66,7 +77,7 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
               <Badge variant="muted" className="text-[10px] px-2 py-0">{t("finished")}</Badge>
             ) : (
               <span className="truncate text-[11px] text-muted-foreground">
-                {formatKickoff(match.kickoff, "EEE d. MMM")}
+                {formatKickoff(match.kickoff, "EEE d. MMM", locale)}
               </span>
             )}
           </div>
@@ -75,7 +86,7 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
               dateTime={match.kickoff}
               className="shrink-0 text-sm font-bold tabular-nums"
             >
-              {formatTime(match.kickoff)}
+              {formatTime(match.kickoff, locale)}
             </time>
           )}
         </div>
@@ -83,11 +94,11 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div className="flex min-w-0 items-center justify-end gap-1.5">
             <p className="truncate text-right text-sm font-semibold">
-              {match.homeTeam}
+              {homeName}
             </p>
             <TeamDot
               src={teamLogoUrl(match.homeTeam, match.homeTeamLogo)}
-              name={match.homeTeam}
+              name={homeName}
             />
           </div>
           <div
@@ -102,9 +113,9 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
           <div className="flex min-w-0 items-center gap-1.5">
             <TeamDot
               src={teamLogoUrl(match.awayTeam, match.awayTeamLogo)}
-              name={match.awayTeam}
+              name={awayName}
             />
-            <p className="truncate text-sm font-semibold">{match.awayTeam}</p>
+            <p className="truncate text-sm font-semibold">{awayName}</p>
           </div>
         </div>
 

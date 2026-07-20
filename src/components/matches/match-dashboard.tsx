@@ -12,22 +12,20 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { TvChips } from "@/components/matches/tv-chips";
 import {
   cn,
+  dateFnsLocale,
   formatKickoff,
   formatTime,
   isLiveStatus,
   scoreDisplay,
   matchesDateFilter,
 } from "@/lib/utils";
+import {
+  localizeCompetitionLabel,
+  localizeTeamName,
+} from "@/lib/team-names";
 import type { Match } from "@/types";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
-import { de, enGB, hr } from "date-fns/locale";
 import type { Locale as DateFnsLocale } from "date-fns";
-
-function dateFnsLocale(locale: string): DateFnsLocale {
-  if (locale === "en") return enGB;
-  if (locale === "hr") return hr;
-  return de;
-}
 
 const PAST_VISIBLE = 10;
 const UPCOMING_VISIBLE = 12;
@@ -38,6 +36,7 @@ const UPCOMING_VISIBLE = 12;
 export function MatchDashboard() {
   const t = useTranslations("Dashboard");
   const tCommon = useTranslations("Common");
+  const tMatch = useTranslations("Match");
   const locale = useLocale();
   const dfLocale = dateFnsLocale(locale);
   const {
@@ -151,7 +150,7 @@ export function MatchDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <p className="text-[10px] text-muted-foreground tabular-nums">
-            {formatKickoff(lastUpdated, "HH:mm:ss")} · {dataSource} ·{" "}
+            {formatKickoff(lastUpdated, "HH:mm:ss", locale)} · {dataSource} ·{" "}
             {filteredMatches.length}
           </p>
           <Button
@@ -199,6 +198,8 @@ export function MatchDashboard() {
                   key={m.id}
                   match={m}
                   onOpen={() => setSelectedMatch(m)}
+                  locale={locale}
+                  liveLabel={tMatch("live")}
                   dayHint={dayHint(
                     m.kickoff,
                     tCommon("today"),
@@ -220,6 +221,8 @@ export function MatchDashboard() {
                   key={m.id}
                   match={m}
                   onOpen={() => setSelectedMatch(m)}
+                  locale={locale}
+                  liveLabel={tMatch("live")}
                   dayHint={dayHint(
                     m.kickoff,
                     tCommon("today"),
@@ -269,6 +272,8 @@ export function MatchDashboard() {
                     key={m.id}
                     match={m}
                     onOpen={() => setSelectedMatch(m)}
+                    locale={locale}
+                    liveLabel={tMatch("live")}
                     dayHint={dayHint(
                       m.kickoff,
                       tCommon("today"),
@@ -285,6 +290,8 @@ export function MatchDashboard() {
                           key={m.id}
                           match={m}
                           onOpen={() => setSelectedMatch(m)}
+                          locale={locale}
+                          liveLabel={tMatch("live")}
                           dayHint={dayHint(
                             m.kickoff,
                             tCommon("today"),
@@ -375,11 +382,15 @@ function MatchRow({
   onOpen,
   dayHint,
   muted,
+  locale,
+  liveLabel,
 }: {
   match: Match;
   onOpen: () => void;
   dayHint?: string;
   muted?: boolean;
+  locale: string;
+  liveLabel: string;
 }) {
   const croats = m.croatianPlayers
     .slice(0, 3)
@@ -387,6 +398,12 @@ function MatchRow({
     .join(", ");
   const extra = m.croatianPlayers.length - 3;
   const live = isLiveStatus(m.status);
+  const home = localizeTeamName(m.homeTeam, locale);
+  const away = localizeTeamName(m.awayTeam, locale);
+  const league = localizeCompetitionLabel(
+    m.leagueName.replace(/ · .*$/, ""),
+    locale
+  );
 
   return (
     <li
@@ -402,7 +419,7 @@ function MatchRow({
       >
         <div className="w-[4.25rem] shrink-0 sm:w-20">
           {live ? (
-            <span className="live-badge !text-[9px]">LIVE</span>
+            <span className="live-badge !text-[9px]">{liveLabel}</span>
           ) : (
             <>
               <time
@@ -410,15 +427,15 @@ function MatchRow({
                 className="block text-[11px] font-bold tabular-nums text-primary"
               >
                 {m.status === "finished"
-                  ? formatKickoff(m.kickoff, "d. MMM")
-                  : formatTime(m.kickoff)}
+                  ? formatKickoff(m.kickoff, "d. MMM", locale)
+                  : formatTime(m.kickoff, locale)}
               </time>
               {dayHint && m.status !== "finished" && (
                 <span className="text-[9px] text-muted-foreground">{dayHint}</span>
               )}
               {m.status === "finished" && (
                 <span className="text-[9px] text-muted-foreground">
-                  {formatTime(m.kickoff)}
+                  {formatTime(m.kickoff, locale)}
                 </span>
               )}
             </>
@@ -427,12 +444,12 @@ function MatchRow({
 
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">
-            {m.homeTeam}{" "}
+            {home}{" "}
             <span className="font-normal text-muted-foreground">–</span>{" "}
-            {m.awayTeam}
+            {away}
           </p>
           <p className="truncate text-[10px] text-muted-foreground">
-            {m.leagueName.replace(/ · .*$/, "")}
+            {league}
             {croats ? ` · ${croats}${extra > 0 ? ` +${extra}` : ""}` : ""}
           </p>
           <TvChips channels={m.tvChannels} max={2} className="mt-1" />
@@ -450,7 +467,7 @@ function MatchRow({
             </span>
           ) : (
             <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-              {formatKickoff(m.kickoff, "EEE")}
+              {formatKickoff(m.kickoff, "EEE", locale)}
             </Badge>
           )}
         </div>

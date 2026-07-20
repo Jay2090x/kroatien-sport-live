@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Search, User, Calendar, X } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Input } from "@/components/ui/input";
 import { cn, textMatchesQuery, isLiveStatus, formatKickoff } from "@/lib/utils";
+import { localizeTeamName } from "@/lib/team-names";
 import Image from "next/image";
 
 /**
@@ -13,6 +14,8 @@ import Image from "next/image";
  */
 export function GlobalSearch({ className }: { className?: string }) {
   const t = useTranslations("Nav");
+  const tMatch = useTranslations("Match");
+  const locale = useLocale();
   const {
     filters,
     setSearch,
@@ -225,11 +228,17 @@ export function GlobalSearch({ className }: { className?: string }) {
                       <Calendar className="h-4 w-4 shrink-0 text-primary" />
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold">
-                          {m.homeTeam} – {m.awayTeam}
+                          {localizeTeamName(m.homeTeam, locale)} –{" "}
+                          {localizeTeamName(m.awayTeam, locale)}
                         </p>
                         <p className="truncate text-[11px] text-muted-foreground">
-                          {isLiveStatus(m.status) ? "LIVE · " : ""}
-                          {formatKickoff(m.kickoff)} · {m.leagueName}
+                          {isLiveStatus(m.status) ? `${tMatch("live")} · ` : ""}
+                          {formatKickoff(
+                            m.kickoff,
+                            "EEE, d. MMM · HH:mm",
+                            locale
+                          )}{" "}
+                          · {m.leagueName}
                         </p>
                       </div>
                     </button>

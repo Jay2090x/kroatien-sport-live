@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp, Flag } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchModal } from "@/components/matches/match-modal";
@@ -11,6 +11,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Sahovnica } from "@/components/layout/sahovnica";
 import { TvChips } from "@/components/matches/tv-chips";
 import { teamLogoUrl } from "@/lib/team-logos";
+import {
+  localizeCompetitionLabel,
+  localizeTeamName,
+} from "@/lib/team-names";
 import { formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import type { Match } from "@/types";
@@ -21,6 +25,8 @@ import { cn } from "@/lib/utils";
  */
 export function NationalTeamSection() {
   const t = useTranslations("Vatreni");
+  const tMatch = useTranslations("Match");
+  const locale = useLocale();
   const { nationalTeamMatches, setSelectedMatch, selectedMatch, refreshLive } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
@@ -83,7 +89,9 @@ export function NationalTeamSection() {
                 <Flag className="h-4 w-4 text-primary" aria-hidden />
                 {t("title")}
                 {liveCount > 0 && (
-                  <span className="live-badge ml-1 !text-[9px]">LIVE</span>
+                  <span className="live-badge ml-1 !text-[9px]">
+                    {tMatch("live")}
+                  </span>
                 )}
               </h2>
               <p className="text-[11px] text-muted-foreground">
@@ -124,6 +132,8 @@ export function NationalTeamSection() {
                     match={m}
                     onOpen={() => openMatch(m)}
                     highlight={i < 3}
+                    locale={locale}
+                    liveLabel={tMatch("live")}
                   />
                 ))}
               </ul>
@@ -153,6 +163,8 @@ export function NationalTeamSection() {
                         match={m}
                         onOpen={() => openMatch(m)}
                         muted
+                        locale={locale}
+                        liveLabel={tMatch("live")}
                       />
                     ))}
                   </ul>
@@ -182,15 +194,25 @@ function CompactRow({
   onOpen,
   highlight,
   muted,
+  locale,
+  liveLabel,
 }: {
   match: Match;
   onOpen: () => void;
   highlight?: boolean;
   muted?: boolean;
+  locale: string;
+  liveLabel: string;
 }) {
+  const homeName = localizeTeamName(m.homeTeam, locale);
+  const awayName = localizeTeamName(m.awayTeam, locale);
   const homeLogo = teamLogoUrl(m.homeTeam, m.homeTeamLogo);
   const awayLogo = teamLogoUrl(m.awayTeam, m.awayTeamLogo);
   const live = isLiveStatus(m.status);
+  const comp = localizeCompetitionLabel(
+    m.leagueName.replace(/ · .*$/, ""),
+    locale
+  );
 
   return (
     <li>
@@ -207,32 +229,32 @@ function CompactRow({
         <div className="flex w-full items-center gap-2">
           <div className="w-[4.75rem] shrink-0 sm:w-[5.5rem]">
             {live ? (
-              <span className="live-badge !text-[9px]">LIVE</span>
+              <span className="live-badge !text-[9px]">{liveLabel}</span>
             ) : (
               <>
                 <time
                   dateTime={m.kickoff}
                   className="block text-[11px] font-semibold tabular-nums leading-tight text-primary"
                 >
-                  {formatKickoff(m.kickoff, "d. MMM")}
+                  {formatKickoff(m.kickoff, "d. MMM", locale)}
                 </time>
                 <span className="text-[11px] font-bold tabular-nums text-foreground/90">
                   {m.status === "finished"
                     ? scoreDisplay(m.homeScore, m.awayScore)
-                    : formatKickoff(m.kickoff, "HH:mm")}
+                    : formatKickoff(m.kickoff, "HH:mm", locale)}
                 </span>
               </>
             )}
           </div>
 
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <TeamBadge src={homeLogo} name={m.homeTeam} />
+            <TeamBadge src={homeLogo} name={homeName} />
             <p className="min-w-0 truncate text-sm font-medium leading-snug">
-              {m.homeTeam}
+              {homeName}
               <span className="mx-1 font-normal text-muted-foreground">–</span>
-              {m.awayTeam}
+              {awayName}
             </p>
-            <TeamBadge src={awayLogo} name={m.awayTeam} />
+            <TeamBadge src={awayLogo} name={awayName} />
           </div>
 
           {live && (
@@ -244,7 +266,7 @@ function CompactRow({
 
         <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-[5.5rem]">
           <p className="truncate text-[10px] text-muted-foreground">
-            {m.leagueName.replace(/ · .*$/, "")}
+            {comp}
             {m.venue ? ` · ${m.venue}` : ""}
           </p>
           <TvChips channels={m.tvChannels} max={3} />
