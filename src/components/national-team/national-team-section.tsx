@@ -206,6 +206,7 @@ function CompactRow({
 }) {
   const homeLogo = teamLogoUrl(m.homeTeam, m.homeTeamLogo);
   const awayLogo = teamLogoUrl(m.awayTeam, m.awayTeamLogo);
+  const live = isLiveStatus(m.status);
 
   return (
     <li>
@@ -218,42 +219,46 @@ function CompactRow({
           muted && "opacity-80"
         )}
       >
+        {/* Zeile 1: Datum+Uhrzeit | Flagge Team – Team Flagge | Score/Status */}
         <div className="flex w-full items-center gap-2">
-          <time
-            dateTime={m.kickoff}
-            className="w-[4.25rem] shrink-0 text-[11px] font-semibold tabular-nums text-primary sm:w-24"
-          >
-            {isLiveStatus(m.status)
-              ? "LIVE"
-              : formatKickoff(m.kickoff, "d. MMM")}
-          </time>
+          <div className="w-[4.75rem] shrink-0 sm:w-[5.5rem]">
+            {live ? (
+              <span className="live-badge !text-[9px]">LIVE</span>
+            ) : (
+              <>
+                <time
+                  dateTime={m.kickoff}
+                  className="block text-[11px] font-semibold tabular-nums leading-tight text-primary"
+                >
+                  {formatKickoff(m.kickoff, "d. MMM")}
+                </time>
+                <span className="text-[11px] font-bold tabular-nums text-foreground/90">
+                  {m.status === "finished"
+                    ? scoreDisplay(m.homeScore, m.awayScore)
+                    : formatKickoff(m.kickoff, "HH:mm")}
+                </span>
+              </>
+            )}
+          </div>
 
-          <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <TeamBadge src={homeLogo} name={m.homeTeam} />
-            <p className="min-w-0 flex-1 truncate text-sm font-medium">
-              <span className="truncate">{m.homeTeam}</span>
+            <p className="min-w-0 truncate text-sm font-medium leading-snug">
+              {m.homeTeam}
               <span className="mx-1 font-normal text-muted-foreground">–</span>
-              <span className="truncate">{m.awayTeam}</span>
+              {m.awayTeam}
             </p>
             <TeamBadge src={awayLogo} name={m.awayTeam} />
           </div>
 
-          <div className="shrink-0 text-right">
-            {isLiveStatus(m.status) ? (
-              <span className="live-badge !text-[9px]">LIVE</span>
-            ) : m.status === "finished" ? (
-              <span className="text-sm font-bold tabular-nums">
-                {scoreDisplay(m.homeScore, m.awayScore)}
-              </span>
-            ) : (
-              <span className="text-xs font-semibold tabular-nums text-muted-foreground">
-                {formatKickoff(m.kickoff, "HH:mm")}
-              </span>
-            )}
-          </div>
+          {live && (
+            <span className="shrink-0 text-sm font-bold tabular-nums text-live">
+              {scoreDisplay(m.homeScore, m.awayScore)}
+            </span>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-[4.25rem]">
+        <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-[5.5rem]">
           <p className="truncate text-[10px] text-muted-foreground">
             {m.leagueName.replace(/ · .*$/, "")}
             {m.venue ? ` · ${m.venue}` : ""}
@@ -267,7 +272,7 @@ function CompactRow({
 
 function TeamBadge({ src, name }: { src: string | null; name: string }) {
   return (
-    <span className="relative hidden h-6 w-6 shrink-0 overflow-hidden rounded-full border border-border bg-secondary sm:inline-flex">
+    <span className="relative inline-flex h-6 w-6 shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
       {src ? (
         <Image
           src={src}

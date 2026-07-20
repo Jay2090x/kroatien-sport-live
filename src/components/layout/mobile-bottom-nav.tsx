@@ -1,6 +1,6 @@
 "use client";
 
-import { Flag, Newspaper, Radio, Users } from "lucide-react";
+import { Flag, Newspaper, Radio, Tv2, Users } from "lucide-react";
 import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,7 @@ const ITEMS = [
   { href: "#news", icon: Newspaper, de: "News", en: "News", hr: "Vijesti" },
   { href: "#dashboard", icon: Radio, de: "Spiele", en: "Matches", hr: "Utakmice" },
   { href: "#players", icon: Users, de: "Spieler", en: "Players", hr: "Igrači" },
+  { href: "#tv", icon: Tv2, de: "TV", en: "TV", hr: "TV" },
 ] as const;
 
 /**

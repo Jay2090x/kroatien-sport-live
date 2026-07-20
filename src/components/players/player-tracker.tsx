@@ -193,14 +193,14 @@ function PlayerCard({
       onClick={onSelect}
       aria-pressed={selected}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-xl border border-border bg-card p-2.5 text-left shadow-sm transition-all hover:border-primary/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex w-full items-center gap-3 rounded-xl border border-border bg-card p-2.5 text-left shadow-sm transition-all hover:border-primary/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         selected && "border-primary ring-2 ring-primary/25",
         out && "opacity-90"
       )}
     >
       <div
         className={cn(
-          "relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-secondary ring-1",
+          "relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-secondary ring-1 sm:h-16 sm:w-16",
           out ? "ring-sky-500/40 grayscale-[30%]" : "ring-border"
         )}
       >
@@ -208,13 +208,13 @@ function PlayerCard({
           <Image
             src={player.imageUrl}
             alt={player.name}
-            width={40}
-            height={40}
+            width={64}
+            height={64}
             className="h-full w-full object-cover object-top"
             unoptimized
           />
         ) : (
-          <User className="m-2 h-6 w-6 text-muted-foreground" aria-hidden />
+          <User className="m-auto h-8 w-8 text-muted-foreground" aria-hidden />
         )}
       </div>
 
