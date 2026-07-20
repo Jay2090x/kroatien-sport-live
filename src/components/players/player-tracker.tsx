@@ -6,16 +6,18 @@ import { User, X } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import type { Player, PlayerAvailability } from "@/types";
+import { EmptyState } from "@/components/ui/empty-state";
+import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
+import type { Match, Player, PlayerAvailability } from "@/types";
 import {
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
 import { getPlayerProfile } from "@/lib/data/player-profiles";
+import { useMemo } from "react";
 
 /**
- * Kompakte, professionelle Spieler-Liste (Filter via globale Suche)
+ * Kompakte Spieler-Liste + nächstes Match pro Spieler
  */
 export function PlayerTracker() {
   const t = useTranslations("Players");
@@ -29,7 +31,13 @@ export function PlayerTracker() {
     setSearch,
     resetFilters,
     players,
+    matches,
   } = useDashboard();
+
+  const nextByPlayer = useMemo(
+    () => buildNextMatchIndex(matches),
+    [matches]
+  );
 
   const unavailableCount = filteredPlayers.filter(
     (p) => !isExpectedToPlay(p.availability)
@@ -60,15 +68,15 @@ export function PlayerTracker() {
             ) : (
               <>
                 {isDe
-                  ? "Klick = Profil · Suche oben filtert Spieler & Spiele"
+                  ? "Klick = Profil · nächstes Spiel & Form"
                   : isHr
-                    ? "Klik = profil · pretraga gore filtrira igrače i utakmice"
-                    : "Click = profile · search above filters players & matches"}
+                    ? "Klik = profil · iduća utakmica i forma"
+                    : "Click = profile · next match & form"}
                 <span className="text-muted-foreground/90">
                   {" "}
                   · {filteredPlayers.length - unavailableCount} fit
                   {unavailableCount > 0
-                    ? ` · ${unavailableCount} ${isDe ? "out" : "out"}`
+                    ? ` · ${unavailableCount} out`
                     : ""}
                 </span>
               </>
@@ -93,13 +101,27 @@ export function PlayerTracker() {
       </div>
 
       {filteredPlayers.length === 0 ? (
-        <p className="rounded-lg border-2 border-border px-4 py-8 text-center text-sm text-muted-foreground">
-          {isDe
-            ? "Kein Spieler gefunden."
-            : isHr
-              ? "Nema igrača."
-              : "No players found."}
-        </p>
+        <EmptyState
+          title={
+            isDe
+              ? "Kein Spieler gefunden"
+              : isHr
+                ? "Nema igrača"
+                : "No players found"
+          }
+          description={
+            isDe
+              ? "Suche zurücksetzen oder anderen Namen versuchen."
+              : isHr
+                ? "Resetiraj pretragu ili probaj drugo ime."
+                : "Clear search or try another name."
+          }
+          actionLabel={isDe ? "Filter weg" : isHr ? "Makni filter" : "Clear"}
+          onAction={() => {
+            setSearch("");
+            resetFilters();
+          }}
+        />
       ) : (
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {filteredPlayers.map((player) => (
@@ -108,6 +130,7 @@ export function PlayerTracker() {
                 player={player}
                 selected={filters.playerId === player.id}
                 locale={locale}
+                nextMatch={nextByPlayer.get(player.id)}
                 onSelect={() => setPlayerId(player.id)}
               />
             </li>
@@ -118,22 +141,51 @@ export function PlayerTracker() {
   );
 }
 
+function buildNextMatchIndex(matches: Match[]): Map<string, Match> {
+  const map = new Map<string, Match>();
+  const upcoming = matches
+    .filter(
+      (m) =>
+        m.status === "scheduled" ||
+        m.status === "live" ||
+        m.status === "halftime" ||
+        m.status === "postponed"
+    )
+    .sort(
+      (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
+    );
+
+  for (const m of upcoming) {
+    for (const p of m.croatianPlayers) {
+      if (!map.has(p.playerId)) map.set(p.playerId, m);
+    }
+  }
+  return map;
+}
+
 function PlayerCard({
   player,
   selected,
   onSelect,
   locale,
+  nextMatch,
 }: {
   player: Player;
   selected: boolean;
   onSelect: () => void;
   locale: string;
+  nextMatch?: Match;
 }) {
   const meta = getAvailabilityMeta(player.availability);
   const out = !isExpectedToPlay(player.availability);
   const profile = getPlayerProfile(player.id);
   const hl = profile?.highlight;
   const isEn = locale === "en";
+  const isDe = locale === "de";
+
+  const nextLine = nextMatch
+    ? formatNextLine(nextMatch, player, isDe, isEn)
+    : null;
 
   return (
     <button
@@ -141,7 +193,7 @@ function PlayerCard({
       onClick={onSelect}
       aria-pressed={selected}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-xl border-2 border-border bg-card p-2 text-left transition-all hover:border-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex w-full items-center gap-2.5 rounded-xl border border-border bg-card p-2.5 text-left shadow-sm transition-all hover:border-primary/45 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         selected && "border-primary ring-2 ring-primary/25",
         out && "opacity-90"
       )}
@@ -203,9 +255,41 @@ function PlayerCard({
             </span>
           )}
         </div>
+
+        {nextLine && (
+          <p className="mt-1.5 truncate text-[10px] font-medium text-primary/90">
+            {nextLine}
+          </p>
+        )}
       </div>
     </button>
   );
+}
+
+function formatNextLine(
+  m: Match,
+  player: Player,
+  isDe: boolean,
+  isEn: boolean
+): string {
+  const opp =
+    /croatia|kroatien|hrvatska/i.test(m.homeTeam) ||
+    m.homeTeam.toLowerCase().includes(player.club.toLowerCase().slice(0, 6))
+      ? m.awayTeam
+      : m.croatianPlayers.find((p) => p.playerId === player.id)?.teamSide ===
+          "home"
+        ? m.awayTeam
+        : m.homeTeam === player.club ||
+            m.homeTeam.toLowerCase().includes(player.club.split(" ")[0]!.toLowerCase())
+          ? m.awayTeam
+          : m.homeTeam;
+
+  const when = isLiveStatus(m.status)
+    ? "LIVE"
+    : formatKickoff(m.kickoff, "d. MMM HH:mm");
+
+  const prefix = isEn ? "Next" : isDe ? "Nächstes" : "Iduće";
+  return `${prefix}: ${when} · vs ${opp}`;
 }
 
 function shortLabelDe(a?: PlayerAvailability): string {

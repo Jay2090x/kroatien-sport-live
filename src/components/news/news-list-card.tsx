@@ -40,7 +40,7 @@ export function NewsListCard({
     <li>
       <article
         className={cn(
-          "rounded-xl border border-border bg-card transition-colors hover:border-primary/40",
+          "rounded-xl border border-border/80 bg-card shadow-sm transition-all hover:border-primary/40 hover:shadow-md",
           article.featured && "border-primary/35",
           compact ? "p-2.5" : "p-3"
         )}

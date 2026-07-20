@@ -1,18 +1,33 @@
 {
   "name": "Kroatien Sport Live",
   "short_name": "KSL",
-  "description": "Live-Ergebnisse und Tracker für kroatische Fußballspieler",
+  "description": "Live-Ergebnisse, Vatreni, Tracker und News für kroatische Fußballspieler",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#070b12",
   "theme_color": "#c8102e",
   "lang": "de",
+  "categories": ["sports", "news"],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

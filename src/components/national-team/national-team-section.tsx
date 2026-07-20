@@ -1,24 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { ChevronDown, ChevronUp, Flag } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchModal } from "@/components/matches/match-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Sahovnica } from "@/components/layout/sahovnica";
+import { TvChips } from "@/components/matches/tv-chips";
+import { teamLogoUrl } from "@/lib/team-logos";
 import { formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import type { Match } from "@/types";
 import { cn } from "@/lib/utils";
 
 /**
- * Vatreni-Rubrik: alle kommenden Länderspiele sofort sichtbar (ohne Aufklappen).
- * Vergangene optional. Keine Spekulations-Kader.
+ * Vatreni: alle kommenden Spiele sichtbar, Logos + TV-Chips, Deduplizierung.
  */
 export function NationalTeamSection() {
   const isDe = useLocale() !== "en";
-  const { nationalTeamMatches, setSelectedMatch, selectedMatch } =
+  const { nationalTeamMatches, setSelectedMatch, selectedMatch, refreshLive } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
   const [showPast, setShowPast] = useState(false);
@@ -26,8 +29,6 @@ export function NationalTeamSection() {
   const active = localMatch ?? selectedMatch;
 
   const { allUpcoming, past, liveCount } = useMemo(() => {
-    // Defense-in-depth: filterNationalTeamMatches dedupliziert schon –
-    // hier nochmals per Key, falls der Context rohe Doubles liefert.
     const seen = new Set<string>();
     const unique = nationalTeamMatches.filter((m) => {
       const day = m.kickoff.slice(0, 10);
@@ -70,7 +71,7 @@ export function NationalTeamSection() {
 
   return (
     <section id="vatreni" className="scroll-mt-16" aria-labelledby="vatreni-title">
-      <div className="rounded-xl border border-primary/25 bg-gradient-to-br from-primary/10 via-card to-card p-3.5 sm:p-4">
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-3.5 shadow-sm sm:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Sahovnica size="sm" />
@@ -103,19 +104,34 @@ export function NationalTeamSection() {
         </div>
 
         {allUpcoming.length === 0 && past.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            {isDe ? "Keine Länderspiele geladen." : "No internationals loaded."}
-          </p>
+          <EmptyState
+            title={isDe ? "Keine Länderspiele geladen" : "No internationals loaded"}
+            description={
+              isDe
+                ? "API gerade leer oder offline. Bitte kurz neu laden."
+                : "API empty or offline. Please refresh."
+            }
+            actionLabel={isDe ? "Neu laden" : "Refresh"}
+            onAction={() => void refreshLive()}
+          />
         ) : (
           <div className="space-y-2.5">
             {allUpcoming.length === 0 ? (
-              <p className="rounded-lg border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground">
-                {isDe
-                  ? "Kein anstehendes Länderspiel – vergangene unten."
-                  : "No upcoming international – past below."}
-              </p>
+              <EmptyState
+                title={
+                  isDe
+                    ? "Kein anstehendes Länderspiel"
+                    : "No upcoming international"
+                }
+                description={
+                  isDe
+                    ? "Vergangene Spiele kannst du unten einblenden."
+                    : "You can expand past matches below."
+                }
+                className="py-6"
+              />
             ) : (
-              <ul className="overflow-hidden rounded-lg border border-border divide-y divide-border">
+              <ul className="overflow-hidden rounded-xl border border-border/80 divide-y divide-border/80 bg-card/40">
                 {allUpcoming.map((m, i) => (
                   <CompactRow
                     key={m.id}
@@ -146,7 +162,7 @@ export function NationalTeamSection() {
                     : `Past (${past.length})`}
                 </Button>
                 {showPast && (
-                  <ul className="mt-1.5 overflow-hidden rounded-lg border border-border/70 divide-y divide-border opacity-90">
+                  <ul className="mt-1.5 overflow-hidden rounded-xl border border-border/60 divide-y divide-border/60 opacity-90">
                     {past.slice(0, 12).map((m) => (
                       <CompactRow
                         key={m.id}
@@ -188,50 +204,84 @@ function CompactRow({
   highlight?: boolean;
   muted?: boolean;
 }) {
+  const homeLogo = teamLogoUrl(m.homeTeam, m.homeTeamLogo);
+  const awayLogo = teamLogoUrl(m.awayTeam, m.awayTeamLogo);
+
   return (
     <li>
       <button
         type="button"
         onClick={onOpen}
         className={cn(
-          "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-secondary/50",
+          "flex w-full flex-col gap-1.5 px-3 py-2.5 text-left transition-colors hover:bg-secondary/40",
           highlight && "bg-primary/[0.04]",
           muted && "opacity-80"
         )}
       >
-        <time
-          dateTime={m.kickoff}
-          className="w-[4.5rem] shrink-0 text-[11px] font-semibold tabular-nums text-primary sm:w-24"
-        >
-          {isLiveStatus(m.status)
-            ? "LIVE"
-            : formatKickoff(m.kickoff, "d. MMM")}
-        </time>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">
-            {m.homeTeam}{" "}
-            <span className="text-muted-foreground font-normal">–</span>{" "}
-            {m.awayTeam}
-          </p>
+        <div className="flex w-full items-center gap-2">
+          <time
+            dateTime={m.kickoff}
+            className="w-[4.25rem] shrink-0 text-[11px] font-semibold tabular-nums text-primary sm:w-24"
+          >
+            {isLiveStatus(m.status)
+              ? "LIVE"
+              : formatKickoff(m.kickoff, "d. MMM")}
+          </time>
+
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+            <TeamBadge src={homeLogo} name={m.homeTeam} />
+            <p className="min-w-0 flex-1 truncate text-sm font-medium">
+              <span className="truncate">{m.homeTeam}</span>
+              <span className="mx-1 font-normal text-muted-foreground">–</span>
+              <span className="truncate">{m.awayTeam}</span>
+            </p>
+            <TeamBadge src={awayLogo} name={m.awayTeam} />
+          </div>
+
+          <div className="shrink-0 text-right">
+            {isLiveStatus(m.status) ? (
+              <span className="live-badge !text-[9px]">LIVE</span>
+            ) : m.status === "finished" ? (
+              <span className="text-sm font-bold tabular-nums">
+                {scoreDisplay(m.homeScore, m.awayScore)}
+              </span>
+            ) : (
+              <span className="text-xs font-semibold tabular-nums text-muted-foreground">
+                {formatKickoff(m.kickoff, "HH:mm")}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-[4.25rem]">
           <p className="truncate text-[10px] text-muted-foreground">
             {m.leagueName.replace(/ · .*$/, "")}
             {m.venue ? ` · ${m.venue}` : ""}
           </p>
-        </div>
-        <div className="shrink-0 text-right">
-          {isLiveStatus(m.status) ? (
-            <span className="live-badge !text-[9px]">LIVE</span>
-          ) : m.status === "finished" ? (
-            <span className="text-sm font-bold tabular-nums">
-              {scoreDisplay(m.homeScore, m.awayScore)}
-            </span>
-          ) : (
-            <span className="text-xs font-semibold tabular-nums text-muted-foreground">
-              {formatKickoff(m.kickoff, "HH:mm")}
-            </span>
-          )}
+          <TvChips channels={m.tvChannels} max={3} />
         </div>
       </button>
     </li>
+  );
+}
+
+function TeamBadge({ src, name }: { src: string | null; name: string }) {
+  return (
+    <span className="relative hidden h-6 w-6 shrink-0 overflow-hidden rounded-full border border-border bg-secondary sm:inline-flex">
+      {src ? (
+        <Image
+          src={src}
+          alt=""
+          width={24}
+          height={24}
+          className="h-full w-full object-contain p-0.5"
+          unoptimized
+        />
+      ) : (
+        <span className="m-auto text-[9px] font-bold text-muted-foreground">
+          {name.slice(0, 1)}
+        </span>
+      )}
+    </span>
   );
 }

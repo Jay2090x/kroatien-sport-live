@@ -8,6 +8,8 @@ import { MatchFilters } from "./match-filters";
 import { MatchModal } from "./match-modal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TvChips } from "@/components/matches/tv-chips";
 import {
   cn,
   formatKickoff,
@@ -180,13 +182,13 @@ export function MatchDashboard() {
       <MatchFilters />
 
       {empty ? (
-        <div
-          className="mt-3 rounded-lg border border-border px-4 py-8 text-center"
-          role="status"
-        >
-          <p className="text-sm font-medium">{t("empty")}</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{t("emptyHint")}</p>
-        </div>
+        <EmptyState
+          className="mt-3"
+          title={t("empty")}
+          description={t("emptyHint")}
+          actionLabel={isDe ? "Neu laden" : isHr ? "Osvježi" : "Refresh"}
+          onAction={() => void refreshLive()}
+        />
       ) : (
         <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card">
           {live.length > 0 && (
@@ -449,6 +451,7 @@ function MatchRow({
             {m.leagueName.replace(/ · .*$/, "")}
             {croats ? ` · ${croats}${extra > 0 ? ` +${extra}` : ""}` : ""}
           </p>
+          <TvChips channels={m.tvChannels} max={2} className="mt-1" />
         </div>
 
         <div className="shrink-0 text-right">

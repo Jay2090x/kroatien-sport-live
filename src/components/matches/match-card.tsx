@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Eye, MapPin, Users } from "lucide-react";
 import type { Match } from "@/types";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchPlayerChip } from "@/components/players/match-player-chip";
+import { TvChips } from "@/components/matches/tv-chips";
+import { teamLogoUrl } from "@/lib/team-logos";
 import {
   cn,
   formatKickoff,
@@ -78,9 +81,15 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
         </div>
 
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <p className="truncate text-right text-sm font-semibold">
-            {match.homeTeam}
-          </p>
+          <div className="flex min-w-0 items-center justify-end gap-1.5">
+            <p className="truncate text-right text-sm font-semibold">
+              {match.homeTeam}
+            </p>
+            <TeamDot
+              src={teamLogoUrl(match.homeTeam, match.homeTeamLogo)}
+              name={match.homeTeam}
+            />
+          </div>
           <div
             className={cn(
               "min-w-[3.5rem] rounded-md px-2 py-1 text-center text-lg font-bold tabular-nums",
@@ -90,9 +99,13 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
           >
             {scoreDisplay(match.homeScore, match.awayScore)}
           </div>
-          <p className="truncate text-sm font-semibold">
-            {match.awayTeam}
-          </p>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <TeamDot
+              src={teamLogoUrl(match.awayTeam, match.awayTeamLogo)}
+              name={match.awayTeam}
+            />
+            <p className="truncate text-sm font-semibold">{match.awayTeam}</p>
+          </div>
         </div>
 
         {/* Nur anzeigen wenn es echte Spieler-Infos gibt (max 4) */}
@@ -114,19 +127,20 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-2 border-t border-border/50 pt-2">
-          {match.venue ? (
-            <p className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
-              <MapPin className="h-3 w-3 shrink-0" aria-hidden />
-              <span className="truncate">{match.venue}</span>
-            </p>
-          ) : (
-            <span />
-          )}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            {match.venue ? (
+              <p className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
+                <MapPin className="h-3 w-3 shrink-0" aria-hidden />
+                <span className="truncate">{match.venue}</span>
+              </p>
+            ) : null}
+            <TvChips channels={match.tvChannels} max={3} />
+          </div>
           <Button
             size="sm"
             variant={live ? "live" : "secondary"}
-            className="h-7 px-2.5 text-xs"
+            className="h-7 shrink-0 px-2.5 text-xs"
             onClick={() => onWatch(match)}
             aria-label={`${tDash("watch")}: ${match.homeTeam} vs ${match.awayTeam}`}
           >
@@ -136,5 +150,26 @@ export function MatchCard({ match, onWatch, compact }: MatchCardProps) {
         </div>
       </div>
     </Card>
+  );
+}
+
+function TeamDot({ src, name }: { src: string | null; name: string }) {
+  return (
+    <span className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+      {src ? (
+        <Image
+          src={src}
+          alt=""
+          width={20}
+          height={20}
+          className="h-full w-full object-contain p-0.5"
+          unoptimized
+        />
+      ) : (
+        <span className="flex h-full w-full items-center justify-center text-[8px] font-bold text-muted-foreground">
+          {name.slice(0, 1)}
+        </span>
+      )}
+    </span>
   );
 }

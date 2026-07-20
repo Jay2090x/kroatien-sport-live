@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Navbar } from "@/components/layout/navbar";
 import { Hero } from "@/components/layout/hero";
 import { Footer } from "@/components/layout/footer";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { MatchDashboard } from "@/components/matches/match-dashboard";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
 import { NewsSection } from "@/components/news/news-section";
@@ -29,9 +30,9 @@ export default async function HomePage({
       </a>
 
       <Navbar />
-      <main>
+      <main className="pb-20 lg:pb-0">
         <Hero />
-        <div className="mx-auto max-w-7xl space-y-8 px-3 py-5 sm:space-y-10 sm:px-6 sm:py-6 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-7 px-3 py-5 sm:space-y-9 sm:px-6 sm:py-6 lg:px-8">
           <NationalTeamSection />
           <NewsSection />
           <MatchDashboard />
@@ -41,6 +42,7 @@ export default async function HomePage({
         </div>
       </main>
       <Footer />
+      <MobileBottomNav />
       <SettingsModal />
       <PlayerDetailPanel />
     </>

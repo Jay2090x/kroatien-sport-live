@@ -14,6 +14,7 @@ import {
 import { LEGAL_DISCLAIMER } from "@/lib/constants";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchPlayerChip } from "@/components/players/match-player-chip";
+import { TvChips } from "@/components/matches/tv-chips";
 import { buildEventChips } from "@/lib/match-events";
 import {
   getAvailabilityMeta,
@@ -71,6 +72,9 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
               {match.venue}
             </p>
           )}
+          <div className="mt-2 flex justify-center">
+            <TvChips channels={channels} max={4} />
+          </div>
         </div>
 
         <section className="mb-6" aria-labelledby="match-croatians">
