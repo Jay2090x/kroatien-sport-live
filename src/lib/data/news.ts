@@ -94,6 +94,107 @@ const IMG = {
  */
 export const EDITORIAL_NEWS: NewsArticle[] = [
   {
+    id: "bilic-rebuild-july-2026",
+    date: "2026-07-20",
+    featured: true,
+    category: "vatreni",
+    tag: {
+      de: "Aktuell",
+      en: "Latest",
+      hr: "Aktualno",
+    },
+    title: {
+      de: "Bilić-Ära: Stožer steht, Fokus auf Nations League und EM 2028",
+      en: "Bilić era: staff taking shape, focus on Nations League and EURO 2028",
+      hr: "Era Bilića: stožer se formira, fokus na Ligu nacija i Euro 2028",
+    },
+    summary: {
+      de: "Wenige Tage nach der Ernennung formiert der neue Auswahler seinen Stab. Der HNS hat ihm laut kroatischen Medien großes Vertrauen ausgesprochen – Zielhorizont EM 2028.",
+      en: "Days after his appointment the new coach is forming his staff. Croatian media report strong FA backing – horizon set on EURO 2028.",
+      hr: "Nekoliko dana nakon imenovanja novi izbornik formira stožer. Hrvatski mediji javljaju o velikom povjerenju HNS-a – horizont Euro 2028.",
+    },
+    body: {
+      de: "Nach der einstimmigen Ernennung vom 13. Juli arbeitet Slaven Bilić an den ersten strukturellen Schritten: Trainerstab, Gespräche mit Schlüsselspielern und der Blick auf die Herbst-Nations-League. Kroatische Blätter (unter anderem Sportske Novosti, Slobodna Dalmacija, 24sata) berichten von einem starken Vertrauensbeweis des HNS – mit einem mehrjährigen Rahmen, der Richtung EM 2028 und darüber hinaus gedacht ist. Bilić selbst betonte, er sei für ein großes Ergebnis gekommen und sehe drei Fundamente: stabile Verbandsarbeit, Qualität des Kaders und die Erfolge der letzten Jahre.\n\nSportlich stehen die Vatreni in Liga A mit Spanien, England und Tschechien. Erster Pflichttermin: 26. September auswärts gegen Tschechien, danach Spanien, England in Rijeka und Spanien am Poljud. Die komplette Liste der kommenden Länderspiele findest du oben in der Nationalteam-Rubrik – ohne Spekulations-Aufstellungen vor der Nominierung.",
+      en: "After the unanimous appointment on 13 July, Slaven Bilić is taking the first structural steps: staff, talks with key players and the autumn Nations League. Croatian outlets (including Sportske Novosti, Slobodna Dalmacija, 24sata) describe strong FA backing – a multi-year framework aimed at EURO 2028 and beyond. Bilić said he came to deliver a big result and named three foundations: federation stability, squad quality and recent success.\n\nCompetitively Croatia sits in League A with Spain, England and Czechia. First competitive date: 26 September away to Czechia, then Spain, England in Rijeka and Spain at Poljud. The full upcoming international list is in the national-team section above – no speculative line-ups before nomination.",
+      hr: "Nakon jednoglasnog imenovanja 13. srpnja Slaven Bilić radi prve strukturne korake: stožer, razgovori s ključnim igračima i jesenska Liga nacija. Hrvatski mediji (uključujući Sportske Novosti, Slobodnu Dalmaciju, 24sata) pišu o snažnom povjerenju HNS-a – višegodišnji okvir prema Euru 2028. i dalje. Bilić je rekao da je došao po veliki rezultat i naveo tri temelja: stabilnost saveza, kvalitetu kadra i dosadašnje uspjehe.\n\nNatjecateljski su Vatreni u Ligi A sa Španjolskom, Engleskom i Češkom. Prvi obvezni termin: 26. rujna u gostima kod Češke, zatim Španjolska, Engleska u Rijeci i Španjolska na Poljudu. Kompletan popis idućih utakmica je gore u rubrici reprezentacije – bez spekulativnih sastava prije nominacije.",
+    },
+    image: {
+      url: IMG.coach,
+      alt: {
+        de: "Nationalteam-Atmosphäre",
+        en: "National-team atmosphere",
+        hr: "Atmosfera reprezentacije",
+      },
+    },
+  },
+  {
+    id: "bilic-hns-contract-trust",
+    date: "2026-07-19",
+    featured: true,
+    category: "vatreni",
+    tag: {
+      de: "HNS",
+      en: "HNS",
+      hr: "HNS",
+    },
+    title: {
+      de: "HNS setzt auf Bilić: starkes Signal und langfristiger Rahmen",
+      en: "HNS backs Bilić: strong signal and long-term framework",
+      hr: "HNS uz Bilića: snažan signal i dugoročni okvir",
+    },
+    summary: {
+      de: "Medien berichten von einem mehrjährigen Vertrag und historisch starkem Vertrauen – bei gleichzeitig bescheideneren Bezügen als unter Dalić.",
+      en: "Media report a multi-year deal and historically strong trust – with more modest pay than under Dalić.",
+      hr: "Mediji pišu o višegodišnjem ugovoru i povijesno jakom povjerenju – uz skromnija primanja nego pod Dalićem.",
+    },
+    body: {
+      de: "Laut übereinstimmenden Berichten kroatischer Medien (u. a. Slobodna Dalmacija, 24sata, gol.dnevnik) hat der HNS mit der Berufung von Slaven Bilić ein bewusstes Signal gesetzt: Kontinuität und Vertrauen nach der Ära Dalić. Genannt werden mehrjährige Vertragsperspektiven (Berichte sprechen von einem Rahmen bis etwa 2028/2030) und ein Paket, das Boni an sportliche Ziele knüpft. Gleichzeitig sei das Grundgehalt spürbar niedriger als jenes von Zlatko Dalić – Bilić habe die Rolle primär als sportliche Mission angenommen.\n\nPraktisch zählt für Fans jetzt der Blick nach vorn: Nations League im September/Oktober gegen Tschechien, Spanien und England, dann der lange Zyklus bis zur EM 2028. Termine und Ergebnisse der Vatreni sind live in der Nationalteam-Sektion dieser Seite.",
+      en: "According to converging Croatian media reports (including Slobodna Dalmacija, 24sata, gol.dnevnik), the FA’s appointment of Slaven Bilić was a deliberate signal of continuity and trust after the Dalić era. Reports mention multi-year horizons (around 2028/2030) and bonuses tied to sporting targets. At the same time base pay is said to be clearly lower than Zlatko Dalić’s – Bilić accepted the role primarily as a sporting mission.\n\nFor fans what matters now is the road ahead: Nations League in September/October vs Czechia, Spain and England, then the long cycle to EURO 2028. Fixtures and results are live in this site’s national-team section.",
+      hr: "Prema usklađenim izvještajima hrvatskih medija (uključujući SD, 24sata, gol.dnevnik) HNS je imenovanjem Slavena Bilića poslao jasan signal kontinuiteta i povjerenja nakon ere Dalića. Spominju se višegodišnji horizonti (oko 2028./2030.) i bonusi vezani uz sportske ciljeve. Istodobno je osnovna plaća znatno niža od Dalićeve – Bilić je ulogu prihvatio prvenstveno kao sportsku misiju.\n\nNavijačima sada broji put naprijed: Liga nacija u rujnu/listopadu protiv Češke, Španjolske i Engleske, zatim ciklus do Eura 2028. Termini i rezultati su uživo u rubrici reprezentacije na ovoj stranici.",
+    },
+    image: {
+      url: IMG.crowd,
+      alt: {
+        de: "Fans und Stadion",
+        en: "Fans and stadium",
+        hr: "Navijači i stadion",
+      },
+    },
+  },
+  {
+    id: "nl-autumn-ready-2026",
+    date: "2026-07-19",
+    category: "preview",
+    tag: {
+      de: "Nations League",
+      en: "Nations League",
+      hr: "Liga nacija",
+    },
+    title: {
+      de: "Herbst-Kalender fix: Tschechien, Spanien, England – Osijek im November",
+      en: "Autumn calendar set: Czechia, Spain, England – Osijek in November",
+      hr: "Jesenski kalendar: Češka, Španjolska, Engleska – Osijek u studenom",
+    },
+    summary: {
+      de: "HNS bestätigt: Heimspiel gegen Tschechien am 15.11. in der Opus Arena. Davor Prag, Sevilla, Rijeka (ohne Fans) und Poljud.",
+      en: "HNS confirms: home vs Czechia on 15 Nov at Opus Arena. Before that Prague, Seville, Rijeka (behind closed doors) and Poljud.",
+      hr: "HNS potvrđuje: doma protiv Češke 15.11. na Opus Areni. Prije toga Prag, Sevilla, Rijeka (bez publike) i Poljud.",
+    },
+    body: {
+      de: "Der HNS hat die Spielorte für die Nations League 2026/27 (Liga A, Gruppe mit Spanien, England, Tschechien) bekräftigt: Start am 26.09. in Prag gegen Tschechien (20:45), 29.09. in Sevilla gegen Spanien, 03.10. England in Rijeka (18:00, ohne Publikum wegen UEFA-Sanktion), 06.10. Spanien am Poljud, 12.11. England in London, 15.11. Tschechien in Osijek (Opus Arena, 20:45).\n\nFür den Neuaufbau unter Bilić sind das sechs Pflichtspiele gegen absolute Top-Gegner – idealer Maßstab vor dem EM-Zyklus 2028. Alle Termine erscheinen live in der Nationalteam-Liste; Kader werden erst vor den FIFA-Fenstern nominiert.",
+      en: "The HNS has confirmed venues for Nations League 2026/27 (League A with Spain, England, Czechia): start 26 Sep in Prague vs Czechia (20:45), 29 Sep in Seville vs Spain, 3 Oct England in Rijeka (18:00, behind closed doors under a UEFA sanction), 6 Oct Spain at Poljud, 12 Nov England in London, 15 Nov Czechia in Osijek (Opus Arena, 20:45).\n\nFor the rebuild under Bilić these are six competitive games against top sides – a clear benchmark before the EURO 2028 cycle. All dates appear live in the national-team list; squads are named only before FIFA windows.",
+      hr: "HNS je potvrdio mjesta za Ligu nacija 2026./27. (Liga A sa Španjolskom, Engleskom, Češkom): start 26.9. u Pragu protiv Češke (20:45), 29.9. u Sevilli protiv Španjolske, 3.10. Engleska u Rijeci (18:00, bez publike zbog UEFA kazne), 6.10. Španjolska na Poljudu, 12.11. Engleska u Londonu, 15.11. Češka u Osijeku (Opus Arena, 20:45).\n\nZa obnovu pod Bilićem to je šest obveznih utakmica protiv top rivala – mjerilo pred ciklus Eura 2028. Svi termini su uživo u listi reprezentacije; sastavi se nominiraju tek pred FIFA prozore.",
+    },
+    image: {
+      url: IMG.stadium,
+      alt: {
+        de: "Stadion",
+        en: "Stadium",
+        hr: "Stadion",
+      },
+    },
+  },
+  {
     id: "bilic-modric-priority",
     date: "2026-07-18",
     featured: true,
@@ -672,24 +773,20 @@ export function getDailyNews(
 }
 
 /**
- * Reihenfolge: Featured → redaktionell (Datum) → Live-Anker → Auto-Feed.
- * So dominieren die vollen redaktionellen Stories wieder.
+ * Strikt nach Aktualität (Datum absteigend).
+ * Bei gleichem Tag: featured zuerst, dann redaktionell vor live/auto.
  */
 function sortNews(a: NewsArticle, b: NewsArticle): number {
-  const tier = (x: NewsArticle) => {
-    if (x.id.startsWith("auto-")) return 3;
-    if (x.id.startsWith("live-")) return 2;
-    if (x.featured) return 0;
-    return 1; // editorial
-  };
-  const ta = tier(a);
-  const tb = tier(b);
-  if (ta !== tb) return ta - tb;
   const byDate = b.date.localeCompare(a.date);
   if (byDate !== 0) return byDate;
   if (a.featured && !b.featured) return -1;
   if (!a.featured && b.featured) return 1;
-  return 0;
+  const tier = (x: NewsArticle) => {
+    if (x.id.startsWith("auto-")) return 3;
+    if (x.id.startsWith("live-")) return 2;
+    return 1;
+  };
+  return tier(a) - tier(b);
 }
 
 /**

@@ -12,23 +12,20 @@ import { useMemo, useState } from "react";
 import type { Match } from "@/types";
 import { cn } from "@/lib/utils";
 
-const NEXT_COUNT = 3;
-
 /**
- * Kompakte Vatreni-Rubrik: nächste 3 Termine, Rest aufklappbar.
- * Keine Spekulations-Kader.
+ * Vatreni-Rubrik: alle kommenden Länderspiele sofort sichtbar (ohne Aufklappen).
+ * Vergangene optional. Keine Spekulations-Kader.
  */
 export function NationalTeamSection() {
   const isDe = useLocale() !== "en";
   const { nationalTeamMatches, setSelectedMatch, selectedMatch } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
-  const [showAllUpcoming, setShowAllUpcoming] = useState(false);
   const [showPast, setShowPast] = useState(false);
 
   const active = localMatch ?? selectedMatch;
 
-  const { nextThree, allUpcoming, past, liveCount } = useMemo(() => {
+  const { allUpcoming, past, liveCount } = useMemo(() => {
     const sorted = [...nationalTeamMatches].sort(
       (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
     );
@@ -45,7 +42,6 @@ export function NationalTeamSection() {
         (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
       );
     return {
-      nextThree: upcoming.slice(0, NEXT_COUNT),
       allUpcoming: upcoming,
       past: finished,
       liveCount: sorted.filter((m) => isLiveStatus(m.status)).length,
@@ -56,8 +52,6 @@ export function NationalTeamSection() {
     setLocalMatch(m);
     setSelectedMatch(m);
   }
-
-  const moreUpcoming = Math.max(0, allUpcoming.length - NEXT_COUNT);
 
   return (
     <section id="vatreni" className="scroll-mt-16" aria-labelledby="vatreni-title">
@@ -78,8 +72,8 @@ export function NationalTeamSection() {
               </h2>
               <p className="text-[11px] text-muted-foreground">
                 {isDe
-                  ? "Kommende Länderspiele · Kader erst nach Nominierung"
-                  : "Upcoming internationals · squad after nomination"}
+                  ? "Alle kommenden Länderspiele · Kader erst nach Nominierung"
+                  : "All upcoming internationals · squad after nomination"}
               </p>
             </div>
           </div>
@@ -107,43 +101,15 @@ export function NationalTeamSection() {
               </p>
             ) : (
               <ul className="overflow-hidden rounded-lg border border-border divide-y divide-border">
-                {nextThree.map((m) => (
-                  <CompactRow key={m.id} match={m} onOpen={() => openMatch(m)} highlight />
+                {allUpcoming.map((m, i) => (
+                  <CompactRow
+                    key={m.id}
+                    match={m}
+                    onOpen={() => openMatch(m)}
+                    highlight={i < 3}
+                  />
                 ))}
               </ul>
-            )}
-
-            {allUpcoming.length > NEXT_COUNT && (
-              <div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-full text-xs sm:w-auto"
-                  onClick={() => setShowAllUpcoming((v) => !v)}
-                  aria-expanded={showAllUpcoming}
-                >
-                  {showAllUpcoming ? (
-                    <ChevronUp className="h-3.5 w-3.5" />
-                  ) : (
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  )}
-                  {showAllUpcoming
-                    ? isDe
-                      ? "Einklappen"
-                      : "Collapse"
-                    : isDe
-                      ? `Alle ${allUpcoming.length} kommenden (+${moreUpcoming})`
-                      : `All ${allUpcoming.length} upcoming (+${moreUpcoming})`}
-                </Button>
-                {showAllUpcoming && (
-                  <ul className="mt-2 overflow-hidden rounded-lg border border-border divide-y divide-border">
-                    {allUpcoming.slice(NEXT_COUNT).map((m) => (
-                      <CompactRow key={m.id} match={m} onOpen={() => openMatch(m)} />
-                    ))}
-                  </ul>
-                )}
-              </div>
             )}
 
             {past.length > 0 && (
@@ -167,7 +133,12 @@ export function NationalTeamSection() {
                 {showPast && (
                   <ul className="mt-1.5 overflow-hidden rounded-lg border border-border/70 divide-y divide-border opacity-90">
                     {past.slice(0, 12).map((m) => (
-                      <CompactRow key={m.id} match={m} onOpen={() => openMatch(m)} muted />
+                      <CompactRow
+                        key={m.id}
+                        match={m}
+                        onOpen={() => openMatch(m)}
+                        muted
+                      />
                     ))}
                   </ul>
                 )}
