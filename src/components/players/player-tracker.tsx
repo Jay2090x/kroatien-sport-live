@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { User, X } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,6 @@ import { useMemo } from "react";
 export function PlayerTracker() {
   const t = useTranslations("Players");
   const tMatch = useTranslations("Match");
-  const locale = useLocale();
   const {
     filteredPlayers,
     filters,
