@@ -9,10 +9,11 @@ import {
   NEWS_CATEGORY_LABEL,
   type NewsArticle,
 } from "@/lib/data/news";
-import { FALLBACK_THUMB } from "@/lib/data/news-images";
+import { FALLBACK_THUMB, isLogoOrPortrait } from "@/lib/data/news-images";
 
 /**
  * Kompakte News-Zeile: festes 72×72 Vorschau · Titel · Teaser · Weiterlesen
+ * Logos/Portraits: object-contain; Fotos: object-cover
  */
 export function NewsListCard({
   article,
@@ -32,6 +33,7 @@ export function NewsListCard({
   const summary = tNews(article.summary, locale);
   const src = article.image?.url || FALLBACK_THUMB;
   const alt = article.image ? tNews(article.image.alt, locale) : title;
+  const logoStyle = isLogoOrPortrait(src);
   const isCutout = /cutout/i.test(src);
 
   return (
@@ -62,8 +64,10 @@ export function NewsListCard({
               height={72}
               className={cn(
                 "h-full w-full",
-                isCutout
-                  ? "object-contain object-bottom p-0.5"
+                logoStyle
+                  ? isCutout
+                    ? "object-contain object-bottom p-0.5"
+                    : "object-contain p-1.5"
                   : "object-cover"
               )}
               unoptimized

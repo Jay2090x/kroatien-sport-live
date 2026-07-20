@@ -1,9 +1,9 @@
 /**
- * News-Thumbnails: 50+ unique Unsplash-Motive + Spieler-Cutouts.
- * Kein doppeltes Motiv in den letzten 50 Artikeln.
+ * News-Thumbnails: thematische Motive behalten, Unsplash nur als Filler.
+ * Einzigartigkeit wo möglich – redaktionelle Person/Logo-Bilder nie ersetzen.
  */
 
-/** Einzigartige Foto-IDs (keine Duplikate im Pool) */
+/** Einzigartige Unsplash-IDs (nur Fallback) */
 const PHOTO_IDS = [
   "1574629810360-7efbbe195018",
   "1508098682722-e99c43a406b2",
@@ -32,54 +32,21 @@ const PHOTO_IDS = [
   "1570498839593-e565b39455fc",
   "1624880357913-a8539238245b",
   "1493230270586-7804661f2121",
-  "1431324155629-1a6deb1dec8d",
-  "1552667466-07770ae110d0",
-  "1546519638-68e109498ffc",
-  "1574629810360-7efbbe195018",
-  "1508098682722-e99c43a406b2",
-  "1517649763962-0c623066027b",
-  "1461896836934-ffff6530f9f9",
-  "1529900748604-07564a03e7a6",
-  "1606925797300-0b35e9d1794e",
-  "1624526267942-ab0ff8a3e972",
-  "1614632537197-38a17061c2bd",
-  "1560272564-c83b66b1ad12",
-  "1553778263-73a83bab9b0c",
-  "1521412644187-c49fa049e84d",
-  "1471295253337-3ceaaedca402",
-  "1486286701208-1d58e9338013",
-  "1577223625816-7546f13df25d",
-  "1517466787929-bc90951d0974",
-  "1570498839593-e565b39455fc",
-  "1624880357913-a8539238245b",
-  "1493230270586-7804661f2121",
   "1552667466-07770ae110d0",
   "1546519638-68e109498ffc",
   "1517649763962-0c623066027b",
-  "1575361204480-aadea25e6e68",
 ];
 
 function photoUrl(id: string, salt = 0): string {
-  // square crop, reliable for thumbs
   return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=240&h=240&q=80&sig=${salt}`;
 }
 
-/** Deduplizierter Pool mit sig-Varianten für echte Uniqueness */
-export const NEWS_PHOTO_POOL: string[] = (() => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  PHOTO_IDS.forEach((id, i) => {
-    if (seen.has(id)) {
-      out.push(photoUrl(id, i + 100));
-    } else {
-      seen.add(id);
-      out.push(photoUrl(id, i));
-    }
-  });
-  return out;
-})();
+export const NEWS_PHOTO_POOL: string[] = PHOTO_IDS.map((id, i) =>
+  photoUrl(id, i)
+);
 
-export const FALLBACK_THUMB = photoUrl("1574629810360-7efbbe195018", 0);
+export const FALLBACK_THUMB =
+  "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png";
 
 export const PLAYER_CUTOUTS: Record<string, string> = {
   modric:
@@ -88,7 +55,35 @@ export const PLAYER_CUTOUTS: Record<string, string> = {
     "https://r2.thesportsdb.com/images/media/player/cutout/mmowa11769183247.png",
   vuskovic:
     "https://r2.thesportsdb.com/images/media/player/cutout/bw06uk1765729531.png",
+  bilic:
+    "https://r2.thesportsdb.com/images/media/player/thumb/3ik08u1562602501.jpg",
 };
+
+/** Thematische Assets für Auto-Feed / Live */
+export const THEME_IMAGES = {
+  bilic:
+    "https://r2.thesportsdb.com/images/media/player/thumb/3ik08u1562602501.jpg",
+  modric:
+    "https://r2.thesportsdb.com/images/media/player/cutout/msewdx1758892756.png",
+  croatia:
+    "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png",
+  euro:
+    "https://r2.thesportsdb.com/images/media/league/badge/bivzlu1635869135.png",
+  nationsLeague:
+    "https://r2.thesportsdb.com/images/media/league/badge/cwsp321698386224.png",
+  worldCup:
+    "https://r2.thesportsdb.com/images/media/league/badge/e7er5g1696521789.png",
+  premierLeague:
+    "https://r2.thesportsdb.com/images/media/league/badge/gasy9d1737743125.png",
+  serieA:
+    "https://r2.thesportsdb.com/images/media/league/badge/67q3q21679951383.png",
+  milan:
+    "https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png",
+  brighton:
+    "https://r2.thesportsdb.com/images/media/team/badge/ywypts1448810904.png",
+  hajduk:
+    "https://r2.thesportsdb.com/images/media/team/badge/23mvtk1579955412.png",
+} as const;
 
 function hashId(id: string): number {
   let h = 0;
@@ -96,33 +91,58 @@ function hashId(id: string): number {
   return h;
 }
 
-/** Normalisiert URL für Duplikat-Check (ohne Query-Noise wo möglich) */
 function imageKey(url: string): string {
   try {
     const u = new URL(url);
-    // photo-ID oder path
     const m = u.pathname.match(/photo-([a-z0-9-]+)/i);
     if (m) return `photo-${m[1]}`;
-    if (/cutout/i.test(url)) return u.pathname;
     return u.origin + u.pathname;
   } catch {
     return url.split("?")[0] ?? url;
   }
 }
 
-function isGenericCrest(url: string): boolean {
-  return /teamlogos\/countries|cro\.png$|\/badge\//i.test(url);
+/** Nur echte Stock-Filler – Logos/Personen nie als „generic“ markieren */
+function isFillerImage(url: string): boolean {
+  return /unsplash\.com/i.test(url);
+}
+
+/** Logo / Badge / Portrait → object-contain im UI */
+export function isLogoOrPortrait(url: string): boolean {
+  return /badge|logo|thumb|cutout|teamlogos|leaguelogos|countries/i.test(url);
+}
+
+/**
+ * Thematisches Bild aus Titel/ID ableiten (für Auto-News & fehlende Bilder)
+ */
+export function themeImageForArticle(id: string, title = ""): string | null {
+  const t = `${id} ${title}`.toLowerCase();
+  if (/bili[cć]|bilic/.test(t)) return THEME_IMAGES.bilic;
+  if (/modri[cć]|modric/.test(t)) return THEME_IMAGES.modric;
+  if (/vu[sš]kovi[cć]|vuskovic|brighton/.test(t)) return THEME_IMAGES.brighton;
+  if (/milan|serie\s*a/.test(t)) return THEME_IMAGES.milan;
+  if (/hajduk|žilin|zilin/.test(t)) return THEME_IMAGES.hajduk;
+  if (/nations?\s*league|liga\s*nacija|\bnl\b|osijek|češka|tschechien/.test(t))
+    return THEME_IMAGES.nationsLeague;
+  if (/euro\s*2028|em\s*2028|european\s*champ/.test(t)) return THEME_IMAGES.euro;
+  if (/world\s*cup|wm\s*2026|svjetsk|portugal|fifa/.test(t))
+    return THEME_IMAGES.worldCup;
+  if (/premier|tottenham|transfer/.test(t)) return THEME_IMAGES.premierLeague;
+  if (/vatren|hrvatsk|croatia|dali[cć]|nacional/.test(t))
+    return THEME_IMAGES.croatia;
+  return null;
 }
 
 export type Imageable = {
   id: string;
   playerId?: string;
   image?: { url: string; alt: { de: string; en: string; hr: string } };
+  title?: { de?: string; en?: string; hr?: string } | string;
 };
 
 /**
- * Eindeutige Vorschaubilder für die letzten maxUnique Artikel.
- * Behält redaktionelle Cutouts/Stadien, ersetzt nur generische Crests.
+ * Redaktionelle / thematische Bilder behalten.
+ * Unsplash-Filler durch Thema oder unique Pool ersetzen.
  */
 export function assignUniqueNewsImages<T extends Imageable>(
   articles: T[],
@@ -141,7 +161,6 @@ export function assignUniqueNewsImages<T extends Imageable>(
         return url;
       }
     }
-    // absolut letzter Fallback – index-basiert unique sig
     const url = photoUrl(
       PHOTO_IDS[preferIndex % PHOTO_IDS.length]!,
       9000 + poolCursor++
@@ -150,37 +169,45 @@ export function assignUniqueNewsImages<T extends Imageable>(
     return url;
   };
 
+  const titleOf = (a: T): string => {
+    if (!a.title) return "";
+    if (typeof a.title === "string") return a.title;
+    return `${a.title.de ?? ""} ${a.title.en ?? ""}`;
+  };
+
   return articles.map((article, index) => {
-    if (index >= maxUnique) {
-      const url =
-        article.image?.url && !isGenericCrest(article.image.url)
-          ? article.image.url
-          : takePool(hashId(article.id));
-      return withImage(article, url);
+    const existing = article.image?.url;
+
+    // 1) Redaktionell gesetztes Nicht-Unsplash-Bild → immer behalten
+    if (existing && !isFillerImage(existing)) {
+      used.add(imageKey(existing));
+      return withImage(article, existing);
     }
 
-    // 1) Bekannter Spieler-Cutout
+    // 2) Player-Cutout
     if (article.playerId && PLAYER_CUTOUTS[article.playerId]) {
       const cut = PLAYER_CUTOUTS[article.playerId]!;
-      const key = imageKey(cut);
-      if (!used.has(key)) {
-        used.add(key);
-        return withImage(article, cut);
-      }
+      used.add(imageKey(cut));
+      return withImage(article, cut);
     }
 
-    // 2) Bestehendes gutes Bild (Cutout oder Unsplash, kein Crest)
-    const existing = article.image?.url;
-    if (existing && !isGenericCrest(existing)) {
-      const key = imageKey(existing);
-      if (!used.has(key)) {
-        used.add(key);
-        return withImage(article, existing);
-      }
+    // 3) Thema aus ID/Titel
+    const themed = themeImageForArticle(article.id, titleOf(article));
+    if (themed) {
+      used.add(imageKey(themed));
+      return withImage(article, themed);
     }
 
-    // 3) Pool
-    return withImage(article, takePool(hashId(article.id) + index));
+    // 4) Unique Unsplash-Pool (nur Auto/Fallback)
+    if (index < maxUnique) {
+      return withImage(article, takePool(hashId(article.id) + index));
+    }
+    return withImage(
+      article,
+      existing && !isFillerImage(existing)
+        ? existing
+        : takePool(hashId(article.id))
+    );
   });
 }
 
@@ -198,7 +225,6 @@ function withImage<T extends Imageable>(article: T, url: string): T {
   };
 }
 
-/** Sauberer Fließtext: kein HTML, keine Monster-URLs */
 export function cleanNewsText(raw: string, maxLen = 420): string {
   let s = raw
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
@@ -218,7 +244,6 @@ export function cleanNewsText(raw: string, maxLen = 420): string {
     .replace(/\s+/g, " ")
     .trim();
 
-  // Google-News-Titel: "Headline - Source" → Source am Ende entfernen wenn kurz
   s = s.replace(/\s+[-–|]\s+[A-Za-z0-9 .]{2,40}$/u, "").trim();
 
   if (s.length > maxLen) {

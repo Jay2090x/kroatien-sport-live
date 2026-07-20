@@ -4,7 +4,11 @@
  */
 
 import type { NewsArticle, NewsLocaleText } from "@/lib/data/news";
-import { cleanNewsText } from "@/lib/data/news-images";
+import {
+  cleanNewsText,
+  themeImageForArticle,
+  THEME_IMAGES,
+} from "@/lib/data/news-images";
 
 const FEEDS = [
   "https://news.google.com/rss/search?q=Hrvatska+nogomet+OR+%22Slaven+Bili%C4%87%22+OR+%22Luka+Modri%C4%87%22+OR+Vatreni&hl=de&gl=AT&ceid=AT:de",
@@ -185,12 +189,22 @@ export async function fetchAutoNews(max = 4): Promise<NewsArticle[]> {
       seen.add(id);
 
       const texts = buildTexts(item.title, item.description, "");
+      const themeUrl =
+        themeImageForArticle(id, item.title) ?? THEME_IMAGES.croatia;
       articles.push({
         id,
         date: parseDate(item.pubDate),
         category: "vatreni",
         tag: { de: "Kurz", en: "Brief", hr: "Kratko" },
         ...texts,
+        image: {
+          url: themeUrl,
+          alt: {
+            de: "News",
+            en: "News",
+            hr: "Vijest",
+          },
+        },
         sourceUrl: item.link || undefined,
         featured: false,
       });

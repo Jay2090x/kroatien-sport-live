@@ -119,6 +119,9 @@ export default async function NewsArticlePage({
   const cat = tNews(NEWS_CATEGORY_LABEL[article.category], locale);
   const img = article.image;
   const isCutout = img ? /cutout/i.test(img.url) : false;
+  const isLogo = img
+    ? /badge|logo|thumb|teamlogos|leaguelogos|countries/i.test(img.url)
+    : false;
   const path =
     locale === "de" ? `/news/${slug}` : `/${locale}/news/${slug}`;
 
@@ -186,7 +189,9 @@ export default async function NewsArticlePage({
                   className={
                     isCutout
                       ? "h-full w-full object-contain object-bottom p-0.5"
-                      : "h-full w-full object-cover"
+                      : isLogo
+                        ? "h-full w-full object-contain p-2"
+                        : "h-full w-full object-cover"
                   }
                   unoptimized
                   priority

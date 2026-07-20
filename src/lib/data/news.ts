@@ -62,8 +62,45 @@ function fmtDate(iso: string, locale: Locale): string {
   }
 }
 
-/** Redaktionelle Vorschaubilder – jeweils unterschiedlich, gut sichtbar */
+/**
+ * Thematische Vorschaubilder (TheSportsDB / ESPN) – Person, Logo, Wettbewerb.
+ * Unsplash nur als letzter Fallback.
+ */
 const IMG = {
+  /** Slaven Bilić (TheSportsDB) */
+  bilic:
+    "https://r2.thesportsdb.com/images/media/player/thumb/3ik08u1562602501.jpg",
+  modric:
+    "https://r2.thesportsdb.com/images/media/player/cutout/msewdx1758892756.png",
+  gvardiol:
+    "https://r2.thesportsdb.com/images/media/player/cutout/mmowa11769183247.png",
+  vuskovic:
+    "https://r2.thesportsdb.com/images/media/player/cutout/bw06uk1765729531.png",
+  croatia:
+    "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png",
+  croatiaEspn:
+    "https://a.espncdn.com/i/teamlogos/countries/500/cro.png",
+  euro:
+    "https://r2.thesportsdb.com/images/media/league/badge/bivzlu1635869135.png",
+  nationsLeague:
+    "https://r2.thesportsdb.com/images/media/league/badge/cwsp321698386224.png",
+  worldCup:
+    "https://r2.thesportsdb.com/images/media/league/badge/e7er5g1696521789.png",
+  premierLeague:
+    "https://r2.thesportsdb.com/images/media/league/badge/gasy9d1737743125.png",
+  serieA:
+    "https://r2.thesportsdb.com/images/media/league/badge/67q3q21679951383.png",
+  europaLeague:
+    "https://r2.thesportsdb.com/images/media/league/badge/mlsr7d1718774547.png",
+  brighton:
+    "https://r2.thesportsdb.com/images/media/team/badge/ywypts1448810904.png",
+  milan:
+    "https://r2.thesportsdb.com/images/media/team/badge/wvspur1448806617.png",
+  hajduk:
+    "https://r2.thesportsdb.com/images/media/team/badge/23mvtk1579955412.png",
+  /** Aliase / Fallback */
+  coach:
+    "https://r2.thesportsdb.com/images/media/player/thumb/3ik08u1562602501.jpg",
   stadium:
     "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&h=400&q=80",
   night:
@@ -71,21 +108,11 @@ const IMG = {
   pitch:
     "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?auto=format&fit=crop&w=400&h=400&q=80",
   transfer:
-    "https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?auto=format&fit=crop&w=400&h=400&q=80",
-  coach:
-    "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=400&h=400&q=80",
+    "https://r2.thesportsdb.com/images/media/league/badge/gasy9d1737743125.png",
   crowd:
-    "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=400&h=400&q=80",
+    "https://r2.thesportsdb.com/images/media/team/badge/vvtsyu1455465317.png",
   action:
-    "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=400&h=400&q=80",
-  croatia:
-    "https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=400&h=400&q=80",
-  modric:
-    "https://r2.thesportsdb.com/images/media/player/cutout/msewdx1758892756.png",
-  gvardiol:
-    "https://r2.thesportsdb.com/images/media/player/cutout/mmowa11769183247.png",
-  vuskovic:
-    "https://r2.thesportsdb.com/images/media/player/cutout/bw06uk1765729531.png",
+    "https://r2.thesportsdb.com/images/media/league/badge/e7er5g1696521789.png",
 };
 
 /**
@@ -119,11 +146,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Nakon jednoglasnog imenovanja 13. srpnja Slaven Bilić radi prve strukturne korake: stožer, razgovori s ključnim igračima i jesenska Liga nacija. Hrvatski mediji (uključujući Sportske Novosti, Slobodnu Dalmaciju, 24sata) pišu o snažnom povjerenju HNS-a – višegodišnji okvir prema Euru 2028. i dalje. Bilić je rekao da je došao po veliki rezultat i naveo tri temelja: stabilnost saveza, kvalitetu kadra i dosadašnje uspjehe.\n\nNatjecateljski su Vatreni u Ligi A sa Španjolskom, Engleskom i Češkom. Prvi obvezni termin: 26. rujna u gostima kod Češke, zatim Španjolska, Engleska u Rijeci i Španjolska na Poljudu. Kompletan popis idućih utakmica je gore u rubrici reprezentacije – bez spekulativnih sastava prije nominacije.",
     },
     image: {
-      url: IMG.coach,
+      url: IMG.bilic,
       alt: {
-        de: "Nationalteam-Atmosphäre",
-        en: "National-team atmosphere",
-        hr: "Atmosfera reprezentacije",
+        de: "Slaven Bilić",
+        en: "Slaven Bilić",
+        hr: "Slaven Bilić",
       },
     },
   },
@@ -153,11 +180,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Prema usklađenim izvještajima hrvatskih medija (uključujući SD, 24sata, gol.dnevnik) HNS je imenovanjem Slavena Bilića poslao jasan signal kontinuiteta i povjerenja nakon ere Dalića. Spominju se višegodišnji horizonti (oko 2028./2030.) i bonusi vezani uz sportske ciljeve. Istodobno je osnovna plaća znatno niža od Dalićeve – Bilić je ulogu prihvatio prvenstveno kao sportsku misiju.\n\nNavijačima sada broji put naprijed: Liga nacija u rujnu/listopadu protiv Češke, Španjolske i Engleske, zatim ciklus do Eura 2028. Termini i rezultati su uživo u rubrici reprezentacije na ovoj stranici.",
     },
     image: {
-      url: IMG.crowd,
+      url: IMG.euro,
       alt: {
-        de: "Fans und Stadion",
-        en: "Fans and stadium",
-        hr: "Navijači i stadion",
+        de: "UEFA European Championship Logo",
+        en: "UEFA European Championship logo",
+        hr: "Logo UEFA Europskog prvenstva",
       },
     },
   },
@@ -186,11 +213,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "HNS je potvrdio mjesta za Ligu nacija 2026./27. (Liga A sa Španjolskom, Engleskom, Češkom): start 26.9. u Pragu protiv Češke (20:45), 29.9. u Sevilli protiv Španjolske, 3.10. Engleska u Rijeci (18:00, bez publike zbog UEFA kazne), 6.10. Španjolska na Poljudu, 12.11. Engleska u Londonu, 15.11. Češka u Osijeku (Opus Arena, 20:45).\n\nZa obnovu pod Bilićem to je šest obveznih utakmica protiv top rivala – mjerilo pred ciklus Eura 2028. Svi termini su uživo u listi reprezentacije; sastavi se nominiraju tek pred FIFA prozore.",
     },
     image: {
-      url: IMG.stadium,
+      url: IMG.nationsLeague,
       alt: {
-        de: "Stadion",
-        en: "Stadium",
-        hr: "Stadion",
+        de: "UEFA Nations League Logo",
+        en: "UEFA Nations League logo",
+        hr: "Logo UEFA Lige nacija",
       },
     },
   },
@@ -254,11 +281,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Prema HNS-u (17. srpnja 2026.) Lovro Zvonarek je preselio u portugalsku Estrelu Amadoru. Ofenzivac je dio mlađih uzrasta Vatrenih i sakupljat će minute u europskoj prvoj ligi.\n\nTakvi transferi mladih Hrvata važni su za obnovu pod Bilićem i U-21 izbornikom Ivicom Olićem – A sastav se i dalje nominira tek pred FIFA prozore.",
     },
     image: {
-      url: IMG.transfer,
+      url: IMG.premierLeague,
       alt: {
-        de: "Fußballfeld von oben",
-        en: "Football pitch from above",
-        hr: "Nogometno igralište odozgo",
+        de: "Premier League Logo",
+        en: "Premier League logo",
+        hr: "Logo Premier lige",
       },
     },
   },
@@ -287,11 +314,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "16. srpnja 2026. hrvatski mediji i HNS javljaju: unatoč porazu u uzvratu protiv MŠK Žiline, Hajduk Split je ukupnim rezultatom osigurao prolaz u drugo pretkolo Europske lige. Za hrvatske klubove europsko ljeto ključni je uvod u HNL – rezultate i Hrvate u Europi pratiš na dashboardu utakmica.",
     },
     image: {
-      url: IMG.night,
+      url: IMG.hajduk,
       alt: {
-        de: "Stadion bei Flutlicht",
-        en: "Stadium floodlights",
-        hr: "Stadion pod reflektorima",
+        de: "Hajduk Split Logo",
+        en: "Hajduk Split logo",
+        hr: "Grb Hajduka",
       },
     },
   },
@@ -320,11 +347,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "HNS.team (16.7.2026.): Mile Škorić završava karijeru. U zadnjih 18 mjeseci u Rijeci upisao je samo tri nastupa zbog teških problema s koljenom. „Svako putovanje jednom dođe kraju. Zbog ozljede završavam profesionalnu karijeru…“, napisao je na društvenim mrežama. Za Vatrene je imao sedam nastupa; zadnji u ožujku 2022. protiv Bugarske. Klubovi: Osijek, Gorica, te kineski Cangzhou i Tianjin.",
     },
     image: {
-      url: IMG.crowd,
+      url: IMG.croatia,
       alt: {
-        de: "Fans im Stadion",
-        en: "Stadium crowd",
-        hr: "Publika na stadionu",
+        de: "Kroatien Nationalteam",
+        en: "Croatia national team",
+        hr: "Hrvatska reprezentacija",
       },
     },
   },
@@ -388,11 +415,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Izvršni odbor HNS-a 14. srpnja 2026. odlučio: domaća utakmica protiv Češke u Ligi nacija 2026./27. (Liga A, skupina 3 sa Španjolskom, Engleskom i Češkom) igra se 15. studenoga u 20:45 u Osijeku (Opus Arena). Kompletan raspored: 26.9. Češka–Hrvatska (Prag, 20:45), 29.9. Španjolska–Hrvatska (Sevilla, 20:45), 3.10. Hrvatska–Engleska (Rijeka, 18:00), 6.10. Hrvatska–Španjolska (Poljud, 20:45), 12.11. Engleska–Hrvatska (London, 20:45), 15.11. Hrvatska–Češka (Osijek). UEFA kazna: doma protiv Engleske u Rijeci bez publike; u Pragu bez ulaznica za hrvatske navijače. Četvrtfinale LN 25.–30.3.2027.; Final Four 9.–13.6.2027. Detalji i u rubrici reprezentacije.",
     },
     image: {
-      url: IMG.stadium,
+      url: IMG.croatiaEspn,
       alt: {
-        de: "Stadion",
-        en: "Stadium",
-        hr: "Stadion",
+        de: "Kroatien",
+        en: "Croatia",
+        hr: "Hrvatska",
       },
     },
   },
@@ -422,11 +449,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
     },
     playerId: "modric",
     image: {
-      url: IMG.modric,
+      url: IMG.milan,
       alt: {
-        de: "Luka Modrić",
-        en: "Luka Modrić",
-        hr: "Luka Modrić",
+        de: "AC Milan Logo",
+        en: "AC Milan logo",
+        hr: "Grb AC Milana",
       },
     },
   },
@@ -456,11 +483,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "13. srpnja 2026. Izvršni odbor HNS-a na prijedlog predsjednika Marijana Kustića jednoglasno je imenovao Slavena Bilića izbornikom A reprezentacije – potvrđeno među ostalim na ESPN-u, Reutersu i Skyju. Bilić je Vatrene vodio 2006.–2012. i vraća se iskusniji.\n\nKustić: „Nije lako naslijediti Zlatka, ali uvjereni smo da je Slaven prava osoba.“ Bilić: „Znam što se očekuje. Imam veliku vjeru u igrače – donosim energiju, ambiciju i odlučnost da Hrvatska ostane u eliti. Euro 2028. mi je u glavi.“ Prvi koraci: stožer, zatim igrači – posebno Luka Modrić. Iduće utakmice: Liga nacija od 26. rujna (Češka u Pragu).",
     },
     image: {
-      url: IMG.action,
+      url: IMG.bilic,
       alt: {
-        de: "Fußball-Action im Stadion",
-        en: "Football action in the stadium",
-        hr: "Nogometna akcija na stadionu",
+        de: "Slaven Bilić",
+        en: "Slaven Bilić",
+        hr: "Slaven Bilić",
       },
     },
   },
@@ -489,11 +516,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Na inauguracijskoj konferenciji (HNS, 13. srpnja 2026.) Bilić je rekao da je došao napraviti veliki rezultat – tri temelja: stabilnost saveza, kvaliteta SP-momčadi i uspjesi od 1998., osobito pod Dalićem. „U glavi mi je prvo Euro 2028.“\n\nLigu nacija ne želi žrtvovati samo za uigravanje. O SP-u: „Dojam je bolji od rezultata.“ Za VAR na kraju smatra da su pokradeni. Suradnja s U-21 izbornikom Ivicom Olićem i Nikom Kranjčarom izričito je željena.",
     },
     image: {
-      url: IMG.night,
+      url: IMG.euro,
       alt: {
-        de: "Stadion bei Flutlicht",
-        en: "Stadium under floodlights",
-        hr: "Stadion pod reflektorima",
+        de: "UEFA EM Logo",
+        en: "UEFA EURO logo",
+        hr: "Logo UEFA Eura",
       },
     },
   },
@@ -522,11 +549,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
       hr: "Početkom srpnja 2026. završio je mandat Zlatka Dalića (od listopada 2017.). Sky/Reuters i HNS: nakon ispadanja od Portugala i ugovora do kraja turnira otišao je najuspješniji hrvatski izbornik – 111 utakmica na klupi. Bilans: srebro SP 2018., bronca 2022., finale Lige nacija 2023., neporažene kvalifikacije za SP 2026. Dalić je kritizirao VAR zbog poništenog izjednačenja Gvardiola. Nasljednik od 13. srpnja: Slaven Bilić.",
     },
     image: {
-      url: IMG.crowd,
+      url: IMG.croatia,
       alt: {
-        de: "Fans im Stadion",
-        en: "Stadium crowd",
-        hr: "Publika na stadionu",
+        de: "Kroatien Nationalteam",
+        en: "Croatia national team",
+        hr: "Hrvatska reprezentacija",
       },
     },
   },
@@ -556,11 +583,11 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
     },
     playerId: "gvardiol",
     image: {
-      url: IMG.gvardiol,
+      url: IMG.worldCup,
       alt: {
-        de: "Joško Gvardiol",
-        en: "Joško Gvardiol",
-        hr: "Joško Gvardiol",
+        de: "FIFA World Cup Logo",
+        en: "FIFA World Cup logo",
+        hr: "Logo FIFA Svjetskog prvenstva",
       },
     },
   },
@@ -612,11 +639,11 @@ export function getDailyNews(
         hr: `Live API: iduća utakmica je ${nextNt.homeTeam} – ${nextNt.awayTeam}, ${fmtKick(nextNt.kickoff, "hr")}. Natjecanje: ${nextNt.leagueName}. ${nextNt.venue ? `Mjesto: ${nextNt.venue}.` : ""} Pod Bilićem počinje novi ciklus – detalji u rubrici reprezentacije.`,
       },
       image: {
-        url: IMG.croatia,
+        url: IMG.nationsLeague,
         alt: {
-          de: "Wappen Kroatien",
-          en: "Croatia crest",
-          hr: "Grb Hrvatske",
+          de: "UEFA Nations League",
+          en: "UEFA Nations League",
+          hr: "UEFA Liga nacija",
         },
       },
     });
@@ -650,9 +677,9 @@ export function getDailyNews(
       image: {
         url: IMG.croatia,
         alt: {
-          de: "Wappen Kroatien",
-          en: "Croatia crest",
-          hr: "Grb Hrvatske",
+          de: "Kroatien",
+          en: "Croatia",
+          hr: "Hrvatska",
         },
       },
     });
