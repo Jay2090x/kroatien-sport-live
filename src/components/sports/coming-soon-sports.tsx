@@ -1,15 +1,18 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Sparkles } from "lucide-react";
-import { COMING_SOON_SPORTS } from "@/lib/data/coming-soon-sports";
+import {
+  COMING_SOON_SPORTS,
+  sportDescription,
+  sportName,
+} from "@/lib/data/coming-soon-sports";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export function ComingSoonSports() {
-  const isDe = useLocale() !== "en";
-  const title = isDe ? "Weitere Sportarten" : "More sports";
-  const badge = "Coming Soon";
+  const t = useTranslations("ComingSoon");
+  const locale = useLocale();
 
   return (
     <section
@@ -22,11 +25,11 @@ export function ComingSoonSports() {
           id="more-sports-title"
           className="text-lg font-bold tracking-tight sm:text-xl"
         >
-          {title}
+          {t("title")}
         </h2>
         <Badge variant="outline" className="border-primary/40 text-primary text-[10px]">
           <Sparkles className="mr-1 h-3 w-3" />
-          {badge}
+          {t("badge")}
         </Badge>
       </div>
 
@@ -51,10 +54,10 @@ export function ComingSoonSports() {
                   {sport.emoji}
                 </span>
                 <h3 className="mt-1 text-sm font-bold leading-tight">
-                  {isDe ? sport.nameDe : sport.nameEn}
+                  {sportName(sport, locale)}
                 </h3>
                 <p className="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
-                  {isDe ? sport.descriptionDe : sport.descriptionEn}
+                  {sportDescription(sport, locale)}
                 </p>
               </div>
             </article>

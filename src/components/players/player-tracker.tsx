@@ -21,9 +21,8 @@ import { useMemo } from "react";
  */
 export function PlayerTracker() {
   const t = useTranslations("Players");
+  const tMatch = useTranslations("Match");
   const locale = useLocale();
-  const isDe = locale === "de";
-  const isHr = locale === "hr";
   const {
     filteredPlayers,
     filters,
@@ -62,21 +61,17 @@ export function PlayerTracker() {
             {searching ? (
               <>
                 {filteredPlayers.length} / {players.length}{" "}
-                {isHr ? "treffer" : isDe ? "Treffer" : "results"}
+                {t("results")}
                 {filters.search ? ` · „${filters.search}"` : ""}
               </>
             ) : (
               <>
-                {isDe
-                  ? "Klick = Profil · nächstes Spiel & Form"
-                  : isHr
-                    ? "Klik = profil · iduća utakmica i forma"
-                    : "Click = profile · next match & form"}
+                {t("hint")}
                 <span className="text-muted-foreground/90">
                   {" "}
-                  · {filteredPlayers.length - unavailableCount} fit
+                  · {filteredPlayers.length - unavailableCount} {t("fit")}
                   {unavailableCount > 0
-                    ? ` · ${unavailableCount} out`
+                    ? ` · ${unavailableCount} ${t("out")}`
                     : ""}
                 </span>
               </>
@@ -95,28 +90,16 @@ export function PlayerTracker() {
             }}
           >
             <X className="h-3 w-3" />
-            {isDe ? "Filter weg" : isHr ? "Makni filter" : "Clear filter"}
+            {t("clearFilter")}
           </Button>
         )}
       </div>
 
       {filteredPlayers.length === 0 ? (
         <EmptyState
-          title={
-            isDe
-              ? "Kein Spieler gefunden"
-              : isHr
-                ? "Nema igrača"
-                : "No players found"
-          }
-          description={
-            isDe
-              ? "Suche zurücksetzen oder anderen Namen versuchen."
-              : isHr
-                ? "Resetiraj pretragu ili probaj drugo ime."
-                : "Clear search or try another name."
-          }
-          actionLabel={isDe ? "Filter weg" : isHr ? "Makni filter" : "Clear"}
+          title={t("empty")}
+          description={t("emptyHint")}
+          actionLabel={t("clearFilter")}
           onAction={() => {
             setSearch("");
             resetFilters();
@@ -129,9 +112,19 @@ export function PlayerTracker() {
               <PlayerCard
                 player={player}
                 selected={filters.playerId === player.id}
-                locale={locale}
                 nextMatch={nextByPlayer.get(player.id)}
                 onSelect={() => setPlayerId(player.id)}
+                nextPrefix={t("nextPrefix")}
+                liveLabel={tMatch("live")}
+                statusText={t(
+                  statusKey(player.availability) as
+                    | "statusFit"
+                    | "statusVacation"
+                    | "statusInjured"
+                    | "statusSuspended"
+                    | "statusSquad"
+                    | "statusDoubt"
+                )}
               />
             </li>
           ))}
@@ -167,24 +160,25 @@ function PlayerCard({
   player,
   selected,
   onSelect,
-  locale,
   nextMatch,
+  nextPrefix,
+  liveLabel,
+  statusText,
 }: {
   player: Player;
   selected: boolean;
   onSelect: () => void;
-  locale: string;
   nextMatch?: Match;
+  nextPrefix: string;
+  liveLabel: string;
+  statusText: string;
 }) {
   const meta = getAvailabilityMeta(player.availability);
   const out = !isExpectedToPlay(player.availability);
   const profile = getPlayerProfile(player.id);
   const hl = profile?.highlight;
-  const isEn = locale === "en";
-  const isDe = locale === "de";
-
   const nextLine = nextMatch
-    ? formatNextLine(nextMatch, player, isDe, isEn)
+    ? formatNextLine(nextMatch, player, nextPrefix, liveLabel)
     : null;
 
   return (
@@ -235,10 +229,7 @@ function PlayerCard({
               meta.badgeClass
             )}
           >
-            {meta.emoji}{" "}
-            {isEn
-              ? shortLabelEn(player.availability)
-              : shortLabelDe(player.availability)}
+            {meta.emoji} {statusText}
           </span>
         </div>
 
@@ -269,8 +260,8 @@ function PlayerCard({
 function formatNextLine(
   m: Match,
   player: Player,
-  isDe: boolean,
-  isEn: boolean
+  prefix: string,
+  liveLabel: string
 ): string {
   const opp =
     /croatia|kroatien|hrvatska/i.test(m.homeTeam) ||
@@ -280,48 +271,32 @@ function formatNextLine(
           "home"
         ? m.awayTeam
         : m.homeTeam === player.club ||
-            m.homeTeam.toLowerCase().includes(player.club.split(" ")[0]!.toLowerCase())
+            m.homeTeam
+              .toLowerCase()
+              .includes(player.club.split(" ")[0]!.toLowerCase())
           ? m.awayTeam
           : m.homeTeam;
 
   const when = isLiveStatus(m.status)
-    ? "LIVE"
+    ? liveLabel
     : formatKickoff(m.kickoff, "d. MMM HH:mm");
 
-  const prefix = isEn ? "Next" : isDe ? "Nächstes" : "Iduće";
   return `${prefix}: ${when} · vs ${opp}`;
 }
 
-function shortLabelDe(a?: PlayerAvailability): string {
+function statusKey(a: PlayerAvailability | undefined): string {
   switch (a) {
     case "vacation":
-      return "Urlaub";
+      return "statusVacation";
     case "injured":
-      return "Verletzt";
+      return "statusInjured";
     case "suspended":
-      return "Gesperrt";
+      return "statusSuspended";
     case "not_in_squad":
-      return "Kader";
+      return "statusSquad";
     case "doubtful":
-      return "Fraglich";
+      return "statusDoubt";
     default:
-      return "Fit";
-  }
-}
-
-function shortLabelEn(a?: PlayerAvailability): string {
-  switch (a) {
-    case "vacation":
-      return "Off";
-    case "injured":
-      return "Injured";
-    case "suspended":
-      return "Banned";
-    case "not_in_squad":
-      return "Squad";
-    case "doubtful":
-      return "Doubt";
-    default:
-      return "Fit";
+      return "statusFit";
   }
 }

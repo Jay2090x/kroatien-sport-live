@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp, Flag } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { MatchModal } from "@/components/matches/match-modal";
@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
  * Vatreni: alle kommenden Spiele sichtbar, Logos + TV-Chips, Deduplizierung.
  */
 export function NationalTeamSection() {
-  const isDe = useLocale() !== "en";
+  const t = useTranslations("Vatreni");
   const { nationalTeamMatches, setSelectedMatch, selectedMatch, refreshLive } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
@@ -81,53 +81,39 @@ export function NationalTeamSection() {
                 className="flex items-center gap-1.5 text-base font-bold tracking-tight sm:text-lg"
               >
                 <Flag className="h-4 w-4 text-primary" aria-hidden />
-                {isDe ? "Nationalmannschaft" : "National team"}
+                {t("title")}
                 {liveCount > 0 && (
                   <span className="live-badge ml-1 !text-[9px]">LIVE</span>
                 )}
               </h2>
               <p className="text-[11px] text-muted-foreground">
-                {isDe
-                  ? "Alle kommenden Länderspiele · Kader erst nach Nominierung"
-                  : "All upcoming internationals · squad after nomination"}
+                {t("subtitle")}
               </p>
             </div>
           </div>
           <div className="flex gap-1.5 text-[10px]">
             <Badge variant="secondary" className="px-1.5 py-0">
-              {allUpcoming.length} {isDe ? "kommend" : "up"}
+              {allUpcoming.length} {t("upcoming")}
             </Badge>
             <Badge variant="outline" className="px-1.5 py-0">
-              {past.length} {isDe ? "vergangen" : "past"}
+              {past.length} {t("past")}
             </Badge>
           </div>
         </div>
 
         {allUpcoming.length === 0 && past.length === 0 ? (
           <EmptyState
-            title={isDe ? "Keine Länderspiele geladen" : "No internationals loaded"}
-            description={
-              isDe
-                ? "API gerade leer oder offline. Bitte kurz neu laden."
-                : "API empty or offline. Please refresh."
-            }
-            actionLabel={isDe ? "Neu laden" : "Refresh"}
+            title={t("empty")}
+            description={t("emptyHint")}
+            actionLabel={t("reload")}
             onAction={() => void refreshLive()}
           />
         ) : (
           <div className="space-y-2.5">
             {allUpcoming.length === 0 ? (
               <EmptyState
-                title={
-                  isDe
-                    ? "Kein anstehendes Länderspiel"
-                    : "No upcoming international"
-                }
-                description={
-                  isDe
-                    ? "Vergangene Spiele kannst du unten einblenden."
-                    : "You can expand past matches below."
-                }
+                title={t("emptyUpcoming")}
+                description={t("emptyUpcomingHint")}
                 className="py-6"
               />
             ) : (
@@ -157,9 +143,7 @@ export function NationalTeamSection() {
                   ) : (
                     <ChevronDown className="h-3.5 w-3.5" />
                   )}
-                  {isDe
-                    ? `Vergangene (${past.length})`
-                    : `Past (${past.length})`}
+                  {t("pastToggle", { count: past.length })}
                 </Button>
                 {showPast && (
                   <ul className="mt-1.5 overflow-hidden rounded-xl border border-border/60 divide-y divide-border/60 opacity-90">

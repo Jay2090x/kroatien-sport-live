@@ -15,7 +15,10 @@
     "search": "Spiele, Spieler, Clubs suchen…",
     "settings": "Einstellungen",
     "theme": "Design",
-    "language": "Sprache"
+    "language": "Sprache",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schließen",
+    "quickNav": "Schnellnavigation"
   },
   "Hero": {
     "badge": "Vatreni · Europaweit",
@@ -24,13 +27,28 @@
     "subtitle": "Ergebnisse, News und nächste Spiele von Modrić, Gvardiol & Co. – in allen Top-Ligen.",
     "ctaMatches": "Live-Spiele ansehen",
     "ctaPlayers": "Spieler-Tracker",
+    "ctaNt": "Nationalteam",
     "statsLive": "Live jetzt",
     "statsPlayers": "Spieler im Tracker",
-    "statsLeagues": "Ligen"
+    "statsLeagues": "Ligen",
+    "statsNt": "Länderspiele",
+    "statsNews": "News"
+  },
+  "Vatreni": {
+    "title": "Nationalmannschaft",
+    "subtitle": "Alle kommenden Länderspiele · Kader erst nach Nominierung",
+    "upcoming": "kommend",
+    "past": "vergangen",
+    "pastToggle": "Vergangene ({count})",
+    "empty": "Keine Länderspiele geladen",
+    "emptyHint": "API gerade leer oder offline. Bitte kurz neu laden.",
+    "emptyUpcoming": "Kein anstehendes Länderspiel",
+    "emptyUpcomingHint": "Vergangene Spiele kannst du unten einblenden.",
+    "reload": "Neu laden"
   },
   "News": {
     "title": "News",
-    "subtitle": "Aktuelle Vatreni- & Club-Meldungen · Live-Anker · Auto-Feed · DE/EN/HR",
+    "subtitle": "Aktuelle Vatreni- & Club-Meldungen · Live-Anker · Auto-Feed",
     "daily": "Tages-Update",
     "today": "Heute",
     "readMore": "Mehr lesen",
@@ -43,25 +61,84 @@
     "originalSource": "Originalquelle öffnen"
   },
   "Dashboard": {
-    "title": "Live & anstehende Spiele",
-    "subtitle": "Spiele mit kroatischen Spielern",
+    "title": "Spiele",
+    "subtitle": "Clubs mit kroatischen Spielern",
     "empty": "Keine Spiele für diese Filter gefunden.",
     "emptyHint": "Filter zurücksetzen oder anderen Zeitraum wählen.",
     "watch": "Ansehen",
     "croatianPlayers": "Kroaten im Spiel",
     "lastUpdated": "Aktualisiert",
     "source": "Datenquelle",
-    "resetFilters": "Filter zurücksetzen"
+    "resetFilters": "Filter zurücksetzen",
+    "reload": "Neu laden",
+    "liveNow": "Jetzt live",
+    "nextFixtures": "Nächste Termine",
+    "results": "Ergebnisse",
+    "showLess": "Weniger",
+    "showMore": "Weitere {count} anzeigen",
+    "olderResults": "Ältere Ergebnisse ({count})",
+    "noFinished": "Keine beendeten Spiele für diesen Filter.",
+    "refresh": "Aktualisieren",
+    "filterAll": "Alle",
+    "filterLive": "Nur Live",
+    "dateToday": "Heute",
+    "dateNext7": "Nächste 7 Tage",
+    "dateAll": "Alle",
+    "leagueFilter": "Liga-Filter",
+    "dateFilter": "Datum-Filter"
   },
   "Players": {
     "title": "Spieler-Tracker",
     "subtitle": "Klicke auf einen Spieler, um seine Spiele zu sehen",
+    "hint": "Klick = Profil · nächstes Spiel & Form",
     "nextMatches": "Nächste Spiele",
     "noMatches": "Keine anstehenden Spiele",
     "clearSelection": "Auswahl aufheben",
+    "clearFilter": "Filter weg",
     "club": "Club",
     "league": "Liga",
-    "position": "Position"
+    "position": "Position",
+    "results": "Treffer",
+    "fit": "fit",
+    "out": "out",
+    "empty": "Kein Spieler gefunden",
+    "emptyHint": "Suche zurücksetzen oder anderen Namen versuchen.",
+    "nextPrefix": "Nächstes",
+    "statusFit": "Fit",
+    "statusVacation": "Urlaub",
+    "statusInjured": "Verletzt",
+    "statusSuspended": "Gesperrt",
+    "statusSquad": "Kader",
+    "statusDoubt": "Fraglich"
+  },
+  "PlayerDetail": {
+    "born": "Geboren",
+    "club": "Club",
+    "position": "Position",
+    "season": "Saison",
+    "next": "Nächste Spiele",
+    "recent": "Zuletzt",
+    "stats": "Statistik",
+    "moreStats": "Mehr Statistik",
+    "less": "Weniger",
+    "close": "Schließen",
+    "noStats": "Keine detaillierten Stats.",
+    "matchesArrow": "Spiele →",
+    "apps": "Sp.",
+    "goals": "T",
+    "assists": "A",
+    "openProfile": "{name} – Profil & nächste Spiele",
+    "reportStatus": "Status-Fehler melden",
+    "suggestStatus": "Status-Korrektur vorschlagen",
+    "suggestedStatus": "Vorgeschlagener Status",
+    "currentStatus": "Aktueller System-Status:",
+    "cannotChange": "Du kannst den Status nicht selbst ändern – nur einen Vorschlag senden.",
+    "reason": "Begründung / Quelle",
+    "reasonPlaceholder": "z.B. Spielt seit gestern wieder, siehe Club-Pressemitteilung…",
+    "send": "Vorschlag senden",
+    "cancel": "Abbrechen",
+    "reasonRequired": "Bitte kurz beschreiben, was falsch ist.",
+    "thanks": "Danke! Dein Vorschlag wurde gespeichert. Wir prüfen ihn."
   },
   "Calendar": {
     "title": "Kommende Spiele",
@@ -77,7 +154,16 @@
     "free": "Kostenlos",
     "paid": "Abo",
     "streaming": "Streaming",
-    "visit": "Öffnen"
+    "visit": "Öffnen",
+    "localFree": "Kostenlos in deiner Region",
+    "ipCountry": "IP-Land: {country}",
+    "detecting": "Region wird ermittelt…",
+    "geoHint": "Erkannt über Server-Header / IP (nicht gespeichert). Verfügbarkeit hängt von Senderechten ab.",
+    "legalOnly": "Nur offizielle Free-to-Air- und Mediathek-Angebote – keine illegalen Streams.",
+    "vpnFree": "Legale Free-Mediatheken anderer Länder (VPN)",
+    "vpnFreeHint": "Öffentlich-rechtliche Free-Angebote mit Geo-Sperre. VPN kann den Zugang ermöglichen – bitte AGB der Anbieter und lokale Gesetze beachten.",
+    "moreProviders": "Weitere offizielle Anbieter",
+    "unknownCountry": "unbekannt"
   },
   "Settings": {
     "title": "Einstellungen",
@@ -105,8 +191,16 @@
     "kickoff": "Anstoß",
     "tvOptions": "TV & Stream-Optionen",
     "lineup": "Kroatische Spieler",
+    "lineupHint": "Status, Tore, Karten, Auswechslungen – Klick öffnet alle Spiele des Spielers",
     "starter": "Startelf",
-    "bench": "Bank"
+    "bench": "Bank",
+    "noTv": "Keine TV-Daten hinterlegt. Siehe TV & Streams.",
+    "close": "Schließen",
+    "matchesArrow": "Spiele →"
+  },
+  "ComingSoon": {
+    "title": "Weitere Sportarten",
+    "badge": "Coming Soon"
   },
   "Notifications": {
     "title": "Benachrichtigungen",
@@ -125,6 +219,14 @@
     "error": "Etwas ist schiefgelaufen",
     "retry": "Erneut versuchen",
     "today": "Heute",
-    "tomorrow": "Morgen"
+    "tomorrow": "Morgen",
+    "skipToContent": "Zum Inhalt springen",
+    "close": "Schließen",
+    "closeDialog": "Dialog schließen"
+  },
+  "Errors": {
+    "notFoundTitle": "Seite nicht gefunden",
+    "notFoundBody": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "home": "Zur Startseite"
   }
 }

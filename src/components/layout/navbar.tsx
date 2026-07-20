@@ -88,7 +88,7 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             className="h-8 w-8 lg:hidden"
-            aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
+            aria-label={mobileOpen ? t("menuClose") : t("menuOpen")}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
           >

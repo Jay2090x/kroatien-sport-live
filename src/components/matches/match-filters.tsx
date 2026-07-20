@@ -12,12 +12,25 @@ export function MatchFilters() {
     useDashboard();
   const t = useTranslations("Dashboard");
 
+  function chipLabel(id: string, fallback: string): string {
+    if (id === "all") return t("filterAll");
+    if (id === "live") return t("filterLive");
+    return fallback;
+  }
+
+  function dateLabel(id: string, fallback: string): string {
+    if (id === "today") return t("dateToday");
+    if (id === "next7") return t("dateNext7");
+    if (id === "all") return t("dateAll");
+    return fallback;
+  }
+
   return (
     <div className="space-y-2">
       <div
         className="flex gap-1.5 overflow-x-auto pb-0.5"
         role="group"
-        aria-label="Liga-Filter"
+        aria-label={t("leagueFilter")}
       >
         {FILTER_CHIPS.map((chip) => {
           const active = filters.league === chip.id;
@@ -45,7 +58,7 @@ export function MatchFilters() {
                   aria-hidden
                 />
               )}
-              {chip.label}
+              {chipLabel(chip.id, chip.label)}
             </button>
           );
         })}
@@ -55,7 +68,7 @@ export function MatchFilters() {
         <div
           className="flex gap-0.5 rounded-md border border-border bg-card p-0.5"
           role="group"
-          aria-label="Datum-Filter"
+          aria-label={t("dateFilter")}
         >
           {DATE_FILTERS.map((d) => {
             const active = filters.date === d.id;
@@ -72,7 +85,7 @@ export function MatchFilters() {
                 )}
                 aria-pressed={active}
               >
-                {d.label}
+                {dateLabel(d.id, d.label)}
               </button>
             );
           })}

@@ -14,6 +14,7 @@ export const AVAILABILITY_OPTIONS: {
   id: PlayerAvailability;
   labelDe: string;
   labelEn: string;
+  labelHr: string;
   emoji: string;
   expectedToPlay: boolean;
   badgeClass: string;
@@ -22,6 +23,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "available",
     labelDe: "Fit / einsatzbereit",
     labelEn: "Available",
+    labelHr: "Spreman / dostupan",
     emoji: "✅",
     expectedToPlay: true,
     badgeClass: "border-emerald-500/40 bg-emerald-500/15 text-emerald-300",
@@ -30,6 +32,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "vacation",
     labelDe: "Urlaub / Sommerpause",
     labelEn: "On vacation",
+    labelHr: "Odmor / ljetna pauza",
     emoji: "🏖️",
     expectedToPlay: false,
     badgeClass: "border-sky-500/40 bg-sky-500/15 text-sky-300",
@@ -38,6 +41,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "injured",
     labelDe: "Verletzt",
     labelEn: "Injured",
+    labelHr: "Ozlijeđen",
     emoji: "🩹",
     expectedToPlay: false,
     badgeClass: "border-red-500/40 bg-red-500/15 text-red-300",
@@ -46,6 +50,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "suspended",
     labelDe: "Gesperrt",
     labelEn: "Suspended",
+    labelHr: "Suspendiran",
     emoji: "🟥",
     expectedToPlay: false,
     badgeClass: "border-orange-500/40 bg-orange-500/15 text-orange-300",
@@ -54,6 +59,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "not_in_squad",
     labelDe: "Nicht im Kader",
     labelEn: "Not in squad",
+    labelHr: "Nije u kadru",
     emoji: "📋",
     expectedToPlay: false,
     badgeClass: "border-zinc-500/40 bg-zinc-500/15 text-zinc-300",
@@ -62,6 +68,7 @@ export const AVAILABILITY_OPTIONS: {
     id: "doubtful",
     labelDe: "Fraglich",
     labelEn: "Doubtful",
+    labelHr: "Upitno",
     emoji: "❓",
     expectedToPlay: false,
     badgeClass: "border-amber-500/40 bg-amber-500/15 text-amber-300",
@@ -157,6 +164,18 @@ export function getAvailabilityMeta(status: PlayerAvailability = "available") {
     AVAILABILITY_OPTIONS.find((o) => o.id === status) ?? AVAILABILITY_OPTIONS[0]
   );
 }
+
+/** Vollständiges Status-Label in der aktiven UI-Sprache */
+export function getAvailabilityLabel(
+  status: PlayerAvailability | undefined,
+  locale: string
+): string {
+  const meta = getAvailabilityMeta(status ?? "available");
+  if (locale === "en") return meta.labelEn;
+  if (locale === "hr") return meta.labelHr;
+  return meta.labelDe;
+}
+
 
 export function isExpectedToPlay(status?: PlayerAvailability): boolean {
   return getAvailabilityMeta(status ?? "available").expectedToPlay;

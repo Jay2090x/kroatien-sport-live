@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { ArrowRight, Newspaper, Radio, Users } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { isLiveStatus } from "@/lib/utils";
@@ -9,9 +9,6 @@ import { useMemo } from "react";
 
 export function Hero() {
   const t = useTranslations("Hero");
-  const locale = useLocale();
-  const isDe = locale === "de";
-  const isHr = locale === "hr";
   const { matches, players, nationalTeamMatches } = useDashboard();
 
   const liveCount = matches.filter((m) => isLiveStatus(m.status)).length;
@@ -57,7 +54,7 @@ export function Hero() {
               href="#vatreni"
               className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:h-9 sm:text-sm"
             >
-              {isHr ? "Reprezentacija" : isDe ? "Nationalteam" : "National team"}
+              {t("ctaNt")}
               <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <a
@@ -80,13 +77,13 @@ export function Hero() {
           <Stat
             icon={<Users className="h-3.5 w-3.5 text-primary" />}
             value={String(ntUpcoming)}
-            label={isHr ? "Länderspiele" : isDe ? "Länderspiele" : "NT fixtures"}
+            label={t("statsNt")}
             href="#vatreni"
           />
           <Stat
             icon={<Newspaper className="h-3.5 w-3.5 text-primary" />}
             value={String(newsCount)}
-            label={isHr ? "Vijesti" : "News"}
+            label={t("statsNews")}
             href="#news"
           />
         </dl>

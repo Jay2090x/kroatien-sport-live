@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { MessageSquareWarning, Send } from "lucide-react";
 import type { Player, PlayerAvailability } from "@/types";
-import { AVAILABILITY_OPTIONS, getAvailabilityMeta } from "@/lib/player-availability";
+import {
+  AVAILABILITY_OPTIONS,
+  getAvailabilityLabel,
+  getAvailabilityMeta,
+} from "@/lib/player-availability";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { STORAGE_KEYS, safeJsonParse } from "@/lib/utils";
@@ -26,9 +30,11 @@ interface StatusSuggestion {
  * aber den Status nicht selbst ändern.
  */
 export function StatusSuggestionForm({ player }: { player: Player }) {
-  const isDe = useLocale() !== "en";
+  const t = useTranslations("PlayerDetail");
+  const locale = useLocale();
   const current = player.availability ?? "available";
   const meta = getAvailabilityMeta(current);
+  const currentLabel = getAvailabilityLabel(current, locale);
 
   const [open, setOpen] = useState(false);
   const [suggested, setSuggested] = useState<PlayerAvailability>("available");
@@ -38,7 +44,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!message.trim()) {
-      toast.error(isDe ? "Bitte kurz beschreiben, was falsch ist." : "Please describe the issue.");
+      toast.error(t("reasonRequired"));
       return;
     }
 
@@ -54,7 +60,6 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
     };
 
     try {
-      // Lokal speichern (Queue)
       const existing = safeJsonParse<StatusSuggestion[]>(
         typeof window !== "undefined"
           ? localStorage.getItem(STORAGE_KEYS.statusSuggestions)
@@ -67,7 +72,6 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
         JSON.stringify(existing.slice(0, 50))
       );
 
-      // Optional Server
       try {
         await fetch("/api/status-suggestions", {
           method: "POST",
@@ -78,11 +82,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
         // offline ok
       }
 
-      toast.success(
-        isDe
-          ? "Danke! Dein Vorschlag wurde gespeichert. Wir prüfen ihn."
-          : "Thanks! Your suggestion was saved. We'll review it."
-      );
+      toast.success(t("thanks"));
       setMessage("");
       setOpen(false);
     } finally {
@@ -100,7 +100,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
         onClick={() => setOpen(true)}
       >
         <MessageSquareWarning className="h-3.5 w-3.5" />
-        {isDe ? "Status-Fehler melden" : "Report status error"}
+        {t("reportStatus")}
       </Button>
     );
   }
@@ -111,26 +111,25 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
       className="space-y-3 rounded-xl border border-border bg-secondary/30 p-4"
     >
       <div>
-        <p className="text-sm font-semibold">
-          {isDe ? "Status-Korrektur vorschlagen" : "Suggest status correction"}
-        </p>
+        <p className="text-sm font-semibold">{t("suggestStatus")}</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          {isDe
-            ? "Aktueller System-Status: "
-            : "Current system status: "}
-          <span className={cn("font-semibold", meta.badgeClass, "rounded px-1.5 py-0.5 border")}>
-            {meta.emoji} {isDe ? meta.labelDe : meta.labelEn}
+          {t("currentStatus")}{" "}
+          <span
+            className={cn(
+              "font-semibold",
+              meta.badgeClass,
+              "rounded px-1.5 py-0.5 border"
+            )}
+          >
+            {meta.emoji} {currentLabel}
           </span>
-          .{" "}
-          {isDe
-            ? "Du kannst den Status nicht selbst ändern – nur einen Vorschlag senden."
-            : "You cannot change status yourself – only send a suggestion."}
+          . {t("cannotChange")}
         </p>
       </div>
 
       <div>
         <label htmlFor="sug-status" className="mb-1 block text-xs font-medium">
-          {isDe ? "Vorgeschlagener Status" : "Suggested status"}
+          {t("suggestedStatus")}
         </label>
         <select
           id="sug-status"
@@ -140,7 +139,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
         >
           {AVAILABILITY_OPTIONS.map((o) => (
             <option key={o.id} value={o.id}>
-              {o.emoji} {isDe ? o.labelDe : o.labelEn}
+              {o.emoji} {getAvailabilityLabel(o.id, locale)}
             </option>
           ))}
         </select>
@@ -148,17 +147,13 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
 
       <div>
         <label htmlFor="sug-msg" className="mb-1 block text-xs font-medium">
-          {isDe ? "Begründung / Quelle" : "Reason / source"}
+          {t("reason")}
         </label>
         <Input
           id="sug-msg"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder={
-            isDe
-              ? "z.B. Spielt seit gestern wieder, siehe Club-Pressemitteilung…"
-              : "e.g. back in training, see club press release…"
-          }
+          placeholder={t("reasonPlaceholder")}
           required
         />
       </div>
@@ -166,7 +161,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
       <div className="flex flex-wrap gap-2">
         <Button type="submit" size="sm" disabled={sending}>
           <Send className="h-3.5 w-3.5" />
-          {sending ? "…" : isDe ? "Vorschlag senden" : "Send suggestion"}
+          {sending ? "…" : t("send")}
         </Button>
         <Button
           type="button"
@@ -174,7 +169,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
           variant="ghost"
           onClick={() => setOpen(false)}
         >
-          {isDe ? "Abbrechen" : "Cancel"}
+          {t("cancel")}
         </Button>
       </div>
     </form>

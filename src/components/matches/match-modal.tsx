@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ExternalLink, MapPin, Tv2, Users } from "lucide-react";
 import type { Match } from "@/types";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -17,6 +17,7 @@ import { MatchPlayerChip } from "@/components/players/match-player-chip";
 import { TvChips } from "@/components/matches/tv-chips";
 import { buildEventChips } from "@/lib/match-events";
 import {
+  getAvailabilityLabel,
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
@@ -31,6 +32,7 @@ interface MatchModalProps {
 export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
   const t = useTranslations("Match");
   const tTv = useTranslations("TV");
+  const locale = useLocale();
   const { players, setPlayerId } = useDashboard();
 
   if (!match) return null;
@@ -86,8 +88,7 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
             {t("lineup")}
           </h3>
           <p className="mb-3 text-xs text-muted-foreground">
-            Status, Tore, Karten, Auswechslungen – Klick öffnet alle Spiele des
-            Spielers
+            {t("lineupHint")}
           </p>
 
           <ul className="space-y-2">
@@ -95,7 +96,8 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
               const pl = players.find((x) => x.id === p.playerId);
               const playing = isExpectedToPlay(pl?.availability);
               const meta = getAvailabilityMeta(pl?.availability);
-              const events = buildEventChips(p, "de");
+              const statusLabel = getAvailabilityLabel(pl?.availability, locale);
+              const events = buildEventChips(p, locale);
 
               return (
                 <li key={p.playerId + p.teamSide}>
@@ -128,7 +130,7 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
                           variant="outline"
                           className="border-sky-500/40 text-sky-300"
                         >
-                          {meta.emoji} {meta.labelDe}
+                          {meta.emoji} {statusLabel}
                         </Badge>
                       ) : p.isStarter === false ? (
                         <Badge variant="muted">{t("bench")}</Badge>
@@ -180,7 +182,7 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
 
           {channels.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Keine TV-Daten hinterlegt. Siehe TV & Streams Sektion.
+              {t("noTv")}
             </p>
           ) : (
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -215,7 +217,7 @@ export function MatchModal({ match, open, onOpenChange }: MatchModalProps) {
 
         <div className="mt-6 flex justify-end">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Schließen
+            {t("close")}
           </Button>
         </div>
       </DialogContent>

@@ -1,17 +1,27 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
-import { de } from "date-fns/locale";
+import { de, enGB, hr } from "date-fns/locale";
+import type { Locale as DateFnsLocale } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { formatTime, isLiveStatus } from "@/lib/utils";
 import type { Match } from "@/types";
 
+function dateFnsLocale(locale: string): DateFnsLocale {
+  if (locale === "en") return enGB;
+  if (locale === "hr") return hr;
+  return de;
+}
+
 export function UpcomingCalendar() {
   const t = useTranslations("Calendar");
   const tCommon = useTranslations("Common");
+  const tMatch = useTranslations("Match");
+  const locale = useLocale();
+  const dfLocale = dateFnsLocale(locale);
   const { matches, setSelectedMatch } = useDashboard();
 
   const upcoming = matches
@@ -47,7 +57,12 @@ export function UpcomingCalendar() {
         {Object.entries(grouped).map(([dayKey, dayMatches]) => (
           <div key={dayKey}>
             <h3 className="sticky top-12 z-10 mb-1 bg-background/90 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur">
-              {dayLabel(dayKey, tCommon("today"), tCommon("tomorrow"))}
+              {dayLabel(
+                dayKey,
+                tCommon("today"),
+                tCommon("tomorrow"),
+                dfLocale
+              )}
             </h3>
             <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card">
               {dayMatches.map((m) => (
@@ -62,7 +77,9 @@ export function UpcomingCalendar() {
                       className="w-10 shrink-0 text-xs font-bold tabular-nums text-primary"
                     >
                       {isLiveStatus(m.status) ? (
-                        <span className="live-badge !px-1 !text-[9px]">LIVE</span>
+                        <span className="live-badge !px-1 !text-[9px]">
+                          {tMatch("live")}
+                        </span>
                       ) : (
                         formatTime(m.kickoff)
                       )}
@@ -112,10 +129,16 @@ function groupByDay(matches: Match[]): Record<string, Match[]> {
   return map;
 }
 
-function dayLabel(isoDay: string, today: string, tomorrow: string): string {
+function dayLabel(
+  isoDay: string,
+  today: string,
+  tomorrow: string,
+  locale: DateFnsLocale
+): string {
   const d = parseISO(isoDay);
-  if (isToday(d)) return `${today} · ${format(d, "d. MMMM yyyy", { locale: de })}`;
+  if (isToday(d))
+    return `${today} · ${format(d, "d. MMMM yyyy", { locale })}`;
   if (isTomorrow(d))
-    return `${tomorrow} · ${format(d, "d. MMMM yyyy", { locale: de })}`;
-  return format(d, "EEEE, d. MMMM yyyy", { locale: de });
+    return `${tomorrow} · ${format(d, "d. MMMM yyyy", { locale })}`;
+  return format(d, "EEEE, d. MMMM yyyy", { locale });
 }

@@ -20,7 +20,14 @@ import {
 } from "@/lib/utils";
 import type { Match } from "@/types";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
-import { de } from "date-fns/locale";
+import { de, enGB, hr } from "date-fns/locale";
+import type { Locale as DateFnsLocale } from "date-fns";
+
+function dateFnsLocale(locale: string): DateFnsLocale {
+  if (locale === "en") return enGB;
+  if (locale === "hr") return hr;
+  return de;
+}
 
 const PAST_VISIBLE = 10;
 const UPCOMING_VISIBLE = 12;
@@ -32,9 +39,7 @@ export function MatchDashboard() {
   const t = useTranslations("Dashboard");
   const tCommon = useTranslations("Common");
   const locale = useLocale();
-  const isDe = locale === "de";
-  const isHr = locale === "hr";
-
+  const dfLocale = dateFnsLocale(locale);
   const {
     filteredMatches,
     clubMatches,
@@ -120,13 +125,6 @@ export function MatchDashboard() {
   const liveCount = clubMatches.filter((m) => isLiveStatus(m.status)).length;
   const resultsCount = pastRecent.length + pastOlder.length;
 
-  const title = isHr ? "Utakmice" : isDe ? "Spiele" : "Matches";
-  const subtitle = isHr
-    ? "Klubovi s hrvatskim igračima"
-    : isDe
-      ? "Clubs mit kroatischen Spielern"
-      : "Clubs with Croatian players";
-
   const empty =
     live.length === 0 && upcoming.length === 0 && pastRecent.length === 0;
 
@@ -140,16 +138,16 @@ export function MatchDashboard() {
         <div>
           <div className="mb-1 inline-flex items-center gap-1.5 rounded-full border border-live/30 bg-live/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-live">
             <Radio className="h-3 w-3" aria-hidden />
-            Live
+            {t("liveNow")}
             {liveCount > 0 && ` · ${liveCount}`}
           </div>
           <h2
             id="dashboard-title"
             className="text-lg font-bold tracking-tight sm:text-xl"
           >
-            {title}
+            {t("title")}
           </h2>
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
+          <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
           <p className="text-[10px] text-muted-foreground tabular-nums">
@@ -168,7 +166,7 @@ export function MatchDashboard() {
             <RefreshCw
               className={cn("h-3 w-3", isRefreshing && "animate-spin")}
             />
-            {isRefreshing ? "…" : "Refresh"}
+            {isRefreshing ? "…" : t("refresh")}
           </Button>
         </div>
       </div>
@@ -186,14 +184,14 @@ export function MatchDashboard() {
           className="mt-3"
           title={t("empty")}
           description={t("emptyHint")}
-          actionLabel={isDe ? "Neu laden" : isHr ? "Osvježi" : "Refresh"}
+          actionLabel={t("reload")}
           onAction={() => void refreshLive()}
         />
       ) : (
         <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card">
           {live.length > 0 && (
             <MatchGroup
-              label={isHr ? "Uživo" : isDe ? "Jetzt live" : "Live now"}
+              label={t("liveNow")}
               accent="live"
             >
               {live.map((m) => (
@@ -204,7 +202,8 @@ export function MatchDashboard() {
                   dayHint={dayHint(
                     m.kickoff,
                     tCommon("today"),
-                    tCommon("tomorrow")
+                    tCommon("tomorrow"),
+                    dfLocale
                   )}
                 />
               ))}
@@ -213,9 +212,7 @@ export function MatchDashboard() {
 
           {upcoming.length > 0 && (
             <MatchGroup
-              label={
-                isHr ? "Idući termini" : isDe ? "Nächste Termine" : "Next fixtures"
-              }
+              label={t("nextFixtures")}
               count={upcoming.length}
             >
               {upcomingShown.map((m) => (
@@ -226,7 +223,8 @@ export function MatchDashboard() {
                   dayHint={dayHint(
                     m.kickoff,
                     tCommon("today"),
-                    tCommon("tomorrow")
+                    tCommon("tomorrow"),
+                    dfLocale
                   )}
                 />
               ))}
@@ -240,16 +238,12 @@ export function MatchDashboard() {
                     {showMoreUpcoming ? (
                       <>
                         <ChevronUp className="h-3.5 w-3.5" />
-                        {isHr ? "Manje" : isDe ? "Weniger" : "Show less"}
+                        {t("showLess")}
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-3.5 w-3.5" />
-                        {isHr
-                          ? `Još ${upcomingHidden}`
-                          : isDe
-                            ? `${upcomingHidden} weitere`
-                            : `${upcomingHidden} more`}
+                        {t("showMore", { count: upcomingHidden })}
                       </>
                     )}
                   </button>
@@ -260,17 +254,13 @@ export function MatchDashboard() {
 
           {/* Ergebnisse – immer rendern wenn vorhanden */}
           <MatchGroup
-            label={isHr ? "Rezultati" : isDe ? "Ergebnisse" : "Results"}
+            label={t("results")}
             count={resultsCount}
             mutedHeader
           >
             {pastRecent.length === 0 ? (
               <li className="px-3 py-4 text-center text-xs text-muted-foreground">
-                {isHr
-                  ? "Nema završenih utakmica za ovaj filter."
-                  : isDe
-                    ? "Keine beendeten Spiele für diesen Filter."
-                    : "No finished matches for this filter."}
+                {t("noFinished")}
               </li>
             ) : (
               <>
@@ -282,7 +272,8 @@ export function MatchDashboard() {
                     dayHint={dayHint(
                       m.kickoff,
                       tCommon("today"),
-                      tCommon("tomorrow")
+                      tCommon("tomorrow"),
+                      dfLocale
                     )}
                   />
                 ))}
@@ -297,7 +288,8 @@ export function MatchDashboard() {
                           dayHint={dayHint(
                             m.kickoff,
                             tCommon("today"),
-                            tCommon("tomorrow")
+                            tCommon("tomorrow"),
+                            dfLocale
                           )}
                           muted
                         />
@@ -311,20 +303,12 @@ export function MatchDashboard() {
                         {showOlder ? (
                           <>
                             <ChevronUp className="h-3.5 w-3.5" />
-                            {isHr
-                              ? "Sakrij starije"
-                              : isDe
-                                ? "Ältere einklappen"
-                                : "Hide older"}
+                            {t("showLess")}
                           </>
                         ) : (
                           <>
                             <ChevronDown className="h-3.5 w-3.5" />
-                            {isHr
-                              ? `Stariji rezultati (${pastOlder.length})`
-                              : isDe
-                                ? `Ältere Ergebnisse (${pastOlder.length})`
-                                : `Older results (${pastOlder.length})`}
+                            {t("olderResults", { count: pastOlder.length })}
                           </>
                         )}
                       </button>
@@ -475,12 +459,17 @@ function MatchRow({
   );
 }
 
-function dayHint(iso: string, today: string, tomorrow: string): string | undefined {
+function dayHint(
+  iso: string,
+  today: string,
+  tomorrow: string,
+  locale: DateFnsLocale
+): string | undefined {
   try {
     const d = parseISO(iso);
     if (isToday(d)) return today;
     if (isTomorrow(d)) return tomorrow;
-    return format(d, "EEE d.M.", { locale: de });
+    return format(d, "EEE d.M.", { locale });
   } catch {
     return undefined;
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   User,
   CalendarDays,
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import {
+  getAvailabilityLabel,
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
@@ -40,8 +41,8 @@ function tLoc(text: LocaleText, locale: string): string {
  */
 export function PlayerDetailPanel() {
   const locale = useLocale();
-  const isDe = locale === "de";
-  const isHr = locale === "hr";
+  const t = useTranslations("PlayerDetail");
+  const tMatch = useTranslations("Match");
   const { players, matches, filters, setPlayerId, setSelectedMatch } =
     useDashboard();
   const [teamTab, setTeamTab] = useState(0);
@@ -83,29 +84,26 @@ export function PlayerDetailPanel() {
     .slice(0, 3);
 
   const meta = getAvailabilityMeta(player.availability);
+  const statusLabel = getAvailabilityLabel(player.availability, locale);
   const playing = isExpectedToPlay(player.availability);
 
   const L = {
-    born: isHr ? "Rođen" : isDe ? "Geboren" : "Born",
-    club: isHr ? "Klub" : isDe ? "Club" : "Club",
-    pos: isHr ? "Pozicija" : isDe ? "Position" : "Position",
-    apps: isHr ? "Uta." : isDe ? "Sp." : "Apps",
-    goals: isHr ? "G" : isDe ? "T" : "G",
-    assists: isHr ? "A" : isDe ? "A" : "A",
+    born: t("born"),
+    club: t("club"),
+    pos: t("position"),
+    apps: t("apps"),
+    goals: t("goals"),
+    assists: t("assists"),
     yellow: "🟨",
     red: "🟥",
-    year: isHr ? "Sezona" : isDe ? "Saison" : "Season",
-    next: isHr ? "Iduće utakmice" : isDe ? "Nächste Spiele" : "Next matches",
-    recent: isHr ? "Zadnje" : isDe ? "Zuletzt" : "Recent",
-    stats: isHr ? "Statistika" : isDe ? "Statistik" : "Stats",
-    more: isHr ? "Više statistike" : isDe ? "Mehr Statistik" : "More stats",
-    less: isHr ? "Manje" : isDe ? "Weniger" : "Less",
-    close: isHr ? "Zatvori" : isDe ? "Schließen" : "Close",
-    noStats: isHr
-      ? "Nema detaljnih statistika."
-      : isDe
-        ? "Keine detaillierten Stats."
-        : "No detailed stats.",
+    year: t("season"),
+    next: t("next"),
+    recent: t("recent"),
+    stats: t("stats"),
+    more: t("moreStats"),
+    less: t("less"),
+    close: t("close"),
+    noStats: t("noStats"),
   };
 
   const age = (() => {
@@ -165,7 +163,7 @@ export function PlayerDetailPanel() {
                   meta.badgeClass
                 )}
               >
-                {meta.emoji} {locale === "en" ? meta.labelEn : meta.labelDe}
+                {meta.emoji} {statusLabel}
               </span>
               <Badge variant="secondary" className="text-[10px]">
                 {player.leagueName}
@@ -352,6 +350,7 @@ export function PlayerDetailPanel() {
                       key={m.id}
                       match={m}
                       onOpen={() => setSelectedMatch(m)}
+                      liveLabel={tMatch("live")}
                     />
                   ))}
                 </ul>
@@ -368,6 +367,7 @@ export function PlayerDetailPanel() {
                       key={m.id}
                       match={m}
                       onOpen={() => setSelectedMatch(m)}
+                      liveLabel={tMatch("live")}
                     />
                   ))}
                 </ul>
@@ -379,7 +379,7 @@ export function PlayerDetailPanel() {
         {!playing && (
           <p className="mt-3 flex items-start gap-1.5 rounded-lg border border-sky-500/30 bg-sky-500/10 px-2.5 py-1.5 text-[11px] text-sky-200">
             <AlertCircle className="mt-0.5 h-3 w-3 shrink-0" />
-            {player.availabilityNote || meta.labelDe}
+            {player.availabilityNote || statusLabel}
           </p>
         )}
 
@@ -424,9 +424,11 @@ function StatRow({
 function MiniMatch({
   match,
   onOpen,
+  liveLabel,
 }: {
   match: Match;
   onOpen: () => void;
+  liveLabel: string;
 }) {
   const live = isLiveStatus(match.status);
   return (
@@ -441,7 +443,7 @@ function MiniMatch({
         </span>
         <span className="shrink-0 tabular-nums text-muted-foreground">
           {live
-            ? "LIVE"
+            ? liveLabel
             : match.status === "finished"
               ? scoreDisplay(match.homeScore, match.awayScore)
               : formatKickoff(match.kickoff, "d.M. HH:mm")}

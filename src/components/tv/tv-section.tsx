@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   ExternalLink,
   Shield,
@@ -17,12 +17,11 @@ import {
   vpnStreamsForCountry,
   type FreeStream,
 } from "@/lib/free-streams";
+import { useLocale } from "next-intl";
 
 export function TvSection() {
   const t = useTranslations("TV");
   const locale = useLocale();
-  const isDe = locale === "de";
-  const isHr = locale === "hr";
   const [country, setCountry] = useState<string | null>(null);
   const [geoReady, setGeoReady] = useState(false);
 
@@ -52,16 +51,12 @@ export function TvSection() {
 
   const localFree = streamsForCountry(country);
   const vpnFree = vpnStreamsForCountry(country);
+  const lang = locale === "hr" || locale === "en" ? locale : "de";
   const countryLabel = country
-    ? COUNTRY_LABELS[country]?.[isHr ? "hr" : isDe ? "de" : "en"] || country
-    : isDe
-      ? "unbekannt"
-      : isHr
-        ? "nepoznato"
-        : "unknown";
+    ? COUNTRY_LABELS[country]?.[lang] || country
+    : t("unknownCountry");
 
-  const note = (s: FreeStream) =>
-    isHr ? s.note.hr : isDe ? s.note.de : s.note.en;
+  const note = (s: FreeStream) => s.note[lang];
 
   return (
     <section id="tv" className="scroll-mt-14" aria-labelledby="tv-title">
@@ -89,46 +84,22 @@ export function TvSection() {
             {t("disclaimerTitle")}
           </p>
           <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
-            {LEGAL_DISCLAIMER}{" "}
-            {isDe
-              ? "Nur offizielle Free-to-Air- und Mediathek-Angebote – keine illegalen Streams."
-              : isHr
-                ? "Samo službeni free i medijateke – bez ilegalnih streamova."
-                : "Official free-to-air and media libraries only – no illegal streams."}
+            {LEGAL_DISCLAIMER} {t("legalOnly")}
           </p>
         </div>
       </div>
 
-      {/* Geo-basierte Free-Streams */}
       <div className="mb-5 rounded-xl border border-primary/25 bg-primary/5 p-3 sm:p-4">
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <MapPin className="h-4 w-4 text-primary" aria-hidden />
-          <h3 className="text-sm font-bold">
-            {isDe
-              ? "Kostenlos in deiner Region"
-              : isHr
-                ? "Besplatno u tvojoj regiji"
-                : "Free in your region"}
-          </h3>
+          <h3 className="text-sm font-bold">{t("localFree")}</h3>
           <span className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
             {geoReady
-              ? isDe
-                ? `IP-Land: ${countryLabel}`
-                : isHr
-                  ? `IP zemlja: ${countryLabel}`
-                  : `IP country: ${countryLabel}`
-              : isDe
-                ? "Region wird ermittelt…"
-                : "Detecting region…"}
+              ? t("ipCountry", { country: countryLabel })
+              : t("detecting")}
           </span>
         </div>
-        <p className="mb-3 text-[11px] text-muted-foreground">
-          {isDe
-            ? "Erkannt über Server-Header / IP (nicht gespeichert). Verfügbarkeit hängt von Senderechten ab."
-            : isHr
-              ? "Prepoznato preko server headera / IP (ne spremamo). Dostupnost ovisi o pravima."
-              : "Detected via server headers / IP (not stored). Availability depends on rights."}
-        </p>
+        <p className="mb-3 text-[11px] text-muted-foreground">{t("geoHint")}</p>
         <ul className="grid gap-2 sm:grid-cols-2">
           {localFree.map((s) => (
             <li key={s.id}>
@@ -144,7 +115,7 @@ export function TvSection() {
                     {note(s)}
                   </p>
                   <span className="mt-1 inline-block text-[10px] font-bold uppercase text-emerald-400">
-                    Free
+                    {t("free")}
                   </span>
                 </div>
                 <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -154,24 +125,13 @@ export function TvSection() {
         </ul>
       </div>
 
-      {/* Andere Länder – legal free, oft via VPN */}
       <div className="mb-5">
         <div className="mb-2 flex items-center gap-1.5">
           <Globe2 className="h-4 w-4 text-primary" aria-hidden />
-          <h3 className="text-sm font-bold">
-            {isDe
-              ? "Legale Free-Mediatheken anderer Länder (VPN)"
-              : isHr
-                ? "Legalne free medijateke drugih zemalja (VPN)"
-                : "Legal free libraries abroad (VPN)"}
-          </h3>
+          <h3 className="text-sm font-bold">{t("vpnFree")}</h3>
         </div>
         <p className="mb-2 text-[11px] text-muted-foreground">
-          {isDe
-            ? "Öffentlich-rechtliche Free-Angebote mit Geo-Sperre. VPN kann den Zugang ermöglichen – bitte AGB der Anbieter und lokale Gesetze beachten."
-            : isHr
-              ? "Javni free servisi s geo-blokadom. VPN može omogućiti pristup – poštuj AGB i lokalne zakone."
-              : "Public free services with geo-blocks. VPN may unlock access – respect provider terms and local law."}
+          {t("vpnFreeHint")}
         </p>
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {vpnFree.map((s) => (
@@ -197,14 +157,7 @@ export function TvSection() {
         </ul>
       </div>
 
-      {/* Alle bekannten Kanäle */}
-      <h3 className="mb-2 text-sm font-bold">
-        {isDe
-          ? "Weitere offizielle Anbieter"
-          : isHr
-            ? "Ostali službeni pružatelji"
-            : "More official providers"}
-      </h3>
+      <h3 className="mb-2 text-sm font-bold">{t("moreProviders")}</h3>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {TV_CHANNELS.map((ch) => (
           <li key={ch.id}>

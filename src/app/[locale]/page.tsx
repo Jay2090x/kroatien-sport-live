@@ -1,4 +1,4 @@
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Navbar } from "@/components/layout/navbar";
 import { Hero } from "@/components/layout/hero";
 import { Footer } from "@/components/layout/footer";
@@ -19,6 +19,7 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Common");
 
   return (
     <>
@@ -26,7 +27,7 @@ export default async function HomePage({
         href="#dashboard"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
       >
-        Zum Inhalt springen
+        {t("skipToContent")}
       </a>
 
       <Navbar />

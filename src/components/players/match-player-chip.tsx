@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { MatchPlayerAppearance, Player } from "@/types";
 import {
+  getAvailabilityLabel,
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
@@ -28,10 +29,11 @@ export function MatchPlayerChip({
   onPlayerClick,
   variant = "compact",
 }: MatchPlayerChipProps) {
-  const locale = useLocale() === "en" ? "en" : "de";
-  const isDe = locale === "de";
+  const locale = useLocale();
+  const t = useTranslations("PlayerDetail");
   const playing = isExpectedToPlay(player?.availability);
   const meta = getAvailabilityMeta(player?.availability);
+  const statusLabel = getAvailabilityLabel(player?.availability, locale);
   const events = buildEventChips(appearance, locale);
   const img = player?.imageUrl;
 
@@ -60,10 +62,7 @@ export function MatchPlayerChip({
       {!playing && (
         <span
           className="shrink-0 text-[10px] font-semibold text-sky-300"
-          title={
-            player?.availabilityNote ||
-            (isDe ? meta.labelDe : meta.labelEn)
-          }
+          title={player?.availabilityNote || statusLabel}
         >
           {meta.emoji}
         </span>
@@ -97,16 +96,12 @@ export function MatchPlayerChip({
         type="button"
         className={className}
         onClick={() => onPlayerClick(appearance.playerId)}
-        title={
-          isDe
-            ? `${appearance.playerName} – Profil & nächste Spiele`
-            : `${appearance.playerName} – profile & upcoming matches`
-        }
+        title={t("openProfile", { name: appearance.playerName })}
       >
         {content}
         {variant === "full" && (
           <span className="ml-auto shrink-0 text-[11px] text-primary font-semibold">
-            {isDe ? "Spiele →" : "Matches →"}
+            {t("matchesArrow")}
           </span>
         )}
       </button>

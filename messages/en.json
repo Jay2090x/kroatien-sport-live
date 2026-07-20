@@ -15,7 +15,10 @@
     "search": "Search matches, players, clubs…",
     "settings": "Settings",
     "theme": "Theme",
-    "language": "Language"
+    "language": "Language",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "quickNav": "Quick navigation"
   },
   "Hero": {
     "badge": "Vatreni · Across Europe",
@@ -24,13 +27,28 @@
     "subtitle": "Scores, news and upcoming matches of Modrić, Gvardiol & Co. – across all top leagues.",
     "ctaMatches": "Watch live matches",
     "ctaPlayers": "Player tracker",
+    "ctaNt": "National team",
     "statsLive": "Live now",
     "statsPlayers": "Players tracked",
-    "statsLeagues": "Leagues"
+    "statsLeagues": "Leagues",
+    "statsNt": "NT fixtures",
+    "statsNews": "News"
+  },
+  "Vatreni": {
+    "title": "National team",
+    "subtitle": "All upcoming internationals · squad after nomination",
+    "upcoming": "up",
+    "past": "past",
+    "pastToggle": "Past ({count})",
+    "empty": "No internationals loaded",
+    "emptyHint": "API empty or offline. Please refresh.",
+    "emptyUpcoming": "No upcoming international",
+    "emptyUpcomingHint": "You can expand past matches below.",
+    "reload": "Refresh"
   },
   "News": {
     "title": "News",
-    "subtitle": "Vatreni & club updates · live fixtures · auto feed · DE/EN/HR",
+    "subtitle": "Vatreni & club updates · live fixtures · auto feed",
     "daily": "Daily update",
     "today": "Today",
     "readMore": "Read more",
@@ -43,25 +61,84 @@
     "originalSource": "Open original source"
   },
   "Dashboard": {
-    "title": "Live & upcoming matches",
-    "subtitle": "Matches featuring Croatian players",
+    "title": "Matches",
+    "subtitle": "Clubs with Croatian players",
     "empty": "No matches found for these filters.",
     "emptyHint": "Reset filters or choose another date range.",
     "watch": "Watch",
     "croatianPlayers": "Croatians in this match",
     "lastUpdated": "Updated",
     "source": "Data source",
-    "resetFilters": "Reset filters"
+    "resetFilters": "Reset filters",
+    "reload": "Refresh",
+    "liveNow": "Live now",
+    "nextFixtures": "Next fixtures",
+    "results": "Results",
+    "showLess": "Show less",
+    "showMore": "Show {count} more",
+    "olderResults": "Older results ({count})",
+    "noFinished": "No finished matches for this filter.",
+    "refresh": "Refresh",
+    "filterAll": "All",
+    "filterLive": "Live only",
+    "dateToday": "Today",
+    "dateNext7": "Next 7 days",
+    "dateAll": "All",
+    "leagueFilter": "League filter",
+    "dateFilter": "Date filter"
   },
   "Players": {
     "title": "Player tracker",
     "subtitle": "Click a player to see their matches",
+    "hint": "Click = profile · next match & form",
     "nextMatches": "Upcoming matches",
     "noMatches": "No upcoming matches",
     "clearSelection": "Clear selection",
+    "clearFilter": "Clear filter",
     "club": "Club",
     "league": "League",
-    "position": "Position"
+    "position": "Position",
+    "results": "results",
+    "fit": "fit",
+    "out": "out",
+    "empty": "No players found",
+    "emptyHint": "Clear search or try another name.",
+    "nextPrefix": "Next",
+    "statusFit": "Fit",
+    "statusVacation": "Off",
+    "statusInjured": "Injured",
+    "statusSuspended": "Banned",
+    "statusSquad": "Squad",
+    "statusDoubt": "Doubt"
+  },
+  "PlayerDetail": {
+    "born": "Born",
+    "club": "Club",
+    "position": "Position",
+    "season": "Season",
+    "next": "Next matches",
+    "recent": "Recent",
+    "stats": "Stats",
+    "moreStats": "More stats",
+    "less": "Less",
+    "close": "Close",
+    "noStats": "No detailed stats.",
+    "matchesArrow": "Matches →",
+    "apps": "Apps",
+    "goals": "G",
+    "assists": "A",
+    "openProfile": "{name} – profile & upcoming matches",
+    "reportStatus": "Report status error",
+    "suggestStatus": "Suggest status correction",
+    "suggestedStatus": "Suggested status",
+    "currentStatus": "Current system status:",
+    "cannotChange": "You cannot change status yourself – only send a suggestion.",
+    "reason": "Reason / source",
+    "reasonPlaceholder": "e.g. back in training, see club press release…",
+    "send": "Send suggestion",
+    "cancel": "Cancel",
+    "reasonRequired": "Please briefly describe what is wrong.",
+    "thanks": "Thanks! Your suggestion was saved. We'll review it."
   },
   "Calendar": {
     "title": "Upcoming matches",
@@ -77,7 +154,16 @@
     "free": "Free",
     "paid": "Subscription",
     "streaming": "Streaming",
-    "visit": "Open"
+    "visit": "Open",
+    "localFree": "Free in your region",
+    "ipCountry": "IP country: {country}",
+    "detecting": "Detecting region…",
+    "geoHint": "Detected via server headers / IP (not stored). Availability depends on rights.",
+    "legalOnly": "Official free-to-air and media libraries only – no illegal streams.",
+    "vpnFree": "Legal free libraries abroad (VPN)",
+    "vpnFreeHint": "Public free services with geo-blocks. VPN may unlock access – respect provider terms and local law.",
+    "moreProviders": "More official providers",
+    "unknownCountry": "unknown"
   },
   "Settings": {
     "title": "Settings",
@@ -105,8 +191,16 @@
     "kickoff": "Kick-off",
     "tvOptions": "TV & stream options",
     "lineup": "Croatian players",
+    "lineupHint": "Status, goals, cards, subs – click opens all matches for the player",
     "starter": "Starting XI",
-    "bench": "Bench"
+    "bench": "Bench",
+    "noTv": "No TV data set. See TV & Streams.",
+    "close": "Close",
+    "matchesArrow": "Matches →"
+  },
+  "ComingSoon": {
+    "title": "More sports",
+    "badge": "Coming Soon"
   },
   "Notifications": {
     "title": "Notifications",
@@ -125,6 +219,14 @@
     "error": "Something went wrong",
     "retry": "Try again",
     "today": "Today",
-    "tomorrow": "Tomorrow"
+    "tomorrow": "Tomorrow",
+    "skipToContent": "Skip to content",
+    "close": "Close",
+    "closeDialog": "Close dialog"
+  },
+  "Errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The requested page does not exist or has been moved.",
+    "home": "Back home"
   }
 }

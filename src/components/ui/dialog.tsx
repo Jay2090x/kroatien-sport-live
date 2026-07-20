@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -18,6 +19,8 @@ interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
+  const t = useTranslations("Common");
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -37,7 +40,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-0 sm:p-4">
       <button
         type="button"
-        aria-label="Dialog schließen"
+        aria-label={t("closeDialog")}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={() => onOpenChange(false)}
       />
@@ -54,6 +57,8 @@ export function DialogContent({
   children,
   ...props
 }: DialogContentProps) {
+  const t = useTranslations("Common");
+
   return (
     <div
       role="dialog"
@@ -83,7 +88,7 @@ export function DialogContent({
               variant="ghost"
               size="icon-sm"
               onClick={onClose}
-              aria-label="Schließen"
+              aria-label={t("close")}
             >
               <X className="h-4 w-4" />
             </Button>

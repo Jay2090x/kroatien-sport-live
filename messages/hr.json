@@ -15,7 +15,10 @@
     "search": "Traži utakmice, igrače, klubove…",
     "settings": "Postavke",
     "theme": "Tema",
-    "language": "Jezik"
+    "language": "Jezik",
+    "menuOpen": "Otvori izbornik",
+    "menuClose": "Zatvori izbornik",
+    "quickNav": "Brza navigacija"
   },
   "Hero": {
     "badge": "Vatreni · diljem Europe",
@@ -24,13 +27,28 @@
     "subtitle": "Rezultati, vijesti i iduće utakmice Modrića, Gvardiola i ostalih – u svim top ligama.",
     "ctaMatches": "Pogledaj utakmice",
     "ctaPlayers": "Tracker igrača",
+    "ctaNt": "Reprezentacija",
     "statsLive": "Uživo sada",
     "statsPlayers": "Igrača u trackeru",
-    "statsLeagues": "Liga"
+    "statsLeagues": "Liga",
+    "statsNt": "Reprezentacija",
+    "statsNews": "Vijesti"
+  },
+  "Vatreni": {
+    "title": "Reprezentacija",
+    "subtitle": "Sve iduće utakmice · sastav tek nakon nominacije",
+    "upcoming": "nadolazeće",
+    "past": "prošle",
+    "pastToggle": "Prošle ({count})",
+    "empty": "Nema učitanih utakmica reprezentacije",
+    "emptyHint": "API je prazan ili offline. Osvježi stranicu.",
+    "emptyUpcoming": "Nema nadolazeće utakmice",
+    "emptyUpcomingHint": "Prošle utakmice možeš prikazati ispod.",
+    "reload": "Osvježi"
   },
   "News": {
     "title": "Vijesti",
-    "subtitle": "Vatreni i klubovi · live termini · auto feed · DE/EN/HR",
+    "subtitle": "Vatreni i klubovi · live termini · auto feed",
     "daily": "Dnevni update",
     "today": "Danas",
     "readMore": "Pročitaj više",
@@ -43,25 +61,84 @@
     "originalSource": "Otvori izvor"
   },
   "Dashboard": {
-    "title": "Uživo i nadolazeće utakmice",
-    "subtitle": "Utakmice s hrvatskim igračima",
+    "title": "Utakmice",
+    "subtitle": "Klubovi s hrvatskim igračima",
     "empty": "Nema utakmica za ove filtere.",
     "emptyHint": "Resetiraj filtere ili odaberi drugi period.",
     "watch": "Pogledaj",
     "croatianPlayers": "Hrvati na utakmici",
     "lastUpdated": "Ažurirano",
     "source": "Izvor podataka",
-    "resetFilters": "Resetiraj filtere"
+    "resetFilters": "Resetiraj filtere",
+    "reload": "Osvježi",
+    "liveNow": "Uživo sada",
+    "nextFixtures": "Idući termini",
+    "results": "Rezultati",
+    "showLess": "Manje",
+    "showMore": "Prikaži još {count}",
+    "olderResults": "Stariji rezultati ({count})",
+    "noFinished": "Nema završenih utakmica za ovaj filter.",
+    "refresh": "Osvježi",
+    "filterAll": "Sve",
+    "filterLive": "Samo uživo",
+    "dateToday": "Danas",
+    "dateNext7": "Sljedećih 7 dana",
+    "dateAll": "Sve",
+    "leagueFilter": "Filter lige",
+    "dateFilter": "Filter datuma"
   },
   "Players": {
     "title": "Tracker igrača",
     "subtitle": "Klikni na igrača za njegove utakmice",
+    "hint": "Klik = profil · iduća utakmica i forma",
     "nextMatches": "Iduće utakmice",
     "noMatches": "Nema nadolazećih utakmica",
     "clearSelection": "Poništi odabir",
+    "clearFilter": "Makni filter",
     "club": "Klub",
     "league": "Liga",
-    "position": "Pozicija"
+    "position": "Pozicija",
+    "results": "rezultata",
+    "fit": "spreman",
+    "out": "van",
+    "empty": "Nema igrača",
+    "emptyHint": "Resetiraj pretragu ili probaj drugo ime.",
+    "nextPrefix": "Iduće",
+    "statusFit": "Spreman",
+    "statusVacation": "Odmor",
+    "statusInjured": "Ozlijeđen",
+    "statusSuspended": "Suspendiran",
+    "statusSquad": "Kadar",
+    "statusDoubt": "Upitno"
+  },
+  "PlayerDetail": {
+    "born": "Rođen",
+    "club": "Klub",
+    "position": "Pozicija",
+    "season": "Sezona",
+    "next": "Iduće utakmice",
+    "recent": "Zadnje",
+    "stats": "Statistika",
+    "moreStats": "Više statistike",
+    "less": "Manje",
+    "close": "Zatvori",
+    "noStats": "Nema detaljne statistike.",
+    "matchesArrow": "Utakmice →",
+    "apps": "Uta.",
+    "goals": "G",
+    "assists": "A",
+    "openProfile": "{name} – profil i iduće utakmice",
+    "reportStatus": "Prijavi grešku statusa",
+    "suggestStatus": "Predloži ispravku statusa",
+    "suggestedStatus": "Predloženi status",
+    "currentStatus": "Trenutni sistemski status:",
+    "cannotChange": "Status ne možeš sam mijenjati – samo pošalji prijedlog.",
+    "reason": "Obrazloženje / izvor",
+    "reasonPlaceholder": "npr. opet trenira, vidi priopćenje kluba…",
+    "send": "Pošalji prijedlog",
+    "cancel": "Odustani",
+    "reasonRequired": "Ukratko opiši što nije u redu.",
+    "thanks": "Hvala! Tvoj prijedlog je spremljen. Provjerit ćemo ga."
   },
   "Calendar": {
     "title": "Nadolazeće utakmice",
@@ -77,7 +154,16 @@
     "free": "Besplatno",
     "paid": "Pretplata",
     "streaming": "Streaming",
-    "visit": "Otvori"
+    "visit": "Otvori",
+    "localFree": "Besplatno u tvojoj regiji",
+    "ipCountry": "IP zemlja: {country}",
+    "detecting": "Otkrivanje regije…",
+    "geoHint": "Prepoznato preko server headera / IP (ne spremamo). Dostupnost ovisi o pravima.",
+    "legalOnly": "Samo službeni free i medijateke – bez ilegalnih streamova.",
+    "vpnFree": "Legalne free medijateke drugih zemalja (VPN)",
+    "vpnFreeHint": "Javni free servisi s geo-blokadom. VPN može omogućiti pristup – poštuj AGB i lokalne zakone.",
+    "moreProviders": "Ostali službeni pružatelji",
+    "unknownCountry": "nepoznato"
   },
   "Settings": {
     "title": "Postavke",
@@ -105,8 +191,16 @@
     "kickoff": "Početak",
     "tvOptions": "TV i stream opcije",
     "lineup": "Hrvatski igrači",
+    "lineupHint": "Status, golovi, kartoni, izmjene – klik otvara sve utakmice igrača",
     "starter": "Prva postava",
-    "bench": "Klupa"
+    "bench": "Klupa",
+    "noTv": "Nema TV podataka. Vidi TV i streamove.",
+    "close": "Zatvori",
+    "matchesArrow": "Utakmice →"
+  },
+  "ComingSoon": {
+    "title": "Više sportova",
+    "badge": "Uskoro"
   },
   "Notifications": {
     "title": "Obavijesti",
@@ -125,6 +219,14 @@
     "error": "Nešto je pošlo po zlu",
     "retry": "Pokušaj ponovno",
     "today": "Danas",
-    "tomorrow": "Sutra"
+    "tomorrow": "Sutra",
+    "skipToContent": "Preskoči na sadržaj",
+    "close": "Zatvori",
+    "closeDialog": "Zatvori dijalog"
+  },
+  "Errors": {
+    "notFoundTitle": "Stranica nije pronađena",
+    "notFoundBody": "Tražena stranica ne postoji ili je premještena.",
+    "home": "Na početnu"
   }
 }
