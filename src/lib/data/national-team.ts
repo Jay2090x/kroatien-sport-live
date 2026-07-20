@@ -24,7 +24,7 @@ function pick(...ids: string[]) {
  * für Deduplizierung über API-Grenzen (ESPN vs TheSportsDB).
  */
 export function normalizeTeamKey(name: string): string {
-  let s = name
+  const s = name
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")

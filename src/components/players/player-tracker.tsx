@@ -133,7 +133,6 @@ function PlayerCard({
   const out = !isExpectedToPlay(player.availability);
   const profile = getPlayerProfile(player.id);
   const hl = profile?.highlight;
-  const isDe = locale === "de";
   const isEn = locale === "en";
 
   return (
