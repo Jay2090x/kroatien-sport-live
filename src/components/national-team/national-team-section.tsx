@@ -26,7 +26,22 @@ export function NationalTeamSection() {
   const active = localMatch ?? selectedMatch;
 
   const { allUpcoming, past, liveCount } = useMemo(() => {
-    const sorted = [...nationalTeamMatches].sort(
+    // Defense-in-depth: filterNationalTeamMatches dedupliziert schon –
+    // hier nochmals per Key, falls der Context rohe Doubles liefert.
+    const seen = new Set<string>();
+    const unique = nationalTeamMatches.filter((m) => {
+      const day = m.kickoff.slice(0, 10);
+      const teams = [m.homeTeam, m.awayTeam]
+        .map((t) => t.toLowerCase().replace(/[^a-z]/g, ""))
+        .sort()
+        .join("-");
+      const key = `${day}|${teams}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    const sorted = [...unique].sort(
       (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
     );
     const upcoming = sorted.filter(

@@ -16,6 +16,8 @@ import {
   enrichNationalTeamMatch,
   CROATIA_NT_TEAM_ID,
   isNationalTeamMatch,
+  dedupeFixtures,
+  fixtureKey,
 } from "@/lib/data/national-team";
 import { applySystemAvailability } from "@/lib/player-availability";
 import { fetchCroatiaNationalTeamMatches } from "@/lib/api/croatia-nt";
@@ -126,9 +128,8 @@ async function fetchFromExternalApisInner(apiKeys?: {
   if (olResult.status === "fulfilled") matches.push(...olResult.value);
   else errors.push(`openligadb: ${String(olResult.reason)}`);
 
-  matches = dedupeById(matches).sort(
-    (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
-  );
+  // Doppelte Spiele (ESPN + TheSportsDB gleiche Fixture) mergen
+  matches = dedupeFixtures(matches);
 
   // Live-Scores: Tages-Events mergen (Status aktualisieren)
   try {
@@ -140,9 +141,7 @@ async function fetchFromExternalApisInner(apiKeys?: {
         matches.push(m);
       }
     }
-    matches = dedupeById(matches).sort(
-      (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
-    );
+    matches = dedupeFixtures(matches);
   } catch (e) {
     errors.push(`eventsday: ${e instanceof Error ? e.message : String(e)}`);
   }
@@ -151,6 +150,8 @@ async function fetchFromExternalApisInner(apiKeys?: {
   matches = matches.map((m) =>
     isNationalTeamMatch(m) ? enrichNationalTeamMatch(m) : m
   );
+  // Nochmal NT-safe (nach Enrich)
+  matches = dedupeFixtures(matches);
 
   // System-Status für alle Spieler
   players = applySystemAvailability(players);
@@ -174,11 +175,7 @@ async function fetchFromExternalApisInner(apiKeys?: {
 }
 
 function sameFixture(a: Match, b: Match) {
-  return (
-    a.homeTeam === b.homeTeam &&
-    a.awayTeam === b.awayTeam &&
-    a.kickoff.slice(0, 10) === b.kickoff.slice(0, 10)
-  );
+  return fixtureKey(a) === fixtureKey(b);
 }
 
 function mergeMatchScores(base: Match[], updates: Match[]): Match[] {
