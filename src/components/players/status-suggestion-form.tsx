@@ -137,7 +137,7 @@ export function StatusSuggestionForm({ player }: { player: Player }) {
           onChange={(e) => setSuggested(e.target.value as PlayerAvailability)}
           className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
         >
-          {AVAILABILITY_OPTIONS.map((o) => (
+          {AVAILABILITY_OPTIONS.filter((o) => o.id !== "unknown").map((o) => (
             <option key={o.id} value={o.id}>
               {o.emoji} {getAvailabilityLabel(o.id, locale)}
             </option>

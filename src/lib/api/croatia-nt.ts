@@ -4,7 +4,7 @@
  */
 
 import type { LeagueId, Match, MatchStatus } from "@/types";
-import { TV_CHANNELS } from "@/lib/constants";
+import { attachCompetitionTv } from "@/lib/broadcast-rights";
 import { enrichNationalTeamMatch } from "@/lib/data/national-team";
 
 const ESPN_TEAM_ALL =
@@ -32,10 +32,8 @@ interface EspnEvent {
   }>;
 }
 
-function pickTv() {
-  return TV_CHANNELS.filter((c) =>
-    ["hrt", "hrt2", "sky-de", "dazn"].includes(c.id)
-  );
+function pickTv(leagueId: import("@/types").LeagueId = "nations-league") {
+  return attachCompetitionTv(leagueId);
 }
 
 function scoreOf(c?: EspnCompetitor): number | null {
@@ -123,7 +121,7 @@ function mapEspnEvent(e: EspnEvent): Match | null {
       leagueName + (e.seasonType?.name ? ` · ${e.seasonType.name}` : ""),
     venue: c.venue?.fullName,
     croatianPlayers: [],
-    tvChannels: pickTv(),
+    tvChannels: pickTv(leagueId),
     externalIds: { footballData: e.id },
   };
 }

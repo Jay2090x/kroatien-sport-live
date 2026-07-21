@@ -160,7 +160,32 @@
     "statusInjured": "Injured",
     "statusSuspended": "Banned",
     "statusSquad": "Squad",
-    "statusDoubt": "Doubt"
+    "statusDoubt": "Doubt",
+    "statusUnknown": "N/A",
+    "statApps": "Apps",
+    "statGoals": "Goals",
+    "statAssists": "Assists"
+  },
+  "Status": {
+    "confirmed": "confirmed",
+    "likely": "estimated",
+    "unknown": "unclear",
+    "srcEditorial": "editorial",
+    "srcCalendar": "season calendar",
+    "srcMatch": "fixtures",
+    "srcUnknown": "no source"
+  },
+  "TvRights": {
+    "title": "TV & streams (your country)",
+    "forCountry": "Tips for {country}",
+    "unknownCountry": "unknown country",
+    "detecting": "Detecting region…",
+    "noneLocal": "No typical TV rights listed for your country – we do not invent generic channels.",
+    "typical": "typical, not confirmed per match",
+    "rightsAsOf": "rights as of {date}",
+    "vpnTitle": "Other countries (free libraries only)",
+    "vpnBody": "These free services are often only legal in the listed country. A VPN there may unlock access – respect terms and local law. No guarantee this exact match is free there.",
+    "noGuarantee": "no live guarantee"
   },
   "PlayerDetail": {
     "born": "Born",

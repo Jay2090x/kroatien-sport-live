@@ -156,11 +156,36 @@
     "emptyHint": "Suche zurücksetzen oder anderen Namen versuchen.",
     "nextPrefix": "Nächstes",
     "statusFit": "Fit",
-    "statusVacation": "Urlaub",
+    "statusVacation": "Pause",
     "statusInjured": "Verletzt",
     "statusSuspended": "Gesperrt",
     "statusSquad": "Kader",
-    "statusDoubt": "Fraglich"
+    "statusDoubt": "Fraglich",
+    "statusUnknown": "Unklar",
+    "statApps": "Spiele",
+    "statGoals": "Tore",
+    "statAssists": "Assists"
+  },
+  "Status": {
+    "confirmed": "bestätigt",
+    "likely": "geschätzt",
+    "unknown": "unklar",
+    "srcEditorial": "Redaktion",
+    "srcCalendar": "Saisonkalender",
+    "srcMatch": "Spielplan",
+    "srcUnknown": "keine Quelle"
+  },
+  "TvRights": {
+    "title": "TV & Streams (dein Land)",
+    "forCountry": "Hinweise für {country}",
+    "unknownCountry": "unbekanntes Land",
+    "detecting": "Region wird ermittelt…",
+    "noneLocal": "Keine typischen TV-Rechte für dein Land hinterlegt – wir raten nicht mit generischen Kanälen.",
+    "typical": "typisch, nicht pro Spiel bestätigt",
+    "rightsAsOf": "Stand Rechte {date}",
+    "vpnTitle": "Andere Länder (nur Free-Mediatheken)",
+    "vpnBody": "Diese Free-Dienste sind oft nur im genannten Land legal erreichbar. VPN dorthin kann den Zugang freischalten – AGB und lokale Gesetze beachten. Keine Garantie, dass genau dieses Spiel dort läuft.",
+    "noGuarantee": "keine Live-Garantie"
   },
   "PlayerDetail": {
     "born": "Geboren",

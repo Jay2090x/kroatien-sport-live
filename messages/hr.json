@@ -160,7 +160,32 @@
     "statusInjured": "Ozlijeđen",
     "statusSuspended": "Suspendiran",
     "statusSquad": "Kadar",
-    "statusDoubt": "Upitno"
+    "statusDoubt": "Upitno",
+    "statusUnknown": "Nejasno",
+    "statApps": "Utakmice",
+    "statGoals": "Golovi",
+    "statAssists": "Asistencije"
+  },
+  "Status": {
+    "confirmed": "potvrđeno",
+    "likely": "procjena",
+    "unknown": "nepoznato",
+    "srcEditorial": "redakcija",
+    "srcCalendar": "kalendar sezone",
+    "srcMatch": "raspored",
+    "srcUnknown": "nema izvora"
+  },
+  "TvRights": {
+    "title": "TV i streamovi (tvoja zemlja)",
+    "forCountry": "Savjeti za {country}",
+    "unknownCountry": "nepoznata zemlja",
+    "detecting": "Otkrivanje regije…",
+    "noneLocal": "Nema tipičnih TV prava za tvoju zemlju – ne nagađamo generičke kanale.",
+    "typical": "tipično, nije potvrđeno po utakmici",
+    "rightsAsOf": "prava od {date}",
+    "vpnTitle": "Druge zemlje (samo free medijateke)",
+    "vpnBody": "Ovi free servisi su često legalni samo u navedenoj zemlji. VPN tamo može otključati pristup – poštuj AGB i zakone. Nema garancije da baš ova utakmica ide free.",
+    "noGuarantee": "nema live garancije"
   },
   "PlayerDetail": {
     "born": "Rođen",

@@ -47,7 +47,17 @@ export type PlayerAvailability =
   | "injured" /** verletzt */
   | "suspended" /** gesperrt */
   | "not_in_squad" /** nicht im Kader / abgestellt */
-  | "doubtful"; /** fraglich / Fitness-Zweifel */
+  | "doubtful" /** fraglich / Fitness-Zweifel */
+  | "unknown"; /** keine verlässliche Info */
+
+/** Wie sicher der Status ist */
+export type AvailabilityConfidence = "confirmed" | "likely" | "unknown";
+
+export type AvailabilitySource =
+  | "editorial"
+  | "season_calendar"
+  | "match_signal"
+  | "default";
 
 export interface Player {
   id: string;
@@ -73,6 +83,8 @@ export interface Player {
   availability?: PlayerAvailability;
   /** Freitext z.B. „Knie, ca. 2 Wochen“ */
   availabilityNote?: string;
+  availabilityConfidence?: AvailabilityConfidence;
+  availabilitySource?: AvailabilitySource;
   /** ISO-Datum wann wieder fit erwartet */
   expectedReturn?: string;
   isActive: boolean;
@@ -141,7 +153,12 @@ export interface TvChannel {
   type: "free" | "paid" | "streaming";
   url: string;
   logoUrl?: string;
+  /** Anzeige-Label z.B. "DE/AT" */
   region?: string;
+  /** ISO markets this entry applies to */
+  markets?: string[];
+  /** typical = Rechte-Matrix; confirmed = redaktionell bestätigt */
+  certainty?: "typical" | "confirmed";
   /** Affiliate / Tracking-Hinweis */
   isAffiliate?: boolean;
 }

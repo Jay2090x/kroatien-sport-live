@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ExternalLink, MapPin, Tv2, Users } from "lucide-react";
+import { MapPin, Users } from "lucide-react";
 import type { Match, Player } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,9 +9,9 @@ import {
   isLiveStatus,
   scoreDisplay,
 } from "@/lib/utils";
-import { LEGAL_DISCLAIMER } from "@/lib/constants";
 import { MatchPlayerChip } from "@/components/players/match-player-chip";
 import { TvChips } from "@/components/matches/tv-chips";
+import { MatchTvBlock } from "@/components/matches/match-tv-block";
 import { buildEventChips } from "@/lib/match-events";
 import {
   getAvailabilityLabel,
@@ -43,11 +43,9 @@ export function MatchDetailBody({
   showShare = true,
 }: MatchDetailBodyProps) {
   const t = useTranslations("Match");
-  const tTv = useTranslations("TV");
   const locale = useLocale();
 
   const live = isLiveStatus(match.status);
-  const channels = match.tvChannels ?? [];
   const homeName = localizeTeamName(match.homeTeam, locale);
   const awayName = localizeTeamName(match.awayTeam, locale);
   const leagueLabel = localizeCompetitionLabel(match.leagueName, locale);
@@ -97,7 +95,7 @@ export function MatchDetailBody({
           </p>
         )}
         <div className="mt-2 flex justify-center">
-          <TvChips channels={channels} max={4} />
+          <TvChips channels={match.tvChannels} max={4} />
         </div>
       </div>
 
@@ -199,47 +197,7 @@ export function MatchDetailBody({
         )}
       </section>
 
-      <section aria-labelledby="match-tv">
-        <h2
-          id="match-tv"
-          className="mb-3 flex items-center gap-2 text-sm font-semibold"
-        >
-          <Tv2 className="h-4 w-4 text-primary" />
-          {t("tvOptions")}
-        </h2>
-
-        {channels.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("noTv")}</p>
-        ) : (
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {channels.map((ch) => (
-              <li key={ch.id}>
-                <a
-                  href={ch.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:border-primary/50 hover:bg-secondary/50"
-                >
-                  <span>
-                    <span className="font-medium">{ch.name}</span>
-                    {ch.region && (
-                      <span className="mt-0.5 block text-xs text-muted-foreground">
-                        {ch.region}
-                      </span>
-                    )}
-                  </span>
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-200/90 dark:text-amber-100/80">
-          <strong className="font-semibold">{tTv("disclaimerTitle")}: </strong>
-          {LEGAL_DISCLAIMER}
-        </p>
-      </section>
+      <MatchTvBlock match={match} />
     </div>
   );
 }

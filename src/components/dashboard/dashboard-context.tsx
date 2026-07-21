@@ -91,8 +91,8 @@ export function DashboardProvider({
   ]);
 
   const players = React.useMemo(
-    () => applySystemAvailability(rawPlayers),
-    [rawPlayers]
+    () => applySystemAvailability(rawPlayers, matches),
+    [rawPlayers, matches]
   );
 
   const filteredPlayers = React.useMemo(

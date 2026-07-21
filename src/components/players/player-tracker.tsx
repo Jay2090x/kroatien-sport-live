@@ -1,26 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Star, User, X } from "lucide-react";
+import { Star, X } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { useFavorites } from "@/components/favorites/favorites-context";
-import { FavoriteButton } from "@/components/favorites/favorite-button";
-import { Badge } from "@/components/ui/badge";
+import { PlayerCard } from "@/components/players/player-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
-import { localizeTeamName } from "@/lib/team-names";
-import type { Match, Player, PlayerAvailability } from "@/types";
-import {
-  getAvailabilityMeta,
-  isExpectedToPlay,
-} from "@/lib/player-availability";
-import { getPlayerProfile } from "@/lib/data/player-profiles";
+import { cn } from "@/lib/utils";
+import { isExpectedToPlay } from "@/lib/player-availability";
+import type { Match } from "@/types";
 import { useMemo } from "react";
 
 /**
- * Kompakte Spieler-Liste + nächstes Match pro Spieler
+ * Kompakte, einheitliche Spieler-Liste
  */
 export function PlayerTracker() {
   const t = useTranslations("Players");
@@ -98,10 +91,7 @@ export function PlayerTracker() {
             onClick={() => setFavoritesOnly(!favoritesOnly)}
           >
             <Star
-              className={cn(
-                "h-3 w-3",
-                favoritesOnly && "fill-current"
-              )}
+              className={cn("h-3 w-3", favoritesOnly && "fill-current")}
             />
             {tFav("filterOnly")}
             {favoriteIds.length > 0 ? ` (${favoriteIds.length})` : ""}
@@ -141,7 +131,7 @@ export function PlayerTracker() {
       ) : (
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((player) => (
-            <li key={player.id}>
+            <li key={player.id} className="h-full">
               <PlayerCard
                 player={player}
                 selected={filters.playerId === player.id}
@@ -150,15 +140,6 @@ export function PlayerTracker() {
                 nextPrefix={t("nextPrefix")}
                 liveLabel={tMatch("live")}
                 locale={locale}
-                statusText={t(
-                  statusKey(player.availability) as
-                    | "statusFit"
-                    | "statusVacation"
-                    | "statusInjured"
-                    | "statusSuspended"
-                    | "statusSquad"
-                    | "statusDoubt"
-                )}
               />
             </li>
           ))}
@@ -188,158 +169,4 @@ function buildNextMatchIndex(matches: Match[]): Map<string, Match> {
     }
   }
   return map;
-}
-
-function PlayerCard({
-  player,
-  selected,
-  onSelect,
-  nextMatch,
-  nextPrefix,
-  liveLabel,
-  locale,
-  statusText,
-}: {
-  player: Player;
-  selected: boolean;
-  onSelect: () => void;
-  nextMatch?: Match;
-  nextPrefix: string;
-  liveLabel: string;
-  locale: string;
-  statusText: string;
-}) {
-  const meta = getAvailabilityMeta(player.availability);
-  const out = !isExpectedToPlay(player.availability);
-  const profile = getPlayerProfile(player.id);
-  const hl = profile?.highlight;
-  const nextLine = nextMatch
-    ? formatNextLine(nextMatch, player, nextPrefix, liveLabel, locale)
-    : null;
-
-  return (
-    <div
-      className={cn(
-        "flex w-full items-center gap-2 rounded-xl border border-border bg-card p-2.5 shadow-sm transition-all hover:border-primary/45 hover:shadow-md",
-        selected && "border-primary ring-2 ring-primary/25",
-        out && "opacity-90"
-      )}
-    >
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-pressed={selected}
-        className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
-      >
-        <div
-          className={cn(
-            "relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-secondary ring-1 sm:h-16 sm:w-16",
-            out ? "ring-sky-500/40 grayscale-[30%]" : "ring-border"
-          )}
-        >
-          {player.imageUrl ? (
-            <Image
-              src={player.imageUrl}
-              alt={player.name}
-              width={64}
-              height={64}
-              className="h-full w-full object-cover object-top"
-              unoptimized
-            />
-          ) : (
-            <User className="m-auto h-8 w-8 text-muted-foreground" aria-hidden />
-          )}
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-bold leading-tight">
-                {player.name}
-              </p>
-              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                {player.club}
-                {player.shirtNumber != null ? ` · #${player.shirtNumber}` : ""}
-              </p>
-            </div>
-            <span
-              className={cn(
-                "shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase",
-                meta.badgeClass
-              )}
-            >
-              {meta.emoji} {statusText}
-            </span>
-          </div>
-
-          <div className="mt-1.5 flex flex-wrap items-center gap-1">
-            <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
-              {player.position}
-            </Badge>
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
-              {player.leagueName}
-            </Badge>
-            {hl && (
-              <span className="text-[10px] tabular-nums text-muted-foreground">
-                {hl.apps}S · {hl.goals}T · {hl.assists}A
-              </span>
-            )}
-          </div>
-
-          {nextLine && (
-            <p className="mt-1.5 truncate text-[10px] font-medium text-primary/90">
-              {nextLine}
-            </p>
-          )}
-        </div>
-      </button>
-      <FavoriteButton playerId={player.id} playerName={player.name} />
-    </div>
-  );
-}
-
-function formatNextLine(
-  m: Match,
-  player: Player,
-  prefix: string,
-  liveLabel: string,
-  locale: string
-): string {
-  const rawOpp =
-    /croatia|kroatien|hrvatska/i.test(m.homeTeam) ||
-    m.homeTeam.toLowerCase().includes(player.club.toLowerCase().slice(0, 6))
-      ? m.awayTeam
-      : m.croatianPlayers.find((p) => p.playerId === player.id)?.teamSide ===
-          "home"
-        ? m.awayTeam
-        : m.homeTeam === player.club ||
-            m.homeTeam
-              .toLowerCase()
-              .includes(player.club.split(" ")[0]!.toLowerCase())
-          ? m.awayTeam
-          : m.homeTeam;
-
-  const opp = localizeTeamName(rawOpp, locale);
-  const when = isLiveStatus(m.status)
-    ? liveLabel
-    : formatKickoff(m.kickoff, "d. MMM HH:mm", locale);
-
-  return `${prefix}: ${when} · vs ${opp}`;
-}
-
-function statusKey(a: PlayerAvailability | undefined): string {
-  switch (a) {
-    case "vacation":
-      return "statusVacation";
-    case "injured":
-      return "statusInjured";
-    case "suspended":
-      return "statusSuspended";
-    case "not_in_squad":
-      return "statusSquad";
-    case "doubtful":
-      return "statusDoubt";
-    default:
-      return "statusFit";
-  }
 }

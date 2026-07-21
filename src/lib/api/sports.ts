@@ -11,7 +11,7 @@ import {
   FALLBACK_PLAYERS,
   PLAYER_SEARCH_NAMES,
 } from "@/lib/data/fallback-players";
-import { TV_CHANNELS } from "@/lib/constants";
+import { attachCompetitionTv } from "@/lib/broadcast-rights";
 import {
   enrichNationalTeamMatch,
   CROATIA_NT_TEAM_ID,
@@ -153,8 +153,8 @@ async function fetchFromExternalApisInner(apiKeys?: {
   // Nochmal NT-safe (nach Enrich)
   matches = dedupeFixtures(matches);
 
-  // System-Status für alle Spieler
-  players = applySystemAvailability(players);
+  // System-Status für alle Spieler (Match-Signal nutzt Fixtures)
+  players = applySystemAvailability(players, matches);
 
   const source: LiveBundle["source"] =
     matches.length && players.length
@@ -623,7 +623,7 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
     leagueName: e.strLeague || league.name,
     venue: e.strVenue || undefined,
     croatianPlayers,
-    tvChannels: guessTv(league.id),
+    tvChannels: attachCompetitionTv(league.id),
     externalIds: { theSportsDb: e.idEvent },
   };
 }
@@ -683,20 +683,7 @@ function parseMinute(progress?: string | null): number | null {
   return m ? Number(m[1]) : null;
 }
 
-function guessTv(league: LeagueId) {
-  switch (league) {
-    case "hnl":
-      return TV_CHANNELS.filter((c) => ["hrt", "hrt2", "arena-sport"].includes(c.id));
-    case "bundesliga":
-    case "premier-league":
-      return TV_CHANNELS.filter((c) => ["sky-de", "dazn"].includes(c.id));
-    case "serie-a":
-    case "laliga":
-      return TV_CHANNELS.filter((c) => ["dazn", "sky-de"].includes(c.id));
-    default:
-      return TV_CHANNELS.filter((c) => ["dazn", "sky-de"].includes(c.id));
-  }
-}
+
 
 /** OpenLigaDB – echte Bundesliga-Daten, kein API-Key */
 async function fetchOpenLigaDb(players: Player[]): Promise<Match[]> {
@@ -749,7 +736,7 @@ async function fetchOpenLigaDb(players: Player[]): Promise<Match[]> {
         leagueName: m.leagueName || "Bundesliga",
         venue: undefined,
         croatianPlayers,
-        tvChannels: guessTv("bundesliga"),
+        tvChannels: attachCompetitionTv("bundesliga"),
       });
     }
     if (matches.length) break;
@@ -836,7 +823,7 @@ async function fetchFootballData(
         league: mapFdCompetition(code),
         leagueName: mapFdCompetitionName(code),
         croatianPlayers,
-        tvChannels: guessTv(mapFdCompetition(code)),
+        tvChannels: attachCompetitionTv(mapFdCompetition(code)),
       });
     }
   }

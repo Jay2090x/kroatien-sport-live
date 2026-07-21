@@ -94,12 +94,14 @@ export async function getLiveData(): Promise<{
   errors?: string[];
 }> {
   const live = await fetchFromExternalApis();
+  const matches = live.matches; // bewusst KEINE Fake-Matches
   const players = applySystemAvailability(
-    mergePlayers(live.players, FALLBACK_PLAYERS)
+    mergePlayers(live.players, FALLBACK_PLAYERS),
+    matches
   );
   return {
     players,
-    matches: live.matches, // bewusst KEINE Fake-Matches
+    matches,
     source: live.source === "empty" ? "api" : live.source === "partial" ? "partial" : "api",
     errors: live.errors.length ? live.errors : undefined,
   };
