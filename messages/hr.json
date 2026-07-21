@@ -14,6 +14,7 @@
     "moreSports": "Više sportova",
     "brandName": "Hrvatska Sport",
     "brandLive": "Uživo",
+    "favorites": "Moji Hrvati",
     "search": "Traži utakmice, igrače, klubove…",
     "settings": "Postavke",
     "theme": "Tema",
@@ -49,6 +50,40 @@
     "copied": "Link kopiran",
     "copiedShort": "Kopirano",
     "failed": "Dijeljenje nije uspjelo"
+  },
+  "Favorites": {
+    "title": "Moji Hrvati",
+    "subtitle": "{count} omiljenih igrača",
+    "emptyHint": "Dodirni zvjezdicu na igraču – ovdje ćeš vidjeti njegove iduće utakmice.",
+    "browsePlayers": "Pregledaj igrače",
+    "add": "Dodaj u omiljene",
+    "remove": "Ukloni iz omiljenih",
+    "addedToast": "{name} dodan u omiljene",
+    "removedToast": "{name} uklonjen iz omiljenih",
+    "filterOnly": "Samo omiljeni",
+    "filterShort": "Omiljeni",
+    "filterMatches": "Samo utakmice s omiljenima",
+    "emptyFilter": "Nema omiljenih u listi",
+    "emptyFilterHint": "Označi igrače zvjezdicom ili isključi filter.",
+    "emptyMatches": "Nema utakmica s omiljenima",
+    "emptyMatchesHint": "Dodaj omiljene ili isključi filter omiljenih.",
+    "nextPrefix": "Iduće",
+    "navShort": "Moji"
+  },
+  "Push": {
+    "title": "Podsjetnici na utakmice",
+    "body": "Browser obavijest ~15 min prije početka utakmica tvojih omiljenih.",
+    "enable": "Uključi podsjetnike",
+    "later": "Kasnije",
+    "enabled": "Obavijesti uključene",
+    "denied": "Dozvola odbijena"
+  },
+  "Pwa": {
+    "title": "Na početni zaslon",
+    "body": "Instaliraj KSL za brži pristup – kao app.",
+    "iosBody": "Dodirni Dijeli → „Na početni zaslon“ za app verziju.",
+    "install": "Instaliraj",
+    "dismiss": "Ne sada"
   },
   "Vatreni": {
     "title": "Reprezentacija",

@@ -174,6 +174,16 @@ export const STORAGE_KEYS = {
   selectedPlayer: "ksl_selected_player",
   /** User-Vorschläge bei falschem System-Status (keine Selbst-Edit) */
   statusSuggestions: "ksl_status_suggestions",
+  /** Favorisierte Spieler-IDs */
+  favoritePlayers: "ksl_favorite_players",
+  /** Visit counter for soft PWA prompt */
+  visitCount: "ksl_visit_count",
+  /** PWA install hint dismissed */
+  installHintDismissed: "ksl_install_hint_dismissed",
+  /** Push banner dismissed (soft) */
+  pushPromptDismissed: "ksl_push_prompt_dismissed",
+  /** Already fired local match reminder IDs */
+  matchRemindersSent: "ksl_match_reminders_sent",
 } as const;
 
 export function safeJsonParse<T>(raw: string | null, fallback: T): T {

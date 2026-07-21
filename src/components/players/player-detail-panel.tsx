@@ -19,6 +19,7 @@ import {
   getAvailabilityMeta,
   isExpectedToPlay,
 } from "@/lib/player-availability";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { StatusSuggestionForm } from "@/components/players/status-suggestion-form";
 import {
   getPlayerProfile,
@@ -174,6 +175,11 @@ export function PlayerDetailPanel() {
                   #{player.shirtNumber}
                 </Badge>
               )}
+              <FavoriteButton
+                playerId={player.id}
+                playerName={player.name}
+                size="sm"
+              />
             </div>
 
             <p className="text-sm leading-snug text-muted-foreground line-clamp-3">

@@ -14,6 +14,7 @@
     "moreSports": "Mehr Sport",
     "brandName": "Kroatien Sport",
     "brandLive": "Live",
+    "favorites": "Meine Kroaten",
     "search": "Spiele, Spieler, Clubs suchen…",
     "settings": "Einstellungen",
     "theme": "Design",
@@ -49,6 +50,40 @@
     "copied": "Link kopiert",
     "copiedShort": "Kopiert",
     "failed": "Teilen fehlgeschlagen"
+  },
+  "Favorites": {
+    "title": "Meine Kroaten",
+    "subtitle": "{count} favorisierte Spieler",
+    "emptyHint": "Tippe auf den Stern bei einem Spieler – dann siehst du hier seine nächsten Spiele.",
+    "browsePlayers": "Spieler entdecken",
+    "add": "Zu Favoriten",
+    "remove": "Aus Favoriten",
+    "addedToast": "{name} zu Favoriten hinzugefügt",
+    "removedToast": "{name} aus Favoriten entfernt",
+    "filterOnly": "Nur Favoriten",
+    "filterShort": "Favoriten",
+    "filterMatches": "Nur Spiele mit Favoriten",
+    "emptyFilter": "Keine Favoriten in der Liste",
+    "emptyFilterHint": "Stern bei Spielern setzen oder Filter aus.",
+    "emptyMatches": "Keine Spiele mit Favoriten",
+    "emptyMatchesHint": "Favorisiere Spieler oder schalte den Favoriten-Filter aus.",
+    "nextPrefix": "Nächstes",
+    "navShort": "Meine"
+  },
+  "Push": {
+    "title": "Match-Erinnerungen",
+    "body": "Lass dich ~15 Min. vor dem Anpfiff deiner Favoriten erinnern (Browser-Benachrichtigung).",
+    "enable": "Erinnerungen an",
+    "later": "Später",
+    "enabled": "Benachrichtigungen aktiv",
+    "denied": "Berechtigung verweigert"
+  },
+  "Pwa": {
+    "title": "App auf dem Homescreen",
+    "body": "Installiere KSL für schnelleren Zugriff – wie eine App.",
+    "iosBody": "Tippe auf Teilen → „Zum Home-Bildschirm“ für die App-Version.",
+    "install": "Installieren",
+    "dismiss": "Nicht jetzt"
   },
   "Vatreni": {
     "title": "Nationalmannschaft",

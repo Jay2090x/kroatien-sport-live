@@ -2,15 +2,18 @@
 
 import { FILTER_CHIPS, DATE_FILTERS } from "@/lib/constants";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
+import { useFavorites } from "@/components/favorites/favorites-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Star } from "lucide-react";
 
 export function MatchFilters() {
   const { filters, setLeague, setDate, resetFilters, filteredMatches } =
     useDashboard();
+  const { favoritesOnly, setFavoritesOnly, favoriteIds } = useFavorites();
   const t = useTranslations("Dashboard");
+  const tFav = useTranslations("Favorites");
 
   function chipLabel(id: string, fallback: string): string {
     if (id === "all") return t("filterAll");
@@ -92,13 +95,31 @@ export function MatchFilters() {
         </div>
 
         <div className="flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant={favoritesOnly ? "default" : "outline"}
+            size="sm"
+            className="h-7 px-2 text-[11px]"
+            aria-pressed={favoritesOnly}
+            onClick={() => setFavoritesOnly(!favoritesOnly)}
+            title={tFav("filterMatches")}
+          >
+            <Star
+              className={cn("h-3 w-3", favoritesOnly && "fill-current")}
+            />
+            {tFav("filterShort")}
+            {favoriteIds.length > 0 ? ` ${favoriteIds.length}` : ""}
+          </Button>
           <span className="text-[11px] text-muted-foreground tabular-nums">
             {filteredMatches.length}
           </span>
           <Button
             variant="ghost"
             size="sm"
-            onClick={resetFilters}
+            onClick={() => {
+              resetFilters();
+              setFavoritesOnly(false);
+            }}
             className="h-7 px-2 text-[11px]"
             aria-label={t("resetFilters")}
           >

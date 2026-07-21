@@ -14,6 +14,7 @@
     "moreSports": "More sports",
     "brandName": "Croatia Sport",
     "brandLive": "Live",
+    "favorites": "My Croatians",
     "search": "Search matches, players, clubs…",
     "settings": "Settings",
     "theme": "Theme",
@@ -49,6 +50,40 @@
     "copied": "Link copied",
     "copiedShort": "Copied",
     "failed": "Could not share"
+  },
+  "Favorites": {
+    "title": "My Croatians",
+    "subtitle": "{count} favorite players",
+    "emptyHint": "Tap the star on a player – then their next matches show up here.",
+    "browsePlayers": "Browse players",
+    "add": "Add to favorites",
+    "remove": "Remove from favorites",
+    "addedToast": "{name} added to favorites",
+    "removedToast": "{name} removed from favorites",
+    "filterOnly": "Favorites only",
+    "filterShort": "Favorites",
+    "filterMatches": "Only matches with favorites",
+    "emptyFilter": "No favorites in this list",
+    "emptyFilterHint": "Star some players or turn the filter off.",
+    "emptyMatches": "No matches with favorites",
+    "emptyMatchesHint": "Favorite players or turn off the favorites filter.",
+    "nextPrefix": "Next",
+    "navShort": "Mine"
+  },
+  "Push": {
+    "title": "Match reminders",
+    "body": "Get a browser alert ~15 min before your favorites kick off.",
+    "enable": "Enable reminders",
+    "later": "Later",
+    "enabled": "Notifications enabled",
+    "denied": "Permission denied"
+  },
+  "Pwa": {
+    "title": "Add to home screen",
+    "body": "Install KSL for faster access – like an app.",
+    "iosBody": "Tap Share → “Add to Home Screen” for the app version.",
+    "install": "Install",
+    "dismiss": "Not now"
   },
   "Vatreni": {
     "title": "National team",

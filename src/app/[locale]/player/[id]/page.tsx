@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Badge } from "@/components/ui/badge";
 import { ShareButton } from "@/components/share/share-button";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { getDashboardData } from "@/lib/data/service";
 import {
   getPlayerProfile,
@@ -127,11 +128,19 @@ export default async function PlayerPage({
             <ArrowLeft className="h-4 w-4" />
             {tPlayers("title")}
           </Link>
-          <ShareButton
-            title={player.name}
-            text={`${player.name} · ${player.club}`}
-            url={sharePath}
-          />
+          <div className="flex items-center gap-1.5">
+            <FavoriteButton
+              playerId={player.id}
+              playerName={player.name}
+              size="md"
+              stopPropagation={false}
+            />
+            <ShareButton
+              title={player.name}
+              text={`${player.name} · ${player.club}`}
+              url={sharePath}
+            />
+          </div>
         </nav>
 
         <div className="flex gap-3">

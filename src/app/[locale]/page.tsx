@@ -7,6 +7,7 @@ import { MatchDashboard } from "@/components/matches/match-dashboard";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
 import { NewsSection } from "@/components/news/news-section";
 import { PlayerTracker } from "@/components/players/player-tracker";
+import { MyCroatians } from "@/components/favorites/my-croatians";
 import { TvSection } from "@/components/tv/tv-section";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
@@ -34,6 +35,7 @@ export default async function HomePage({
         <Hero />
         <div className="mx-auto max-w-7xl space-y-7 px-3 py-5 sm:space-y-9 sm:px-6 sm:py-6 lg:px-8">
           <NationalTeamSection />
+          <MyCroatians />
           <NewsSection />
           <MatchDashboard />
           <PlayerTracker />

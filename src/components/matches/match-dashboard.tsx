@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { RefreshCw, Radio, ChevronDown, ChevronUp } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
+import { useFavorites } from "@/components/favorites/favorites-context";
 import { MatchFilters } from "./match-filters";
 import { MatchModal } from "./match-modal";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,8 @@ export function MatchDashboard() {
     refreshLive,
     isRefreshing,
   } = useDashboard();
+  const { favoritesOnly, favoriteIds } = useFavorites();
+  const tFav = useTranslations("Favorites");
 
   const [showMoreUpcoming, setShowMoreUpcoming] = useState(false);
   const [showOlder, setShowOlder] = useState(false);
@@ -61,6 +64,7 @@ export function MatchDashboard() {
    * Liga/Suche/Spieler-Filter gelten überall
    */
   const { live, upcoming, pastRecent, pastOlder } = useMemo(() => {
+    const favSet = new Set(favoriteIds);
     const byMeta = (m: Match) => {
       if (filters.league === "live") {
         return m.status === "live" || m.status === "halftime";
@@ -69,6 +73,11 @@ export function MatchDashboard() {
       if (filters.playerId) {
         if (!m.croatianPlayers.some((p) => p.playerId === filters.playerId))
           return false;
+      }
+      if (favoritesOnly && favSet.size > 0) {
+        if (!m.croatianPlayers.some((p) => favSet.has(p.playerId))) return false;
+      } else if (favoritesOnly && favSet.size === 0) {
+        return false;
       }
       if (filters.search.trim()) {
         const q = filters.search.toLowerCase().trim();
@@ -86,7 +95,6 @@ export function MatchDashboard() {
     };
 
     const pool = clubMatches.filter(byMeta);
-
     const liveList = pool
       .filter((m) => isLiveStatus(m.status))
       .filter((m) => matchesDateFilter(m.kickoff, filters.date))
@@ -114,7 +122,7 @@ export function MatchDashboard() {
       pastRecent: pastList.slice(0, PAST_VISIBLE),
       pastOlder: pastList.slice(PAST_VISIBLE),
     };
-  }, [clubMatches, filters]);
+  }, [clubMatches, filters, favoritesOnly, favoriteIds]);
 
   const upcomingShown = showMoreUpcoming
     ? upcoming
@@ -150,8 +158,11 @@ export function MatchDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <p className="text-[10px] text-muted-foreground tabular-nums">
-            {formatKickoff(lastUpdated, "HH:mm:ss", locale)} · {dataSource} ·{" "}
-            {filteredMatches.length}
+            {t("lastUpdated")}{" "}
+            {formatKickoff(lastUpdated, "HH:mm:ss", locale)}
+            {" · "}
+            {t("source")}: {dataSource}
+            {favoritesOnly ? ` · ${tFav("filterShort")}` : ""}
           </p>
           <Button
             type="button"
@@ -181,10 +192,19 @@ export function MatchDashboard() {
       {empty ? (
         <EmptyState
           className="mt-3"
-          title={t("empty")}
-          description={t("emptyHint")}
-          actionLabel={t("reload")}
-          onAction={() => void refreshLive()}
+          title={favoritesOnly ? tFav("emptyMatches") : t("empty")}
+          description={
+            favoritesOnly ? tFav("emptyMatchesHint") : t("emptyHint")
+          }
+          actionLabel={favoritesOnly ? tFav("filterOnly") : t("reload")}
+          onAction={() => {
+            if (favoritesOnly) {
+              /* keep reload for data; favorites empty is UX */
+              void refreshLive();
+            } else {
+              void refreshLive();
+            }
+          }}
         />
       ) : (
         <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card">
