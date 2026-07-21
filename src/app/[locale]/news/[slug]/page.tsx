@@ -14,6 +14,7 @@ import {
 import { getDashboardData } from "@/lib/data/service";
 import { SITE } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
+import { ShareButton } from "@/components/share/share-button";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -151,20 +152,23 @@ export default async function NewsArticlePage({
       />
       <Navbar />
       <main className="mx-auto max-w-2xl px-3 py-6 sm:px-6 sm:py-8">
-        <nav className="mb-5 flex flex-wrap gap-3 text-sm">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backHome")}
-          </Link>
-          <Link
-            href="/news"
-            className="text-muted-foreground hover:text-foreground"
-          >
-            {t("allNews")}
-          </Link>
+        <nav className="mb-5 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {t("backHome")}
+            </Link>
+            <Link
+              href="/news"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {t("allNews")}
+            </Link>
+          </div>
+          <ShareButton title={title} text={summary} url={path} />
         </nav>
 
         <article itemScope itemType="https://schema.org/NewsArticle">

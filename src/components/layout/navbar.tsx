@@ -18,7 +18,6 @@ const NAV_LINKS = [
   { href: "/#dashboard", key: "matches" as const, hash: true },
   { href: "/#players", key: "players" as const, hash: true },
   { href: "/#tv", key: "tv" as const, hash: true },
-  { href: "/#more-sports", key: "moreSports" as const, hash: true },
 ];
 
 export function Navbar() {
@@ -37,10 +36,10 @@ export function Navbar() {
           <Sahovnica size="md" />
           <div className="hidden min-[420px]:block">
             <span className="block text-sm font-bold leading-tight">
-              Kroatien Sport
+              {t("brandName")}
             </span>
             <span className="block text-[10px] font-semibold uppercase tracking-widest text-primary">
-              Live
+              {t("brandLive")}
             </span>
           </div>
         </Link>

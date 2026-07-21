@@ -8,7 +8,6 @@ import { NationalTeamSection } from "@/components/national-team/national-team-se
 import { NewsSection } from "@/components/news/news-section";
 import { PlayerTracker } from "@/components/players/player-tracker";
 import { TvSection } from "@/components/tv/tv-section";
-import { ComingSoonSports } from "@/components/sports/coming-soon-sports";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
 
@@ -39,7 +38,6 @@ export default async function HomePage({
           <MatchDashboard />
           <PlayerTracker />
           <TvSection />
-          <ComingSoonSports />
         </div>
       </main>
       <Footer />

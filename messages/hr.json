@@ -12,6 +12,8 @@
     "players": "Igrači",
     "tv": "TV i streamovi",
     "moreSports": "Više sportova",
+    "brandName": "Hrvatska Sport",
+    "brandLive": "Uživo",
     "search": "Traži utakmice, igrače, klubove…",
     "settings": "Postavke",
     "theme": "Tema",
@@ -22,17 +24,31 @@
   },
   "Hero": {
     "badge": "Vatreni · diljem Europe",
+    "badgeLive": "Uživo sada",
+    "badgeNext": "Sljedeće",
     "title": "Hrvatske nogometne zvijezde.",
     "titleHighlight": "Uživo na dlanu.",
     "subtitle": "Rezultati, vijesti i iduće utakmice Modrića, Gvardiola i ostalih – u svim top ligama.",
-    "ctaMatches": "Pogledaj utakmice",
+    "ctaMatches": "Sve utakmice",
     "ctaPlayers": "Tracker igrača",
     "ctaNt": "Reprezentacija",
+    "ctaDetails": "Detalji",
+    "ctaWatch": "Pogledaj",
+    "nextNt": "Iduća utakmica reprezentacije",
+    "nextClub": "Iduća klupska utakmica",
+    "noLive": "Trenutno nema utakmice uživo",
+    "topNews": "Top vijest",
     "statsLive": "Uživo sada",
     "statsPlayers": "Igrača u trackeru",
     "statsLeagues": "Liga",
     "statsNt": "Reprezentacija",
     "statsNews": "Vijesti"
+  },
+  "Share": {
+    "share": "Podijeli",
+    "copied": "Link kopiran",
+    "copiedShort": "Kopirano",
+    "failed": "Dijeljenje nije uspjelo"
   },
   "Vatreni": {
     "title": "Reprezentacija",
@@ -195,8 +211,11 @@
     "starter": "Prva postava",
     "bench": "Klupa",
     "noTv": "Nema TV podataka. Vidi TV i streamove.",
+    "noPlayers": "Nema hrvatskih igrača za ovu utakmicu.",
     "close": "Zatvori",
-    "matchesArrow": "Utakmice →"
+    "matchesArrow": "Utakmice →",
+    "openPage": "Otvori stranicu",
+    "backMatches": "Natrag na utakmice"
   },
   "ComingSoon": {
     "title": "Više sportova",
@@ -212,7 +231,9 @@
   "Footer": {
     "rights": "Sva prava pridržana.",
     "disclaimer": "Bez ilegalnih streamova. Samo službeni izvori.",
-    "madeWith": "S ❤️ za Vatrene"
+    "madeWith": "S ❤️ za Vatrene",
+    "sources": "Podaci: ESPN, TheSportsDB i dr. · TV: samo službeni pružatelji",
+    "brandTagline": "Hrvatski profesionalci u Europi – uživo, vijesti i legalni TV"
   },
   "Common": {
     "loading": "Učitavanje…",

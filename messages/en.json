@@ -12,6 +12,8 @@
     "players": "Players",
     "tv": "TV & Streams",
     "moreSports": "More sports",
+    "brandName": "Croatia Sport",
+    "brandLive": "Live",
     "search": "Search matches, players, clubs…",
     "settings": "Settings",
     "theme": "Theme",
@@ -22,17 +24,31 @@
   },
   "Hero": {
     "badge": "Vatreni · Across Europe",
+    "badgeLive": "Live now",
+    "badgeNext": "Up next",
     "title": "Croatian football stars.",
     "titleHighlight": "Live at a glance.",
     "subtitle": "Scores, news and upcoming matches of Modrić, Gvardiol & Co. – across all top leagues.",
-    "ctaMatches": "Watch live matches",
+    "ctaMatches": "All matches",
     "ctaPlayers": "Player tracker",
     "ctaNt": "National team",
+    "ctaDetails": "Details",
+    "ctaWatch": "Watch",
+    "nextNt": "Next international",
+    "nextClub": "Next club match",
+    "noLive": "No live match right now",
+    "topNews": "Top news",
     "statsLive": "Live now",
     "statsPlayers": "Players tracked",
     "statsLeagues": "Leagues",
     "statsNt": "NT fixtures",
     "statsNews": "News"
+  },
+  "Share": {
+    "share": "Share",
+    "copied": "Link copied",
+    "copiedShort": "Copied",
+    "failed": "Could not share"
   },
   "Vatreni": {
     "title": "National team",
@@ -195,8 +211,11 @@
     "starter": "Starting XI",
     "bench": "Bench",
     "noTv": "No TV data set. See TV & Streams.",
+    "noPlayers": "No Croatian players listed for this match.",
     "close": "Close",
-    "matchesArrow": "Matches →"
+    "matchesArrow": "Matches →",
+    "openPage": "Open page",
+    "backMatches": "Back to matches"
   },
   "ComingSoon": {
     "title": "More sports",
@@ -212,7 +231,9 @@
   "Footer": {
     "rights": "All rights reserved.",
     "disclaimer": "No illegal streams. Official sources only.",
-    "madeWith": "Made with ❤️ for the Vatreni"
+    "madeWith": "Made with ❤️ for the Vatreni",
+    "sources": "Data: ESPN, TheSportsDB and more · TV: official providers only",
+    "brandTagline": "Croatian pros in Europe – live, news & legal TV"
   },
   "Common": {
     "loading": "Loading…",

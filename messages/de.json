@@ -12,6 +12,8 @@
     "players": "Spieler",
     "tv": "TV & Streams",
     "moreSports": "Mehr Sport",
+    "brandName": "Kroatien Sport",
+    "brandLive": "Live",
     "search": "Spiele, Spieler, Clubs suchen…",
     "settings": "Einstellungen",
     "theme": "Design",
@@ -22,17 +24,31 @@
   },
   "Hero": {
     "badge": "Vatreni · Europaweit",
+    "badgeLive": "Jetzt live",
+    "badgeNext": "Als Nächstes",
     "title": "Kroatische Fußballstars.",
     "titleHighlight": "Live im Blick.",
     "subtitle": "Ergebnisse, News und nächste Spiele von Modrić, Gvardiol & Co. – in allen Top-Ligen.",
-    "ctaMatches": "Live-Spiele ansehen",
+    "ctaMatches": "Alle Spiele",
     "ctaPlayers": "Spieler-Tracker",
     "ctaNt": "Nationalteam",
+    "ctaDetails": "Details",
+    "ctaWatch": "Ansehen",
+    "nextNt": "Nächstes Länderspiel",
+    "nextClub": "Nächstes Club-Spiel",
+    "noLive": "Gerade kein Live-Spiel",
+    "topNews": "Top-News",
     "statsLive": "Live jetzt",
     "statsPlayers": "Spieler im Tracker",
     "statsLeagues": "Ligen",
     "statsNt": "Länderspiele",
     "statsNews": "News"
+  },
+  "Share": {
+    "share": "Teilen",
+    "copied": "Link kopiert",
+    "copiedShort": "Kopiert",
+    "failed": "Teilen fehlgeschlagen"
   },
   "Vatreni": {
     "title": "Nationalmannschaft",
@@ -195,8 +211,11 @@
     "starter": "Startelf",
     "bench": "Bank",
     "noTv": "Keine TV-Daten hinterlegt. Siehe TV & Streams.",
+    "noPlayers": "Keine kroatischen Spieler für dieses Spiel gelistet.",
     "close": "Schließen",
-    "matchesArrow": "Spiele →"
+    "matchesArrow": "Spiele →",
+    "openPage": "Seite öffnen",
+    "backMatches": "Zu den Spielen"
   },
   "ComingSoon": {
     "title": "Weitere Sportarten",
@@ -212,7 +231,9 @@
   "Footer": {
     "rights": "Alle Rechte vorbehalten.",
     "disclaimer": "Keine illegalen Streams. Offizielle Quellen only.",
-    "madeWith": "Mit ❤️ für die Vatreni"
+    "madeWith": "Mit ❤️ für die Vatreni",
+    "sources": "Daten: ESPN, TheSportsDB u. a. · TV: nur offizielle Anbieter",
+    "brandTagline": "Kroatische Profis in Europa – live, News & legal TV"
   },
   "Common": {
     "loading": "Lädt…",
