@@ -122,10 +122,514 @@ const IMG = {
 };
 
 /**
- * Top-Stories Juli 2026 – belegt unter anderem über HNS.team, ESPN, BBC, Reuters, Goal, AS.
+ * Top-Stories Juli 2026 – belegt unter anderem über HNS.team, ESPN, BBC, Reuters, Goal, AS, Wikipedia.
  * Sortierung: neueste zuerst (siehe getDailyNews).
  */
 export const EDITORIAL_NEWS: NewsArticle[] = [
+  {
+    id: "modric-milan-contract-2027",
+    date: "2026-07-23",
+    featured: true,
+    category: "clubs",
+    tag: {
+      de: "Serie A",
+      en: "Serie A",
+      hr: "Serie A",
+    },
+    title: {
+      de: "Offiziell: Modrić verlängert bei Milan bis 2027",
+      en: "Official: Modrić extends at Milan until 2027",
+      hr: "Službeno: Modrić produžio s Milanom do 2027.",
+    },
+    summary: {
+      de: "Am 23. Juli 2026 unterschrieb der Kapitän einen Einjahresvertrag bis 30. Juni 2027 – zweite Saison bei den Rossoneri.",
+      en: "On 23 July 2026 the captain signed a one-year deal until 30 June 2027 – second season with the Rossoneri.",
+      hr: "23. srpnja 2026. kapetan je potpisao jednogodišnji ugovor do 30. lipnja 2027. – druga sezona u Rossonerima.",
+    },
+    body: {
+      de: "Laut übereinstimmenden Berichten (u. a. Wikipedia/Club-Meldungen, italienische Presse) hat Luka Modrić am 23. Juli 2026 seinen Vertrag bei AC Milan um ein Jahr bis Ende Juni 2027 verlängert. Damit bleibt der WM-Teilnehmer 2026 und A-Nationalspieler mindestens eine weitere Saison in der Serie A.\n\nFür die Vatreni unter Slaven Bilić ist das ein Signal: Club-Minuten und Fitness bleiben planbar. Parallel läuft die Frage, ob er auch international weitermacht – Bilić hatte den Kapitän als erste Priorität genannt. Im Tracker dieser Seite: Club, Status und nächste Termine.",
+      en: "According to converging reports (including club filings and Italian press), Luka Modrić signed a one-year extension at AC Milan on 23 July 2026 through 30 June 2027. The World Cup 2026 player and senior international stays in Serie A for at least another season.\n\nFor Croatia under Slaven Bilić this helps planning club minutes and fitness. In parallel remains the national-team question – Bilić called the captain his first priority. On this site’s tracker: club, status and next fixtures.",
+      hr: "Prema usklađenim izvještajima (klupski podaci, talijanski tisak) Luka je Modrić 23. srpnja 2026. produžio ugovor s AC Milanom za godinu dana do 30. lipnja 2027. Sudionik SP-a 2026. i A reprezentativac ostaje barem još jednu sezonu u Serie A.\n\nZa Vatrene pod Slavenom Bilićem to olakšava planiranje minuta i forme. Paralelno ostaje pitanje reprezentacije – Bilić je kapetana nazvao prvim prioritetom. Na trackeru: klub, status i idući termini.",
+    },
+    playerId: "modric",
+    image: {
+      url: IMG.milan,
+      alt: {
+        de: "AC Milan Logo",
+        en: "AC Milan logo",
+        hr: "Grb AC Milana",
+      },
+    },
+  },
+  {
+    id: "bilic-modric-call-july-2026",
+    date: "2026-07-22",
+    featured: true,
+    category: "vatreni",
+    tag: {
+      de: "Breaking",
+      en: "Breaking",
+      hr: "Breaking",
+    },
+    title: {
+      de: "Bilić hat mit Modrić gesprochen: Kapitän soll bleiben",
+      en: "Bilić has spoken with Modrić: captain should stay",
+      hr: "Bilić razgovarao s Modrićem: kapetan treba ostati",
+    },
+    summary: {
+      de: "Medien und Fan-Kanäle: Der neue Auswahler hat dem Kapitän klar gemacht, dass er ihn im A-Team will – Entscheidung liegt bei Modrić.",
+      en: "Media and fan channels: the new coach told the captain he wants him in the senior side – final call is Modrić’s.",
+      hr: "Mediji i fan kanali: novi izbornik jasno je rekao kapetanu da ga želi u A sastavu – odluka je Modrićeva.",
+    },
+    body: {
+      de: "Nach der Ernennung vom 13. Juli und der ersten Pressekonferenz melden kroatische und internationale Kanäle ein Follow-up: Slaven Bilić habe mit Luka Modrić gesprochen und bekräftigt, den Kapitän im Kader der Vatreni zu wollen. Offizielle Nominierungslisten erscheinen erst vor den FIFA-Fenstern im Herbst.\n\nFür die Nations League (Start 26.09. in Prag gegen Tschechien) wäre Modrić sportlich und symbolisch zentral – parallel hat er bei Milan bis 2027 verlängert. Alle Länderspiel-Termine und Club-Spiele der Kroaten: Nationalteam- und Tracker-Sektion.",
+      en: "After the 13 July appointment and first press conference, Croatian and international channels report a follow-up: Slaven Bilić has spoken with Luka Modrić and reaffirmed he wants the captain in the Vatreni squad. Official squads only appear before autumn FIFA windows.\n\nFor the Nations League (starts 26 Sep in Prague vs Czechia) Modrić would be central on and off the pitch – he has also extended at Milan to 2027. All internationals and club fixtures: national-team and tracker sections.",
+      hr: "Nakon imenovanja 13. srpnja i prve konferencije hrvatski i strani kanali javljaju follow-up: Slaven Bilić razgovarao je s Lukom Modrićem i potvrdio da ga želi u sastavu Vatrenih. Službene liste tek pred jesenske FIFA prozore.\n\nZa Ligu nacija (start 26.9. u Pragu protiv Češke) Modrić bi bio središnji i sportski i simbolički – paralelno je produžio u Milanu do 2027. Svi termini reprezentacije i klubova: rubrike reprezentacije i trackera.",
+    },
+    playerId: "modric",
+    image: {
+      url: IMG.modric,
+      alt: {
+        de: "Luka Modrić",
+        en: "Luka Modrić",
+        hr: "Luka Modrić",
+      },
+    },
+  },
+  {
+    id: "hnl-season-approach-2026",
+    date: "2026-07-27",
+    featured: true,
+    category: "hnl",
+    tag: {
+      de: "HNL",
+      en: "HNL",
+      hr: "HNL",
+    },
+    title: {
+      de: "HNL vor dem Start: Dinamo, Hajduk, Rijeka – Europa & Meisterschaft",
+      en: "HNL about to kick off: Dinamo, Hajduk, Rijeka – Europe & title race",
+      hr: "HNL pred startom: Dinamo, Hajduk, Rijeka – Europa i naslov",
+    },
+    summary: {
+      de: "Ende Juli 2026: Saisonvorbereitung und Europacup-Quali prägen die Woche – kroatische Talente im Fokus für Bilić.",
+      en: "Late July 2026: pre-season and European qualifying define the week – Croatian talents in focus for Bilić.",
+      hr: "Kraj srpnja 2026.: pripreme i europske kvalifikacije obilježavaju tjedan – hrvatski talenti u fokusu za Bilića.",
+    },
+    body: {
+      de: "Während die Vatreni nach dem WM-Aus und dem Trainerwechsel Bilić den Herbst vorbereiten, läuft in der HNL die heiße Phase vor dem Saisonstart: Europapokal-Qualifikation, Testspiele und Kaderplanung. Dinamo Zagreb, Hajduk Split, Rijeka und Osijek liefern Minuten für Spieler, die auch für U-21 und A-Team interessant sind.\n\nFür den Neuaufbau unter Bilić und U-21-Coach Ivica Olić zählt Club-Form. Live-Board und Tracker auf dieser Seite listen HNL- und Europa-Spiele mit kroatischer Beteiligung – inklusive TV-Hinweisen, wo verfügbar.",
+      en: "While the Vatreni prepare the autumn after the World Cup exit and Bilić’s appointment, the HNL is in peak pre-season: European qualifying, friendlies and squad planning. Dinamo Zagreb, Hajduk Split, Rijeka and Osijek provide minutes for players interesting to U-21 and senior setups.\n\nFor the rebuild under Bilić and U-21 coach Ivica Olić, club form matters. This site’s live board and tracker list HNL and European games with Croatian involvement – including TV tips where available.",
+      hr: "Dok Vatreni nakon SP-a i imenovanja Bilića spremaju jesen, u HNL-u je vrhunac priprema: europske kvalifikacije, prijateljske i planiranje kadra. Dinamo, Hajduk, Rijeka i Osijek daju minute igračima zanimljivima za U-21 i A sastav.\n\nZa obnovu pod Bilićem i U-21 trenerom Olićem broji klupska forma. Live board i tracker na ovoj stranici listaju HNL i europske utakmice s hrvatskim igračima – uključujući TV savjete gdje su dostupni.",
+    },
+    image: {
+      url: IMG.dinamo,
+      alt: {
+        de: "Dinamo Zagreb",
+        en: "Dinamo Zagreb",
+        hr: "Dinamo Zagreb",
+      },
+    },
+  },
+  {
+    id: "bilic-youth-dinamo-hnl-2026",
+    date: "2026-07-26",
+    category: "vatreni",
+    tag: {
+      de: "Kader",
+      en: "Squad",
+      hr: "Kadar",
+    },
+    title: {
+      de: "Bilić-Blick auf HNL & Dinamo: Stojković, Beljo & U-21-Talente",
+      en: "Bilić eyeing HNL & Dinamo: Stojković, Beljo & U-21 talents",
+      hr: "Bilićev pogled na HNL i Dinamo: Stojković, Beljo i U-21 talenti",
+    },
+    summary: {
+      de: "Kroatische Medien zur neuen Ära: Nähe zu Dinamo und junge Namen neben den etablierten Europäern – ohne vorzeitige Nominierung.",
+      en: "Croatian media on the new era: closer ties to Dinamo and young names beside established Europe-based stars – no early squad lists.",
+      hr: "Hrvatski mediji o novoj eri: bliža suradnja s Dinamom i mlada imena uz etablirane Europljane – bez ranih lista.",
+    },
+    body: {
+      de: "Berichte (u. a. Sportske Novosti / Jutarnji) skizzieren Bilićs Linie: Kern aus erfahrenen Europäern behalten, dazu stärkere Anbindung an HNL-Clubs – besonders Dinamo – und schrittweise Integration von U-21-Talenten. Namen wie Stojković oder Beljo werden spekulativ genannt; offiziell gilt: Kader erst vor den FIFA-Fenstern.\n\nFür Fans: Profile und Club-Zuordnung im Tracker, Länderspiel-Termine in der Nationalteam-Sektion und im Live-Board.",
+      en: "Reports (including Sportske Novosti / Jutarnji) outline Bilić’s approach: keep a core of experienced Europe-based players, deepen HNL club links – especially Dinamo – and gradually integrate U-21 talents. Names such as Stojković or Beljo are speculated; officially squads only come before FIFA windows.\n\nFor fans: profiles and clubs in the tracker, internationals under National team and on the live board.",
+      hr: "Izvještaji (uključujući SN / Jutarnji) ocrtavaju Bilićev pristup: zadržati jezgru iskusnih Europljana, jača veza s HNL klubovima – posebno Dinamom – i postupna integracija U-21 talenata. Imena poput Stojkovića ili Belje spekulativna su; službeno sastavi tek pred FIFA prozore.\n\nZa navijače: profili i klubovi u trackeru, reprezentacija u rubrici i na live boardu.",
+    },
+    image: {
+      url: IMG.bilic,
+      alt: {
+        de: "Slaven Bilić",
+        en: "Slaven Bilić",
+        hr: "Slaven Bilić",
+      },
+    },
+  },
+  {
+    id: "preseason-europe-croatians-2026",
+    date: "2026-07-25",
+    category: "clubs",
+    tag: {
+      de: "Europa",
+      en: "Europe",
+      hr: "Europa",
+    },
+    title: {
+      de: "Vorbereitung in Europa: City, Milan, Brighton – Kroaten im Trainingslager",
+      en: "Pre-season in Europe: City, Milan, Brighton – Croatians in camp",
+      hr: "Pripreme u Europi: City, Milan, Brighton – Hrvati u kampovima",
+    },
+    summary: {
+      de: "Nach der WM kehren Gvardiol, Kovačić, Modrić, Vušković & Co. in die Club-Vorbereitung zurück – Form für die Herbst-NL.",
+      en: "After the World Cup Gvardiol, Kovačić, Modrić, Vušković & co. return to club pre-season – form for autumn Nations League.",
+      hr: "Nakon SP-a Gvardiol, Kovačić, Modrić, Vušković i ostali vraćaju se u klupske pripreme – forma za jesensku LN.",
+    },
+    body: {
+      de: "Ende Juli 2026 ist für die kroatischen Legionäre Trainingslager-Zeit: Premier League, Serie A und weitere Ligen starten bald. Joško Gvardiol und Mateo Kovačić bei Manchester City, Luka Modrić bei Milan (Vertrag bis 2027), Luka Vušković nach dem Wechsel bei Brighton – plus HNL-Europacup.\n\nFür Bilićs ersten NL-Block im September zählt, wer fit und spielstark aus der Vorbereitung kommt. Tracker und Live-Board bündeln die nächsten Club-Spiele.",
+      en: "Late July 2026 is training-camp season for Croatian legionnaires: Premier League, Serie A and more leagues start soon. Joško Gvardiol and Mateo Kovačić at Manchester City, Luka Modrić at Milan (deal to 2027), Luka Vušković after his move at Brighton – plus HNL European runs.\n\nFor Bilić’s first Nations League block in September, who emerges fit and sharp from pre-season matters. Tracker and live board list the next club fixtures.",
+      hr: "Kraj srpnja 2026. vrijeme je kampova za hrvatske legionare: Premier liga, Serie A i ostale lige uskoro kreću. Joško Gvardiol i Mateo Kovačić u Manchester Cityju, Luka Modrić u Milanu (ugovor do 2027.), Luka Vušković nakon transfera u Brightonu – plus HNL Europa.\n\nZa Bilićev prvi LN blok u rujnu broji tko iz priprema izađe fit i oštar. Tracker i live board nudi iduće klupske utakmice.",
+    },
+    image: {
+      url: IMG.premierLeague,
+      alt: {
+        de: "Premier League",
+        en: "Premier League",
+        hr: "Premier liga",
+      },
+    },
+  },
+  {
+    id: "nl-tickets-prep-sept-2026",
+    date: "2026-07-24",
+    category: "preview",
+    tag: {
+      de: "Nations League",
+      en: "Nations League",
+      hr: "Liga nacija",
+    },
+    title: {
+      de: "Countdown NL: 60+ Tage bis Prag – Fans und TV im Blick",
+      en: "NL countdown: 60+ days to Prague – fans and TV in focus",
+      hr: "Odbrojavanje LN: 60+ dana do Praga – navijači i TV u fokusu",
+    },
+    summary: {
+      de: "Erstes Pflichtspiel der Bilić-Ära: 26.09. Tschechien auswärts – danach Spanien und England-Heimspiele.",
+      en: "First competitive game of the Bilić era: 26 Sep Czechia away – then Spain and home vs England.",
+      hr: "Prva obvezna utakmica Bilićeve ere: 26.9. Češka u gostima – zatim Španjolska i Engleska doma.",
+    },
+    body: {
+      de: "Mit dem Kalender der Nations League 2026/27 im Gepäck startet der Countdown Richtung September: Tschechien in Prag, Spanien in Sevilla, England in Rijeka (ohne Publikum) und Spanien am Poljud. Ticket- und TV-Infos hängen von HNS, UEFA und lokalen Rechteinhabern ab – auf dieser Seite: Termine im Live-Board und Nationalteam, TV-Guide und legale Stream-Hinweise mit Geo.\n\nKader-Nominierungen folgen erst vor dem FIFA-Fenster. Bis dahin: Club-Form der Kroaten im Tracker verfolgen.",
+      en: "With the Nations League 2026/27 calendar set, the countdown to September runs: Czechia in Prague, Spain in Seville, England in Rijeka (behind closed doors) and Spain at Poljud. Tickets and TV depend on HNS, UEFA and local rights – on this site: dates on the live board and national team, TV guide and legal stream tips with geo.\n\nSquads only before the FIFA window. Until then: track club form of Croatians in the tracker.",
+      hr: "S rasporedom Lige nacija 2026./27. kreće odbrojavanje do rujna: Češka u Pragu, Španjolska u Sevilli, Engleska u Rijeci (bez publike) i Španjolska na Poljudu. Ulaznice i TV ovise o HNS-u, UEFA-i i lokalnim pravima – na ovoj stranici: termini na live boardu i reprezentaciji, TV vodič i legalni stream savjeti s geo.\n\nSastavi tek pred FIFA prozor. Do tada: klupska forma Hrvata u trackeru.",
+    },
+    image: {
+      url: IMG.nationsLeague,
+      alt: {
+        de: "Nations League",
+        en: "Nations League",
+        hr: "Liga nacija",
+      },
+    },
+  },
+  {
+    id: "modric-milan-injury-context-2026",
+    date: "2026-07-24",
+    category: "clubs",
+    tag: {
+      de: "Gesundheit",
+      en: "Fitness",
+      hr: "Forma",
+    },
+    title: {
+      de: "Modrić nach Juve-Duell und WM: Backe verheilt, Fokus Serie A",
+      en: "Modrić after Juve clash and World Cup: cheek healed, Serie A focus",
+      hr: "Modrić nakon Juventusa i SP-a: jagodica sanirana, fokus Serie A",
+    },
+    summary: {
+      de: "Im Frühjahr 2026 Wangenbeinbruch nach Zusammenstoß mit Locatelli – OP im April; Verlängerung bis 2027 unterstreicht Comeback-Plan.",
+      en: "Spring 2026 cheekbone fracture after Locatelli clash – surgery in April; extension to 2027 underlines comeback plan.",
+      hr: "Proljeće 2026. prijelom jagodice nakon duela s Locatellijem – operacija u travnju; produženje do 2027. potvrđuje plan povratka.",
+    },
+    body: {
+      de: "Berichte zur Saison 2025/26: Luka Modrić erlitt im Serie-A-Spiel gegen Juventus nach einem Zusammenprall mit Manuel Locatelli einen Wangenbeinbruch und wurde im April 2026 operiert. Trotzdem gehörte er zum kroatischen WM-Kader 2026 und hat nun bei Milan bis 2027 verlängert.\n\nStatus im Tracker bleibt systemseitig vorsichtig, wo keine Redaktions-Override vorliegen. Für Bilić zählt langfristig Belastungssteuerung zwischen Club und Nationalteam.",
+      en: "Reports from 2025/26: Luka Modrić suffered a cheekbone fracture in a Serie A match vs Juventus after a collision with Manuel Locatelli and had surgery in April 2026. He still featured in Croatia’s World Cup 2026 plans and has now extended at Milan to 2027.\n\nTracker status stays cautious where no editorial override exists. For Bilić, load management between club and country will matter long term.",
+      hr: "Izvještaji o sezoni 2025./26.: Luka Modrić zadobio je prijelom jagodice u utakmici Serie A protiv Juventusa nakon sudara s Manuelom Locatellijem i operiran je u travnju 2026. Ipak je bio dio planova za SP 2026. i sada je produžio u Milanu do 2027.\n\nStatus u trackeru ostaje oprezan gdje nema redakcijskog overridea. Za Bilića dugoročno broji upravljanje opterećenjem klub–reprezentacija.",
+    },
+    playerId: "modric",
+    image: {
+      url: IMG.modric,
+      alt: {
+        de: "Luka Modrić",
+        en: "Luka Modrić",
+        hr: "Luka Modrić",
+      },
+    },
+  },
+  {
+    id: "hns-wc-prize-money-2026",
+    date: "2026-07-22",
+    category: "vatreni",
+    tag: {
+      de: "HNS",
+      en: "HNS",
+      hr: "HNS",
+    },
+    title: {
+      de: "Trotz WM-Aus: HNS kassiert – Millionen aus der K.-o.-Runde",
+      en: "Despite World Cup exit: HNS cashes in – millions from knockout stage",
+      hr: "Unatoč ispadanju sa SP-a: HNS zarađuje – milijuni iz nokaut faze",
+    },
+    summary: {
+      de: "Medien zu FIFA-Prämien: Gruppenphase plus Round of 32 bringen dem Verband zweistellige Millionenbeträge – Basis für den Bilić-Zyklus.",
+      en: "Media on FIFA prize money: group stage plus round of 32 bring the federation eight-figure sums – base for the Bilić cycle.",
+      hr: "Mediji o FIFA premijama: skupina plus round of 32 donose savezu dvoznamenkaste milijune – baza za Bilićev ciklus.",
+    },
+    body: {
+      de: "Nach dem Ausscheiden gegen Portugal (2:1) in Toronto rechnen kroatische Medien vor, dass allein der Einzug unter die letzten 32 und die Gruppenspiele dem HNS hohe FIFA-Prämien sichern – Berichte nannten rund um den Achtelfinal-Einzug Größenordnungen von über 10 Mio. Euro. Genaue Summen hängen von FIFA-Veröffentlichungen ab.\n\nSportlich beginnt mit Bilić ein neuer Zyklus Richtung EM 2028; finanziell stärkt die WM-Teilnahme den Verband. Für Fans zählt auf dieser Seite der sportliche Kalender: NL-Termine, News und Tracker.",
+      en: "After the exit to Portugal (2–1) in Toronto, Croatian media note that reaching the last 32 and the group games alone secure large FIFA prize payments for the HNS – reports around knockout qualification cited figures above €10m. Exact sums depend on FIFA publications.\n\nSportingly a new cycle starts with Bilić towards EURO 2028; financially the World Cup strengthens the federation. On this site: NL calendar, news and tracker.",
+      hr: "Nakon ispadanja od Portugala (2:1) u Torontu hrvatski mediji računaju da sam plasman među 32 i utakmice skupine HNS-u donose visoke FIFA premije – izvještaji oko prolaska u nokaut spominjali su iznose preko 10 mil. €. Točni iznosi ovise o FIFA objavama.\n\nSportski s Bilićem kreće novi ciklus prema Euru 2028.; financijski SP jača savez. Na ovoj stranici: LN kalendar, vijesti i tracker.",
+    },
+    image: {
+      url: IMG.worldCup,
+      alt: {
+        de: "FIFA World Cup",
+        en: "FIFA World Cup",
+        hr: "SP FIFA",
+      },
+    },
+  },
+  {
+    id: "vatreni-homecoming-2026",
+    date: "2026-07-04",
+    category: "vatreni",
+    tag: {
+      de: "WM 2026",
+      en: "World Cup 2026",
+      hr: "SP 2026",
+    },
+    title: {
+      de: "Vatreni zurück in Zagreb: Fans empfangen die Mannschaft",
+      en: "Vatreni back in Zagreb: fans welcome the team",
+      hr: "Vatreni natrag u Zagrebu: navijači dočekali momčad",
+    },
+    summary: {
+      de: "Nach dem dramatischen Aus gegen Portugal landete die Nationalmannschaft in Kroatien – hunderte Fans am Flughafen.",
+      en: "After the dramatic exit to Portugal the national team landed in Croatia – hundreds of fans at the airport.",
+      hr: "Nakon dramatičnog ispadanja od Portugala reprezentacija je sletjela u Hrvatsku – stotine navijača na aerodromu.",
+    },
+    body: {
+      de: "Anfang Juli 2026 kehrten die Vatreni nach dem 1:2 gegen Portugal (Round of 32, Toronto) nach Zagreb zurück. Medien zeigten den Empfang am Flughafen Franjo Tuđman mit zahlreichen Fans trotz der Enttäuschung.\n\nWenige Tage später folgte der Abschied von Zlatko Dalić und die Ernennung von Slaven Bilić. Der Blick richtet sich jetzt auf die Nations League im September.",
+      en: "In early July 2026 the Vatreni returned to Zagreb after the 1–2 loss to Portugal (round of 32, Toronto). Media showed the reception at Franjo Tuđman Airport with many fans despite the disappointment.\n\nDays later came Zlatko Dalić’s exit and Slaven Bilić’s appointment. Focus now turns to the Nations League in September.",
+      hr: "Početkom srpnja 2026. Vatreni su se vratili u Zagreb nakon poraza 1:2 od Portugala (round of 32, Toronto). Mediji su pokazali doček na aerodromu Franje Tuđmana s brojnim navijačima unatoč razočaranju.\n\nNekoliko dana kasnije uslijedio je odlazak Zlatka Dalića i imenovanje Slavena Bilića. Pogled je sada na Ligu nacija u rujnu.",
+    },
+    image: {
+      url: IMG.croatia,
+      alt: {
+        de: "Kroatien Nationalteam",
+        en: "Croatia national team",
+        hr: "Hrvatska reprezentacija",
+      },
+    },
+  },
+  {
+    id: "sucic-baturina-form-watch-2026",
+    date: "2026-07-26",
+    category: "clubs",
+    tag: {
+      de: "Talente",
+      en: "Talents",
+      hr: "Talenti",
+    },
+    title: {
+      de: "Form-Watch: Sučić, Baturina & Co. – Bilić beobachtet die Vorbereitung",
+      en: "Form watch: Sučić, Baturina & co. – Bilić watching pre-season",
+      hr: "Forma: Sučić, Baturina i ostali – Bilić prati pripreme",
+    },
+    summary: {
+      de: "Junge Mittelfeld- und Offensivspieler in Club-Lagern – Kandidaten für erweiterte NL-Kader im Herbst.",
+      en: "Young midfielders and attackers in club camps – candidates for expanded NL squads in autumn.",
+      hr: "Mladi veznjaci i ofenzivci u klupskim kampovima – kandidati za proširene LN sastave u jesen.",
+    },
+    body: {
+      de: "Neben den etablierten Europäern rücken Petar Sučić, Martin Baturina und weitere junge Kroaten in den Fokus der Bilić-Ära. Club-Minuten in Vorbereitung und Saisonstart entscheiden mit über NL-Chancen.\n\nIm Tracker: Club, Liga und nächste Spiele. Nominierungen erst vor den FIFA-Fenstern – keine Spekulation als Fakt.",
+      en: "Besides established Europe-based stars, Petar Sučić, Martin Baturina and other young Croatians move into focus in the Bilić era. Pre-season and early-season minutes will influence NL chances.\n\nIn the tracker: club, league and next matches. Squads only before FIFA windows – no speculation as fact.",
+      hr: "Uz etablirane Europljane u fokus Bilićeve ere ulaze Petar Sučić, Martin Baturina i drugi mladi Hrvati. Minute u pripremama i startu sezone utjecat će na šanse za LN.\n\nU trackeru: klub, liga i iduće utakmice. Sastavi tek pred FIFA prozore – bez spekulacija kao činjenica.",
+    },
+    image: {
+      url: IMG.pitch,
+      alt: {
+        de: "Fußballplatz",
+        en: "Football pitch",
+        hr: "Nogometni teren",
+      },
+    },
+  },
+  {
+    id: "budimir-spain-preseason-2026",
+    date: "2026-07-25",
+    category: "clubs",
+    tag: {
+      de: "La Liga",
+      en: "La Liga",
+      hr: "La Liga",
+    },
+    title: {
+      de: "Budimir & Spanien-Kroaten: Vorbereitung vor dem Liga-Start",
+      en: "Budimir & Spain-based Croatians: pre-season before league start",
+      hr: "Budimir i Hrvati u Španjolskoj: pripreme pred start lige",
+    },
+    summary: {
+      de: "Stürmer und Legionäre in La Liga rüsten für die Saison – relevant für NL-Nominierungen im September.",
+      en: "Strikers and legionnaires in La Liga gear up for the season – relevant for September NL nominations.",
+      hr: "Napadači i legionari u La Ligi spremaju sezonu – važno za LN nominacije u rujnu.",
+    },
+    body: {
+      de: "Kroatische Spieler in Spanien – darunter erfahrene Offensivkräfte wie Ante Budimir – sind in der Vorbereitung. Nach dem WM-Turnier und dem Trainerwechsel bei den Vatreni zählt Club-Form für den Herbst.\n\nLive-Board und Tracker: nächste Termine, wo die APIs Daten liefern.",
+      en: "Croatian players in Spain – including experienced attackers such as Ante Budimir – are in pre-season. After the World Cup and the national-team coaching change, club form matters for autumn.\n\nLive board and tracker: next fixtures where APIs provide data.",
+      hr: "Hrvatski igrači u Španjolskoj – uključujući iskusne napadače poput Ante Budimira – u pripremama su. Nakon SP-a i smjene izbornika klupska forma broji za jesen.\n\nLive board i tracker: idući termini gdje API daje podatke.",
+    },
+    playerId: "budimir",
+    image: {
+      url: IMG.action,
+      alt: {
+        de: "Fußball",
+        en: "Football",
+        hr: "Nogomet",
+      },
+    },
+  },
+  {
+    id: "majer-ivanusec-update-2026",
+    date: "2026-07-24",
+    category: "clubs",
+    tag: {
+      de: "Europa",
+      en: "Europe",
+      hr: "Europa",
+    },
+    title: {
+      de: "Majer, Ivanušec & Co.: Club-Status nach der WM",
+      en: "Majer, Ivanušec & co.: club status after the World Cup",
+      hr: "Majer, Ivanušec i ostali: klupski status nakon SP-a",
+    },
+    summary: {
+      de: "Mittelfeld und Flügel der Vatreni kehren in ihre Ligen zurück – Belastung und Einsatzminuten im Fokus.",
+      en: "Vatreni midfield and wide players return to their leagues – load and minutes in focus.",
+      hr: "Veznjaci i krila Vatrenih vraćaju se u lige – fokus na opterećenje i minute.",
+    },
+    body: {
+      de: "Spieler wie Lovro Majer und Luka Ivanušec gehören zum erweiterten Kreis der Nationalmannschaft. Nach dem WM-Turnier 2026 und dem Wechsel auf der Trainerbank zählt, wer in den Clubs Vertrauen und Minuten bekommt.\n\nDiese Seite bündelt Club- und Länderspiel-Termine, wo Daten angebunden sind – ohne spekulative Kaderlisten.",
+      en: "Players such as Lovro Majer and Luka Ivanušec sit in the wider national-team pool. After World Cup 2026 and the coaching change, who earns club trust and minutes matters.\n\nThis site lists club and international fixtures where data is connected – without speculative squad lists.",
+      hr: "Igrači poput Lovre Majera i Luke Ivanušeca u širem su krugu reprezentacije. Nakon SP-a 2026. i smjene na klupi broji tko u klubovima dobiva povjerenje i minute.\n\nOva stranica nudi klupske i reprezentativne termine gdje su podaci spojeni – bez spekulativnih lista.",
+    },
+    image: {
+      url: IMG.euro,
+      alt: {
+        de: "UEFA",
+        en: "UEFA",
+        hr: "UEFA",
+      },
+    },
+  },
+  {
+    id: "dinamo-europe-path-2026",
+    date: "2026-07-23",
+    category: "clubs",
+    tag: {
+      de: "UCL / Europa",
+      en: "UCL / Europe",
+      hr: "UCL / Europa",
+    },
+    title: {
+      de: "Dinamo im Europacup: Quali-Pfad und kroatische Talente",
+      en: "Dinamo in Europe: qualifying path and Croatian talents",
+      hr: "Dinamo u Europi: put kvalifikacija i hrvatski talenti",
+    },
+    summary: {
+      de: "Maksimir-Club sucht den Weg in die Gruppenphase – Minuten für HNL-Talente unter Bilić-Beobachtung.",
+      en: "Maksimir club seeks a path to the group stage – minutes for HNL talents under Bilić’s watch.",
+      hr: "Maksimirski klub traži put u skupine – minute za HNL talente pod Bilićevim okom.",
+    },
+    body: {
+      de: "Dinamo Zagreb ist traditionell Kroatiens Aushängeschild in der Champions-League- oder Europa-League-Qualifikation. Ende Juli 2026 laufen die Europacup-Wochen – für junge Kroaten wichtige Bühne, für Bilić Beobachtungsfeld.\n\nErgebnisse und Termine, sofern API-Daten vorliegen, im Live-Board und Spiele-Bereich der App.",
+      en: "Dinamo Zagreb is traditionally Croatia’s standard-bearer in Champions League or Europa League qualifying. Late July 2026 is European week – a stage for young Croatians and a scouting ground for Bilić.\n\nResults and dates where APIs provide data: live board and matches area.",
+      hr: "Dinamo Zagreb tradicionalno je hrvatski standard u kvalifikacijama Lige prvaka ili Europske lige. Kraj srpnja 2026. europski su tjedni – pozornica za mlade Hrvate i promatranje za Bilića.\n\nRezultati i termini gdje API daje podatke: live board i utakmice.",
+    },
+    image: {
+      url: IMG.dinamo,
+      alt: {
+        de: "Dinamo Zagreb",
+        en: "Dinamo Zagreb",
+        hr: "Dinamo Zagreb",
+      },
+    },
+  },
+  {
+    id: "livakovic-fener-prep-2026",
+    date: "2026-07-22",
+    category: "clubs",
+    tag: {
+      de: "Torwart",
+      en: "Goalkeeper",
+      hr: "Vratar",
+    },
+    title: {
+      de: "Livaković: Club-Vorbereitung nach der WM – Konkurrenz im Tor",
+      en: "Livaković: club pre-season after the World Cup – rivalry in goal",
+      hr: "Livaković: klupske pripreme nakon SP-a – konkurencija na golu",
+    },
+    summary: {
+      de: "Nationaltorwart kehrt in den Club-Alltag zurück – für die NL im September bleibt er eine zentrale Figur.",
+      en: "National goalkeeper returns to club routine – for September NL he remains a central figure.",
+      hr: "Reprezentativni vratar vraća se u klupsku rutinu – za LN u rujnu ostaje središnja figura.",
+    },
+    body: {
+      de: "Dominik Livaković gehörte zum WM-Kader der Vatreni. Nach dem Turnier und dem Trainerwechsel unter Bilić zählt Club-Form und Konkurrenzsituation. Im Tracker: Club und nächste Spiele, sobald Daten angebunden sind.",
+      en: "Dominik Livaković was in Croatia’s World Cup squad. After the tournament and Bilić’s appointment, club form and competition for the gloves matter. Tracker: club and next matches when data is connected.",
+      hr: "Dominik Livaković bio je u SP sastavu Vatrenih. Nakon turnira i imenovanja Bilića broji klupska forma i konkurencija. Tracker: klub i iduće utakmice kad su podaci spojeni.",
+    },
+    playerId: "livakovic",
+    image: {
+      url: IMG.croatiaEspn,
+      alt: {
+        de: "Kroatien",
+        en: "Croatia",
+        hr: "Hrvatska",
+      },
+    },
+  },
+  {
+    id: "pasalic-atalanta-2026",
+    date: "2026-07-21",
+    category: "clubs",
+    tag: {
+      de: "Serie A",
+      en: "Serie A",
+      hr: "Serie A",
+    },
+    title: {
+      de: "Pašalić & Atalanta: Vorbereitung in Bergamo nach dem WM-Turnier",
+      en: "Pašalić & Atalanta: Bergamo pre-season after the World Cup",
+      hr: "Pašalić i Atalanta: pripreme u Bergamu nakon SP-a",
+    },
+    summary: {
+      de: "Erfahrener Mittelfeldspieler der Vatreni startet in die Serie-A-Vorbereitung – Option für Bilićs Herbstkader.",
+      en: "Experienced Vatreni midfielder starts Serie A pre-season – option for Bilić’s autumn squad.",
+      hr: "Iskusni veznjak Vatrenih kreće u pripreme Serie A – opcija za Bilićev jesenski sastav.",
+    },
+    body: {
+      de: "Mario Pašalić bleibt eine erfahrene Option im zentralen Mittelfeld. Nach WM und Trainerwechsel zählt, wie er in der Atalanta-Vorbereitung belastet wird. Tracker und News halten Club- und Nationalteam-Kontext zusammen.",
+      en: "Mario Pašalić remains an experienced central-midfield option. After the World Cup and coaching change, how Atalanta manage his load in pre-season matters. Tracker and news keep club and national-team context together.",
+      hr: "Mario Pašalić ostaje iskusna opcija u središini. Nakon SP-a i smjene izbornika broji kako ga Atalanta opterećuje u pripremama. Tracker i vijesti drže kontekst kluba i reprezentacije.",
+    },
+    playerId: "pasalic",
+    image: {
+      url: IMG.serieA,
+      alt: {
+        de: "Serie A",
+        en: "Serie A",
+        hr: "Serie A",
+      },
+    },
+  },
   {
     id: "modric-bilic-continue-2026",
     date: "2026-07-21",
