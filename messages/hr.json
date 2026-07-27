@@ -1,8 +1,53 @@
 {
   "Meta": {
-    "title": "Hrvatska Sport Live – hrvatski nogometaši i utakmice uživo",
-    "description": "Rezultati uživo, tracker, vijesti i TV savjeti za hrvatske nogometaše u Premier ligi, Bundesligi, Serie A, HNL-u i Ligi nacija.",
-    "keywords": "Hrvatska, nogomet, uživo, Modrić, Gvardiol, HNL, Vatreni, rezultati, vijesti"
+    "title": "Hrvatska Sport Live – streamovi, TV vodič i Vatreni",
+    "description": "Live board, TV vodič (HRT, Arena, Sportklub), legalni streamovi i tracker – mobilno i pouzdano.",
+    "keywords": "Hrvatska Sport Live, HRT, Arena Sport, DAZN, HNL, Vatreni, TV vodič, stream"
+  },
+  "Guide": {
+    "liveNow": "Uživo sada",
+    "upcoming": "Uskoro",
+    "live": "UŽIVO",
+    "countdown": "Početak za",
+    "streams": "Streamovi i kanali",
+    "watch": "Gledaj",
+    "free": "Free",
+    "paid": "Pretplata",
+    "positive": "{pct}% pozitivno",
+    "upvote": "Korisno",
+    "downvote": "Nije korisno",
+    "reportBroken": "Prijavi kvar",
+    "reportThanks": "Hvala – prijava spremljena.",
+    "searchPlaceholder": "Traži momčadi, lige, kanale…",
+    "sportFilter": "Filter sporta",
+    "filterAll": "Sve",
+    "noLive": "Trenutno nema live utakmice u vodiču – vidi Uskoro.",
+    "noUpcoming": "Nema nadolazećih utakmica za ovaj filter.",
+    "tvGuideTitle": "Što je danas na TV-u?",
+    "tvGuideSubtitle": "Raspored HRT, Arena Sport i Sportklub (demo podaci).",
+    "tvChannels": "Kanali",
+    "tvEmpty": "Nema unosa za ovaj kanal.",
+    "vpnMessage": "🔒 Stream „{stream}“ blokiran u inozemstvu? NordVPN često otključa za ~10 sekundi – poštuj AGB i prava.",
+    "vpnStreamFallback": "ovaj stream",
+    "vpnCta": "Otvori NordVPN",
+    "sport": {
+      "all": "Sve",
+      "football": "Nogomet",
+      "handball": "Rukomet",
+      "basketball": "Košarka",
+      "waterpolo": "Vaterpolo",
+      "tv": "TV kanali"
+    },
+    "quality": {
+      "hd-1080": "HD 1080p",
+      "hd-720": "HD 720p",
+      "sd": "SD",
+      "croatian-commentary": "HR komentar",
+      "stable": "Vrlo stabilno",
+      "free": "Besplatno",
+      "geo-locked": "Geo-lock"
+    },
+    "sectionMore": "Vatreni, vijesti i tracker"
   },
   "Nav": {
     "home": "Početna",

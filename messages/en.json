@@ -1,8 +1,53 @@
 {
   "Meta": {
-    "title": "Croatia Sport Live – Croatian footballers & matches live",
-    "description": "Live scores, tracker, news and TV tips for Croatian footballers in Premier League, Bundesliga, Serie A, HNL and Nations League.",
-    "keywords": "Croatia, football, live, Modric, Gvardiol, HNL, Vatreni, scores, news"
+    "title": "Croatia Sport Live – streams, TV guide & Vatreni",
+    "description": "Live board, TV guide (HRT, Arena, Sportklub), legal streams and tracker for Croatian sports – mobile-first & trustworthy.",
+    "keywords": "Croatia Sport Live, HRT, Arena Sport, DAZN, HNL, Vatreni, TV guide, stream"
+  },
+  "Guide": {
+    "liveNow": "Live Now",
+    "upcoming": "Upcoming",
+    "live": "LIVE",
+    "countdown": "Kick-off in",
+    "streams": "Streams & channels",
+    "watch": "Watch",
+    "free": "Free",
+    "paid": "Sub",
+    "positive": "{pct}% positive",
+    "upvote": "Helpful",
+    "downvote": "Not helpful",
+    "reportBroken": "Report broken",
+    "reportThanks": "Thanks – report saved.",
+    "searchPlaceholder": "Search teams, leagues, channels…",
+    "sportFilter": "Sport filter",
+    "filterAll": "All",
+    "noLive": "No live match in the guide right now – check Upcoming.",
+    "noUpcoming": "No upcoming matches for this filter.",
+    "tvGuideTitle": "What's on TV today?",
+    "tvGuideSubtitle": "Schedule for HRT, Arena Sport & Sportklub (demo data).",
+    "tvChannels": "Channels",
+    "tvEmpty": "No entries for this channel.",
+    "vpnMessage": "🔒 Stream “{stream}” blocked abroad? NordVPN can often unlock it in about 10 seconds – respect terms & rights.",
+    "vpnStreamFallback": "this stream",
+    "vpnCta": "Open NordVPN",
+    "sport": {
+      "all": "All",
+      "football": "Football",
+      "handball": "Handball",
+      "basketball": "Basketball",
+      "waterpolo": "Water polo",
+      "tv": "TV channels"
+    },
+    "quality": {
+      "hd-1080": "HD 1080p",
+      "hd-720": "HD 720p",
+      "sd": "SD",
+      "croatian-commentary": "HR commentary",
+      "stable": "Very stable",
+      "free": "Free",
+      "geo-locked": "Geo-lock"
+    },
+    "sectionMore": "Vatreni, news & tracker"
   },
   "Nav": {
     "home": "Home",

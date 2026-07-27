@@ -17,12 +17,25 @@ export function MobileBottomNav() {
   const onHome = pathname === "/" || pathname === "";
 
   const items = [
-    { href: "/#vatreni", icon: Flag, label: t("vatreni"), short: "NT", hash: true },
     {
-      href: "/#favorites",
-      icon: Star,
-      label: tFav("title"),
-      short: tFav("navShort"),
+      href: "/#live-board",
+      icon: Radio,
+      label: t("matches"),
+      short: "Live",
+      hash: true,
+    },
+    {
+      href: "/#tv-guide",
+      icon: Tv2,
+      label: t("tv"),
+      short: "TV",
+      hash: true,
+    },
+    {
+      href: "/#vatreni",
+      icon: Flag,
+      label: t("vatreni"),
+      short: "NT",
       hash: true,
     },
     {
@@ -33,20 +46,19 @@ export function MobileBottomNav() {
       hash: false,
     },
     {
-      href: "/#dashboard",
-      icon: Radio,
-      label: t("matches"),
-      short: t("matches").slice(0, 6),
-      hash: true,
-    },
-    {
       href: "/#players",
       icon: Users,
       label: t("players"),
       short: t("players").slice(0, 6),
       hash: true,
     },
-    { href: "/#tv", icon: Tv2, label: t("tv"), short: "TV", hash: true },
+    {
+      href: "/#favorites",
+      icon: Star,
+      label: tFav("title"),
+      short: tFav("navShort"),
+      hash: true,
+    },
   ] as const;
 
   return (

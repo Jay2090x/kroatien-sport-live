@@ -21,36 +21,44 @@
   --border: #d5dde5;
   --input: #d5dde5;
   --ring: #c8102e;
-  --live: #ef4444;
+  --live: #16a34a;
+  --live-hot: #ef4444;
+  --croatia-red: #c8102e;
+  --croatia-blue: #171796;
   --radius: 0.75rem;
   --sahovnica-red: #c8102e;
   --sahovnica-white: #f8fafc;
+  --glow-live: none;
 }
 
 .dark {
-  --background: #070b12;
+  --background: #05080f;
   --foreground: #eef2f6;
-  --card: #0f1623;
+  --card: #0c121c;
   --card-foreground: #eef2f6;
-  --popover: #121a28;
+  --popover: #101826;
   --popover-foreground: #eef2f6;
   --primary: #e11d3a;
   --primary-foreground: #ffffff;
-  --secondary: #1a2435;
+  --secondary: #151d2c;
   --secondary-foreground: #eef2f6;
-  --muted: #1a2435;
+  --muted: #151d2c;
   --muted-foreground: #8b9bb0;
-  --accent: #16a34a;
-  --accent-foreground: #ffffff;
+  --accent: #22c55e;
+  --accent-foreground: #04120a;
   --destructive: #f87171;
   --destructive-foreground: #0b1220;
-  /* Hellere Borders – im Dark Mode besser sichtbar */
-  --border: #2d3b52;
-  --input: #2d3b52;
+  --border: #243044;
+  --input: #243044;
   --ring: #e11d3a;
-  --live: #f43f5e;
+  /* Neon-Live: dynamisches Grün für aktive Streams */
+  --live: #22c55e;
+  --live-hot: #f43f5e;
+  --croatia-red: #c8102e;
+  --croatia-blue: #171796;
   --sahovnica-red: #c8102e;
   --sahovnica-white: #1a2435;
+  --glow-live: 0 0 24px color-mix(in oklab, #22c55e 35%, transparent);
 }
 
 @theme inline {
@@ -74,6 +82,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-live: var(--live);
+  --color-live-hot: var(--live-hot, #f43f5e);
+  --color-croatia-red: var(--croatia-red, #c8102e);
+  --color-croatia-blue: var(--croatia-blue, #171796);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -169,8 +180,42 @@ body {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: white;
+  color: #04120a;
   background: var(--live);
+  box-shadow: var(--glow-live, none);
+}
+
+.live-badge-hot {
+  color: white;
+  background: var(--live-hot, #f43f5e);
+  box-shadow: 0 0 16px color-mix(in oklab, #f43f5e 40%, transparent);
+}
+
+.guide-card {
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--card) 100%, transparent) 0%,
+    color-mix(in oklab, var(--croatia-blue) 12%, var(--card)) 100%
+  );
+  border-radius: 1rem;
+}
+
+.guide-card-live {
+  border-color: color-mix(in oklab, var(--live) 45%, var(--border));
+  box-shadow: var(--glow-live, none);
+}
+
+.badge-croatia {
+  background: color-mix(in oklab, var(--croatia-red) 18%, transparent);
+  border: 1px solid color-mix(in oklab, var(--croatia-red) 45%, transparent);
+  color: #fecaca;
+}
+
+.badge-croatia-blue {
+  background: color-mix(in oklab, var(--croatia-blue) 35%, transparent);
+  border: 1px solid color-mix(in oklab, #3b82f6 40%, transparent);
+  color: #bfdbfe;
 }
 
 /* ─── Focus & a11y ─── */

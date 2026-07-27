@@ -7,6 +7,7 @@ import { FavoritesProvider } from "@/components/favorites/favorites-context";
 import { PushPrompt } from "@/components/push/push-prompt";
 import { MatchReminderWatcher } from "@/components/push/match-reminder-watcher";
 import { InstallHint } from "@/components/pwa/install-hint";
+import { RegisterServiceWorker } from "@/components/pwa/register-sw";
 import type { Match, Player } from "@/types";
 
 interface AppProvidersProps {
@@ -37,6 +38,7 @@ export function AppProviders({
       >
         <FavoritesProvider>
           {children}
+          <RegisterServiceWorker />
           <MatchReminderWatcher />
           <PushPrompt />
           <InstallHint />

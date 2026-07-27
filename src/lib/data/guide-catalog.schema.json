@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kroatien-sport-live.vercel.app/schemas/guide-catalog.json",
+  "title": "Kroatien Sport Live – Guide Catalog",
+  "description": "Matches, streams and TV guide slots. Easy to load from API or CMS.",
+  "type": "object",
+  "required": ["version", "updatedAt", "matches", "tvGuide"],
+  "properties": {
+    "version": { "type": "string" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "sport",
+          "status",
+          "kickoff",
+          "homeTeam",
+          "awayTeam",
+          "competition",
+          "streams"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "sport": {
+            "enum": ["football", "handball", "basketball", "waterpolo"]
+          },
+          "status": { "enum": ["live", "upcoming", "finished"] },
+          "kickoff": { "type": "string", "format": "date-time" },
+          "homeTeam": { "type": "string" },
+          "awayTeam": { "type": "string" },
+          "homeScore": { "type": ["number", "null"] },
+          "awayScore": { "type": ["number", "null"] },
+          "minute": { "type": ["number", "null"] },
+          "competition": { "type": "string" },
+          "competitionShort": { "type": "string" },
+          "venue": { "type": "string" },
+          "featured": { "type": "boolean" },
+          "streams": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "url",
+                "brand",
+                "qualities",
+                "upvotes",
+                "downvotes",
+                "availableIn",
+                "type"
+              ],
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "url": { "type": "string" },
+                "brand": { "type": "string" },
+                "qualities": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "hd-1080",
+                      "hd-720",
+                      "sd",
+                      "croatian-commentary",
+                      "stable",
+                      "free",
+                      "geo-locked"
+                    ]
+                  }
+                },
+                "upvotes": { "type": "integer" },
+                "downvotes": { "type": "integer" },
+                "availableIn": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 2, "maxLength": 2 }
+                },
+                "geoLockedOutside": { "type": "boolean" },
+                "type": { "enum": ["free", "paid", "streaming"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tvGuide": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "channelId",
+          "channelName",
+          "start",
+          "end",
+          "title",
+          "sport"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "channelId": { "type": "string" },
+          "channelName": { "type": "string" },
+          "start": { "type": "string", "format": "date-time" },
+          "end": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "sport": {
+            "enum": ["football", "handball", "basketball", "waterpolo"]
+          },
+          "isLive": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

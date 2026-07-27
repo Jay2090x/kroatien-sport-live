@@ -1,8 +1,53 @@
 {
   "Meta": {
-    "title": "Kroatien Sport Live – Kroatische Fußballspieler & Spiele live",
-    "description": "Live-Ergebnisse, Vatreni-News, Spieler-Tracker und TV-Tipps zu kroatischen Fußballspielern – Bilić, Modrić, Gvardiol, HNL, Premier League, Nations League.",
-    "keywords": "Kroatien Fußball, Vatreni News, Slaven Bilić, Luka Modrić, Gvardiol, Live Ergebnisse, HNL, Nations League, kroatische Spieler"
+    "title": "Kroatien Sport Live – Streams, TV-Guide & Vatreni live",
+    "description": "Live-Board, TV-Guide (HRT, Arena, Sportklub), legale Streams und Tracker für kroatische Sportstars – mobil & vertrauenswürdig.",
+    "keywords": "Kroatien Sport Live, HRT, Arena Sport, DAZN, HNL Live, Vatreni, TV Guide, Stream"
+  },
+  "Guide": {
+    "liveNow": "Live Now",
+    "upcoming": "Demnächst",
+    "live": "LIVE",
+    "countdown": "Anpfiff in",
+    "streams": "Streams & Sender",
+    "watch": "Ansehen",
+    "free": "Free",
+    "paid": "Abo",
+    "positive": "{pct}% positiv",
+    "upvote": "Hilfreich",
+    "downvote": "Nicht hilfreich",
+    "reportBroken": "Defekt melden",
+    "reportThanks": "Danke – Meldung gespeichert.",
+    "searchPlaceholder": "Teams, Ligen, Sender suchen…",
+    "sportFilter": "Sport-Filter",
+    "filterAll": "Alle",
+    "noLive": "Gerade kein Live-Spiel im Guide – schau unter Demnächst.",
+    "noUpcoming": "Keine anstehenden Spiele für diesen Filter.",
+    "tvGuideTitle": "Was läuft heute im TV?",
+    "tvGuideSubtitle": "Sendeplan HRT, Arena Sport & Sportklub (Demo-Daten).",
+    "tvChannels": "Sender",
+    "tvEmpty": "Kein Eintrag für diesen Sender.",
+    "vpnMessage": "🔒 Stream „{stream}“ im Ausland gesperrt? Mit NordVPN oft in ca. 10 Sekunden freischalten – AGB & Rechte beachten.",
+    "vpnStreamFallback": "dieser Stream",
+    "vpnCta": "NordVPN öffnen",
+    "sport": {
+      "all": "Alle",
+      "football": "Fußball",
+      "handball": "Handball",
+      "basketball": "Basketball",
+      "waterpolo": "Wasserball",
+      "tv": "TV-Sender"
+    },
+    "quality": {
+      "hd-1080": "HD 1080p",
+      "hd-720": "HD 720p",
+      "sd": "SD",
+      "croatian-commentary": "HR Kommentar",
+      "stable": "Sehr stabil",
+      "free": "Kostenlos",
+      "geo-locked": "Geo-Lock"
+    },
+    "sectionMore": "Vatreni, News & Tracker"
   },
   "Nav": {
     "home": "Start",

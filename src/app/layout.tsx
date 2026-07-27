@@ -39,6 +39,10 @@ export const metadata: Metadata = {
     apple: "/icon-192.png",
   },
   manifest: "/manifest.webmanifest",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#05080f" },
+    { media: "(prefers-color-scheme: light)", color: "#c8102e" },
+  ],
   other: {
     "mobile-web-app-capable": "yes",
   },

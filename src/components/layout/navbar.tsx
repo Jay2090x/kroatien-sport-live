@@ -13,12 +13,12 @@ import { Link } from "@/i18n/navigation";
 import { SITE } from "@/lib/constants";
 
 const NAV_LINKS = [
+  { href: "/#live-board", key: "matches" as const, hash: true },
+  { href: "/#tv-guide", key: "tv" as const, hash: true },
   { href: "/#vatreni", key: "vatreni" as const, hash: true },
-  { href: "/#favorites", key: "favorites" as const, hash: true },
   { href: "/news", key: "news" as const, hash: false },
-  { href: "/#dashboard", key: "matches" as const, hash: true },
   { href: "/#players", key: "players" as const, hash: true },
-  { href: "/#tv", key: "tv" as const, hash: true },
+  { href: "/#favorites", key: "favorites" as const, hash: true },
 ];
 
 export function Navbar() {

@@ -1,15 +1,15 @@
 {
   "name": "Kroatien Sport Live",
   "short_name": "KSL",
-  "description": "Live-Ergebnisse, Vatreni, Tracker und News für kroatische Fußballspieler",
+  "description": "Live-Board, TV-Guide, legale Streams und Tracker für kroatischen Sport",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#070b12",
+  "background_color": "#05080f",
   "theme_color": "#c8102e",
   "lang": "de",
-  "categories": ["sports", "news"],
+  "categories": ["sports", "entertainment", "news"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -28,6 +28,18 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live Now",
+      "url": "/#live-board",
+      "description": "Live-Spiele öffnen"
+    },
+    {
+      "name": "TV Guide",
+      "url": "/#tv-guide",
+      "description": "Was läuft heute im TV"
     }
   ]
 }
