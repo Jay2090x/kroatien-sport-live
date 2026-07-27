@@ -24,7 +24,7 @@
     "noLive": "No live match in the guide right now – check Upcoming.",
     "noUpcoming": "No upcoming matches for this filter.",
     "tvGuideTitle": "What's on TV today?",
-    "tvGuideSubtitle": "Schedule for HRT, Arena Sport & Sportklub (demo data).",
+    "tvGuideSubtitle": "Today: from live fixtures + HRT/Arena/Sportklub tips.",
     "tvChannels": "Channels",
     "tvEmpty": "No entries for this channel.",
     "vpnMessage": "🔒 Stream “{stream}” blocked abroad? NordVPN can often unlock it in about 10 seconds – respect terms & rights.",
@@ -47,7 +47,12 @@
       "free": "Free",
       "geo-locked": "Geo-lock"
     },
-    "sectionMore": "Vatreni, news & tracker"
+    "sectionMore": "Vatreni, news & tracker",
+    "liveNowSub": "Live matches with channels & community trust",
+    "upcomingSub": "Countdown, TV rights and legal links",
+    "dataHint": "{guide} fixtures · {live} from live API",
+    "refresh": "Refresh",
+    "legalFootnote": "Official providers only. No illegal streams. TV guide from live fixtures + channel tips."
   },
   "Nav": {
     "home": "Home",

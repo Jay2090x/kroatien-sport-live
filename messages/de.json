@@ -24,7 +24,7 @@
     "noLive": "Gerade kein Live-Spiel im Guide – schau unter Demnächst.",
     "noUpcoming": "Keine anstehenden Spiele für diesen Filter.",
     "tvGuideTitle": "Was läuft heute im TV?",
-    "tvGuideSubtitle": "Sendeplan HRT, Arena Sport & Sportklub (Demo-Daten).",
+    "tvGuideSubtitle": "Heute: aus Live-Spielen + HRT/Arena/Sportklub-Hinweisen.",
     "tvChannels": "Sender",
     "tvEmpty": "Kein Eintrag für diesen Sender.",
     "vpnMessage": "🔒 Stream „{stream}“ im Ausland gesperrt? Mit NordVPN oft in ca. 10 Sekunden freischalten – AGB & Rechte beachten.",
@@ -47,7 +47,12 @@
       "free": "Kostenlos",
       "geo-locked": "Geo-Lock"
     },
-    "sectionMore": "Vatreni, News & Tracker"
+    "sectionMore": "Vatreni, News & Tracker",
+    "liveNowSub": "Laufende Spiele mit Sendern & Community-Trust",
+    "upcomingSub": "Countdown, TV-Rechte und legale Links",
+    "dataHint": "{guide} Termine · {live} aus Live-API",
+    "refresh": "Aktualisieren",
+    "legalFootnote": "Nur offizielle Anbieter. Keine illegalen Streams. TV-Guide aus Live-Fixtures + Sender-Hinweisen."
   },
   "Nav": {
     "home": "Start",

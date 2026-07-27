@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { TvGuideSlot } from "@/types/guide";
+import { SectionHeader } from "@/components/layout/section-header";
 import { cn } from "@/lib/utils";
 import { Tv2 } from "lucide-react";
 
-const CHANNELS = ["all", "HRT 1", "HRT 2", "Arena Sport 1", "Arena Sport 2", "Sport Klub"] as const;
+const CHANNELS = ["all", "HRT 1", "HRT 2", "Arena Sport 1", "Sport Klub", "Sky Sport", "DAZN"] as const;
 
 export function TvGuideToday({ slots }: { slots: TvGuideSlot[] }) {
   const t = useTranslations("Guide");
@@ -16,7 +17,9 @@ export function TvGuideToday({ slots }: { slots: TvGuideSlot[] }) {
     const list =
       channel === "all"
         ? slots
-        : slots.filter((s) => s.channelName === channel);
+        : slots.filter((s) =>
+            s.channelName.toLowerCase().includes(channel.toLowerCase().split(" ")[0]!)
+          );
     return [...list].sort(
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
     );
@@ -28,16 +31,12 @@ export function TvGuideToday({ slots }: { slots: TvGuideSlot[] }) {
       className="scroll-mt-16"
       aria-labelledby="tv-guide-title"
     >
-      <div className="mb-3 flex items-center gap-2">
-        <Tv2 className="h-5 w-5 text-primary" aria-hidden />
-        <h2
-          id="tv-guide-title"
-          className="text-lg font-bold tracking-tight sm:text-xl"
-        >
-          {t("tvGuideTitle")}
-        </h2>
-      </div>
-      <p className="mb-3 text-xs text-muted-foreground">{t("tvGuideSubtitle")}</p>
+      <SectionHeader
+        id="tv-guide-title"
+        title={t("tvGuideTitle")}
+        subtitle={t("tvGuideSubtitle")}
+        icon={<Tv2 className="h-4 w-4 text-primary" aria-hidden />}
+      />
 
       <div
         className="mb-3 flex gap-1.5 overflow-x-auto pb-1"

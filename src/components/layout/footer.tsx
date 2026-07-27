@@ -26,20 +26,20 @@ export function Footer() {
             className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground"
             aria-label={tNav("quickNav")}
           >
+            <a href="#live-board" className="hover:text-foreground">
+              {tNav("matches")}
+            </a>
+            <a href="#tv-guide" className="hover:text-foreground">
+              {tNav("tv")}
+            </a>
             <a href="#vatreni" className="hover:text-foreground">
               {tNav("vatreni")}
             </a>
             <a href="#news" className="hover:text-foreground">
               {tNav("news")}
             </a>
-            <a href="#dashboard" className="hover:text-foreground">
-              {tNav("matches")}
-            </a>
             <a href="#players" className="hover:text-foreground">
               {tNav("players")}
-            </a>
-            <a href="#tv" className="hover:text-foreground">
-              {tNav("tv")}
             </a>
           </nav>
         </div>

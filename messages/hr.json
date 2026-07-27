@@ -24,7 +24,7 @@
     "noLive": "Trenutno nema live utakmice u vodiču – vidi Uskoro.",
     "noUpcoming": "Nema nadolazećih utakmica za ovaj filter.",
     "tvGuideTitle": "Što je danas na TV-u?",
-    "tvGuideSubtitle": "Raspored HRT, Arena Sport i Sportklub (demo podaci).",
+    "tvGuideSubtitle": "Danas: iz live utakmica + savjeti HRT/Arena/Sportklub.",
     "tvChannels": "Kanali",
     "tvEmpty": "Nema unosa za ovaj kanal.",
     "vpnMessage": "🔒 Stream „{stream}“ blokiran u inozemstvu? NordVPN često otključa za ~10 sekundi – poštuj AGB i prava.",
@@ -47,7 +47,12 @@
       "free": "Besplatno",
       "geo-locked": "Geo-lock"
     },
-    "sectionMore": "Vatreni, vijesti i tracker"
+    "sectionMore": "Vatreni, vijesti i tracker",
+    "liveNowSub": "Utakmice uživo s kanalima i community trustom",
+    "upcomingSub": "Odbrojavanje, TV prava i legalni linkovi",
+    "dataHint": "{guide} termina · {live} s live API-ja",
+    "refresh": "Osvježi",
+    "legalFootnote": "Samo službeni pružatelji. Bez ilegalnih streamova. TV vodič iz live fixturea + savjeta kanala."
   },
   "Nav": {
     "home": "Početna",

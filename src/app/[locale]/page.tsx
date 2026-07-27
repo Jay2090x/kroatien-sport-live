@@ -3,15 +3,22 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { LiveMatchBoard } from "@/components/guide/live-match-board";
-import { MatchDashboard } from "@/components/matches/match-dashboard";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
 import { NewsSection } from "@/components/news/news-section";
 import { PlayerTracker } from "@/components/players/player-tracker";
 import { MyCroatians } from "@/components/favorites/my-croatians";
-import { TvSection } from "@/components/tv/tv-section";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
+import { LegalStreamsStrip } from "@/components/tv/legal-streams-strip";
 
+/**
+ * Ein roter Faden:
+ * 1) Live & TV (gemergte API + Guide)
+ * 2) Nationalteam-Fokus
+ * 3) News
+ * 4) Spieler (Favoriten + Tracker)
+ * 5) Kompakter Legal-TV-Hinweis (kein zweites großes TV-Board)
+ */
 export default async function HomePage({
   params,
 }: {
@@ -20,7 +27,6 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Common");
-  const tGuide = await getTranslations("Guide");
 
   return (
     <>
@@ -33,27 +39,21 @@ export default async function HomePage({
 
       <Navbar />
       <main className="pb-20 lg:pb-0">
-        {/* Primary: modern Live & TV guide board */}
-        <div
-          id="live-board"
-          className="border-b border-border bg-gradient-to-b from-[color-mix(in_oklab,var(--croatia-blue)_14%,var(--background))] to-background"
-        >
-          <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-10 px-3 py-5 sm:space-y-12 sm:px-6 sm:py-7 lg:px-8">
+          <div id="live-board" className="scroll-mt-16">
             <LiveMatchBoard />
           </div>
-        </div>
 
-        {/* Existing product depth below */}
-        <div className="mx-auto max-w-7xl space-y-7 px-3 py-5 sm:space-y-9 sm:px-6 sm:py-6 lg:px-8">
-          <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-            {tGuide("sectionMore")}
-          </p>
           <NationalTeamSection />
-          <MyCroatians />
+
           <NewsSection />
-          <MatchDashboard />
-          <PlayerTracker />
-          <TvSection />
+
+          <div className="space-y-8">
+            <MyCroatians />
+            <PlayerTracker />
+          </div>
+
+          <LegalStreamsStrip />
         </div>
       </main>
       <Footer />
