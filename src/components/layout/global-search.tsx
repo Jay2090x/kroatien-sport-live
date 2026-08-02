@@ -2,19 +2,22 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Search, User, Calendar, X } from "lucide-react";
+import { Search, User, Calendar, X, Newspaper } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Input } from "@/components/ui/input";
 import { cn, textMatchesQuery, isLiveStatus, formatKickoff } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
+import { getDailyNews, tNews } from "@/lib/data/news";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 
 /**
- * Globale Suche: Spieler + Spiele, Dropdown, Scroll zu Sektionen
+ * Globale Suche: Spieler + Spiele + News – i18n, Scroll zu Sektionen
  */
 export function GlobalSearch({ className }: { className?: string }) {
   const t = useTranslations("Nav");
   const tMatch = useTranslations("Match");
+  const tSearch = useTranslations("Search");
   const locale = useLocale();
   const {
     filters,
@@ -24,6 +27,7 @@ export function GlobalSearch({ className }: { className?: string }) {
     players,
     clubMatches,
     nationalTeamMatches,
+    matches,
     resetFilters,
   } = useDashboard();
 
@@ -58,7 +62,21 @@ export function GlobalSearch({ className }: { className?: string }) {
       .slice(0, 6);
   }, [clubMatches, nationalTeamMatches, q]);
 
-  const hasHits = playerHits.length > 0 || matchHits.length > 0;
+  const newsHits = useMemo(() => {
+    if (!q || q.length < 2) return [];
+    const articles = getDailyNews(new Date(), { matches, players });
+    return articles
+      .filter(
+        (a) =>
+          textMatchesQuery(tNews(a.title, locale), q) ||
+          textMatchesQuery(tNews(a.summary, locale), q) ||
+          textMatchesQuery(tNews(a.tag, locale), q)
+      )
+      .slice(0, 4);
+  }, [q, matches, players, locale]);
+
+  const hasHits =
+    playerHits.length > 0 || matchHits.length > 0 || newsHits.length > 0;
   const showPanel = open && q.length >= 1;
 
   useEffect(() => {
@@ -76,7 +94,9 @@ export function GlobalSearch({ className }: { className?: string }) {
 
   function goMatches() {
     setOpen(false);
-    document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("live-board")
+      ?.scrollIntoView({ behavior: "smooth" });
   }
 
   function pickPlayer(id: string) {
@@ -91,7 +111,9 @@ export function GlobalSearch({ className }: { className?: string }) {
       nationalTeamMatches.find((x) => x.id === id);
     if (m) setSelectedMatch(m);
     setOpen(false);
-    document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("live-board")
+      ?.scrollIntoView({ behavior: "smooth" });
   }
 
   function clear() {
@@ -148,7 +170,7 @@ export function GlobalSearch({ className }: { className?: string }) {
           type="button"
           onClick={clear}
           className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
-          aria-label="Clear"
+          aria-label={tSearch("clear")}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -158,14 +180,14 @@ export function GlobalSearch({ className }: { className?: string }) {
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-[70vh] overflow-y-auto rounded-xl border-2 border-border bg-card py-1 shadow-xl">
           {!hasHits && (
             <p className="px-3 py-3 text-xs text-muted-foreground">
-              Keine Treffer für „{q}“
+              {tSearch("noHits", { q })}
             </p>
           )}
 
           {playerHits.length > 0 && (
             <div>
               <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-                Spieler
+                {tSearch("players")}
               </p>
               <ul>
                 {playerHits.map((p) => (
@@ -206,7 +228,7 @@ export function GlobalSearch({ className }: { className?: string }) {
                 onClick={goPlayers}
                 className="w-full px-3 py-1.5 text-left text-[11px] font-semibold text-primary hover:bg-secondary"
               >
-                Alle Spieler-Treffer anzeigen →
+                {tSearch("allPlayers")}
               </button>
             </div>
           )}
@@ -214,7 +236,7 @@ export function GlobalSearch({ className }: { className?: string }) {
           {matchHits.length > 0 && (
             <div className="border-t border-border">
               <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-                Spiele
+                {tSearch("matches")}
               </p>
               <ul>
                 {matchHits.map((m) => (
@@ -251,8 +273,33 @@ export function GlobalSearch({ className }: { className?: string }) {
                 onClick={goMatches}
                 className="w-full px-3 py-1.5 text-left text-[11px] font-semibold text-primary hover:bg-secondary"
               >
-                Spiele-Sektion öffnen →
+                {tSearch("openBoard")}
               </button>
+            </div>
+          )}
+
+          {newsHits.length > 0 && (
+            <div className="border-t border-border">
+              <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                {tSearch("news")}
+              </p>
+              <ul>
+                {newsHits.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      href={`/news/${a.id}`}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => setOpen(false)}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-secondary"
+                    >
+                      <Newspaper className="h-4 w-4 shrink-0 text-primary" />
+                      <span className="min-w-0 truncate text-sm font-semibold">
+                        {tNews(a.title, locale)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

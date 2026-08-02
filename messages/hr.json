@@ -48,8 +48,18 @@
       "geo-locked": "Geo-lock"
     },
     "sectionMore": "Vatreni, vijesti i tracker",
-    "liveNowSub": "Utakmice uživo s kanalima i community trustom",
+    "liveNowSub": "Utakmice uživo · TV samo uz uredničku potvrdu",
     "upcomingSub": "Samo sljedećih 7 dana · s hrvatskim igračima",
+    "todayTitle": "Danas",
+    "todaySub": "Početak danas · lokalno vrijeme",
+    "noToday": "Danas nema više utakmica u vodiču.",
+    "next48Title": "Sljedećih 48 sati",
+    "next48Sub": "Uskoro (ne danas)",
+    "noNext48": "U sljedećih 48 sati nema više termina u vodiču.",
+    "weekTitle": "Ostatak tjedna (7 dana)",
+    "weekSub": "Ostali termini u 7-dnevnom prozoru",
+    "noWeek": "Nema daljnjih termina u sljedećih 7 dana.",
+    "transparency": "TV samo za potvrđene live prijenose. Bez ilegalnih streamova, bez VPN-a, bez affiliate oglasa. Informacije bez jamstva – prava se mijenjaju.",
     "dataHint": "{guide} termina · {live} s live API-ja",
     "refresh": "Osvježi",
     "legalFootnote": "Samo linkovi na službene stranice. Bez ilegalnih streamova, bez VPN prodaje, bez affiliate oglasa na startu.",
@@ -73,13 +83,24 @@
     "brandName": "Hrvatska Sport",
     "brandLive": "Uživo",
     "favorites": "Moji Hrvati",
-    "search": "Traži utakmice, igrače, klubove…",
+    "search": "Traži utakmice, igrače, klubove, vijesti…",
     "settings": "Postavke",
     "theme": "Tema",
     "language": "Jezik",
     "menuOpen": "Otvori izbornik",
     "menuClose": "Zatvori izbornik",
-    "quickNav": "Brza navigacija"
+    "quickNav": "Brza navigacija",
+    "navLive": "Uživo",
+    "navMore": "Više"
+  },
+  "Search": {
+    "clear": "Očisti pretragu",
+    "noHits": "Nema rezultata za „{q}“",
+    "players": "Igrači",
+    "matches": "Utakmice",
+    "news": "Vijesti",
+    "allPlayers": "Prikaži sve pogodke igrača →",
+    "openBoard": "Na live board →"
   },
   "Hero": {
     "badge": "Vatreni · diljem Europe",
@@ -126,7 +147,16 @@
     "emptyMatches": "Nema utakmica s omiljenima",
     "emptyMatchesHint": "Dodaj omiljene ili isključi filter omiljenih.",
     "nextPrefix": "Iduće",
-    "navShort": "Moji"
+    "navShort": "Moji",
+    "weekTitle": "Moj tjedan",
+    "weekSubtitle": "{matches} utakmica · {players} omiljenih",
+    "weekEmptyHint": "Označi igrača zvjezdicom – ovdje ćeš vidjeti njihove utakmice u sljedećih 7 dana.",
+    "weekNoMatches": "U sljedećih 7 dana nema utakmica tvojih omiljenih u feedu.",
+    "suggestions": "Prijedlozi za početak",
+    "exportIcs": "Kalendar (.ics)",
+    "manageFavs": "Upravljaj igračima",
+    "weekCalName": "KSL – Moj tjedan",
+    "icsLegal": "Izvoz kalendara: samo vrijeme početka i momčadi. Bez jamstva streama, bez oglasa."
   },
   "Push": {
     "title": "Podsjetnici na utakmice",
@@ -146,9 +176,12 @@
   "Vatreni": {
     "title": "Reprezentacija",
     "subtitle": "Sve iduće utakmice · sastav tek nakon nominacije",
+    "subtitleContext": "Sljedeće utakmice u fokusu · sastav tek nakon nominacije",
     "upcoming": "nadolazeće",
     "past": "prošle",
     "pastToggle": "Prošle ({count})",
+    "showMore": "Još {count} utakmica reprezentacije",
+    "hideMore": "Prikaži manje",
     "empty": "Nema učitanih utakmica reprezentacije",
     "emptyHint": "API je prazan ili offline. Osvježi stranicu.",
     "emptyUpcoming": "Nema nadolazeće utakmice",
@@ -158,6 +191,10 @@
   "News": {
     "title": "Vijesti",
     "subtitle": "Vatreni i klubovi · live termini · auto feed",
+    "subtitleValue": "Must-read i live sidra – ne arhivski dump",
+    "mustRead": "Must-read",
+    "ticker": "Više naslova",
+    "archiveLink": "Arhiva: svih {count} objava",
     "daily": "Dnevni update",
     "today": "Danas",
     "readMore": "Pročitaj više",
@@ -222,7 +259,9 @@
     "statusUnknown": "Nejasno",
     "statApps": "Utakmice",
     "statGoals": "Golovi",
-    "statAssists": "Asistencije"
+    "statAssists": "Asistencije",
+    "form": "Forma",
+    "formHint": "Nedavni klupski rezultati s ovim igračem u feedu (samo s poznatim konačnim rezultatom)."
   },
   "Status": {
     "confirmed": "potvrđeno",

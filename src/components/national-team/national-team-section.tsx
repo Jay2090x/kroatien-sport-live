@@ -20,8 +20,11 @@ import { useMemo, useState } from "react";
 import type { Match } from "@/types";
 import { cn } from "@/lib/utils";
 
+const FOCUS = 3;
+
 /**
- * Vatreni: alle kommenden Spiele sichtbar, Logos + TV-Chips, Deduplizierung.
+ * Vatreni als Kontext: nächste 1–3 Spiele prominent, Rest einklappbar.
+ * Kein vollständiger Kalender-Duplikat zum Live-Board.
  */
 export function NationalTeamSection() {
   const t = useTranslations("Vatreni");
@@ -30,11 +33,12 @@ export function NationalTeamSection() {
   const { nationalTeamMatches, setSelectedMatch, selectedMatch, refreshLive } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
+  const [showMore, setShowMore] = useState(false);
   const [showPast, setShowPast] = useState(false);
 
   const active = localMatch ?? selectedMatch;
 
-  const { allUpcoming, past, liveCount } = useMemo(() => {
+  const { focus, moreUpcoming, past, liveCount } = useMemo(() => {
     const seen = new Set<string>();
     const unique = nationalTeamMatches.filter((m) => {
       const day = m.kickoff.slice(0, 10);
@@ -64,7 +68,8 @@ export function NationalTeamSection() {
         (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
       );
     return {
-      allUpcoming: upcoming,
+      focus: upcoming.slice(0, FOCUS),
+      moreUpcoming: upcoming.slice(FOCUS),
       past: finished,
       liveCount: sorted.filter((m) => isLiveStatus(m.status)).length,
     };
@@ -95,21 +100,19 @@ export function NationalTeamSection() {
                 )}
               </h2>
               <p className="text-[11px] text-muted-foreground">
-                {t("subtitle")}
+                {t("subtitleContext")}
               </p>
             </div>
           </div>
           <div className="flex gap-1.5 text-[10px]">
             <Badge variant="secondary" className="px-1.5 py-0">
-              {allUpcoming.length} {t("upcoming")}
-            </Badge>
-            <Badge variant="outline" className="px-1.5 py-0">
-              {past.length} {t("past")}
+              {focus.length + (showMore ? moreUpcoming.length : 0)}{" "}
+              {t("upcoming")}
             </Badge>
           </div>
         </div>
 
-        {allUpcoming.length === 0 && past.length === 0 ? (
+        {focus.length === 0 && past.length === 0 ? (
           <EmptyState
             title={t("empty")}
             description={t("emptyHint")}
@@ -118,7 +121,7 @@ export function NationalTeamSection() {
           />
         ) : (
           <div className="space-y-2.5">
-            {allUpcoming.length === 0 ? (
+            {focus.length === 0 ? (
               <EmptyState
                 title={t("emptyUpcoming")}
                 description={t("emptyUpcomingHint")}
@@ -126,17 +129,46 @@ export function NationalTeamSection() {
               />
             ) : (
               <ul className="overflow-hidden rounded-xl border border-border/80 divide-y divide-border/80 bg-card/40">
-                {allUpcoming.map((m, i) => (
+                {focus.map((m, i) => (
                   <CompactRow
                     key={m.id}
                     match={m}
                     onOpen={() => openMatch(m)}
-                    highlight={i < 3}
+                    highlight={i === 0}
                     locale={locale}
                     liveLabel={tMatch("live")}
                   />
                 ))}
+                {showMore &&
+                  moreUpcoming.map((m) => (
+                    <CompactRow
+                      key={m.id}
+                      match={m}
+                      onOpen={() => openMatch(m)}
+                      locale={locale}
+                      liveLabel={tMatch("live")}
+                    />
+                  ))}
               </ul>
+            )}
+
+            {moreUpcoming.length > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 w-full text-xs text-muted-foreground sm:w-auto"
+                onClick={() => setShowMore((v) => !v)}
+              >
+                {showMore ? (
+                  <ChevronUp className="h-3.5 w-3.5" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5" />
+                )}
+                {showMore
+                  ? t("hideMore")
+                  : t("showMore", { count: moreUpcoming.length })}
+              </Button>
             )}
 
             {past.length > 0 && (
@@ -157,7 +189,7 @@ export function NationalTeamSection() {
                 </Button>
                 {showPast && (
                   <ul className="mt-1.5 overflow-hidden rounded-xl border border-border/60 divide-y divide-border/60 opacity-90">
-                    {past.slice(0, 12).map((m) => (
+                    {past.slice(0, 8).map((m) => (
                       <CompactRow
                         key={m.id}
                         match={m}
@@ -225,7 +257,6 @@ function CompactRow({
           muted && "opacity-80"
         )}
       >
-        {/* Zeile 1: Datum+Uhrzeit | Flagge Team – Team Flagge | Score/Status */}
         <div className="flex w-full items-center gap-2">
           <div className="w-[4.75rem] shrink-0 sm:w-[5.5rem]">
             {live ? (
@@ -269,6 +300,7 @@ function CompactRow({
             {comp}
             {m.venue ? ` · ${m.venue}` : ""}
           </p>
+          {/* Only channels already on match – confirmed/filtered upstream */}
           <TvChips channels={m.tvChannels} max={3} />
         </div>
       </button>

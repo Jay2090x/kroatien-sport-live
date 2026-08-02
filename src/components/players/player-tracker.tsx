@@ -136,6 +136,7 @@ export function PlayerTracker() {
                 player={player}
                 selected={filters.playerId === player.id}
                 nextMatch={nextByPlayer.get(player.id)}
+                allMatches={matches}
                 onSelect={() => setPlayerId(player.id)}
                 nextPrefix={t("nextPrefix")}
                 liveLabel={tMatch("live")}

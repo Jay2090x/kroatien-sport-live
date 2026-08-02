@@ -3,21 +3,23 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { LiveMatchBoard } from "@/components/guide/live-match-board";
+import { MyWeek } from "@/components/favorites/my-week";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
 import { NewsSection } from "@/components/news/news-section";
 import { PlayerTracker } from "@/components/players/player-tracker";
-import { MyCroatians } from "@/components/favorites/my-croatians";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
 import { LegalStreamsStrip } from "@/components/tv/legal-streams-strip";
+import { ComingSoonSports } from "@/components/sports/coming-soon-sports";
 
 /**
- * Ein roter Faden:
- * 1) Live & TV (gemergte API + Guide)
- * 2) Nationalteam-Fokus
- * 3) News
- * 4) Spieler (Favoriten + Tracker)
- * 5) Kompakter Legal-TV-Hinweis (kein zweites großes TV-Board)
+ * Value hub (rechtlich konservativ):
+ * 1) Live / Heute / 48h / 7d + Transparenz
+ * 2) Meine Woche (Favoriten + ICS)
+ * 3) Nationalteam (Kontext)
+ * 4) News must-read + ticker
+ * 5) Spieler-Tracker + Form
+ * 6) Legal TV + Mehr
  */
 export default async function HomePage({
   params,
@@ -44,16 +46,21 @@ export default async function HomePage({
             <LiveMatchBoard />
           </div>
 
+          <MyWeek />
+
           <NationalTeamSection />
 
           <NewsSection />
 
-          <div className="space-y-8">
-            <MyCroatians />
+          <div id="players-wrap" className="space-y-8">
             <PlayerTracker />
           </div>
 
           <LegalStreamsStrip />
+
+          <div id="more" className="scroll-mt-16 space-y-6">
+            <ComingSoonSports />
+          </div>
         </div>
       </main>
       <Footer />

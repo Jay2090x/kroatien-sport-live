@@ -14,11 +14,14 @@ import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
+import { computePlayerForm, type FormResult } from "@/lib/player-form";
 
 export interface PlayerCardProps {
   player: Player;
   selected?: boolean;
   nextMatch?: Match;
+  /** All matches – used only for derived W/D/L form */
+  allMatches?: Match[];
   locale: string;
   liveLabel: string;
   nextPrefix: string;
@@ -34,6 +37,7 @@ export function PlayerCard({
   player,
   selected,
   nextMatch,
+  allMatches,
   locale,
   liveLabel,
   nextPrefix,
@@ -47,6 +51,9 @@ export function PlayerCard({
   const short = getAvailabilityShort(player.availability, locale);
   const profile = getPlayerProfile(player.id);
   const stats = resolveStats(player, profile);
+  const form = allMatches
+    ? computePlayerForm(player.id, allMatches, 5)
+    : [];
   const nextLine = nextMatch
     ? formatNextLine(nextMatch, player, nextPrefix, liveLabel, locale)
     : null;
@@ -179,6 +186,21 @@ export function PlayerCard({
         >
           {nextLine ?? t("noMatches")}
         </p>
+
+        {/* Form W/D/L only when scores known */}
+        {form.length > 0 && (
+          <div
+            className="col-span-2 flex items-center gap-1"
+            title={t("formHint")}
+          >
+            <span className="text-[9px] font-semibold uppercase text-muted-foreground">
+              {t("form")}
+            </span>
+            {form.map((r, i) => (
+              <FormDot key={`${r}-${i}`} result={r} />
+            ))}
+          </div>
+        )}
       </button>
 
       <FavoriteButton
@@ -211,6 +233,22 @@ function resolveStats(
     return { apps: row.apps, goals: row.goals, assists: row.assists };
   }
   return { apps: null, goals: null, assists: null };
+}
+
+function FormDot({ result }: { result: FormResult }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-4 w-4 items-center justify-center rounded-sm text-[9px] font-black",
+        result === "W" && "bg-emerald-500/20 text-emerald-400",
+        result === "D" && "bg-muted text-muted-foreground",
+        result === "L" && "bg-red-500/20 text-red-400"
+      )}
+      aria-label={result}
+    >
+      {result}
+    </span>
+  );
 }
 
 function formatNextLine(

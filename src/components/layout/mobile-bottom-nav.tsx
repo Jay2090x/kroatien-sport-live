@@ -1,14 +1,13 @@
 "use client";
 
-import { Flag, Newspaper, Radio, Star, Tv2, Users } from "lucide-react";
+import { MoreHorizontal, Newspaper, Radio, Star, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Sticky Bottom-Nav nur auf Mobile
- * Home-Sektionen per Hash; News als echte Route
+ * Sticky Bottom-Nav (Mobile): Live · Meine · News · Spieler · Mehr
  */
 export function MobileBottomNav() {
   const t = useTranslations("Nav");
@@ -20,46 +19,39 @@ export function MobileBottomNav() {
     {
       href: "/#live-board",
       icon: Radio,
-      label: t("matches"),
-      short: "Live",
-      hash: true,
+      label: t("navLive"),
+      short: t("navLive"),
+      hash: true as const,
     },
     {
-      href: "/#tv-guide",
-      icon: Tv2,
-      label: t("tv"),
-      short: "TV",
-      hash: true,
-    },
-    {
-      href: "/#vatreni",
-      icon: Flag,
-      label: t("vatreni"),
-      short: "NT",
-      hash: true,
+      href: "/#favorites",
+      icon: Star,
+      label: tFav("navShort"),
+      short: tFav("navShort"),
+      hash: true as const,
     },
     {
       href: "/news",
       icon: Newspaper,
       label: t("news"),
-      short: t("news").slice(0, 6),
-      hash: false,
+      short: t("news").slice(0, 8),
+      hash: false as const,
     },
     {
       href: "/#players",
       icon: Users,
       label: t("players"),
-      short: t("players").slice(0, 6),
-      hash: true,
+      short: t("players").slice(0, 8),
+      hash: true as const,
     },
     {
-      href: "/#favorites",
-      icon: Star,
-      label: tFav("title"),
-      short: tFav("navShort"),
-      hash: true,
+      href: "/#more",
+      icon: MoreHorizontal,
+      label: t("navMore"),
+      short: t("navMore"),
+      hash: true as const,
     },
-  ] as const;
+  ];
 
   return (
     <nav

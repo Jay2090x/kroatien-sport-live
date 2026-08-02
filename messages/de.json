@@ -48,8 +48,18 @@
       "geo-locked": "Geo-Lock"
     },
     "sectionMore": "Vatreni, News & Tracker",
-    "liveNowSub": "Laufende Spiele mit Sendern & Community-Trust",
+    "liveNowSub": "Laufende Spiele · TV nur bei redaktioneller Bestätigung",
     "upcomingSub": "Nur die nächsten 7 Tage · mit kroatischen Spielern",
+    "todayTitle": "Heute",
+    "todaySub": "Anstoß heute · lokale Zeit",
+    "noToday": "Heute kein weiteres anstehendes Spiel im Guide.",
+    "next48Title": "Nächste 48 Stunden",
+    "next48Sub": "Bald anstehende Spiele (nicht heute)",
+    "noNext48": "In den nächsten 48 Stunden nichts weiteres im Guide.",
+    "weekTitle": "Rest der Woche (7 Tage)",
+    "weekSub": "Weitere Termine im 7-Tage-Fenster",
+    "noWeek": "Keine weiteren Termine in den nächsten 7 Tagen.",
+    "transparency": "TV nur bei bestätigter Live-Übertragung. Keine illegalen Streams, kein VPN, keine Affiliate-Werbung. Angaben ohne Gewähr – Rechte ändern sich.",
     "dataHint": "{guide} Termine · {live} aus Live-API",
     "refresh": "Aktualisieren",
     "legalFootnote": "Nur Links zu offiziellen Websites. Keine illegalen Streams, kein VPN-Verkauf, keine Affiliate-Werbung im Launch.",
@@ -73,13 +83,24 @@
     "brandName": "Kroatien Sport",
     "brandLive": "Live",
     "favorites": "Meine Kroaten",
-    "search": "Spiele, Spieler, Clubs suchen…",
+    "search": "Spiele, Spieler, Clubs, News…",
     "settings": "Einstellungen",
     "theme": "Design",
     "language": "Sprache",
     "menuOpen": "Menü öffnen",
     "menuClose": "Menü schließen",
-    "quickNav": "Schnellnavigation"
+    "quickNav": "Schnellnavigation",
+    "navLive": "Live",
+    "navMore": "Mehr"
+  },
+  "Search": {
+    "clear": "Suche leeren",
+    "noHits": "Keine Treffer für „{q}“",
+    "players": "Spieler",
+    "matches": "Spiele",
+    "news": "News",
+    "allPlayers": "Alle Spieler-Treffer anzeigen →",
+    "openBoard": "Zum Live-Board →"
   },
   "Hero": {
     "badge": "Vatreni · Europaweit",
@@ -126,7 +147,16 @@
     "emptyMatches": "Keine Spiele mit Favoriten",
     "emptyMatchesHint": "Favorisiere Spieler oder schalte den Favoriten-Filter aus.",
     "nextPrefix": "Nächstes",
-    "navShort": "Meine"
+    "navShort": "Meine",
+    "weekTitle": "Meine Woche",
+    "weekSubtitle": "{matches} Spiele · {players} Favoriten",
+    "weekEmptyHint": "Favorisiere Spieler mit dem Stern – dann siehst du hier ihre Spiele der nächsten 7 Tage.",
+    "weekNoMatches": "In den nächsten 7 Tagen keine Spiele deiner Favoriten im Feed.",
+    "suggestions": "Vorschläge zum Start",
+    "exportIcs": "Kalender (.ics)",
+    "manageFavs": "Spieler verwalten",
+    "weekCalName": "KSL – Meine Woche",
+    "icsLegal": "Kalender-Export: nur Anstoßzeiten und Teams. Keine Stream-Garantie, keine Werbung."
   },
   "Push": {
     "title": "Match-Erinnerungen",
@@ -146,9 +176,12 @@
   "Vatreni": {
     "title": "Nationalmannschaft",
     "subtitle": "Alle kommenden Länderspiele · Kader erst nach Nominierung",
+    "subtitleContext": "Nächste Länderspiele im Fokus · Kader erst nach Nominierung",
     "upcoming": "kommend",
     "past": "vergangen",
     "pastToggle": "Vergangene ({count})",
+    "showMore": "Weitere {count} Länderspiele",
+    "hideMore": "Weniger anzeigen",
     "empty": "Keine Länderspiele geladen",
     "emptyHint": "API gerade leer oder offline. Bitte kurz neu laden.",
     "emptyUpcoming": "Kein anstehendes Länderspiel",
@@ -158,6 +191,10 @@
   "News": {
     "title": "News",
     "subtitle": "Aktuelle Vatreni- & Club-Meldungen · Live-Anker · Auto-Feed",
+    "subtitleValue": "Must-read & Live-Anker – kein Archiv-Dump",
+    "mustRead": "Must-read",
+    "ticker": "Weitere Meldungen",
+    "archiveLink": "Archiv: alle {count} Beiträge",
     "daily": "Tages-Update",
     "today": "Heute",
     "readMore": "Mehr lesen",
@@ -222,7 +259,9 @@
     "statusUnknown": "Unklar",
     "statApps": "Spiele",
     "statGoals": "Tore",
-    "statAssists": "Assists"
+    "statAssists": "Assists",
+    "form": "Form",
+    "formHint": "Letzte Ergebnisse des Clubs mit diesem Spieler im Feed (nur mit bekanntem Endstand)."
   },
   "Status": {
     "confirmed": "bestätigt",

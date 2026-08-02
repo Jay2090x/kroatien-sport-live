@@ -48,8 +48,18 @@
       "geo-locked": "Geo-lock"
     },
     "sectionMore": "Vatreni, news & tracker",
-    "liveNowSub": "Live matches with channels & community trust",
+    "liveNowSub": "Live matches · TV only when editorially confirmed",
     "upcomingSub": "Next 7 days only · with Croatian players",
+    "todayTitle": "Today",
+    "todaySub": "Kick-off today · local time",
+    "noToday": "No more upcoming fixtures in the guide for today.",
+    "next48Title": "Next 48 hours",
+    "next48Sub": "Coming soon (not today)",
+    "noNext48": "Nothing else in the next 48 hours in the guide.",
+    "weekTitle": "Rest of the week (7 days)",
+    "weekSub": "Further fixtures in the 7-day window",
+    "noWeek": "No further fixtures in the next 7 days.",
+    "transparency": "TV only for confirmed live broadcasts. No illegal streams, no VPN, no affiliate ads. Info without guarantee – rights change.",
     "dataHint": "{guide} fixtures · {live} from live API",
     "refresh": "Refresh",
     "legalFootnote": "Links to official websites only. No illegal streams, no VPN sales, no affiliate ads at launch.",
@@ -73,13 +83,24 @@
     "brandName": "Croatia Sport",
     "brandLive": "Live",
     "favorites": "My Croatians",
-    "search": "Search matches, players, clubs…",
+    "search": "Search matches, players, clubs, news…",
     "settings": "Settings",
     "theme": "Theme",
     "language": "Language",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
-    "quickNav": "Quick navigation"
+    "quickNav": "Quick navigation",
+    "navLive": "Live",
+    "navMore": "More"
+  },
+  "Search": {
+    "clear": "Clear search",
+    "noHits": "No results for “{q}”",
+    "players": "Players",
+    "matches": "Matches",
+    "news": "News",
+    "allPlayers": "Show all player hits →",
+    "openBoard": "Open live board →"
   },
   "Hero": {
     "badge": "Vatreni · Across Europe",
@@ -126,7 +147,16 @@
     "emptyMatches": "No matches with favorites",
     "emptyMatchesHint": "Favorite players or turn off the favorites filter.",
     "nextPrefix": "Next",
-    "navShort": "Mine"
+    "navShort": "Mine",
+    "weekTitle": "My week",
+    "weekSubtitle": "{matches} matches · {players} favorites",
+    "weekEmptyHint": "Star a player – then their next 7 days of matches appear here.",
+    "weekNoMatches": "No matches for your favorites in the next 7 days.",
+    "suggestions": "Suggestions to start",
+    "exportIcs": "Calendar (.ics)",
+    "manageFavs": "Manage players",
+    "weekCalName": "KSL – My week",
+    "icsLegal": "Calendar export: kick-off times and teams only. No stream guarantee, no ads."
   },
   "Push": {
     "title": "Match reminders",
@@ -146,9 +176,12 @@
   "Vatreni": {
     "title": "National team",
     "subtitle": "All upcoming internationals · squad after nomination",
+    "subtitleContext": "Next internationals in focus · squad after nomination",
     "upcoming": "up",
     "past": "past",
     "pastToggle": "Past ({count})",
+    "showMore": "Show {count} more internationals",
+    "hideMore": "Show less",
     "empty": "No internationals loaded",
     "emptyHint": "API empty or offline. Please refresh.",
     "emptyUpcoming": "No upcoming international",
@@ -158,6 +191,10 @@
   "News": {
     "title": "News",
     "subtitle": "Vatreni & club updates · live fixtures · auto feed",
+    "subtitleValue": "Must-read & live anchors – not an archive dump",
+    "mustRead": "Must-read",
+    "ticker": "More headlines",
+    "archiveLink": "Archive: all {count} stories",
     "daily": "Daily update",
     "today": "Today",
     "readMore": "Read more",
@@ -222,7 +259,9 @@
     "statusUnknown": "N/A",
     "statApps": "Apps",
     "statGoals": "Goals",
-    "statAssists": "Assists"
+    "statAssists": "Assists",
+    "form": "Form",
+    "formHint": "Recent club results involving this player in the feed (only with known final score)."
   },
   "Status": {
     "confirmed": "confirmed",
