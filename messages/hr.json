@@ -2,15 +2,15 @@
   "Meta": {
     "title": "Hrvatska Sport Live – streamovi, TV vodič i Vatreni",
     "description": "Live board, TV vodič (HRT, Arena, Sportklub), legalni streamovi i tracker – mobilno i pouzdano.",
-    "keywords": "Hrvatska Sport Live, HRT, Arena Sport, DAZN, HNL, Vatreni, TV vodič, stream"
+    "keywords": "Hrvatska Sport Live, HRT, Arena Sport, HNL, Vatreni, TV savjeti, vijesti"
   },
   "Guide": {
     "liveNow": "Uživo sada",
     "upcoming": "Uskoro",
     "live": "UŽIVO",
     "countdown": "Početak za",
-    "streams": "Streamovi i kanali",
-    "watch": "Gledaj",
+    "streams": "Službeni pružatelji",
+    "watch": "Pružatelj",
     "free": "Free",
     "paid": "Pretplata",
     "positive": "{pct}% pozitivno",
@@ -52,7 +52,9 @@
     "upcomingSub": "Odbrojavanje, TV prava i legalni linkovi",
     "dataHint": "{guide} termina · {live} s live API-ja",
     "refresh": "Osvježi",
-    "legalFootnote": "Samo službeni pružatelji. Bez ilegalnih streamova. TV vodič iz live fixturea + savjeta kanala."
+    "legalFootnote": "Samo linkovi na službene stranice. Bez ilegalnih streamova, bez VPN prodaje, bez affiliate oglasa na startu.",
+    "openProvider": "Otvori pružatelja",
+    "official": "Službeno"
   },
   "Nav": {
     "home": "Početna",
@@ -226,16 +228,16 @@
     "srcUnknown": "nema izvora"
   },
   "TvRights": {
-    "title": "TV i streamovi (tvoja zemlja)",
+    "title": "TV savjeti (tvoja zemlja)",
     "forCountry": "Savjeti za {country}",
     "unknownCountry": "nepoznata zemlja",
     "detecting": "Otkrivanje regije…",
-    "noneLocal": "Nema tipičnih TV prava za tvoju zemlju – ne nagađamo generičke kanale.",
+    "noneLocal": "Nema tipičnih službenih TV savjeta za tvoju zemlju – ne nagađamo plaćene platforme.",
     "typical": "tipično, nije potvrđeno po utakmici",
     "rightsAsOf": "prava od {date}",
-    "vpnTitle": "Druge zemlje (samo free medijateke)",
-    "vpnBody": "Ovi free servisi su često legalni samo u navedenoj zemlji. VPN tamo može otključati pristup – poštuj AGB i zakone. Nema garancije da baš ova utakmica ide free.",
-    "noGuarantee": "nema live garancije"
+    "vpnTitle": "",
+    "vpnBody": "",
+    "noGuarantee": "bez jamstva"
   },
   "PlayerDetail": {
     "born": "Rođen",
@@ -272,11 +274,11 @@
   },
   "TV": {
     "title": "TV i streamovi",
-    "subtitle": "Službeni emitatori i streaming usluge",
+    "subtitle": "Savjeti za službene free medijateke i stranice pružatelja – neobvezujuće",
     "disclaimerTitle": "Važna napomena",
-    "vpnTitle": "VPN preporuke",
-    "vpnSubtitle": "Za legalni geo-pristup – affiliate linkovi s provizijom",
-    "affiliateDisclosure": "Oglas: Neki linkovi su affiliate. Moguće je da primimo proviziju bez dodatnih troškova za tebe.",
+    "vpnTitle": "",
+    "vpnSubtitle": "",
+    "affiliateDisclosure": "",
     "free": "Besplatno",
     "paid": "Pretplata",
     "streaming": "Streaming",
@@ -285,9 +287,9 @@
     "ipCountry": "IP zemlja: {country}",
     "detecting": "Otkrivanje regije…",
     "geoHint": "Prepoznato preko server headera / IP (ne spremamo). Dostupnost ovisi o pravima.",
-    "legalOnly": "Samo službeni free i medijateke – bez ilegalnih streamova.",
-    "vpnFree": "Legalne free medijateke drugih zemalja (VPN)",
-    "vpnFreeHint": "Javni free servisi s geo-blokadom. VPN može omogućiti pristup – poštuj AGB i lokalne zakone.",
+    "legalOnly": "Samo službeni free i medijateke – bez ilegalnih streamova, bez VPN prodaje.",
+    "vpnFree": "",
+    "vpnFreeHint": "",
     "moreProviders": "Ostali službeni pružatelji",
     "unknownCountry": "nepoznato"
   },
@@ -340,10 +342,11 @@
   },
   "Footer": {
     "rights": "Sva prava pridržana.",
-    "disclaimer": "Bez ilegalnih streamova. Samo službeni izvori.",
+    "disclaimer": "Bez ilegalnih streamova. Samo savjeti o službenim pružateljima. Neobvezujuće.",
     "madeWith": "S ❤️ za Vatrene",
-    "sources": "Podaci: ESPN, TheSportsDB i dr. · TV: samo službeni pružatelji",
-    "brandTagline": "Hrvatski profesionalci u Europi – uživo, vijesti i legalni TV"
+    "sources": "Izvori podataka uključuju ESPN, TheSportsDB, objave HNS-a. Vanjski linkovi su odgovornost pružatelja.",
+    "brandTagline": "Vatreni, HNL i hrvatski profesionalci – rezultati, vijesti, službeni TV savjeti",
+    "legalShort": "Urednički informativni servis. Ne hostamo prijenose i trenutno nema oglasa ni affiliate linkova."
   },
   "Common": {
     "loading": "Učitavanje…",
@@ -359,5 +362,41 @@
     "notFoundTitle": "Stranica nije pronađena",
     "notFoundBody": "Tražena stranica ne postoji ili je premještena.",
     "home": "Na početnu"
+  },
+  "Legal": {
+    "impressumTitle": "Impressum",
+    "privacyTitle": "Privatnost",
+    "termsTitle": "Uvjeti korištenja",
+    "provider": "Pružatelj",
+    "providerType": "Privatna urednička informativna web stranica.",
+    "contact": "Kontakt",
+    "contactOnlyEmail": "Kontakt isključivo e-poštom (bez objave privatne adrese):",
+    "impressumBody": "Stranica pruža opće informacije o terminima, vijestima i linkovima na službene usluge trećih strana. Ne hostamo prijenose niti nudimo ilegalne streamove. Za povezani sadržaj odgovorni su pružatelji.",
+    "noPersonalData": "Napomena: Iz razloga privatnosti ne objavljujemo privatne adrese stanovanja ni puna imena fizičkih osoba. Tijela s legitimnim interesom mogu zatražiti potrebne podatke e-poštom.",
+    "backHome": "Na početnu",
+    "privacyIntro": "Ozbiljno shvaćamo privatnost. Ova obavijest opisuje koje se podatke može obrađivati.",
+    "privacyController": "Voditelj obrade",
+    "privacyDataTitle": "Koji se podaci mogu pojaviti?",
+    "privacyDataGeo": "Približna regija/zemlja (geo IP) – samo za regionalne TV savjete, bez spremanja u oglašivačke svrhe.",
+    "privacyDataLocal": "Podaci u pregledniku (localStorage), npr. omiljeni, tema, glasovi, opcionalne prijave – ostaju na tvom uređaju.",
+    "privacyDataPush": "Push obavijesti samo uz tvoju izričitu suglasnost u pregledniku (opcionalno).",
+    "privacyDataLogs": "Tehnički logovi hostinga (npr. Vercel): IP, vrijeme, user-agent – radi sigurnosti, u okviru hosta.",
+    "privacyDataThird": "Kod vanjskih linkova vrijede pravila pružatelja. Slike mogu pokrenuti zahtjeve prema CDN-ovima trećih strana.",
+    "privacyPurposeTitle": "Svrhe",
+    "privacyPurposeBody": "Rad stranice, urednički sadržaj, omiljeni, regionalni TV savjeti, sigurnost. Trenutno nema oglasa ni affiliate programa.",
+    "privacyNoAdsTitle": "Oglasi i affiliate",
+    "privacyNoAdsBody": "Na startu nema oglasa ni affiliate linkova (uključujući VPN). Ako se to promijeni, ažurirat ćemo ovu obavijest.",
+    "privacyRightsTitle": "Tvoja prava",
+    "privacyRightsBody": "Prema primjenjivom pravu (npr. GDPR) možeš imati prava pristupa, ispravka, brisanja, ograničenja, prigovora i pritužbe nadzornom tijelu. Kontakt e-poštom.",
+    "privacyUpdate": "Stanje: kolovoz 2026. Moguće izmjene; vrijedi objavljena verzija.",
+    "termsIntro": "Korištenjem stranice prihvaćaš sljedeće napomene.",
+    "termsServiceTitle": "Vrsta usluge",
+    "termsServiceBody": "Hrvatska Sport Live je urednički informativni servis o terminima, vijestima i službenim pružateljima. Nije streaming host niti službena stranica saveza ili kluba.",
+    "termsLinksTitle": "Vanjski linkovi",
+    "termsLinksBody": "Linkovi vode na treće stranice. Dostupnost, cijene, geo-ograničenja i sadržaj isključivo su njihova odgovornost. TV savjeti nisu jamstvo.",
+    "termsUgcTitle": "Korisnički unosi",
+    "termsUgcBody": "Omiljeni, glasovi ili prijave služe poboljšanju savjeta. Zlouporaba je zabranjena. Unose možemo brisati ili ignorirati.",
+    "termsLiabilityTitle": "Odgovornost",
+    "termsLiabilityBody": "U mjeri dopuštenoj zakonom ne odgovaramo za štetu zbog korištenja stranice ili usluga trećih. Live podaci i TV savjeti mogu biti nepotpuni ili zastarjeli."
   }
 }

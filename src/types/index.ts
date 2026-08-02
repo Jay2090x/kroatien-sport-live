@@ -159,17 +159,6 @@ export interface TvChannel {
   markets?: string[];
   /** typical = Rechte-Matrix; confirmed = redaktionell bestätigt */
   certainty?: "typical" | "confirmed";
-  /** Affiliate / Tracking-Hinweis */
-  isAffiliate?: boolean;
-}
-
-export interface VpnProvider {
-  id: string;
-  name: string;
-  url: string;
-  description: string;
-  isAffiliate: boolean;
-  discountCode?: string;
 }
 
 export type DateFilter = "today" | "next7" | "all";

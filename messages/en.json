@@ -2,15 +2,15 @@
   "Meta": {
     "title": "Croatia Sport Live – streams, TV guide & Vatreni",
     "description": "Live board, TV guide (HRT, Arena, Sportklub), legal streams and tracker for Croatian sports – mobile-first & trustworthy.",
-    "keywords": "Croatia Sport Live, HRT, Arena Sport, DAZN, HNL, Vatreni, TV guide, stream"
+    "keywords": "Croatia Sport Live, HRT, Arena Sport, HNL, Vatreni, TV tips, news"
   },
   "Guide": {
     "liveNow": "Live Now",
     "upcoming": "Upcoming",
     "live": "LIVE",
     "countdown": "Kick-off in",
-    "streams": "Streams & channels",
-    "watch": "Watch",
+    "streams": "Official providers",
+    "watch": "Provider",
     "free": "Free",
     "paid": "Sub",
     "positive": "{pct}% positive",
@@ -52,7 +52,9 @@
     "upcomingSub": "Countdown, TV rights and legal links",
     "dataHint": "{guide} fixtures · {live} from live API",
     "refresh": "Refresh",
-    "legalFootnote": "Official providers only. No illegal streams. TV guide from live fixtures + channel tips."
+    "legalFootnote": "Links to official websites only. No illegal streams, no VPN sales, no affiliate ads at launch.",
+    "openProvider": "Open provider",
+    "official": "Official"
   },
   "Nav": {
     "home": "Home",
@@ -226,16 +228,16 @@
     "srcUnknown": "no source"
   },
   "TvRights": {
-    "title": "TV & streams (your country)",
+    "title": "TV tips (your country)",
     "forCountry": "Tips for {country}",
     "unknownCountry": "unknown country",
     "detecting": "Detecting region…",
-    "noneLocal": "No typical TV rights listed for your country – we do not invent generic channels.",
+    "noneLocal": "No typical official TV tips listed for your country – we do not invent paid platforms.",
     "typical": "typical, not confirmed per match",
     "rightsAsOf": "rights as of {date}",
-    "vpnTitle": "Other countries (free libraries only)",
-    "vpnBody": "These free services are often only legal in the listed country. A VPN there may unlock access – respect terms and local law. No guarantee this exact match is free there.",
-    "noGuarantee": "no live guarantee"
+    "vpnTitle": "",
+    "vpnBody": "",
+    "noGuarantee": "no warranty"
   },
   "PlayerDetail": {
     "born": "Born",
@@ -272,11 +274,11 @@
   },
   "TV": {
     "title": "TV & Streams",
-    "subtitle": "Official broadcasters and streaming services",
+    "subtitle": "Tips for official free libraries and provider sites – non-binding",
     "disclaimerTitle": "Important notice",
-    "vpnTitle": "VPN recommendations",
-    "vpnSubtitle": "For legal geo-access – affiliate links with commission",
-    "affiliateDisclosure": "Advertising disclosure: Some links are affiliate links. We may earn a commission at no extra cost to you.",
+    "vpnTitle": "",
+    "vpnSubtitle": "",
+    "affiliateDisclosure": "",
     "free": "Free",
     "paid": "Subscription",
     "streaming": "Streaming",
@@ -285,9 +287,9 @@
     "ipCountry": "IP country: {country}",
     "detecting": "Detecting region…",
     "geoHint": "Detected via server headers / IP (not stored). Availability depends on rights.",
-    "legalOnly": "Official free-to-air and media libraries only – no illegal streams.",
-    "vpnFree": "Legal free libraries abroad (VPN)",
-    "vpnFreeHint": "Public free services with geo-blocks. VPN may unlock access – respect provider terms and local law.",
+    "legalOnly": "Official free-to-air and media libraries only – no illegal streams, no VPN sales.",
+    "vpnFree": "",
+    "vpnFreeHint": "",
     "moreProviders": "More official providers",
     "unknownCountry": "unknown"
   },
@@ -340,10 +342,11 @@
   },
   "Footer": {
     "rights": "All rights reserved.",
-    "disclaimer": "No illegal streams. Official sources only.",
+    "disclaimer": "No illegal streams. Official provider tips only. Non-binding.",
     "madeWith": "Made with ❤️ for the Vatreni",
-    "sources": "Data: ESPN, TheSportsDB and more · TV: official providers only",
-    "brandTagline": "Croatian pros in Europe – live, news & legal TV"
+    "sources": "Data sources include ESPN, TheSportsDB, HNS publications. External links are the providers’ responsibility.",
+    "brandTagline": "Vatreni, HNL & Croatian pros – scores, news, official TV tips",
+    "legalShort": "Editorial information service. We do not host broadcasts and currently run no ads or affiliate links."
   },
   "Common": {
     "loading": "Loading…",
@@ -359,5 +362,41 @@
     "notFoundTitle": "Page not found",
     "notFoundBody": "The requested page does not exist or has been moved.",
     "home": "Back home"
+  },
+  "Legal": {
+    "impressumTitle": "Legal notice",
+    "privacyTitle": "Privacy",
+    "termsTitle": "Terms of use",
+    "provider": "Provider",
+    "providerType": "Private editorial information website.",
+    "contact": "Contact",
+    "contactOnlyEmail": "Contact by email only (no residential address published):",
+    "impressumBody": "This site provides general information on fixtures, news and links to official third-party services. We do not host broadcasts or offer illegal streams. Third parties are responsible for linked content.",
+    "noPersonalData": "Note: For privacy reasons we do not publish private residential addresses or full names of natural persons on this public notice. Authorities and claimants with a legitimate interest may request required details by email.",
+    "backHome": "Back home",
+    "privacyIntro": "We take privacy seriously. This notice explains what data may be processed when you use the site.",
+    "privacyController": "Controller",
+    "privacyDataTitle": "What data may be processed?",
+    "privacyDataGeo": "Approximate region/country (geo IP via headers or lookup) – only to show regional TV tips, not stored for advertising.",
+    "privacyDataLocal": "Browser storage (localStorage), e.g. favourites, theme, votes on provider links, optional status reports – stays on your device.",
+    "privacyDataPush": "Push notifications only after your explicit browser consent (optional).",
+    "privacyDataLogs": "Technical hosting logs (e.g. Vercel): IP, time, user agent – for security and debugging, limited by the host.",
+    "privacyDataThird": "When you open external links, the providers’ privacy policies apply. Image URLs may trigger third-party CDN requests.",
+    "privacyPurposeTitle": "Purposes",
+    "privacyPurposeBody": "Running the site, editorial content, optional favourites, regional TV tips, security. Currently no advertising and no affiliate programmes.",
+    "privacyNoAdsTitle": "Ads & affiliates",
+    "privacyNoAdsBody": "At launch we do not run ads or affiliate links (including VPN). If that changes, we will disclose it and update this notice.",
+    "privacyRightsTitle": "Your rights",
+    "privacyRightsBody": "Depending on applicable law (e.g. GDPR) you may have rights of access, rectification, erasure, restriction, objection and complaint to a supervisory authority. Contact us by email.",
+    "privacyUpdate": "As of August 2026. We may update this notice; the published version applies.",
+    "termsIntro": "By using this website you accept the following terms.",
+    "termsServiceTitle": "Nature of the service",
+    "termsServiceBody": "Croatia Sport Live is an editorial information service about fixtures, news and official providers. It is not a streaming host and not an official federation or club site.",
+    "termsLinksTitle": "External links",
+    "termsLinksBody": "Links lead to third-party sites. Availability, pricing, geo-restrictions and content are solely their responsibility. Channel tips are non-binding.",
+    "termsUgcTitle": "User input",
+    "termsUgcBody": "Features such as favourites, votes or reports help improve tips. Abuse is prohibited. We may delete or ignore submissions.",
+    "termsLiabilityTitle": "Liability",
+    "termsLiabilityBody": "To the extent permitted by law we are not liable for damages from use of the site or third-party services. Live data and TV tips may be incomplete or outdated."
   }
 }

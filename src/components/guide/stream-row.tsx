@@ -5,10 +5,8 @@ import { useTranslations } from "next-intl";
 import { ExternalLink, Flag, ThumbsDown, ThumbsUp } from "lucide-react";
 import type { StreamProvider } from "@/types/guide";
 import { QualityBadge } from "@/components/guide/quality-badge";
-import { VpnAffiliateBox } from "@/components/guide/vpn-affiliate-box";
-import { Button } from "@/components/ui/button";
 import { safeJsonParse, cn } from "@/lib/utils";
-import { useGeoCountry } from "@/hooks/use-geo-country";
+import { isAllowedTvChannel } from "@/lib/constants";
 import { toast } from "sonner";
 
 const VOTE_KEY = "ksl_stream_votes";
@@ -24,9 +22,11 @@ function saveVotes(v: VoteMap) {
   localStorage.setItem(VOTE_KEY, JSON.stringify(v));
 }
 
+/**
+ * Offizieller Anbieter-Link – kein VPN, keine Paid-Giganten (gefiltert).
+ */
 export function StreamRow({ stream }: { stream: StreamProvider }) {
   const t = useTranslations("Guide");
-  const { country, ready } = useGeoCountry();
   const [votes, setVotes] = useState({
     up: stream.upvotes,
     down: stream.downvotes,
@@ -45,15 +45,15 @@ export function StreamRow({ stream }: { stream: StreamProvider }) {
     }
   }, [stream.id, stream.upvotes, stream.downvotes]);
 
+  if (!isAllowedTvChannel(stream.id) && !isAllowedTvChannel(stream.name)) {
+    return null;
+  }
+  if (/sky|dazn|viaplay|vpn|nord/i.test(stream.name + stream.brand + stream.url)) {
+    return null;
+  }
+
   const total = votes.up + votes.down;
   const pct = total > 0 ? Math.round((votes.up / total) * 100) : null;
-
-  const geoBlocked =
-    ready &&
-    country &&
-    stream.geoLockedOutside &&
-    stream.availableIn.length > 0 &&
-    !stream.availableIn.map((c) => c.toUpperCase()).includes(country);
 
   function vote(dir: "up" | "down") {
     const map = loadVotes();
@@ -63,7 +63,6 @@ export function StreamRow({ stream }: { stream: StreamProvider }) {
     let my = prev.my;
 
     if (my === dir) {
-      // toggle off
       if (dir === "up") up -= 1;
       else down -= 1;
       my = undefined;
@@ -104,27 +103,27 @@ export function StreamRow({ stream }: { stream: StreamProvider }) {
             <span
               className={cn(
                 "rounded px-1.5 py-0.5 text-[9px] font-bold uppercase",
-                stream.type === "free"
-                  ? "badge-croatia"
-                  : "badge-croatia-blue"
+                stream.type === "free" ? "badge-croatia" : "badge-croatia-blue"
               )}
             >
-              {stream.type === "free" ? t("free") : t("paid")}
+              {stream.type === "free" ? t("free") : t("official")}
             </span>
           </div>
           <div className="mt-1.5 flex flex-wrap gap-1">
-            {stream.qualities.map((q) => (
-              <QualityBadge key={q} q={q} />
-            ))}
+            {stream.qualities
+              .filter((q) => q !== "geo-locked")
+              .map((q) => (
+                <QualityBadge key={q} q={q} />
+              ))}
           </div>
         </div>
         <a
           href={stream.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg bg-live px-2.5 text-xs font-bold text-[#04120a] shadow-[var(--glow-live)] hover:brightness-110"
+          className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg border border-primary/40 bg-primary/15 px-2.5 text-xs font-bold text-primary hover:bg-primary/25"
         >
-          {t("watch")}
+          {t("openProvider")}
           <ExternalLink className="h-3 w-3" />
         </a>
       </div>
@@ -168,8 +167,6 @@ export function StreamRow({ stream }: { stream: StreamProvider }) {
           {t("reportBroken")}
         </button>
       </div>
-
-      {geoBlocked && <VpnAffiliateBox streamName={stream.name} />}
     </div>
   );
 }

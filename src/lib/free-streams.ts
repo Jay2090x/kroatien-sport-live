@@ -1,21 +1,17 @@
 /**
- * Legale Free-Streams / Mediatheken (öffentlich-rechtlich & Free-to-Air).
- * Keine illegalen Streams. Geo-Rechte und AGB der Anbieter gelten.
+ * Legale Free-to-Air / öffentlich-rechtliche Mediatheken.
+ * Keine illegalen Streams, kein VPN-Framing, kein Affiliate.
  */
 
 export type FreeStream = {
   id: string;
   name: string;
   url: string;
-  /** ISO 3166-1 alpha-2 Länder, in denen der Dienst typisch free/legal erreichbar ist */
+  /** ISO 3166-1 alpha-2 */
   countries: string[];
-  /** Kurz: was man bekommt */
   note: { de: string; en: string; hr: string };
-  /** Für VPN-Hinweis: z.B. "DE" */
-  vpnCountry?: string;
 };
 
-/** Free-to-Air / öffentlich-rechtliche Mediatheken */
 export const FREE_LEGAL_STREAMS: FreeStream[] = [
   {
     id: "hrt",
@@ -23,11 +19,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://player.hrt.hr/",
     countries: ["HR"],
     note: {
-      de: "Kroatischer öffentlich-rechtlicher Stream (lokal free).",
-      en: "Croatian public broadcaster stream (free in-region).",
-      hr: "Hrvatski javni servis – besplatno u regiji.",
+      de: "Kroatischer öffentlich-rechtlicher Dienst (Verfügbarkeit regional).",
+      en: "Croatian public broadcaster (regional availability).",
+      hr: "Hrvatski javni servis (regionalna dostupnost).",
     },
-    vpnCountry: "HR",
   },
   {
     id: "orf",
@@ -35,11 +30,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://on.orf.at/",
     countries: ["AT"],
     note: {
-      de: "Österreichischer ORF – Sport je nach Rechte free in AT.",
-      en: "Austrian ORF – sports free in AT depending on rights.",
-      hr: "Austrijski ORF – sport ovisno o pravima free u AT.",
+      de: "Österreichischer ORF – Inhalte je nach Rechten in AT.",
+      en: "Austrian ORF – content by rights in AT.",
+      hr: "Austrijski ORF – sadržaj ovisno o pravima u AT.",
     },
-    vpnCountry: "AT",
   },
   {
     id: "ard",
@@ -47,11 +41,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.sportschau.de/",
     countries: ["DE"],
     note: {
-      de: "Kostenlose Mediathek – Länderspiele je nach ARD-Rechten.",
-      en: "Free media library – internationals when ARD holds rights.",
-      hr: "Besplatna medijateka – reprezentacija kad ARD ima prava.",
+      de: "Öffentlich-rechtliche Mediathek – nur bei bestehenden Senderechten.",
+      en: "Public media library – only when broadcast rights exist.",
+      hr: "Javna medijateka – samo kad postoje prava prijenosa.",
     },
-    vpnCountry: "DE",
   },
   {
     id: "zdf",
@@ -59,11 +52,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.zdf.de/sport",
     countries: ["DE"],
     note: {
-      de: "Kostenloser ZDF-Sport – je nach Übertragungsrechten.",
-      en: "Free ZDF sports – depending on broadcast rights.",
-      hr: "Besplatni ZDF sport – ovisno o pravima prijenosa.",
+      de: "ZDF-Sport je nach Übertragungsrechten.",
+      en: "ZDF sports depending on rights.",
+      hr: "ZDF sport ovisno o pravima.",
     },
-    vpnCountry: "DE",
   },
   {
     id: "rai",
@@ -75,7 +67,6 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
       en: "Italian free service – geo IT.",
       hr: "Talijanski free servis – geo IT.",
     },
-    vpnCountry: "IT",
   },
   {
     id: "rtve",
@@ -83,11 +74,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.rtve.es/play/deportes/",
     countries: ["ES"],
     note: {
-      de: "Spanischer öffentlich-rechtlicher Sportstream (ES).",
-      en: "Spanish public sports stream (ES).",
-      hr: "Španjolski javni sportski stream (ES).",
+      de: "Spanischer öffentlich-rechtlicher Dienst (ES).",
+      en: "Spanish public service (ES).",
+      hr: "Španjolski javni servis (ES).",
     },
-    vpnCountry: "ES",
   },
   {
     id: "france-tv",
@@ -95,11 +85,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.france.tv/sport/",
     countries: ["FR"],
     note: {
-      de: "Französischer Free-Stream – Geo FR.",
-      en: "French free stream – geo FR.",
-      hr: "Francuski free stream – geo FR.",
+      de: "Französischer Free-Service – Geo FR.",
+      en: "French free service – geo FR.",
+      hr: "Francuski free servis – geo FR.",
     },
-    vpnCountry: "FR",
   },
   {
     id: "bbc-sport",
@@ -107,11 +96,10 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.bbc.com/sport",
     countries: ["GB"],
     note: {
-      de: "News/Highlights free; Live je nach Rechte oft UK-only.",
-      en: "News/highlights free; live often UK-only by rights.",
-      hr: "Vijesti/highlights free; live često samo UK.",
+      de: "News/Highlights; Live oft nur mit UK-Rechten.",
+      en: "News/highlights; live often UK rights only.",
+      hr: "Vijesti/highlights; live često samo UK prava.",
     },
-    vpnCountry: "GB",
   },
   {
     id: "fifa-plus",
@@ -119,9 +107,9 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.fifa.com/fifaplus",
     countries: ["*"],
     note: {
-      de: "Offizielle FIFA-Plattform – ausgewählte Spiele/Dokus free weltweit.",
-      en: "Official FIFA platform – selected matches/docs free worldwide.",
-      hr: "Službena FIFA platforma – odabrane utakmice/dokumentarci free.",
+      de: "Offizielle FIFA-Plattform – ausgewählte Inhalte.",
+      en: "Official FIFA platform – selected content.",
+      hr: "Službena FIFA platforma – odabrani sadržaj.",
     },
   },
   {
@@ -130,31 +118,9 @@ export const FREE_LEGAL_STREAMS: FreeStream[] = [
     url: "https://www.uefa.tv/",
     countries: ["*"],
     note: {
-      de: "Offizielle UEFA-Inhalte – Highlights & ausgewählter Free-Content.",
-      en: "Official UEFA content – highlights & selected free shows.",
-      hr: "Službeni UEFA sadržaj – highlights i odabrani free program.",
-    },
-  },
-  {
-    id: "yt-uefa",
-    name: "YouTube · UEFA",
-    url: "https://www.youtube.com/@UEFA",
-    countries: ["*"],
-    note: {
-      de: "Offizielle Highlights & Clips (legal, free).",
-      en: "Official highlights & clips (legal, free).",
-      hr: "Službeni highlights i clipovi (legalno, free).",
-    },
-  },
-  {
-    id: "yt-fifa",
-    name: "YouTube · FIFA",
-    url: "https://www.youtube.com/@fifa",
-    countries: ["*"],
-    note: {
-      de: "Offizielle FIFA-Clips und Zusammenfassungen.",
-      en: "Official FIFA clips and recaps.",
-      hr: "Službeni FIFA clipovi i sažeci.",
+      de: "Offizielle UEFA-Inhalte / Highlights.",
+      en: "Official UEFA content / highlights.",
+      hr: "Službeni UEFA sadržaj / highlights.",
     },
   },
 ];
@@ -167,19 +133,15 @@ export function streamsForCountry(iso: string | null): FreeStream[] {
   );
 }
 
-export function vpnStreamsForCountry(iso: string | null): FreeStream[] {
-  const local = new Set(streamsForCountry(iso).map((s) => s.id));
-  // Andere Länder-Mediatheken (geo), die man oft per VPN ansteuert
-  return FREE_LEGAL_STREAMS.filter(
-    (s) =>
-      s.vpnCountry &&
-      !s.countries.includes("*") &&
-      !local.has(s.id) &&
-      (!iso || s.vpnCountry !== iso.toUpperCase())
-  );
+/** VPN-Funktion entfernt – bleibt als No-Op für eventuelle Importe */
+export function vpnStreamsForCountry(): FreeStream[] {
+  return [];
 }
 
-export const COUNTRY_LABELS: Record<string, { de: string; en: string; hr: string }> = {
+export const COUNTRY_LABELS: Record<
+  string,
+  { de: string; en: string; hr: string }
+> = {
   HR: { de: "Kroatien", en: "Croatia", hr: "Hrvatska" },
   DE: { de: "Deutschland", en: "Germany", hr: "Njemačka" },
   AT: { de: "Österreich", en: "Austria", hr: "Austrija" },

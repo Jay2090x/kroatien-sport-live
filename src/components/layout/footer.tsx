@@ -3,10 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Sahovnica } from "./sahovnica";
 import { SITE } from "@/lib/constants";
+import { Link } from "@/i18n/navigation";
 
 export function Footer() {
   const t = useTranslations("Footer");
   const tNav = useTranslations("Nav");
+  const tLegal = useTranslations("Legal");
   const year = new Date().getFullYear();
 
   return (
@@ -43,9 +45,32 @@ export function Footer() {
             </a>
           </nav>
         </div>
+
         <p className="text-[10px] leading-relaxed text-muted-foreground">
           {t("sources")}
         </p>
+        <p className="text-[10px] leading-relaxed text-muted-foreground">
+          {t("legalShort")}
+        </p>
+
+        <nav className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-medium">
+          <Link href="/impressum" className="text-primary hover:underline">
+            {tLegal("impressumTitle")}
+          </Link>
+          <Link href="/datenschutz" className="text-primary hover:underline">
+            {tLegal("privacyTitle")}
+          </Link>
+          <Link href="/nutzung" className="text-primary hover:underline">
+            {tLegal("termsTitle")}
+          </Link>
+          <a
+            href={`mailto:${SITE.contactEmail}`}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            {tLegal("contact")}
+          </a>
+        </nav>
+
         <p className="text-[11px] text-muted-foreground">
           © {year} {SITE.shortName} · {t("disclaimer")} · {t("madeWith")}
         </p>

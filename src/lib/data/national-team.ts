@@ -163,7 +163,7 @@ export function enrichNationalTeamMatch(match: Match): Match {
     croatianPlayers: match.croatianPlayers?.length ? match.croatianPlayers : [],
     tvChannels: match.tvChannels?.length
       ? match.tvChannels
-      : pick("hrt", "hrt2", "sky-de", "dazn"),
+      : pick("hrt", "hrt2", "arena-sport"),
   };
 }
 

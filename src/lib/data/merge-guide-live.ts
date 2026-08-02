@@ -7,8 +7,11 @@ import type { Match, TvChannel } from "@/types";
 import type { GuideMatch, StreamProvider, StreamQuality } from "@/types/guide";
 import { isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
+import { isAllowedTvChannel } from "@/lib/constants";
 
-function channelToStream(ch: TvChannel, idx: number): StreamProvider {
+function channelToStream(ch: TvChannel, idx: number): StreamProvider | null {
+  if (!isAllowedTvChannel(ch.id) || !isAllowedTvChannel(ch.name)) return null;
+
   const qualities: StreamQuality[] = [];
   if (ch.type === "free") qualities.push("free");
   qualities.push(ch.certainty === "confirmed" ? "stable" : "hd-720");
@@ -27,7 +30,6 @@ function channelToStream(ch: TvChannel, idx: number): StreamProvider {
       : ch.region
         ? ch.region.split(/[/,]/).map((s) => s.trim()).filter(Boolean)
         : [],
-    geoLockedOutside: true,
     type: ch.type,
   };
 }
@@ -35,8 +37,6 @@ function channelToStream(ch: TvChannel, idx: number): StreamProvider {
 function shortBrand(name: string): string {
   if (/hrt\s*2/i.test(name)) return "HRT 2";
   if (/hrt/i.test(name)) return "HRT";
-  if (/dazn/i.test(name)) return "DAZN";
-  if (/sky/i.test(name)) return "Sky";
   if (/sport\s*klub|sportklub/i.test(name)) return "Sportklub";
   if (/arena/i.test(name)) return "Arena";
   return name.split(/[–—-]/)[0]?.trim().slice(0, 12) || name.slice(0, 12);
@@ -50,8 +50,9 @@ function guideStatus(m: Match): GuideMatch["status"] {
 
 /** Convert dashboard Match → GuideMatch */
 export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
-  const streams = (m.tvChannels ?? []).map((ch, i) => channelToStream(ch, i));
-  // Dedupe by brand
+  const streams = (m.tvChannels ?? [])
+    .map((ch, i) => channelToStream(ch, i))
+    .filter((s): s is StreamProvider => s != null);
   const seen = new Set<string>();
   const uniqueStreams = streams.filter((s) => {
     if (seen.has(s.brand)) return false;

@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { cn } from "@/lib/utils";
 import { Tv2 } from "lucide-react";
 
-const CHANNELS = ["all", "HRT 1", "HRT 2", "Arena Sport 1", "Sport Klub", "Sky Sport", "DAZN"] as const;
+const CHANNELS = ["all", "HRT 1", "HRT 2", "Arena Sport 1", "Sport Klub"] as const;
 
 export function TvGuideToday({ slots }: { slots: TvGuideSlot[] }) {
   const t = useTranslations("Guide");

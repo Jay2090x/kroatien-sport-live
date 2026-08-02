@@ -43,6 +43,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "hourly",
       priority: 0.9,
     },
+    ...(["", "/en", "/hr"] as const).flatMap((prefix) =>
+      ["/impressum", "/datenschutz", "/nutzung"].map((path) => ({
+        url: `${base}${prefix}${path}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.3,
+      }))
+    ),
   ];
 
   let newsEntries: MetadataRoute.Sitemap = [];

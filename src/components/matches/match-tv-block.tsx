@@ -5,12 +5,11 @@ import { ExternalLink, Tv2 } from "lucide-react";
 import type { LeagueId, Match } from "@/types";
 import {
   filterChannelsForMarket,
-  otherMarketFreeHints,
   rightsUpdatedAt,
 } from "@/lib/broadcast-rights";
 import { useGeoCountry } from "@/hooks/use-geo-country";
 import { COUNTRY_LABELS } from "@/lib/free-streams";
-import { LEGAL_DISCLAIMER } from "@/lib/constants";
+import { LEGAL_DISCLAIMER, isAllowedTvChannel } from "@/lib/constants";
 
 function countryLabel(iso: string, locale: string): string {
   const row = COUNTRY_LABELS[iso];
@@ -21,16 +20,19 @@ function countryLabel(iso: string, locale: string): string {
 }
 
 /**
- * Match-spezifische TV-Hinweise: nur Geo-Markt + ehrlicher VPN-Hinweis.
+ * Match-TV: nur erlaubte offizielle Anbieter im Geo-Markt. Kein VPN.
  */
 export function MatchTvBlock({ match }: { match: Match }) {
   const t = useTranslations("TvRights");
   const tTv = useTranslations("TV");
   const locale = useLocale();
   const { country, ready } = useGeoCountry();
-  const local = filterChannelsForMarket(match.tvChannels, country);
-  const vpnHints = otherMarketFreeHints(match.league as LeagueId, country);
-  const updated = rightsUpdatedAt(match.league);
+
+  const raw = (match.tvChannels ?? []).filter(
+    (c) => isAllowedTvChannel(c.id) && isAllowedTvChannel(c.name)
+  );
+  const local = filterChannelsForMarket(raw, country);
+  const updated = rightsUpdatedAt(match.league as LeagueId);
   const countryName = country
     ? countryLabel(country, locale)
     : t("unknownCountry");
@@ -82,37 +84,6 @@ export function MatchTvBlock({ match }: { match: Match }) {
                 </li>
               ))}
             </ul>
-          )}
-
-          {vpnHints.length > 0 && (
-            <div className="mt-3 rounded-lg border border-sky-500/25 bg-sky-500/5 px-3 py-2.5">
-              <p className="text-xs font-semibold text-sky-200/95">
-                {t("vpnTitle")}
-              </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                {t("vpnBody")}
-              </p>
-              <ul className="mt-2 space-y-1">
-                {vpnHints.slice(0, 4).map((h) => {
-                  const label = countryLabel(h.market, locale);
-                  return (
-                    <li
-                      key={h.market}
-                      className="text-[11px] text-muted-foreground"
-                    >
-                      <span className="font-semibold text-foreground/90">
-                        VPN → {label}:
-                      </span>{" "}
-                      {h.channels.map((c) => c.name).join(", ")}
-                      <span className="text-muted-foreground/80">
-                        {" "}
-                        ({t("noGuarantee")})
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
           )}
         </>
       )}

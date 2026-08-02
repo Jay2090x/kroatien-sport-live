@@ -11,6 +11,7 @@ import type { TvGuideSlot } from "@/types/guide";
 import { isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import { filterChannelsForMarket } from "@/lib/broadcast-rights";
+import { isAllowedTvChannel } from "@/lib/constants";
 
 function startOfLocalDay(d = new Date()): Date {
   const x = new Date(d);
@@ -119,11 +120,14 @@ export function slotsFromMatches(
     if (!today) continue;
     if (m.status === "finished" || m.status === "cancelled") continue;
 
-    const channels = filterChannelsForMarket(m.tvChannels, market);
+    const safeChannels = (m.tvChannels ?? []).filter(
+      (c) => isAllowedTvChannel(c.id) && isAllowedTvChannel(c.name)
+    );
+    const channels = filterChannelsForMarket(safeChannels, market);
     let list =
       channels.length > 0
         ? [...channels]
-        : [...(m.tvChannels ?? [])].slice(0, 2);
+        : [...safeChannels].slice(0, 2);
 
     if (list.length === 0) {
       // still show match on "Arena Sport" placeholder for HNL/NT so guide isn't empty
@@ -170,8 +174,6 @@ function shortChannel(name: string): string {
   if (/hrt/i.test(name)) return "HRT 1";
   if (/arena/i.test(name)) return "Arena Sport 1";
   if (/sport\s*klub|sportklub/i.test(name)) return "Sport Klub";
-  if (/dazn/i.test(name)) return "DAZN";
-  if (/sky/i.test(name)) return "Sky Sport";
   return name;
 }
 

@@ -44,7 +44,7 @@ export const FALLBACK_MATCHES: Match[] = [
         minutesPlayed: 62,
       },
     ],
-    tvChannels: pick("sky-de", "dazn", "sportklub"),
+    tvChannels: pick("arena-sport", "sportklub", "sportklub"),
   },
   {
     id: "m-city-arsenal-friendly",
@@ -78,7 +78,7 @@ export const FALLBACK_MATCHES: Match[] = [
         minutesPlayed: 38,
       },
     ],
-    tvChannels: pick("sky-de", "dazn"),
+    tvChannels: pick("arena-sport", "sportklub"),
   },
   {
     id: "m-rijeka-hajduk",
@@ -128,7 +128,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de", "dazn"),
+    tvChannels: pick("arena-sport", "sportklub"),
   },
   {
     id: "m-atalanta-juve",
@@ -150,7 +150,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("dazn", "sky-de"),
+    tvChannels: pick("sportklub", "arena-sport"),
   },
   {
     id: "m-wolfsburg-dortmund",
@@ -172,7 +172,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-osasuna-madrid",
@@ -194,7 +194,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("dazn"),
+    tvChannels: pick("sportklub"),
   },
   {
     id: "m-sociedad-barca",
@@ -223,7 +223,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("dazn"),
+    tvChannels: pick("sportklub"),
   },
   {
     id: "m-union-leipzig",
@@ -245,7 +245,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-augsburg-frankfurt",
@@ -267,7 +267,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-hoffenheim-stuttgart",
@@ -289,7 +289,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-como-milan",
@@ -318,7 +318,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("dazn", "sky-de"),
+    tvChannels: pick("sportklub", "arena-sport"),
   },
   {
     id: "m-psv-ajax",
@@ -340,7 +340,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("viaplay"),
+    tvChannels: pick("hrt"),
   },
   {
     id: "m-palace-chelsea",
@@ -362,7 +362,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de", "dazn"),
+    tvChannels: pick("arena-sport", "sportklub"),
   },
   {
     id: "m-hsv-bremen",
@@ -384,7 +384,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-torino-roma",
@@ -406,7 +406,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: true,
       },
     ],
-    tvChannels: pick("dazn"),
+    tvChannels: pick("sportklub"),
   },
   {
     id: "m-fener-galatasaray",
@@ -485,7 +485,7 @@ export const FALLBACK_MATCHES: Match[] = [
         isStarter: false,
       },
     ],
-    tvChannels: pick("hrt", "hrt2", "sky-de", "dazn"),
+    tvChannels: pick("hrt", "hrt2", "arena-sport", "sportklub"),
   },
 
   // ── Beendet ──
@@ -523,7 +523,7 @@ export const FALLBACK_MATCHES: Match[] = [
         minutesPlayed: 85,
       },
     ],
-    tvChannels: pick("dazn"),
+    tvChannels: pick("sportklub"),
   },
   {
     id: "m-city-chelsea-finished",
@@ -556,7 +556,7 @@ export const FALLBACK_MATCHES: Match[] = [
         yellowCards: 1,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-bayern-finished",
@@ -581,7 +581,7 @@ export const FALLBACK_MATCHES: Match[] = [
         minutesPlayed: 72,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
   {
     id: "m-kramaric-finished",
@@ -607,6 +607,6 @@ export const FALLBACK_MATCHES: Match[] = [
         minutesPlayed: 90,
       },
     ],
-    tvChannels: pick("sky-de"),
+    tvChannels: pick("arena-sport"),
   },
 ];

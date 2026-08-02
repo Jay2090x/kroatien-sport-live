@@ -2,15 +2,15 @@
   "Meta": {
     "title": "Kroatien Sport Live – Streams, TV-Guide & Vatreni live",
     "description": "Live-Board, TV-Guide (HRT, Arena, Sportklub), legale Streams und Tracker für kroatische Sportstars – mobil & vertrauenswürdig.",
-    "keywords": "Kroatien Sport Live, HRT, Arena Sport, DAZN, HNL Live, Vatreni, TV Guide, Stream"
+    "keywords": "Kroatien Sport Live, HRT, Arena Sport, HNL Live, Vatreni, TV Hinweise, News"
   },
   "Guide": {
     "liveNow": "Live Now",
     "upcoming": "Demnächst",
     "live": "LIVE",
     "countdown": "Anpfiff in",
-    "streams": "Streams & Sender",
-    "watch": "Ansehen",
+    "streams": "Offizielle Anbieter",
+    "watch": "Anbieter",
     "free": "Free",
     "paid": "Abo",
     "positive": "{pct}% positiv",
@@ -52,7 +52,9 @@
     "upcomingSub": "Countdown, TV-Rechte und legale Links",
     "dataHint": "{guide} Termine · {live} aus Live-API",
     "refresh": "Aktualisieren",
-    "legalFootnote": "Nur offizielle Anbieter. Keine illegalen Streams. TV-Guide aus Live-Fixtures + Sender-Hinweisen."
+    "legalFootnote": "Nur Links zu offiziellen Websites. Keine illegalen Streams, kein VPN-Verkauf, keine Affiliate-Werbung im Launch.",
+    "openProvider": "Anbieter öffnen",
+    "official": "Offiziell"
   },
   "Nav": {
     "home": "Start",
@@ -226,16 +228,16 @@
     "srcUnknown": "keine Quelle"
   },
   "TvRights": {
-    "title": "TV & Streams (dein Land)",
+    "title": "TV-Hinweise (dein Land)",
     "forCountry": "Hinweise für {country}",
     "unknownCountry": "unbekanntes Land",
     "detecting": "Region wird ermittelt…",
-    "noneLocal": "Keine typischen TV-Rechte für dein Land hinterlegt – wir raten nicht mit generischen Kanälen.",
+    "noneLocal": "Keine typischen offiziellen TV-Hinweise für dein Land hinterlegt – wir spekulieren nicht mit bezahlten Plattformen.",
     "typical": "typisch, nicht pro Spiel bestätigt",
     "rightsAsOf": "Stand Rechte {date}",
-    "vpnTitle": "Andere Länder (nur Free-Mediatheken)",
-    "vpnBody": "Diese Free-Dienste sind oft nur im genannten Land legal erreichbar. VPN dorthin kann den Zugang freischalten – AGB und lokale Gesetze beachten. Keine Garantie, dass genau dieses Spiel dort läuft.",
-    "noGuarantee": "keine Live-Garantie"
+    "vpnTitle": "",
+    "vpnBody": "",
+    "noGuarantee": "ohne Gewähr"
   },
   "PlayerDetail": {
     "born": "Geboren",
@@ -272,11 +274,11 @@
   },
   "TV": {
     "title": "TV & Streams",
-    "subtitle": "Offizielle Sender und Streaming-Dienste",
+    "subtitle": "Hinweise auf offizielle Free-Mediatheken und Anbieter-Homepages – unverbindlich",
     "disclaimerTitle": "Wichtiger Hinweis",
-    "vpnTitle": "VPN-Empfehlungen",
-    "vpnSubtitle": "Für legalen Geo-Zugriff – Affiliate-Links mit Provision",
-    "affiliateDisclosure": "Werbehinweis: Einige Links sind Affiliate-Links. Bei einem Kauf erhalten wir ggf. eine Provision – ohne Mehrkosten für dich.",
+    "vpnTitle": "",
+    "vpnSubtitle": "",
+    "affiliateDisclosure": "",
     "free": "Kostenlos",
     "paid": "Abo",
     "streaming": "Streaming",
@@ -285,9 +287,9 @@
     "ipCountry": "IP-Land: {country}",
     "detecting": "Region wird ermittelt…",
     "geoHint": "Erkannt über Server-Header / IP (nicht gespeichert). Verfügbarkeit hängt von Senderechten ab.",
-    "legalOnly": "Nur offizielle Free-to-Air- und Mediathek-Angebote – keine illegalen Streams.",
-    "vpnFree": "Legale Free-Mediatheken anderer Länder (VPN)",
-    "vpnFreeHint": "Öffentlich-rechtliche Free-Angebote mit Geo-Sperre. VPN kann den Zugang ermöglichen – bitte AGB der Anbieter und lokale Gesetze beachten.",
+    "legalOnly": "Nur offizielle Free-to-Air- und Mediathek-Angebote – keine illegalen Streams, kein VPN-Verkauf.",
+    "vpnFree": "",
+    "vpnFreeHint": "",
     "moreProviders": "Weitere offizielle Anbieter",
     "unknownCountry": "unbekannt"
   },
@@ -340,10 +342,11 @@
   },
   "Footer": {
     "rights": "Alle Rechte vorbehalten.",
-    "disclaimer": "Keine illegalen Streams. Offizielle Quellen only.",
+    "disclaimer": "Keine illegalen Streams. Nur Hinweise auf offizielle Anbieter. Unverbindlich.",
     "madeWith": "Mit ❤️ für die Vatreni",
-    "sources": "Daten: ESPN, TheSportsDB u. a. · TV: nur offizielle Anbieter",
-    "brandTagline": "Kroatische Profis in Europa – live, News & legal TV"
+    "sources": "Datenquellen u. a. ESPN, TheSportsDB, HNS-Veröffentlichungen. Externe Links unterliegen den Anbietern.",
+    "brandTagline": "Vatreni, HNL & kroatische Profis – Ergebnisse, News, offizielle TV-Hinweise",
+    "legalShort": "Redaktionelles Informationsangebot. Wir hosten keine Übertragungen und schalten derzeit keine Werbung oder Affiliate-Links."
   },
   "Common": {
     "loading": "Lädt…",
@@ -359,5 +362,41 @@
     "notFoundTitle": "Seite nicht gefunden",
     "notFoundBody": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
     "home": "Zur Startseite"
+  },
+  "Legal": {
+    "impressumTitle": "Impressum",
+    "privacyTitle": "Datenschutz",
+    "termsTitle": "Nutzungshinweise",
+    "provider": "Anbieter / Diensteanbieter",
+    "providerType": "Privates, redaktionelles Informationsangebot (Website).",
+    "contact": "Kontakt",
+    "contactOnlyEmail": "Kontaktaufnahme ausschließlich per E-Mail (keine Postanschrift im öffentlichen Impressum):",
+    "impressumBody": "Dieses Angebot stellt allgemeine Informationen zu Sportterminen, News und Links zu offiziellen Drittanbietern bereit. Es werden keine eigenen Übertragungen gehostet und keine illegalen Streams angeboten. Für verlinkte Inhalte sind die jeweiligen Anbieter verantwortlich.",
+    "noPersonalData": "Hinweis: Aus Datenschutzgründen werden im öffentlichen Impressum keine privaten Wohnadressen oder Klarnamen natürlicher Personen veröffentlicht. Behörden und Anspruchsteller erhalten bei berechtigtem Interesse die erforderlichen Angaben auf Anfrage per E-Mail.",
+    "backHome": "Zur Startseite",
+    "privacyIntro": "Wir nehmen den Schutz personenbezogener Daten ernst. Diese Erklärung beschreibt, welche Daten beim Besuch dieser Website anfallen können.",
+    "privacyController": "Verantwortlich für die Datenverarbeitung",
+    "privacyDataTitle": "Welche Daten können anfallen?",
+    "privacyDataGeo": "Ungefähre Region/Land (Geo-IP über Server-Header oder IP-Lookup) – nur zur Anzeige regionaler TV-Hinweise, ohne dauerhafte Speicherung zu Werbezwecken.",
+    "privacyDataLocal": "Daten im Browser (localStorage), z. B. Favoriten, Theme, Abstimmungen zu Anbieter-Links, optionale Status-Meldungen – verbleiben auf deinem Gerät.",
+    "privacyDataPush": "Push-Benachrichtigungen nur nach deiner ausdrücklichen Einwilligung im Browser (optional).",
+    "privacyDataLogs": "Technische Server-/Hosting-Logs (z. B. Vercel): IP-Adresse, Zeitpunkt, User-Agent – zur Betriebssicherheit und Fehleranalyse, begrenzt durch den Hoster.",
+    "privacyDataThird": "Beim Aufruf externer Links (HRT, Arena, …) gelten die Datenschutzbestimmungen der jeweiligen Anbieter. Eingebundene Bild-URLs können Anfragen an Dritt-CDNs auslösen.",
+    "privacyPurposeTitle": "Zwecke",
+    "privacyPurposeBody": "Bereitstellung der Website, Anzeige redaktioneller Inhalte, optionale Personalisierung (Favoriten), regionale TV-Hinweise, Sicherheit und Missbrauchsvermeidung. Derzeit keine Werbung und keine Affiliate-Programme.",
+    "privacyNoAdsTitle": "Werbung & Affiliate",
+    "privacyNoAdsBody": "Zum Launch schalten wir keine Werbung und keine Affiliate-Links (inkl. VPN). Sollte sich das ändern, werden wir Kennzeichnung und diese Erklärung aktualisieren.",
+    "privacyRightsTitle": "Deine Rechte",
+    "privacyRightsBody": "Je nach anwendbarem Recht (z. B. DSGVO) hast du Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Beschwerde bei einer Aufsichtsbehörde. Anfragen an die Kontakt-E-Mail im Impressum.",
+    "privacyUpdate": "Stand: August 2026. Änderungen sind möglich; es gilt die jeweils veröffentlichte Fassung.",
+    "termsIntro": "Mit der Nutzung dieser Website akzeptierst du die folgenden Hinweise.",
+    "termsServiceTitle": "Art des Angebots",
+    "termsServiceBody": "Kroatien Sport Live ist ein redaktionelles Informationsangebot zu Sportterminen, News und Verweisen auf offizielle Anbieter. Es handelt sich nicht um einen Streaming-Host und nicht um den offiziellen Auftritt eines Verbands oder Clubs.",
+    "termsLinksTitle": "Externe Links",
+    "termsLinksBody": "Links führen zu Websites Dritter. Für Verfügbarkeit, Preise, Geo-Sperren und Inhalte sind ausschließlich die Dritten verantwortlich. Angaben zu Sendern sind unverbindlich und ohne Gewähr.",
+    "termsUgcTitle": "Nutzereingaben",
+    "termsUgcBody": "Funktionen wie Favoriten, Abstimmungen oder Meldungen dienen der Verbesserung der Hinweise. Missbrauch (Spam, rechtswidrige Inhalte) ist untersagt. Wir können Eingaben löschen oder ignorieren.",
+    "termsLiabilityTitle": "Haftung",
+    "termsLiabilityBody": "Soweit gesetzlich zulässig, haften wir nicht für Schäden aus der Nutzung der Website oder externer Angebote. Live-Daten und TV-Hinweise können unvollständig oder veraltet sein."
   }
 }

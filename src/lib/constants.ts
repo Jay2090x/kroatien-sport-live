@@ -1,13 +1,15 @@
-import type { LeagueId, TvChannel, VpnProvider } from "@/types";
+import type { LeagueId, TvChannel } from "@/types";
 
 export const SITE = {
   name: "Kroatien Sport Live",
   shortName: "KSL",
   description:
-    "Live-Ergebnisse, Spiele und Tracker für kroatische Fußballspieler in Europa – Premier League, Bundesliga, Serie A, HNL und mehr.",
+    "Redaktionelle Hinweise zu Spielen kroatischer Fußballspieler, Nationalteam und offiziellen TV-Anbietern – ohne Streaming-Hosting.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://kroatien-sport-live.vercel.app",
   locale: "de",
-  twitter: "@KroatienSportLive",
+  /** Kontakt nur per E-Mail – keine personenbezogenen Daten im Impressum-Text */
+  contactEmail:
+    process.env.NEXT_PUBLIC_CONTACT_EMAIL || "kontakt@kroatien-sport-live.app",
 } as const;
 
 export const LEAGUE_LABELS: Record<LeagueId | "all" | "live", string> = {
@@ -46,8 +48,8 @@ export const DATE_FILTERS = [
 ];
 
 /**
- * Offizielle / bekannte TV- & Streaming-Anbieter
- * Links sind öffentlich; Affiliate nur bei expliziter Markierung
+ * Offizielle TV-/Mediathek-Anbieter (Launch: keine Paid-Giganten Sky/DAZN, kein VPN).
+ * Nur öffentliche Links zu Anbieter-Homepages – wir hosten nichts.
  */
 export const TV_CHANNELS: TvChannel[] = [
   {
@@ -56,6 +58,7 @@ export const TV_CHANNELS: TvChannel[] = [
     type: "free",
     url: "https://hrt.hr",
     region: "HR",
+    markets: ["HR"],
   },
   {
     id: "hrt2",
@@ -63,20 +66,7 @@ export const TV_CHANNELS: TvChannel[] = [
     type: "free",
     url: "https://hrt.hr/hrt-2",
     region: "HR",
-  },
-  {
-    id: "sky-de",
-    name: "Sky Sport",
-    type: "paid",
-    url: "https://www.sky.de/sport",
-    region: "DE/AT",
-  },
-  {
-    id: "dazn",
-    name: "DAZN",
-    type: "streaming",
-    url: "https://www.dazn.com/de-DE/home",
-    region: "DE/AT/CH",
+    markets: ["HR"],
   },
   {
     id: "sportklub",
@@ -84,6 +74,7 @@ export const TV_CHANNELS: TvChannel[] = [
     type: "paid",
     url: "https://www.sportklub.hr",
     region: "HR",
+    markets: ["HR"],
   },
   {
     id: "arena-sport",
@@ -91,6 +82,7 @@ export const TV_CHANNELS: TvChannel[] = [
     type: "paid",
     url: "https://www.arenasport.tv",
     region: "HR/BA/RS",
+    markets: ["HR", "BA", "RS", "SI", "ME"],
   },
   {
     id: "maxsport",
@@ -98,49 +90,35 @@ export const TV_CHANNELS: TvChannel[] = [
     type: "paid",
     url: "https://www.maxsport.bg",
     region: "BG/Balkan",
-  },
-  {
-    id: "viaplay",
-    name: "Viaplay",
-    type: "streaming",
-    url: "https://viaplay.de",
-    region: "DE",
+    markets: ["BG"],
   },
 ];
+
+/** IDs die im Legal-Launch-Modus nie angezeigt werden */
+export const BLOCKED_TV_IDS = new Set([
+  "sky-de",
+  "dazn",
+  "viaplay",
+  "sky",
+  "sky-sport",
+]);
+
+export function isAllowedTvChannel(idOrName: string): boolean {
+  const s = idOrName.toLowerCase();
+  if (BLOCKED_TV_IDS.has(s)) return false;
+  if (/sky|dazn|viaplay|nordvpn|expressvpn|surfshark|vpn/i.test(s)) return false;
+  return true;
+}
 
 /**
- * VPN-Empfehlungen – klar als Werbung/Affiliate gekennzeichnet
- * URLs durch echte Affiliate-Links ersetzen, sobald Partnervertrag besteht
+ * Rechtlicher Hinweis – ohne Affiliate, ohne VPN, ohne Garantie für Senderechte.
  */
-export const VPN_PROVIDERS: VpnProvider[] = [
-  {
-    id: "nordvpn",
-    name: "NordVPN",
-    url: "https://nordvpn.com",
-    description: "Schnell, sicher, viele Server – ideal für Geo-Content und Streaming.",
-    isAffiliate: true,
-  },
-  {
-    id: "expressvpn",
-    name: "ExpressVPN",
-    url: "https://www.expressvpn.com",
-    description: "Premium-VPN mit stabilen Streams und einfacher App.",
-    isAffiliate: true,
-  },
-  {
-    id: "surfshark",
-    name: "Surfshark",
-    url: "https://surfshark.com",
-    description: "Günstig, unbegrenzte Geräte, gut für Familien/WG.",
-    isAffiliate: true,
-  },
-];
-
 export const LEGAL_DISCLAIMER =
-  "Kroatien Sport Live bietet keine illegalen Streams und hostet keine Übertragungen. " +
-  "Alle TV- und Streaming-Links führen zu offiziellen Anbietern. " +
-  "Rechteinhaber und Sendegebiete können sich ändern – bitte prüfe die Verfügbarkeit in deiner Region. " +
-  "VPN-Empfehlungen können Affiliate-Links enthalten; wir erhalten ggf. eine Provision, ohne dass dir Mehrkosten entstehen.";
+  "Kroatien Sport Live ist ein redaktionelles Informationsangebot. " +
+  "Wir hosten keine Übertragungen und bieten keine illegalen Streams an. " +
+  "Externe Links führen zu offiziellen Websites Dritter; für deren Inhalte und Verfügbarkeit sind allein die jeweiligen Anbieter verantwortlich. " +
+  "Angaben zu Sendern und Sendegebieten sind unverbindliche Hinweise ohne Gewähr und können sich jederzeit ändern. " +
+  "Bitte prüfe die Verfügbarkeit und die Nutzungsbedingungen beim jeweiligen Anbieter in deiner Region.";
 
 export const POSITION_LABELS: Record<string, string> = {
   GK: "Torwart",

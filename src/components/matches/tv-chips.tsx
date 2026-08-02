@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils";
 import { filterChannelsForMarket } from "@/lib/broadcast-rights";
 import { useGeoCountry } from "@/hooks/use-geo-country";
 import { useTranslations } from "next-intl";
+import { isAllowedTvChannel } from "@/lib/constants";
 
-/** Kompakte TV/Stream-Chips – nur für Nutzerland (Geo) */
+/** Kompakte TV-Chips – nur erlaubte Anbieter + Nutzerland (Geo) */
 export function TvChips({
   channels,
   className,
   max = 3,
-  /** Wenn true: ohne Geo nichts anzeigen (Default). */
   requireGeo = true,
 }: {
   channels?: TvChannel[];
@@ -24,9 +24,12 @@ export function TvChips({
 
   if (!channels?.length) return null;
 
+  const safe = channels.filter(
+    (c) => isAllowedTvChannel(c.id) && isAllowedTvChannel(c.name)
+  );
   const local = requireGeo
-    ? filterChannelsForMarket(channels, country)
-    : channels;
+    ? filterChannelsForMarket(safe, country)
+    : safe;
 
   if (!ready && requireGeo) {
     return (
