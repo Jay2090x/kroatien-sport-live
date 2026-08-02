@@ -11,7 +11,7 @@ import {
   FALLBACK_PLAYERS,
   PLAYER_SEARCH_NAMES,
 } from "@/lib/data/fallback-players";
-import { attachCompetitionTv } from "@/lib/broadcast-rights";
+import { resolveMatchTvChannels } from "@/lib/broadcast-rights";
 import {
   enrichNationalTeamMatch,
   CROATIA_NT_TEAM_ID,
@@ -152,6 +152,12 @@ async function fetchFromExternalApisInner(apiKeys?: {
   );
   // Nochmal NT-safe (nach Enrich)
   matches = dedupeFixtures(matches);
+
+  // Nur redaktionell bestätigte Live-TV-Rechte
+  matches = matches.map((m) => ({
+    ...m,
+    tvChannels: resolveMatchTvChannels(m),
+  }));
 
   // System-Status für alle Spieler (Match-Signal nutzt Fixtures)
   players = applySystemAvailability(players, matches);
@@ -623,7 +629,7 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
     leagueName: e.strLeague || league.name,
     venue: e.strVenue || undefined,
     croatianPlayers,
-    tvChannels: attachCompetitionTv(league.id),
+    tvChannels: [],
     externalIds: { theSportsDb: e.idEvent },
   };
 }
@@ -736,7 +742,7 @@ async function fetchOpenLigaDb(players: Player[]): Promise<Match[]> {
         leagueName: m.leagueName || "Bundesliga",
         venue: undefined,
         croatianPlayers,
-        tvChannels: attachCompetitionTv("bundesliga"),
+        tvChannels: [],
       });
     }
     if (matches.length) break;
@@ -823,7 +829,7 @@ async function fetchFootballData(
         league: mapFdCompetition(code),
         leagueName: mapFdCompetitionName(code),
         croatianPlayers,
-        tvChannels: attachCompetitionTv(mapFdCompetition(code)),
+        tvChannels: [],
       });
     }
   }

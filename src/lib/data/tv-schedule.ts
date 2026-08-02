@@ -120,29 +120,16 @@ export function slotsFromMatches(
     if (!today) continue;
     if (m.status === "finished" || m.status === "cancelled") continue;
 
+    // Nur bestätigte Live-Sender (certainty confirmed)
     const safeChannels = (m.tvChannels ?? []).filter(
-      (c) => isAllowedTvChannel(c.id) && isAllowedTvChannel(c.name)
+      (c) =>
+        isAllowedTvChannel(c.id) &&
+        isAllowedTvChannel(c.name) &&
+        c.certainty === "confirmed"
     );
     const channels = filterChannelsForMarket(safeChannels, market);
-    let list =
-      channels.length > 0
-        ? [...channels]
-        : [...safeChannels].slice(0, 2);
-
-    if (list.length === 0) {
-      // still show match on "Arena Sport" placeholder for HNL/NT so guide isn't empty
-      if (m.league === "hnl" || m.league === "nations-league") {
-        list = [
-          {
-            id: "arena-sport",
-            name: "Arena Sport",
-            type: "paid" as const,
-            url: "https://www.arenasport.tv",
-            region: "HR",
-          },
-        ];
-      } else continue;
-    }
+    const list = channels.length > 0 ? [...channels] : [...safeChannels];
+    if (list.length === 0) continue;
 
     const home = localizeTeamName(m.homeTeam, locale);
     const away = localizeTeamName(m.awayTeam, locale);
@@ -185,22 +172,11 @@ export function buildTvSchedule(opts: {
 }): TvGuideSlot[] {
   const locale = opts.locale ?? "de";
   const market = opts.market ?? null;
+  // Nur aus bestätigten Live-Fixtures – kein generisches „Sendeplan-Scaffolding“
+  // das so tut, als liefen Spiele auf Sendern.
   const fromMatches = slotsFromMatches(opts.matches, locale, market);
-  const scaffold =
-    opts.includeScaffold !== false ? scaffoldSlots(locale) : [];
 
-  // Prefer real match slots; add scaffold only if not overlapping same channel+hour
-  const used = new Set(
-    fromMatches.map(
-      (s) => `${s.channelId}|${new Date(s.start).getHours()}`
-    )
-  );
-  const extra = scaffold.filter((s) => {
-    const key = `${s.channelId}|${new Date(s.start).getHours()}`;
-    return !used.has(key);
-  });
-
-  return [...fromMatches, ...extra].sort(
+  return fromMatches.sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
   );
 }

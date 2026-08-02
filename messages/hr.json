@@ -49,12 +49,18 @@
     },
     "sectionMore": "Vatreni, vijesti i tracker",
     "liveNowSub": "Utakmice uživo s kanalima i community trustom",
-    "upcomingSub": "Odbrojavanje, TV prava i legalni linkovi",
+    "upcomingSub": "Samo sljedećih 7 dana · s hrvatskim igračima",
     "dataHint": "{guide} termina · {live} s live API-ja",
     "refresh": "Osvježi",
     "legalFootnote": "Samo linkovi na službene stranice. Bez ilegalnih streamova, bez VPN prodaje, bez affiliate oglasa na startu.",
     "openProvider": "Otvori pružatelja",
-    "official": "Službeno"
+    "official": "Službeno",
+    "croatians": "Hrvati",
+    "croatiansUnknown": "Nema mapiranja igrača s API-ja",
+    "confirmedLive": "Potvrđen live prijenos",
+    "noConfirmedTv": "Nema potvrđenog live kanala",
+    "noConfirmedTvHint": "TV pružatelje navodimo samo kad je live prijenos urednički potvrđen – bez nagađanja.",
+    "matchDetails": "Otvori detalje utakmice"
   },
   "Nav": {
     "home": "Početna",

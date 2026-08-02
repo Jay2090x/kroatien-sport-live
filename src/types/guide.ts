@@ -31,11 +31,16 @@ export interface StreamProvider {
   /** 0–100 community score */
   upvotes: number;
   downvotes: number;
-  /** ISO countries where stream works without VPN */
+  /** ISO countries where provider is typically available */
   availableIn: string[];
-  /** If true, show VPN affiliate box when user is outside availableIn */
-  geoLockedOutside?: boolean;
   type: "free" | "paid" | "streaming";
+  /** Only show when true – confirmed live broadcast for this fixture */
+  confirmedLive?: boolean;
+}
+
+export interface GuideMatchPlayer {
+  playerId: string;
+  playerName: string;
 }
 
 export interface GuideMatch {
@@ -54,6 +59,8 @@ export interface GuideMatch {
   /** Featured on Live Now board */
   featured?: boolean;
   streams: StreamProvider[];
+  /** Kroaten in diesem Spiel (aus Live-API) */
+  croatianPlayers?: GuideMatchPlayer[];
   /** Optional deep-link into app match id */
   appMatchId?: string;
 }

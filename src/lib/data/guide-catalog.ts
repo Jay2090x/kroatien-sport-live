@@ -27,20 +27,9 @@ const MATCHES: GuideMatch[] = [
     competitionShort: "HNL",
     venue: "Rujevica",
     featured: false,
-    streams: [
-      {
-        id: "s-arena-hnl",
-        name: "Arena Sport",
-        brand: "Arena",
-        url: "https://www.arenasport.tv",
-        qualities: ["hd-720", "croatian-commentary", "stable"],
-        upvotes: 41,
-        downvotes: 5,
-        availableIn: ["HR", "BA"],
-        geoLockedOutside: true,
-        type: "paid",
-      },
-    ],
+    // Keine TV-Streams ohne bestätigte Live-Übertragung
+    streams: [],
+    croatianPlayers: [],
   },
   {
     id: "guide-hb-1",
@@ -52,20 +41,8 @@ const MATCHES: GuideMatch[] = [
     competition: "Handball Freundschaft",
     competitionShort: "HB",
     featured: false,
-    streams: [
-      {
-        id: "s-hrt-hb",
-        name: "HRT 2",
-        brand: "HRT 2",
-        url: "https://player.hrt.hr/",
-        qualities: ["hd-720", "croatian-commentary", "free"],
-        upvotes: 55,
-        downvotes: 1,
-        availableIn: ["HR"],
-        geoLockedOutside: true,
-        type: "free",
-      },
-    ],
+    streams: [],
+    croatianPlayers: [],
   },
   {
     id: "guide-bb-1",
@@ -77,20 +54,8 @@ const MATCHES: GuideMatch[] = [
     competition: "Premijer liga",
     competitionShort: "ABA",
     featured: false,
-    streams: [
-      {
-        id: "s-arena-bb",
-        name: "Arena Sport",
-        brand: "Arena",
-        url: "https://www.arenasport.tv",
-        qualities: ["hd-720", "croatian-commentary"],
-        upvotes: 28,
-        downvotes: 4,
-        availableIn: ["HR"],
-        geoLockedOutside: true,
-        type: "paid",
-      },
-    ],
+    streams: [],
+    croatianPlayers: [],
   },
   {
     id: "guide-wp-1",
@@ -102,20 +67,8 @@ const MATCHES: GuideMatch[] = [
     competition: "Vaterpolo liga",
     competitionShort: "WP",
     featured: false,
-    streams: [
-      {
-        id: "s-hrt-wp",
-        name: "HRT",
-        brand: "HRT",
-        url: "https://player.hrt.hr/",
-        qualities: ["sd", "croatian-commentary", "free"],
-        upvotes: 18,
-        downvotes: 2,
-        availableIn: ["HR"],
-        geoLockedOutside: true,
-        type: "free",
-      },
-    ],
+    streams: [],
+    croatianPlayers: [],
   },
 ];
 

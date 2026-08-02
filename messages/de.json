@@ -49,12 +49,18 @@
     },
     "sectionMore": "Vatreni, News & Tracker",
     "liveNowSub": "Laufende Spiele mit Sendern & Community-Trust",
-    "upcomingSub": "Countdown, TV-Rechte und legale Links",
+    "upcomingSub": "Nur die nächsten 7 Tage · mit kroatischen Spielern",
     "dataHint": "{guide} Termine · {live} aus Live-API",
     "refresh": "Aktualisieren",
     "legalFootnote": "Nur Links zu offiziellen Websites. Keine illegalen Streams, kein VPN-Verkauf, keine Affiliate-Werbung im Launch.",
     "openProvider": "Anbieter öffnen",
-    "official": "Offiziell"
+    "official": "Offiziell",
+    "croatians": "Kroaten",
+    "croatiansUnknown": "Keine Spielerzuordnung aus der API",
+    "confirmedLive": "Bestätigte Live-Übertragung",
+    "noConfirmedTv": "Kein bestätigter Live-Sender",
+    "noConfirmedTvHint": "Wir listen TV-Anbieter nur, wenn eine Live-Übertragung redaktionell bestätigt ist – keine Spekulation.",
+    "matchDetails": "Match-Details öffnen"
   },
   "Nav": {
     "home": "Start",

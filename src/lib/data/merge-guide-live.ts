@@ -1,6 +1,7 @@
 /**
- * Merges editorial/placeholder guide fixtures with live API matches.
- * Live football fixtures win on identity; catalog keeps multi-sport + rich streams.
+ * Merges catalog + live API. Next 7 days only for upcoming.
+ * TV streams only if confirmed live broadcast (certainty confirmed).
+ * Includes Croatian player names from API.
  */
 
 import type { Match, TvChannel } from "@/types";
@@ -8,13 +9,19 @@ import type { GuideMatch, StreamProvider, StreamQuality } from "@/types/guide";
 import { isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import { isAllowedTvChannel } from "@/lib/constants";
+import { resolveMatchTvChannels } from "@/lib/broadcast-rights";
+
+const MS_DAY = 24 * 3600_000;
+export const UPCOMING_WINDOW_DAYS = 7;
 
 function channelToStream(ch: TvChannel, idx: number): StreamProvider | null {
   if (!isAllowedTvChannel(ch.id) || !isAllowedTvChannel(ch.name)) return null;
+  // Strict: only confirmed live broadcasts
+  if (ch.certainty !== "confirmed") return null;
 
   const qualities: StreamQuality[] = [];
   if (ch.type === "free") qualities.push("free");
-  qualities.push(ch.certainty === "confirmed" ? "stable" : "hd-720");
+  qualities.push("stable");
   if (/hrt/i.test(ch.name)) qualities.push("croatian-commentary");
 
   return {
@@ -23,14 +30,15 @@ function channelToStream(ch: TvChannel, idx: number): StreamProvider | null {
     brand: shortBrand(ch.name),
     url: ch.url,
     qualities: qualities.length ? qualities : ["hd-720"],
-    upvotes: ch.certainty === "confirmed" ? 50 : 20,
-    downvotes: 2,
+    upvotes: 40,
+    downvotes: 1,
     availableIn: ch.markets?.length
       ? ch.markets
       : ch.region
         ? ch.region.split(/[/,]/).map((s) => s.trim()).filter(Boolean)
         : [],
     type: ch.type,
+    confirmedLive: true,
   };
 }
 
@@ -48,17 +56,30 @@ function guideStatus(m: Match): GuideMatch["status"] {
   return "upcoming";
 }
 
+function withinNextDays(kickoff: string, days: number, now = Date.now()): boolean {
+  const t = new Date(kickoff).getTime();
+  if (Number.isNaN(t)) return false;
+  return t >= now - 3 * 3600_000 && t <= now + days * MS_DAY;
+}
+
 /** Convert dashboard Match → GuideMatch */
 export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
-  const streams = (m.tvChannels ?? [])
+  const confirmed = resolveMatchTvChannels(m);
+  const streams = confirmed
     .map((ch, i) => channelToStream(ch, i))
     .filter((s): s is StreamProvider => s != null);
+
   const seen = new Set<string>();
   const uniqueStreams = streams.filter((s) => {
     if (seen.has(s.brand)) return false;
     seen.add(s.brand);
     return true;
   });
+
+  const croatianPlayers = (m.croatianPlayers ?? []).map((p) => ({
+    playerId: p.playerId,
+    playerName: p.playerName,
+  }));
 
   return {
     id: `api-${m.id}`,
@@ -79,6 +100,7 @@ export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
       m.league === "champions-league" ||
       isLiveStatus(m.status),
     streams: uniqueStreams,
+    croatianPlayers,
     appMatchId: m.id,
   };
 }
@@ -119,57 +141,51 @@ function fixtureKey(m: GuideMatch): string {
   return `${day}|${teams}`;
 }
 
-/**
- * Merge catalog (multi-sport / editorial streams) with live API football matches.
- * - API live/upcoming football replaces catalog football on same day+teams
- * - Catalog non-football always kept
- * - Catalog football kept only if no API counterpart
- * - Prefer API streams; if API has none, keep catalog streams for that fixture
- */
 export function mergeGuideWithLive(
   catalogMatches: GuideMatch[],
   liveMatches: Match[],
   locale = "de"
 ): GuideMatch[] {
+  const now = Date.now();
+
+  // Re-resolve TV on API matches (confirmed only)
   const fromApi = liveMatches
     .filter((m) => m.status !== "cancelled")
-    .map((m) => matchToGuideMatch(m, locale));
+    .map((m) => {
+      const withTv = { ...m, tvChannels: resolveMatchTvChannels(m) };
+      return matchToGuideMatch(withTv, locale);
+    })
+    .filter((m) => {
+      if (m.status === "live") return true;
+      if (m.status === "finished") {
+        const t = new Date(m.kickoff).getTime();
+        return t >= now - 2 * MS_DAY && t <= now;
+      }
+      return withinNextDays(m.kickoff, UPCOMING_WINDOW_DAYS, now);
+    });
 
   const apiByKey = new Map(fromApi.map((m) => [fixtureKey(m), m]));
-  const catalogByKey = new Map(
-    catalogMatches.map((m) => [fixtureKey(m), m])
-  );
-
   const merged = new Map<string, GuideMatch>();
 
-  // Start with API
   for (const [key, api] of apiByKey) {
-    const cat = catalogByKey.get(key);
-    if (cat && cat.streams.length && api.streams.length === 0) {
-      merged.set(key, { ...api, streams: cat.streams, featured: true });
-    } else if (cat && cat.streams.length && api.streams.length > 0) {
-      // enrich: catalog brands missing on API
-      const brands = new Set(api.streams.map((s) => s.brand.toLowerCase()));
-      const extra = cat.streams.filter(
-        (s) => !brands.has(s.brand.toLowerCase())
-      );
-      merged.set(key, {
-        ...api,
-        streams: [...api.streams, ...extra].slice(0, 6),
-        featured: api.featured || cat.featured,
-      });
-    } else {
-      merged.set(key, api);
-    }
+    merged.set(key, api);
   }
 
-  // Catalog-only (other sports or football not in API)
+  // Catalog multi-sport only, next 7 days, no guessed TV streams
   for (const cat of catalogMatches) {
+    if (cat.sport === "football") continue; // football only from API
+    if (cat.status === "finished") continue;
+    if (cat.status === "upcoming" && !withinNextDays(cat.kickoff, UPCOMING_WINDOW_DAYS, now))
+      continue;
+    if (cat.status === "live" && !withinNextDays(cat.kickoff, 1, now)) continue;
     const key = fixtureKey(cat);
     if (merged.has(key)) continue;
-    // Skip catalog football that is stale finished demo if API has plenty of live football
-    if (cat.sport === "football" && cat.status === "finished") continue;
-    merged.set(key, cat);
+    // Strip unconfirmed streams from catalog
+    merged.set(key, {
+      ...cat,
+      streams: (cat.streams ?? []).filter((s) => s.confirmedLive === true),
+      croatianPlayers: cat.croatianPlayers ?? [],
+    });
   }
 
   return [...merged.values()].sort((a, b) => {

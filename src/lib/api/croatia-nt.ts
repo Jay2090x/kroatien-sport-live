@@ -4,7 +4,7 @@
  */
 
 import type { LeagueId, Match, MatchStatus } from "@/types";
-import { attachCompetitionTv } from "@/lib/broadcast-rights";
+import { resolveMatchTvChannels } from "@/lib/broadcast-rights";
 import { enrichNationalTeamMatch } from "@/lib/data/national-team";
 
 const ESPN_TEAM_ALL =
@@ -32,9 +32,7 @@ interface EspnEvent {
   }>;
 }
 
-function pickTv(leagueId: import("@/types").LeagueId = "nations-league") {
-  return attachCompetitionTv(leagueId);
-}
+
 
 function scoreOf(c?: EspnCompetitor): number | null {
   if (!c?.score) return null;
@@ -121,10 +119,12 @@ function mapEspnEvent(e: EspnEvent): Match | null {
       leagueName + (e.seasonType?.name ? ` · ${e.seasonType.name}` : ""),
     venue: c.venue?.fullName,
     croatianPlayers: [],
-    tvChannels: pickTv(leagueId),
+    tvChannels: [],
     externalIds: { footballData: e.id },
   };
 }
+
+// apply confirmed TV after enrich in sports.ts pipeline
 
 async function fetchEspnJson(url: string): Promise<EspnEvent[]> {
   try {

@@ -2,23 +2,23 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, ChevronUp, MapPin } from "lucide-react";
+import { ChevronDown, ChevronUp, MapPin, Users } from "lucide-react";
 import type { GuideMatch } from "@/types/guide";
 import { StreamRow } from "@/components/guide/stream-row";
 import { Countdown } from "@/components/guide/countdown";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 export function GuideMatchCard({ match }: { match: GuideMatch }) {
   const t = useTranslations("Guide");
   const [open, setOpen] = useState(match.status === "live");
   const live = match.status === "live";
+  const players = match.croatianPlayers ?? [];
+  const confirmedStreams = match.streams.filter((s) => s.confirmedLive);
 
   return (
     <article
-      className={cn(
-        "guide-card overflow-hidden",
-        live && "guide-card-live"
-      )}
+      className={cn("guide-card overflow-hidden", live && "guide-card-live")}
     >
       <button
         type="button"
@@ -78,15 +78,43 @@ export function GuideMatchCard({ match }: { match: GuideMatch }) {
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {match.streams.slice(0, 4).map((s) => (
-            <span
-              key={s.id}
-              className="rounded-md border border-border bg-secondary/50 px-1.5 py-0.5 text-[10px] font-bold"
-            >
-              {s.brand}
+        {/* Croatian players */}
+        {players.length > 0 ? (
+          <p className="flex min-w-0 items-start gap-1.5 text-[11px] text-muted-foreground">
+            <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+            <span className="min-w-0">
+              <span className="font-semibold text-foreground/90">
+                {t("croatians")}:{" "}
+              </span>
+              {players
+                .slice(0, 5)
+                .map((p) => p.playerName)
+                .join(", ")}
+              {players.length > 5 ? ` +${players.length - 5}` : ""}
             </span>
-          ))}
+          </p>
+        ) : match.sport === "football" ? (
+          <p className="text-[10px] text-muted-foreground/80">
+            {t("croatiansUnknown")}
+          </p>
+        ) : null}
+
+        <div className="flex flex-wrap items-center gap-2">
+          {confirmedStreams.length > 0 ? (
+            confirmedStreams.slice(0, 4).map((s) => (
+              <span
+                key={s.id}
+                className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-200"
+                title={t("confirmedLive")}
+              >
+                {s.brand}
+              </span>
+            ))
+          ) : (
+            <span className="text-[10px] text-muted-foreground">
+              {t("noConfirmedTv")}
+            </span>
+          )}
           {match.venue && (
             <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
               <MapPin className="h-3 w-3" />
@@ -98,12 +126,50 @@ export function GuideMatchCard({ match }: { match: GuideMatch }) {
 
       {open && (
         <div className="space-y-2 border-t border-border px-3 py-3 sm:px-3.5">
+          {players.length > 0 && (
+            <div className="mb-2">
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("croatians")}
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {players.map((p) => (
+                  <li key={p.playerId}>
+                    {p.playerId ? (
+                      <Link
+                        href={`/player/${p.playerId}`}
+                        className="rounded-full border border-border bg-secondary/50 px-2 py-0.5 text-[11px] font-medium hover:border-primary/40 hover:text-primary"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {p.playerName}
+                      </Link>
+                    ) : (
+                      <span className="rounded-full border border-border px-2 py-0.5 text-[11px]">
+                        {p.playerName}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             {t("streams")}
           </p>
-          {match.streams.map((s) => (
-            <StreamRow key={s.id} stream={s} />
-          ))}
+          {confirmedStreams.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("noConfirmedTvHint")}</p>
+          ) : (
+            confirmedStreams.map((s) => <StreamRow key={s.id} stream={s} />)
+          )}
+          {match.appMatchId && (
+            <Link
+              href={`/match/${match.appMatchId}`}
+              className="inline-block text-xs font-semibold text-primary hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t("matchDetails")}
+            </Link>
+          )}
         </div>
       )}
     </article>

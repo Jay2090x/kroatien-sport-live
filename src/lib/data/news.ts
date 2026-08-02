@@ -1406,9 +1406,10 @@ export function getDailyNews(
   );
   if (liveClub) {
     const names = liveClub.croatianPlayers
-      .slice(0, 3)
+      .slice(0, 4)
       .map((p) => p.playerName)
       .join(", ");
+    const allNames = liveClub.croatianPlayers.map((p) => p.playerName).join(", ");
     generated.push({
       id: `live-club-${liveClub.id}`,
       date: today,
@@ -1426,90 +1427,94 @@ export function getDailyNews(
         hr: `Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names || "Hrvati u igri"}`,
       },
       body: {
-        de: "Live-Stand aus den angebundenen APIs. Details im Spiele-Dashboard und Match-Modal.",
-        en: "Live score from connected APIs. Details in the matches dashboard and match modal.",
-        hr: "Live rezultat s API-ja. Detalji na dashboardu i u modalu utakmice.",
+        de: `Live aus angebundenen APIs: ${liveClub.homeTeam} gegen ${liveClub.awayTeam} (${liveClub.leagueName}). Aktueller Stand ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` in Minute ${liveClub.minute}` : ""}.\n\nKroatische Spieler: ${allNames || "siehe Live-Board"}.\n\nDetails und bestätigte TV-Hinweise (falls vorhanden) im Live-Board.`,
+        en: `Live from connected APIs: ${liveClub.homeTeam} vs ${liveClub.awayTeam} (${liveClub.leagueName}). Score ${liveClub.homeScore ?? "–"}–${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` at ${liveClub.minute}'` : ""}.\n\nCroatian players: ${allNames || "see live board"}.\n\nDetails and confirmed TV tips (if any) on the live board.`,
+        hr: `Uživo s API-ja: ${liveClub.homeTeam} – ${liveClub.awayTeam} (${liveClub.leagueName}). Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` u ${liveClub.minute}'` : ""}.\n\nHrvatski igrači: ${allNames || "vidi live board"}.\n\nDetalji i potvrđeni TV savjeti (ako postoje) na live boardu.`,
       },
-      image: liveClub.croatianPlayers[0]?.playerId
-        ? undefined
-        : {
-            url: IMG.pitch,
-            alt: { de: "Fußball", en: "Football", hr: "Nogomet" },
-          },
+      image: {
+        url: IMG.pitch,
+        alt: { de: "Fußball", en: "Football", hr: "Nogomet" },
+      },
       playerId: liveClub.croatianPlayers[0]?.playerId,
     });
-
-    // Prefer live player cutout if we know the player
-    const lp = live?.players?.find(
-      (p) => p.id === liveClub.croatianPlayers[0]?.playerId
-    );
-    if (lp?.imageUrl) {
-      const last = generated[generated.length - 1];
-      last.image = {
-        url: lp.imageUrl,
-        alt: { de: lp.name, en: lp.name, hr: lp.name },
-      };
-    }
   }
 
-  // Nächstes Club-Spiel mit Kroaten (nicht live) – automatische Meldung
-  const nextClub = matches
-    .filter(
-      (m) =>
-        m.status === "scheduled" &&
-        m.croatianPlayers.length > 0 &&
-        !/croat|kroat|hrvat/i.test(`${m.homeTeam} ${m.awayTeam}`) &&
-        new Date(m.kickoff).getTime() >= now.getTime()
-    )
-    .sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())[0];
+  // Club-Spiele mit Kroaten in den nächsten 7 Tagen – je Spiel eine knappe News
+  const weekClub = matches
+    .filter((m) => {
+      if (m.status !== "scheduled" && m.status !== "postponed") return false;
+      if (!m.croatianPlayers.length) return false;
+      if (/croat|kroat|hrvat/i.test(`${m.homeTeam} ${m.awayTeam}`)) return false;
+      const t = new Date(m.kickoff).getTime();
+      return t >= now.getTime() && t <= now.getTime() + 7 * 24 * 3600_000;
+    })
+    .sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())
+    .slice(0, 12);
 
-  if (nextClub) {
+  for (const nextClub of weekClub) {
     const names = nextClub.croatianPlayers
-      .slice(0, 3)
+      .slice(0, 4)
+      .map((p) => p.playerName)
+      .join(", ");
+    const allNames = nextClub.croatianPlayers
       .map((p) => p.playerName)
       .join(", ");
     const pid = nextClub.croatianPlayers[0]?.playerId;
-    const pl = live?.players?.find((p) => p.id === pid);
     generated.push({
       id: `live-upcoming-club-${nextClub.id}`,
       date: today,
+      featured: weekClub.indexOf(nextClub) < 3,
       category: "live",
-      tag: { de: "Club", en: "Club", hr: "Klub" },
+      tag: { de: "Diese Woche", en: "This week", hr: "Ovaj tjedan" },
       title: {
-        de: `Als Nächstes: ${nextClub.homeTeam} – ${nextClub.awayTeam}`,
-        en: `Up next: ${nextClub.homeTeam} – ${nextClub.awayTeam}`,
-        hr: `Sljedeće: ${nextClub.homeTeam} – ${nextClub.awayTeam}`,
+        de: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Kroaten"} im Spiel`,
+        en: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Croatians"} involved`,
+        hr: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Hrvati"} na utakmici`,
       },
       summary: {
-        de: `${fmtKick(nextClub.kickoff, "de")} · ${nextClub.leagueName} · ${names || "Kroaten im Kader"}`,
-        en: `${fmtKick(nextClub.kickoff, "en")} · ${nextClub.leagueName} · ${names || "Croatians involved"}`,
-        hr: `${fmtKick(nextClub.kickoff, "hr")} · ${nextClub.leagueName} · ${names || "Hrvati u sastavu"}`,
+        de: `${fmtKick(nextClub.kickoff, "de")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
+        en: `${fmtKick(nextClub.kickoff, "en")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
+        hr: `${fmtKick(nextClub.kickoff, "hr")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
       },
       body: {
-        de: `Automatisch aus Live-Daten: ${nextClub.homeTeam} gegen ${nextClub.awayTeam} (${nextClub.leagueName}). Mit dabei: ${names || "kroatische Spieler"}. Details im Spiele-Dashboard.`,
-        en: `Auto from live data: ${nextClub.homeTeam} vs ${nextClub.awayTeam} (${nextClub.leagueName}). Involved: ${names || "Croatian players"}. Details in the matches dashboard.`,
-        hr: `Automatski iz live podataka: ${nextClub.homeTeam} – ${nextClub.awayTeam} (${nextClub.leagueName}). U sastavu: ${names || "hrvatski igrači"}. Detalji na dashboardu.`,
+        de: `Aus den Live-Daten (nächste 7 Tage): ${nextClub.homeTeam} gegen ${nextClub.awayTeam} in der ${nextClub.leagueName}. Kick-off ${fmtKick(nextClub.kickoff, "de")}.${nextClub.venue ? ` Stadion: ${nextClub.venue}.` : ""}\n\nKroatische Spieler laut Datenlage: ${allNames || "noch nicht zugeordnet"}.\n\nKein spekulativer TV-Hinweis – nur wenn redaktionell bestätigt. Mehr im Live-Board und Spieler-Tracker.`,
+        en: `From live data (next 7 days): ${nextClub.homeTeam} vs ${nextClub.awayTeam} in ${nextClub.leagueName}. Kick-off ${fmtKick(nextClub.kickoff, "en")}.${nextClub.venue ? ` Venue: ${nextClub.venue}.` : ""}\n\nCroatian players per data: ${allNames || "not yet mapped"}.\n\nNo speculative TV tip – only if editorially confirmed. More on the live board and player tracker.`,
+        hr: `Iz live podataka (sljedećih 7 dana): ${nextClub.homeTeam} – ${nextClub.awayTeam} u ${nextClub.leagueName}. Početak ${fmtKick(nextClub.kickoff, "hr")}.${nextClub.venue ? ` Stadion: ${nextClub.venue}.` : ""}\n\nHrvatski igrači prema podacima: ${allNames || "još nisu mapirani"}.\n\nBez spekulativnog TV savjeta – samo ako je urednički potvrđeno. Više na live boardu i trackeru.`,
       },
-      image: pl?.imageUrl
-        ? {
-            url: pl.imageUrl,
-            alt: { de: pl.name, en: pl.name, hr: pl.name },
-          }
-        : {
-            url: IMG.stadium,
-            alt: { de: "Stadion", en: "Stadium", hr: "Stadion" },
-          },
+      // Sichere thematische Bilder (Liga/Wettbewerb), keine Spieler-Cutouts aus Dritt-CDNs
+      image: {
+        url:
+          /premier|pl\b/i.test(nextClub.leagueName)
+            ? IMG.premierLeague
+            : /bundesliga/i.test(nextClub.leagueName)
+              ? IMG.euro
+              : /serie/i.test(nextClub.leagueName)
+                ? IMG.serieA
+                : /hnl/i.test(nextClub.leagueName)
+                  ? IMG.hnl
+                  : IMG.stadium,
+        alt: {
+          de: nextClub.leagueName,
+          en: nextClub.leagueName,
+          hr: nextClub.leagueName,
+        },
+      },
       playerId: pid,
     });
   }
 
-  const editorial = EDITORIAL_NEWS.filter((a) => a.date <= today);
+  // Editorial: nur letzte ~60 Tage + immer featured/breaking
+  const cutoff = new Date(now);
+  cutoff.setDate(cutoff.getDate() - 60);
+  const cutoffIso = todayIso(cutoff);
+  const editorial = EDITORIAL_NEWS.filter(
+    (a) => a.date <= today && (a.date >= cutoffIso || a.featured)
+  );
   const map = new Map<string, NewsArticle>();
+  // Live-generated first for same-day relevance
   for (const a of [...generated, ...editorial]) map.set(a.id, a);
 
-  // Neueste zuerst; featured nur als Tie-Breaker am selben Tag
-  // Unique-Bilder in den letzten 50 Einträgen
-  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 50);
+  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 60);
 }
 
 /**
