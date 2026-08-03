@@ -3,14 +3,20 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { getDailyNewsAsync, tNews } from "@/lib/data/news";
+import { getDailyNewsAsync, tNews, isStoryNews } from "@/lib/data/news";
+import { sanitizeNewsDisplay } from "@/lib/data/news-text";
 import { getDashboardData } from "@/lib/data/service";
 import { SITE } from "@/lib/constants";
 import { Newspaper, ArrowLeft } from "lucide-react";
 import { NewsIndexList } from "@/components/news/news-index-list";
+import type { Locale } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
+
+function asLocale(locale: string): Locale {
+  return locale === "en" || locale === "hr" ? locale : "de";
+}
 
 export async function generateMetadata({
   params,
@@ -22,7 +28,7 @@ export async function generateMetadata({
   const path = locale === "de" ? "/news" : `/${locale}/news`;
   return {
     title: t("title"),
-    description: t("subtitle"),
+    description: t("subtitleValue"),
     alternates: {
       canonical: `${SITE.url}${path}`,
       languages: {
@@ -33,7 +39,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: `${t("title")} | ${SITE.name}`,
-      description: t("subtitle"),
+      description: t("subtitleValue"),
       url: `${SITE.url}${path}`,
       type: "website",
     },
@@ -48,6 +54,7 @@ export default async function NewsIndexPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "News" });
+  const loc = asLocale(locale);
 
   let matches: Awaited<ReturnType<typeof getDashboardData>>["matches"] = [];
   let players: Awaited<ReturnType<typeof getDashboardData>>["players"] = [];
@@ -59,37 +66,17 @@ export default async function NewsIndexPage({
     /* ok */
   }
 
-  const loc =
-    locale === "en" || locale === "hr"
-      ? (locale as "en" | "hr")
-      : ("de" as const);
   const articles = (
     await getDailyNewsAsync(new Date(), { matches, players }, loc)
-  ).filter((a) => !a.id.startsWith("live-"));
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: t("title"),
-    description: t("subtitle"),
-    url: `${SITE.url}${locale === "de" ? "" : `/${locale}`}/news`,
-    mainEntity: {
-      "@type": "ItemList",
-      itemListElement: articles.slice(0, 30).map((a, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        url: `${SITE.url}${locale === "de" ? "" : `/${locale}`}/news/${a.id}`,
-        name: tNews(a.title, locale),
-      })),
-    },
-  };
+  )
+    .filter(isStoryNews)
+    .filter((a) => {
+      const title = sanitizeNewsDisplay(tNews(a.title, locale), 140);
+      return title.length >= 8;
+    });
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <Navbar />
       <main className="mx-auto max-w-3xl px-3 py-6 sm:px-6 sm:py-8">
         <Link
@@ -105,18 +92,29 @@ export default async function NewsIndexPage({
             <Newspaper className="h-6 w-6 text-primary" aria-hidden />
             {t("title")}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("subtitleValue")}
+          </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {t("daily")} · {articles.length}
+            {t("langFeed", {
+              lang: loc === "en" ? "EN" : loc === "hr" ? "HR" : "DE/HR",
+            })}{" "}
+            · {articles.length}
           </p>
         </header>
 
-        <NewsIndexList
-          articles={articles}
-          locale={locale}
-          readMore={t("readMore")}
-          openSource={t("openSource")}
-        />
+        {articles.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-border px-3 py-8 text-center text-sm text-muted-foreground">
+            {t("emptyStories")}
+          </p>
+        ) : (
+          <NewsIndexList
+            articles={articles}
+            locale={locale}
+            readMore={t("readMore")}
+            openSource={t("openSource")}
+          />
+        )}
       </main>
       <Footer />
     </>

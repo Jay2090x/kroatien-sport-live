@@ -210,8 +210,11 @@
   "News": {
     "title": "News",
     "subtitle": "Aktuelle Vatreni- & Club-Meldungen · Live-Anker · Auto-Feed",
-    "subtitleValue": "Tagesbrief + Headlines aus Index, HRT, ESPN u. a. – Termine nur im Live-Board",
+    "subtitleValue": "Redaktion & Headlines in deiner Sprache – Original nur beim Anbieter. Termine im Live-Board.",
     "mustRead": "Headlines",
+    "editorialBadge": "Redaktion",
+    "briefBadge": "Tagesbrief",
+    "langFeed": "Feed: {lang}",
     "ticker": "Weitere Headlines",
     "archiveLink": "Alle {count} Beiträge",
     "daily": "Tages-Feed",

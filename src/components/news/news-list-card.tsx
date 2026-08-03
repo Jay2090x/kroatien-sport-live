@@ -11,15 +11,16 @@ import {
   type NewsArticle,
 } from "@/lib/data/news";
 import {
-  cleanNewsText,
   FALLBACK_THUMB,
   isLogoOrPortrait,
 } from "@/lib/data/news-images";
+import {
+  looksLikeHtmlGarbage,
+  sanitizeNewsDisplay,
+} from "@/lib/data/news-text";
 
 /**
- * News-Karte:
- * – Extern: nur Original-Link (keine Pseudo-Artikel-Seite)
- * – Intern (Brief/Redaktion): Link zu /news/[slug]
+ * Saubere News-Karte – nie HTML, externe nur → Original.
  */
 export function NewsListCard({
   article,
@@ -35,13 +36,28 @@ export function NewsListCard({
   compact?: boolean;
 }) {
   const cat = tNews(NEWS_CATEGORY_LABEL[article.category], locale);
-  const tag = cleanNewsText(tNews(article.tag, locale), 80);
+  const tag = sanitizeNewsDisplay(tNews(article.tag, locale), 48);
   const title =
-    cleanNewsText(tNews(article.title, locale), 160) || "…";
-  const summary = cleanNewsText(tNews(article.summary, locale), 280);
+    sanitizeNewsDisplay(tNews(article.title, locale), 140) || "…";
+
+  // Summary: nur wenn sauber; bei externen oft nur Quelle-Hinweis
+  let summary = sanitizeNewsDisplay(tNews(article.summary, locale), 180);
+  if (looksLikeHtmlGarbage(summary) || summary === title) summary = "";
+  // Externe: summary optional kürzen – nicht Titel wiederholen
+  if (article.isExternal && summary.includes(title.slice(0, 40))) {
+    summary = sanitizeNewsDisplay(
+      locale === "en"
+        ? `Via ${article.sourceName || "source"} · open original`
+        : locale === "hr"
+          ? `Putem ${article.sourceName || "izvora"} · otvori original`
+          : `Über ${article.sourceName || "Quelle"} · Original öffnen`,
+      120
+    );
+  }
+
   const src = article.image?.url || FALLBACK_THUMB;
   const alt = article.image
-    ? cleanNewsText(tNews(article.image.alt, locale), 80)
+    ? sanitizeNewsDisplay(tNews(article.image.alt, locale), 60)
     : title;
   const logoStyle = isLogoOrPortrait(src);
   const isCutout = /cutout/i.test(src);
@@ -49,10 +65,11 @@ export function NewsListCard({
     article.isExternal ||
       (article.sourceUrl?.startsWith("http") && article.id.startsWith("auto-"))
   );
-  const showCat =
-    !external &&
-    tag &&
-    !tag.toLowerCase().includes(cat.toLowerCase());
+
+  const langBadge =
+    external && article.sourceLang
+      ? article.sourceLang.toUpperCase()
+      : null;
 
   const thumb = (
     <div
@@ -102,11 +119,7 @@ export function NewsListCard({
               {thumb}
             </a>
           ) : (
-            <Link
-              href={`/news/${article.id}`}
-              tabIndex={-1}
-              aria-hidden
-            >
+            <Link href={`/news/${article.id}`} tabIndex={-1} aria-hidden>
               {thumb}
             </Link>
           )}
@@ -121,16 +134,22 @@ export function NewsListCard({
                   {tag}
                 </Badge>
               )}
-              {external && (
+              {!external && (
                 <Badge
                   variant="outline"
                   className="px-1.5 py-0 text-[10px] font-medium"
                 >
-                  ↗
+                  {cat}
                 </Badge>
               )}
-              {showCat && <span>{cat}</span>}
-              {showCat && <span aria-hidden>·</span>}
+              {langBadge && external && langBadge !== locale.toUpperCase() && (
+                <Badge
+                  variant="outline"
+                  className="px-1.5 py-0 text-[10px] font-medium"
+                >
+                  {langBadge}
+                </Badge>
+              )}
               <time dateTime={article.date}>{dateLabel}</time>
             </div>
 
@@ -154,11 +173,11 @@ export function NewsListCard({
               )}
             </h3>
 
-            {summary && (
+            {summary ? (
               <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
                 {summary}
               </p>
-            )}
+            ) : null}
 
             {external && article.sourceUrl ? (
               <a

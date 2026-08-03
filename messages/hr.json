@@ -210,8 +210,11 @@
   "News": {
     "title": "Vijesti",
     "subtitle": "Vatreni i klubovi · live termini · auto feed",
-    "subtitleValue": "Dnevni brief + naslovi s Indexa, HRT-a, ESPNa i dr. – termini samo na live boardu",
+    "subtitleValue": "Uredništvo i naslovi na tvom jeziku – full tekst kod izdavača. Termini na live boardu.",
     "mustRead": "Naslovi",
+    "editorialBadge": "Uredništvo",
+    "briefBadge": "Dnevni brief",
+    "langFeed": "Feed: {lang}",
     "ticker": "Više naslova",
     "archiveLink": "Svih {count} objava",
     "daily": "Dnevni feed",

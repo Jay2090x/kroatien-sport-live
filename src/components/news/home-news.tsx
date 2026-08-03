@@ -27,15 +27,11 @@ export async function HomeNewsBlock({ locale }: { locale: string }) {
     loc
   );
 
-  // Top: redaktioneller Slot / Brief vor EN-Spam; sonst passende externe Headline
+  // Top: Redaktion, dann Headline in UI-Sprache, dann Brief
   const top =
     articles.find((a) => a.id.startsWith("editorial-slot-")) ||
     articles.find(
-      (a) =>
-        a.isExternal &&
-        a.sourceUrl &&
-        (a.sourceLang === loc ||
-          (loc === "de" && a.sourceLang === "hr"))
+      (a) => a.isExternal && a.sourceUrl && a.sourceLang === loc
     ) ||
     articles.find((a) => a.id.startsWith("daily-brief-")) ||
     articles.find((a) => a.isExternal && a.sourceUrl) ||

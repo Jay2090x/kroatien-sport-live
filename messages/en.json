@@ -210,8 +210,11 @@
   "News": {
     "title": "News",
     "subtitle": "Vatreni & club updates · live fixtures · auto feed",
-    "subtitleValue": "Daily brief + headlines from Index, HRT, ESPN and more – fixtures only on the live board",
+    "subtitleValue": "Editorial & headlines in your language – full story at the publisher. Fixtures on the live board.",
     "mustRead": "Headlines",
+    "editorialBadge": "Editorial",
+    "briefBadge": "Daily brief",
+    "langFeed": "Feed: {lang}",
     "ticker": "More headlines",
     "archiveLink": "All {count} stories",
     "daily": "Daily feed",

@@ -8,6 +8,7 @@ import type { Match, Player } from "@/types";
 import { assignUniqueNewsImages } from "@/lib/data/news-images";
 import { buildDailyBrief } from "@/lib/data/daily-brief";
 import { getEditorialSlot } from "@/lib/data/editorial-slot";
+import { sanitizeNewsDisplay } from "@/lib/data/news-text";
 
 export type NewsLocaleText = Record<Locale, string>;
 
@@ -1438,7 +1439,8 @@ function sortNewsForLocale(
 }
 
 /**
- * Brief + Redaktion + Auto-Headlines, nach UI-Sprache gerankt.
+ * Brief + Redaktion + Auto-Headlines **nur in der UI-Sprache**.
+ * DE: DE-Feeds + wenige HR-Headlines. EN/HR: nur jeweilige Sprache.
  */
 export async function getDailyNewsAsync(
   now = new Date(),
@@ -1448,39 +1450,33 @@ export async function getDailyNewsAsync(
   const baseRaw = getDailyNews(now, live);
   try {
     const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    const auto = await fetchAutoNews(28);
+    // DE: optional 4 HR; EN/HR: strikt eigene Sprache
+    const auto = await fetchAutoNews(
+      18,
+      locale,
+      locale === "de"
+    );
     const map = new Map<string, NewsArticle>();
     for (const a of [...baseRaw, ...auto]) {
       if (isFixturePseudoNews(a)) continue;
-      map.set(a.id, a);
-    }
-    let list = assignUniqueNewsImages(
-      Array.from(map.values()).sort((x, y) =>
-        sortNewsForLocale(x, y, locale)
-      ),
-      48
-    );
-
-    // Cap fremdsprachiger Auto-Items, damit DE-UI nicht voll EN ist
-    const preferred: NewsArticle[] = [];
-    const foreign: NewsArticle[] = [];
-    for (const a of list) {
+      // Fremdsprache Auto strikt raus (außer DE+HR)
       if (
         a.isExternal &&
         a.sourceLang &&
         a.sourceLang !== locale &&
         !(locale === "de" && a.sourceLang === "hr")
       ) {
-        foreign.push(a);
-      } else {
-        preferred.push(a);
+        continue;
       }
+      map.set(a.id, a);
     }
-    const foreignCap = locale === "en" ? 8 : 4;
-    list = [...preferred, ...foreign.slice(0, foreignCap)].sort((x, y) =>
-      sortNewsForLocale(x, y, locale)
+    const list = assignUniqueNewsImages(
+      Array.from(map.values()).sort((x, y) =>
+        sortNewsForLocale(x, y, locale)
+      ),
+      40
     );
-    return list.slice(0, 36);
+    return list.slice(0, 28);
   } catch {
     return baseRaw.filter((a) => !isFixturePseudoNews(a));
   }
@@ -1507,17 +1503,7 @@ export function tNews(text: NewsLocaleText, locale: string): string {
     locale === "hr" || locale === "en" || locale === "de" ? locale : "de"
   ) as Locale;
   const v = text[l] || text.de || text.en || text.hr || "";
-  // Sicherheit: nie rohes HTML anzeigen
-  if (/<\/?[a-z]|href\s*=|&lt;|&gt;/i.test(v)) {
-    return v
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&nbsp;/gi, " ")
-      .replace(/&lt;/g, "")
-      .replace(/&gt;/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-  return v;
+  return sanitizeNewsDisplay(v, 800);
 }
 
 export const NEWS_CATEGORY_LABEL: Record<
