@@ -28,6 +28,12 @@ export interface NewsArticle {
   featured?: boolean;
   /** Externer Original-Link (Auto-RSS) */
   sourceUrl?: string;
+  /** Sprache der Original-Headline (auto feeds) */
+  sourceLang?: Locale;
+  /** Anzeigename der Quelle, z.B. Index, HRT */
+  sourceName?: string;
+  /** Externer Aggregat-Hinweis (kein eigener Volltext) */
+  isExternal?: boolean;
 }
 
 /** URL-Slug = Artikel-ID (bereits kebab-case) */
@@ -1395,45 +1401,100 @@ function sortNews(a: NewsArticle, b: NewsArticle): number {
   return b.date.localeCompare(a.date);
 }
 
+function localeBoost(a: NewsArticle, locale: Locale): number {
+  // Redaktion / Brief: immer passend
+  if (!a.sourceLang || a.id.startsWith("daily-brief-") || !a.isExternal) {
+    return 30;
+  }
+  if (a.sourceLang === locale) return 50;
+  // DE UI: HR oft nah, EN nur Zusatz
+  if (locale === "de") {
+    if (a.sourceLang === "hr") return 28;
+    if (a.sourceLang === "en") return 8;
+  }
+  if (locale === "hr") {
+    if (a.sourceLang === "de") return 18;
+    if (a.sourceLang === "en") return 8;
+  }
+  if (locale === "en") {
+    if (a.sourceLang === "hr" || a.sourceLang === "de") return 12;
+  }
+  return 0;
+}
+
+function sortNewsForLocale(
+  a: NewsArticle,
+  b: NewsArticle,
+  locale: Locale
+): number {
+  const sa = rankNews(a) + localeBoost(a, locale);
+  const sb = rankNews(b) + localeBoost(b, locale);
+  if (sb !== sa) return sb - sa;
+  return b.date.localeCompare(a.date);
+}
+
 /**
- * Live-Anker + redaktionell + viele frische Auto-Headlines (async).
- * Primärer Weg für „täglich beste News“.
+ * Brief + Redaktion + Auto-Headlines, nach UI-Sprache gerankt.
  */
 export async function getDailyNewsAsync(
   now = new Date(),
-  live?: { matches?: Match[]; players?: Player[] }
+  live?: { matches?: Match[]; players?: Player[] },
+  locale: Locale = "de"
 ): Promise<NewsArticle[]> {
   const baseRaw = getDailyNews(now, live);
   try {
     const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    const auto = await fetchAutoNews(24);
+    const auto = await fetchAutoNews(28);
     const map = new Map<string, NewsArticle>();
-    // Brief + auto + editorial
     for (const a of [...baseRaw, ...auto]) {
       if (isFixturePseudoNews(a)) continue;
       map.set(a.id, a);
     }
-    return assignUniqueNewsImages(
-      Array.from(map.values()).sort((x, y) => sortNews(x, y)),
-      40
+    let list = assignUniqueNewsImages(
+      Array.from(map.values()).sort((x, y) =>
+        sortNewsForLocale(x, y, locale)
+      ),
+      48
     );
+
+    // Cap fremdsprachiger Auto-Items, damit DE-UI nicht voll EN ist
+    const preferred: NewsArticle[] = [];
+    const foreign: NewsArticle[] = [];
+    for (const a of list) {
+      if (
+        a.isExternal &&
+        a.sourceLang &&
+        a.sourceLang !== locale &&
+        !(locale === "de" && a.sourceLang === "hr")
+      ) {
+        foreign.push(a);
+      } else {
+        preferred.push(a);
+      }
+    }
+    const foreignCap = locale === "en" ? 8 : 4;
+    list = [...preferred, ...foreign.slice(0, foreignCap)].sort((x, y) =>
+      sortNewsForLocale(x, y, locale)
+    );
+    return list.slice(0, 36);
   } catch {
     return baseRaw.filter((a) => !isFixturePseudoNews(a));
   }
 }
 
-/** Einzelartikel (editorial + live-generiert + auto, ohne Match-Context) */
+/** Einzelartikel */
 export async function getNewsBySlug(
   slug: string,
-  live?: { matches?: Match[]; players?: Player[] }
+  live?: { matches?: Match[]; players?: Player[] },
+  locale: Locale = "de"
 ): Promise<NewsArticle | null> {
-  const all = await getDailyNewsAsync(new Date(), live);
+  const all = await getDailyNewsAsync(new Date(), live, locale);
   return all.find((a) => a.id === slug) ?? null;
 }
 
 /** Alle bekannten Slugs für generateStaticParams / Sitemap */
 export async function getAllNewsSlugs(): Promise<string[]> {
-  const all = await getDailyNewsAsync(new Date());
+  const all = await getDailyNewsAsync(new Date(), undefined, "de");
   return all.map((a) => a.id);
 }
 
@@ -1441,7 +1502,18 @@ export function tNews(text: NewsLocaleText, locale: string): string {
   const l = (
     locale === "hr" || locale === "en" || locale === "de" ? locale : "de"
   ) as Locale;
-  return text[l] || text.de;
+  const v = text[l] || text.de || text.en || text.hr || "";
+  // Sicherheit: nie rohes HTML anzeigen
+  if (/<\/?[a-z]|href\s*=|&lt;|&gt;/i.test(v)) {
+    return v
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&lt;/g, "")
+      .replace(/&gt;/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  return v;
 }
 
 export const NEWS_CATEGORY_LABEL: Record<

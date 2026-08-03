@@ -59,8 +59,12 @@ export default async function NewsIndexPage({
     /* ok */
   }
 
+  const loc =
+    locale === "en" || locale === "hr"
+      ? (locale as "en" | "hr")
+      : ("de" as const);
   const articles = (
-    await getDailyNewsAsync(new Date(), { matches, players })
+    await getDailyNewsAsync(new Date(), { matches, players }, loc)
   ).filter((a) => !a.id.startsWith("live-"));
 
   const jsonLd = {

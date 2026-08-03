@@ -225,29 +225,72 @@ function withImage<T extends Imageable>(article: T, url: string): T {
   };
 }
 
+/**
+ * Entfernt HTML, Entities und Müll aus RSS-Titeln/Teasern.
+ * Google News liefert oft entity-kodiertes HTML in description.
+ */
 export function cleanNewsText(raw: string, maxLen = 420): string {
-  let s = raw
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+  if (!raw) return "";
+  let s = String(raw);
+
+  // CDATA
+  s = s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, "$1");
+
+  // Mehrfach Entities dekodieren (Google: &lt;a href=…&gt;)
+  for (let i = 0; i < 3; i++) {
+    s = s
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&#x27;/gi, "'")
+      .replace(/&#(\d+);/g, (_, n) => {
+        const code = Number(n);
+        return code > 0 && code < 0x110000
+          ? String.fromCodePoint(code)
+          : " ";
+      })
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => {
+        const code = parseInt(h, 16);
+        return code > 0 && code < 0x110000
+          ? String.fromCodePoint(code)
+          : " ";
+      });
+  }
+
+  s = s
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, " ")
+    // Anker: Linktext behalten
+    .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, " $1 ")
+    .replace(/<\/?(font|span|b|i|em|strong|p|div|br|ul|li|td|tr)[^>]*>/gi, " ")
     .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&#\d+;/g, " ")
     .replace(/https?:\/\/\S+/gi, " ")
     .replace(/www\.\S+/gi, " ")
+    .replace(/[<>]/g, " ")
+    .replace(/&[a-z]+;/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  s = s.replace(/\s+[-–|]\s+[A-Za-z0-9 .]{2,40}$/u, "").trim();
+  // Publisher-Suffix am Ende
+  s = s.replace(/\s+[-–|]\s+[A-Za-z0-9 .,&'’-]{2,48}$/u, "").trim();
+
+  // Noch HTML-artig → verwerfen
+  if (/<\/?[a-z]|href\s*=|target\s*=|_blank|font\s+color/i.test(s)) {
+    return "";
+  }
 
   if (s.length > maxLen) {
     s = s.slice(0, maxLen - 1).replace(/\s+\S*$/, "") + "…";
   }
   return s;
+}
+
+/** True wenn Text nach Cleaning noch als Artikel-Teaser taugt */
+export function isUsableNewsTeaser(s: string): boolean {
+  if (!s || s.length < 12) return false;
+  if (/<\/?[a-z]|href\s*=|_blank|&lt;|&gt;/i.test(s)) return false;
+  return true;
 }

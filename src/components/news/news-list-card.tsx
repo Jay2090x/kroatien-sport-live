@@ -9,7 +9,11 @@ import {
   NEWS_CATEGORY_LABEL,
   type NewsArticle,
 } from "@/lib/data/news";
-import { FALLBACK_THUMB, isLogoOrPortrait } from "@/lib/data/news-images";
+import {
+  cleanNewsText,
+  FALLBACK_THUMB,
+  isLogoOrPortrait,
+} from "@/lib/data/news-images";
 
 /**
  * Kompakte News-Zeile: festes 72×72 Vorschau · Titel · Teaser · Weiterlesen
@@ -29,12 +33,20 @@ export function NewsListCard({
   compact?: boolean;
 }) {
   const cat = tNews(NEWS_CATEGORY_LABEL[article.category], locale);
-  const title = tNews(article.title, locale);
-  const summary = tNews(article.summary, locale);
+  const tag = cleanNewsText(tNews(article.tag, locale), 80);
+  const title =
+    cleanNewsText(tNews(article.title, locale), 160) || "…";
+  const summary = cleanNewsText(tNews(article.summary, locale), 280);
   const src = article.image?.url || FALLBACK_THUMB;
-  const alt = article.image ? tNews(article.image.alt, locale) : title;
+  const alt = article.image
+    ? cleanNewsText(tNews(article.image.alt, locale), 80)
+    : title;
   const logoStyle = isLogoOrPortrait(src);
   const isCutout = /cutout/i.test(src);
+  const showCat =
+    !article.isExternal &&
+    tag &&
+    !tag.toLowerCase().includes(cat.toLowerCase());
 
   return (
     <li>
@@ -76,14 +88,16 @@ export function NewsListCard({
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Badge
-                variant="secondary"
-                className="px-1.5 py-0 text-[10px] font-medium"
-              >
-                {tNews(article.tag, locale)}
-              </Badge>
-              <span>{cat}</span>
-              <span aria-hidden>·</span>
+              {tag && (
+                <Badge
+                  variant="secondary"
+                  className="px-1.5 py-0 text-[10px] font-medium"
+                >
+                  {tag}
+                </Badge>
+              )}
+              {showCat && <span>{cat}</span>}
+              {showCat && <span aria-hidden>·</span>}
               <time dateTime={article.date}>{dateLabel}</time>
             </div>
 

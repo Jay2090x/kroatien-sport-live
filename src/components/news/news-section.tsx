@@ -77,7 +77,7 @@ export function NewsSection({
       return;
     }
     let cancelled = false;
-    fetch("/api/news")
+    fetch(`/api/news?locale=${locale}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data: { articles?: NewsArticle[] } | null) => {
         if (!cancelled && data?.articles?.length) {
@@ -88,7 +88,7 @@ export function NewsSection({
     return () => {
       cancelled = true;
     };
-  }, [initialArticles]);
+  }, [initialArticles, locale]);
 
   const articles = useMemo(() => {
     const list = [...(remote ?? fallback)].filter(isStoryNews);

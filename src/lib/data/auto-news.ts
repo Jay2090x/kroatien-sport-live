@@ -1,85 +1,90 @@
 /**
  * Tägliche Headlines – Whitelist-Quellen + Google News (site:) + HRT RSS.
- * Rechtlich: nur Titel/Teaser + Link zur Originalquelle, kein Volltext-Hosting.
+ * Rechtlich: nur bereinigter Titel + Link zur Originalquelle, kein HTML/Volltext.
  */
 
+import type { Locale } from "@/i18n/routing";
 import type { NewsArticle, NewsLocaleText } from "@/lib/data/news";
 import {
   cleanNewsText,
+  isUsableNewsTeaser,
   themeImageForArticle,
   THEME_IMAGES,
 } from "@/lib/data/news-images";
 
 type FeedDef = {
   url: string;
-  /** Bevorzugte Domain im Score */
   prefer?: string;
-  /** Soft-Label für Tag */
   label?: string;
+  /** Sprache der Headlines in diesem Feed */
+  lang: Locale;
 };
 
-/**
- * Gezielte Feeds: kroatische Sportmedien via Google site: + HRT + Stars DE/EN.
- */
 const FEEDS: FeedDef[] = [
-  // HR – Qualitätsmedien über Google News
   {
     url: "https://news.google.com/rss/search?q=site:index.hr+(Vatreni+OR+Modri%C4%87+OR+HNL+OR+Hajduk+OR+Dinamo+OR+Bili%C4%87)&hl=hr&gl=HR&ceid=HR:hr",
     prefer: "index.hr",
     label: "Index",
+    lang: "hr",
   },
   {
     url: "https://news.google.com/rss/search?q=site:sportske.jutarnji.hr+(Hrvatska+OR+Vatreni+OR+HNL+OR+Modri%C4%87)&hl=hr&gl=HR&ceid=HR:hr",
     prefer: "jutarnji.hr",
     label: "Sportske",
+    lang: "hr",
   },
   {
     url: "https://news.google.com/rss/search?q=site:gol.dnevnik.hr+(Vatreni+OR+HNL+OR+Modri%C4%87+OR+reprezentacija)&hl=hr&gl=HR&ceid=HR:hr",
     prefer: "gol.dnevnik.hr",
     label: "Gol",
+    lang: "hr",
   },
   {
     url: "https://news.google.com/rss/search?q=site:hns.team+(Vatreni+OR+reprezentacija+OR+izbornik)&hl=hr&gl=HR&ceid=HR:hr",
     prefer: "hns.team",
     label: "HNS",
+    lang: "hr",
   },
-  // HRT Sport RSS (direkt)
   {
     url: "https://www.hrt.hr/rss/sport",
     prefer: "hrt.hr",
     label: "HRT",
-  },
-  // DE / EN Stars & NT
-  {
-    url: "https://news.google.com/rss/search?q=%22Luka+Modri%C4%87%22+OR+%22Luka+Modric%22+OR+Gvardiol+OR+Kova%C4%8Di%C4%87+OR+Kovacic+when:5d&hl=de&gl=DE&ceid=DE:de",
-    label: "DE",
+    lang: "hr",
   },
   {
-    url: "https://news.google.com/rss/search?q=Croatia+football+OR+Vatreni+OR+%22Slaven+Bilic%22+OR+%22Slaven+Bili%C4%87%22+when:5d&hl=en-GB&gl=GB&ceid=GB:en",
-    label: "EN",
+    url: "https://news.google.com/rss/search?q=%22Luka+Modri%C4%87%22+OR+Gvardiol+OR+Kova%C4%8Di%C4%87+OR+Vatreni+OR+HNL+when:5d&hl=de&gl=DE&ceid=DE:de",
+    label: "Google DE",
+    lang: "de",
   },
   {
-    url: "https://news.google.com/rss/search?q=HNL+OR+Hajduk+OR+%22Dinamo+Zagreb%22+OR+Rijeka+nogomet+when:5d&hl=de&gl=AT&ceid=AT:de",
-    label: "HNL",
+    url: "https://news.google.com/rss/search?q=HNL+OR+Hajduk+OR+%22Dinamo+Zagreb%22+OR+Rijeka+when:5d&hl=de&gl=AT&ceid=AT:de",
+    label: "HNL DE",
+    lang: "de",
+  },
+  {
+    url: "https://news.google.com/rss/search?q=%22Luka+Modric%22+OR+Gvardiol+OR+Kovacic+OR+Croatia+football+when:5d&hl=en-GB&gl=GB&ceid=GB:en",
+    label: "Google EN",
+    lang: "en",
   },
   {
     url: "https://news.google.com/rss/search?q=site:espn.com+Croatia+football+OR+Modric+OR+Gvardiol+when:7d&hl=en-GB&gl=GB&ceid=GB:en",
     prefer: "espn.com",
     label: "ESPN",
+    lang: "en",
   },
   {
     url: "https://news.google.com/rss/search?q=site:bbc.com+Croatia+football+OR+Modric+when:7d&hl=en-GB&gl=GB&ceid=GB:en",
     prefer: "bbc.com",
     label: "BBC",
+    lang: "en",
   },
 ];
 
-/** Domains die wir bevorzugen / als „verifiziert“ markieren */
 const TRUSTED =
-  /index\.hr|jutarnji\.hr|gol\.dnevnik\.hr|hrt\.hr|hns\.team|espn\.com|bbc\.|reuters\.|goal\.com|skysports\.com|theguardian\.com|transfermarkt\.|uefa\.com|fifa\.com|sportnet\.hr|vecernji\.hr|24sata\.hr/i;
+  /index\.hr|jutarnji\.hr|gol\.dnevnik\.hr|hrt\.hr|hns\.team|espn\.com|bbc\.|reuters\.|goal\.com|theguardian\.com|uefa\.com|fifa\.com|vecernji\.hr|24sata\.hr/i;
 
 const RELEVANCE =
-  /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|vukovar|gvardiol|kova[cč]i[cć]|peri[sš]i[cć]|livakovi[cć]|budimir|pa[sš]ali[cć]|brozovi[cć]|vu[sš]kovi[cć]|baturina|su[cč]i[cć]|stan[ií][sš]i[cć]|nogomet|football|soccer|serie\s*a|premier|bundesliga|nations|liga\s*nacija|reprezent|izbornik|transfer|ugovor|world\s*cup|svjetsko|konferencijsk|liga\s*prvaka|champions/i;
+  /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|vukovar|gvardiol|kova[cč]i[cć]|peri[sš]i[cć]|livakovi[cć]|budimir|pa[sš]ali[cć]|brozovi[cć]|vu[sš]kovi[cć]|baturina|su[cč]i[cć]|stan[ií][sš]i[cć]|nogomet|football|soccer|serie\s*a|premier|bundesliga|nations|liga\s*nacija|reprezent|izbornik|transfer|ugovor|world\s*cup|svjetsko|konferencijsk|liga\s*prvaka|champions|inter|milan/i;
 
 function slugify(input: string): string {
   return input
@@ -89,17 +94,6 @@ function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
-}
-
-function decodeXml(s: string): string {
-  return s
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, "$1")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ");
 }
 
 function parseDate(raw: string): string {
@@ -117,6 +111,7 @@ function extractSourceFromTitle(title: string): {
   source: string;
 } {
   let t = cleanNewsText(title, 160);
+  if (!t) return { cleanTitle: "", source: "" };
   const parts = t.split(/\s+[-–|]\s+/);
   if (parts.length >= 2) {
     const maybe = parts[parts.length - 1]!.trim();
@@ -139,15 +134,13 @@ function scoreItem(
 ): number {
   const text = `${title} ${desc}`;
   let score = 0;
-
   if (/modri|gvardiol|kova[cč]|bili[cć]|vatren|izbornik/i.test(text))
     score += 45;
   if (/hnl|hajduk|dinam|rijeka|osijek/i.test(text)) score += 28;
-  if (/transfer|contract|ugovor|verläng|extends|produž|oprostit|retire/i.test(text))
+  if (/transfer|contract|ugovor|verläng|extends|produž|oprostit|retire|return/i.test(text))
     score += 22;
   if (/nations|liga\s*nacija|euro|world\s*cup|svjetsko|konferencijsk/i.test(text))
     score += 18;
-
   if (prefer && link.toLowerCase().includes(prefer.replace(/^www\./, "")))
     score += 25;
   if (TRUSTED.test(link) || TRUSTED.test(title)) score += 20;
@@ -162,18 +155,14 @@ function scoreItem(
   else if (ageDays <= 7) score += 5;
   else score -= 50;
 
-  // Noise
   if (/transfermarkt.*gemeinsame|bilanz gegen|seite \d/i.test(title))
     score -= 80;
-  if (/u19|u17|u21/i.test(title) && !/vatren|a\s*reprezent/i.test(title))
-    score -= 10;
-
   return score;
 }
 
 function categorize(title: string, desc: string): NewsArticle["category"] {
   const t = `${title} ${desc}`;
-  if (/transfer|ugovor|contract|verläng|extends|produž|sign|oprostit|retire/i.test(t))
+  if (/transfer|ugovor|contract|verläng|extends|produž|sign|oprostit|retire|return talk/i.test(t))
     return "transfer";
   if (/hnl|hajduk|dinam|rijeka|osijek|vukovar/i.test(t)) return "hnl";
   if (
@@ -186,87 +175,79 @@ function categorize(title: string, desc: string): NewsArticle["category"] {
   return "clubs";
 }
 
-function tagFor(
-  cat: NewsArticle["category"],
-  source: string
-): NewsLocaleText {
-  const src = source.slice(0, 24) || "";
-  switch (cat) {
-    case "transfer":
-      return {
-        de: src ? `Transfer · ${src}` : "Transfer",
-        en: src ? `Transfer · ${src}` : "Transfer",
-        hr: src ? `Transfer · ${src}` : "Transfer",
-      };
-    case "hnl":
-      return {
-        de: src ? `HNL · ${src}` : "HNL",
-        en: src ? `HNL · ${src}` : "HNL",
-        hr: src ? `HNL · ${src}` : "HNL",
-      };
-    case "vatreni":
-      return {
-        de: src ? `Vatreni · ${src}` : "Vatreni",
-        en: src ? `Vatreni · ${src}` : "Vatreni",
-        hr: src ? `Vatreni · ${src}` : "Vatreni",
-      };
-    case "preview":
-      return {
-        de: src ? `Vorschau · ${src}` : "Vorschau",
-        en: src ? `Preview · ${src}` : "Preview",
-        hr: src ? `Najava · ${src}` : "Najava",
-      };
-    default:
-      return {
-        de: src ? `Clubs · ${src}` : "Clubs",
-        en: src ? `Clubs · ${src}` : "Clubs",
-        hr: src ? `Klubovi · ${src}` : "Klubovi",
-      };
-  }
+/** Tag = nur Quelle (nicht nochmal Kategorie) */
+function tagSource(source: string, lang: Locale): NewsLocaleText {
+  const label = source || "Feed";
+  const langMark =
+    lang === "de" ? "DE" : lang === "en" ? "EN" : "HR";
+  return {
+    de: `${label} · ${langMark}`,
+    en: `${label} · ${langMark}`,
+    hr: `${label} · ${langMark}`,
+  };
 }
 
-function buildTexts(
-  titleRaw: string,
-  descRaw: string,
-  source: string
+/**
+ * Nur bereinigter Titel + lokalisierter Hinweis – kein RSS-HTML im Body.
+ */
+function buildLocalizedShell(
+  cleanTitle: string,
+  source: string,
+  lang: Locale
 ): {
   title: NewsLocaleText;
   summary: NewsLocaleText;
   body: NewsLocaleText;
 } {
-  const { cleanTitle, source: fromTitle } = extractSourceFromTitle(titleRaw);
-  const src = source || fromTitle;
+  const src = source || "News-Feed";
 
-  let summary = cleanNewsText(decodeXml(descRaw).replace(/<[^>]+>/g, " "), 280);
-  if (!summary || summary.length < 24 || summary === cleanTitle) {
-    summary =
-      src
-        ? `${cleanTitle} – Meldung über ${src}. Volltext nur in der Originalquelle.`
-        : `${cleanTitle} – aktuelle Meldung aus öffentlichem News-Feed. Volltext in der Originalquelle.`;
-  }
-
-  const legalDe =
-    "Aggregation öffentlicher Headlines. Wir hosten keine Volltexte Dritter. Bitte Originalquelle und Nutzungsrechte prüfen.";
-  const legalEn =
-    "Public headline aggregation. We do not host third-party full articles. Check the original source and its terms.";
-  const legalHr =
-    "Agregacija javnih naslova. Ne hostamo tuđe full tekstove. Provjeri izvorni članak i uvjete korištenja.";
-
-  return {
-    title: { de: cleanTitle, en: cleanTitle, hr: cleanTitle },
-    summary: { de: summary, en: summary, hr: summary },
-    body: {
-      de: [summary, "", src ? `Quelle: ${src}` : "", legalDe]
-        .filter(Boolean)
-        .join("\n\n"),
-      en: [summary, "", src ? `Source: ${src}` : "", legalEn]
-        .filter(Boolean)
-        .join("\n\n"),
-      hr: [summary, "", src ? `Izvor: ${src}` : "", legalHr]
-        .filter(Boolean)
-        .join("\n\n"),
-    },
+  const summary: NewsLocaleText = {
+    de:
+      lang === "de"
+        ? `${cleanTitle} – Kurzmeldung über ${src}. Volltext nur in der Originalquelle.`
+        : `Original (${lang.toUpperCase()}): „${cleanTitle}“ · Quelle ${src}. Volltext nur im Originalartikel.`,
+    en:
+      lang === "en"
+        ? `${cleanTitle} – brief via ${src}. Full story only on the original site.`
+        : `Original (${lang.toUpperCase()}): “${cleanTitle}” · source ${src}. Full story only on the original site.`,
+    hr:
+      lang === "hr"
+        ? `${cleanTitle} – kratka vijest preko ${src}. Puni tekst samo na izvoru.`
+        : `Original (${lang.toUpperCase()}): „${cleanTitle}“ · izvor ${src}. Puni tekst samo na izvornom članku.`,
   };
+
+  const body: NewsLocaleText = {
+    de: [
+      `Externe Headline von ${src} (Originalsprache: ${lang.toUpperCase()}).`,
+      cleanTitle,
+      "",
+      "Wir hosten keine Volltexte Dritter und ersetzen keine Originalberichterstattung. Für Fakten, Rechte und Aktualität gilt allein die verlinkte Quelle.",
+      "Auf Kroatien Sport Live: Live-Board für Termine, Tracker für Spieler, redaktioneller Tagesbrief für den Überblick.",
+    ].join("\n\n"),
+    en: [
+      `External headline from ${src} (original language: ${lang.toUpperCase()}).`,
+      cleanTitle,
+      "",
+      "We do not host third-party full articles. Facts, rights and updates are solely those of the linked source.",
+      "On Croatia Sport Live: live board for fixtures, tracker for players, daily brief for overview.",
+    ].join("\n\n"),
+    hr: [
+      `Vanjski naslov od ${src} (izvorni jezik: ${lang.toUpperCase()}).`,
+      cleanTitle,
+      "",
+      "Ne hostamo tuđe full tekstove. Činjenice, prava i ažurnost isključivo su stvar povezanog izvora.",
+      "Na Kroatien Sport Live: live board za termine, tracker za igrače, dnevni brief za pregled.",
+    ].join("\n\n"),
+  };
+
+  // Title: same string in all locales (original headline) — UI marks language via tag
+  const title: NewsLocaleText = {
+    de: cleanTitle,
+    en: cleanTitle,
+    hr: cleanTitle,
+  };
+
+  return { title, summary, body };
 }
 
 type RawItem = {
@@ -276,35 +257,40 @@ type RawItem = {
   description: string;
   score: number;
   sourceHint: string;
+  lang: Locale;
 };
 
 function parseRssItems(
   xml: string,
   limit: number,
-  prefer?: string,
-  sourceHint = ""
+  feed: FeedDef
 ): RawItem[] {
   const items: RawItem[] = [];
   const blocks = xml.match(/<item[\s\S]*?<\/item>/gi) ?? [];
   for (const block of blocks) {
     if (items.length >= limit) break;
-    const titleRaw = decodeXml(
-      (block.match(/<title[^>]*>([\s\S]*?)<\/title>/i) ?? [])[1] ?? ""
-    );
-    const title = cleanNewsText(titleRaw, 160);
+    const titleEnc =
+      (block.match(/<title[^>]*>([\s\S]*?)<\/title>/i) ?? [])[1] ?? "";
+    const titleClean = cleanNewsText(titleEnc, 160);
+    if (!isUsableNewsTeaser(titleClean)) continue;
+
     let link =
       (block.match(/<link><!\[CDATA\[([\s\S]*?)\]\]><\/link>/i) ?? [])[1] ??
       (block.match(/<link>([\s\S]*?)<\/link>/i) ?? [])[1] ??
       (block.match(/<link[^>]+href=["']([^"']+)["']/i) ?? [])[1] ??
       "";
-    // Google often puts URL in guid
     if (!link || !link.startsWith("http")) {
       const guid =
         (block.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i) ?? [])[1] ?? "";
-      const g = decodeXml(guid).replace(/<[^>]+>/g, "").trim();
-      if (g.startsWith("http")) link = g;
+      const g = cleanNewsText(guid, 500);
+      // guid may be URL without cleaning well - extract http
+      const urlMatch = (guid || "").match(/https?:\/\/[^\s<>"']+/i);
+      if (urlMatch) link = urlMatch[0]!;
+      else if (g.startsWith("http")) link = g;
     }
-    link = decodeXml(link).replace(/<[^>]+>/g, "").trim();
+    link = (link || "").replace(/<[^>]+>/g, "").trim();
+    // decode amp in urls
+    link = link.replace(/&amp;/g, "&");
 
     const pubDate =
       (block.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i) ?? [])[1] ?? "";
@@ -312,28 +298,31 @@ function parseRssItems(
       (block.match(/<description[^>]*>([\s\S]*?)<\/description>/i) ??
         [])[1] ?? "";
 
-    if (!title || title.length < 10) continue;
-    if (!RELEVANCE.test(`${title} ${description}`)) continue;
+    if (!RELEVANCE.test(`${titleClean} ${description}`)) continue;
 
-    const score = scoreItem(title, description, pubDate, link, prefer);
+    const score = scoreItem(
+      titleClean,
+      cleanNewsText(description, 200),
+      pubDate,
+      link,
+      feed.prefer
+    );
     if (score < 8) continue;
 
     items.push({
-      title: titleRaw,
+      title: titleClean,
       link: link.startsWith("http") ? link : "",
       pubDate: pubDate.trim(),
       description,
       score,
-      sourceHint,
+      sourceHint: feed.label ?? "",
+      lang: feed.lang,
     });
   }
   return items;
 }
 
-async function fetchFeed(
-  feed: FeedDef,
-  limit: number
-): Promise<RawItem[]> {
+async function fetchFeed(feed: FeedDef, limit: number): Promise<RawItem[]> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
   try {
@@ -341,18 +330,13 @@ async function fetchFeed(
       signal: ctrl.signal,
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (compatible; KroatienSportLive/1.1; +https://kroatien-sport-live.vercel.app)",
+          "Mozilla/5.0 (compatible; KroatienSportLive/1.2; +https://kroatien-sport-live.vercel.app)",
         Accept: "application/rss+xml, application/xml, text/xml, */*",
       },
       next: { revalidate: 1200 },
     });
     if (!res.ok) return [];
-    return parseRssItems(
-      await res.text(),
-      limit,
-      feed.prefer,
-      feed.label ?? ""
-    );
+    return parseRssItems(await res.text(), limit, feed);
   } catch {
     return [];
   } finally {
@@ -360,22 +344,14 @@ async function fetchFeed(
   }
 }
 
-/**
- * Holt und rankt frische Headlines. Standard bis 24 Items.
- */
 export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
   const perFeed = 10;
-  const results = await Promise.all(
-    FEEDS.map((f) => fetchFeed(f, perFeed))
-  );
-
+  const results = await Promise.all(FEEDS.map((f) => fetchFeed(f, perFeed)));
   const flat = results.flat();
+
   const byKey = new Map<string, RawItem>();
   for (const item of flat) {
-    const key = slugify(extractSourceFromTitle(item.title).cleanTitle).slice(
-      0,
-      52
-    );
+    const key = slugify(item.title).slice(0, 52);
     if (!key) continue;
     const prev = byKey.get(key);
     if (!prev || item.score > prev.score) byKey.set(key, item);
@@ -390,16 +366,21 @@ export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
     const { cleanTitle, source: fromTitle } = extractSourceFromTitle(
       item.title
     );
-    const source = item.sourceHint || fromTitle;
+    if (!isUsableNewsTeaser(cleanTitle)) continue;
+
+    const source = item.sourceHint || fromTitle || "Feed";
     const baseSlug = slugify(cleanTitle) || `auto-${articles.length}`;
     const id = `auto-${baseSlug}`.slice(0, 96);
     if (seenIds.has(id)) continue;
     seenIds.add(id);
 
-    const cat = categorize(item.title, item.description);
-    const texts = buildTexts(item.title, item.description, source);
+    // Ohne Original-Link: kein Auto-Artikel (rechtlich + UX)
+    if (!item.link.startsWith("http")) continue;
+
+    const cat = categorize(cleanTitle, item.description);
+    const texts = buildLocalizedShell(cleanTitle, source, item.lang);
     const themeUrl =
-      themeImageForArticle(id, item.title) ?? THEME_IMAGES.croatia;
+      themeImageForArticle(id, cleanTitle) ?? THEME_IMAGES.croatia;
     const ageDays =
       (Date.now() - new Date(item.pubDate).getTime()) / (24 * 3600_000);
     const featured = item.score >= 75 && ageDays <= 2;
@@ -408,13 +389,16 @@ export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
       id,
       date: parseDate(item.pubDate),
       category: cat,
-      tag: tagFor(cat, source),
+      tag: tagSource(source, item.lang),
       ...texts,
       image: {
         url: themeUrl,
         alt: { de: "News", en: "News", hr: "Vijest" },
       },
-      sourceUrl: item.link || undefined,
+      sourceUrl: item.link,
+      sourceLang: item.lang,
+      sourceName: source,
+      isExternal: true,
       featured,
     });
   }

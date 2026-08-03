@@ -2,12 +2,15 @@ import { getDailyNewsAsync } from "@/lib/data/news";
 import { getDashboardData } from "@/lib/data/service";
 import { NewsSection } from "@/components/news/news-section";
 import { TodayForYou } from "@/components/home/today-for-you";
+import type { Locale } from "@/i18n/routing";
 
 /**
- * Server: holt frische Headlines + Brief, übergibt an Client-UI.
- * Vermeidet leeren/alten Client-Fallback ohne RSS.
+ * Server: frische Headlines + Brief für die UI-Sprache.
  */
-export async function HomeNewsBlock() {
+export async function HomeNewsBlock({ locale }: { locale: string }) {
+  const loc: Locale =
+    locale === "en" || locale === "hr" ? locale : "de";
+
   let matches: Awaited<ReturnType<typeof getDashboardData>>["matches"] = [];
   let players: Awaited<ReturnType<typeof getDashboardData>>["players"] = [];
   try {
@@ -18,10 +21,22 @@ export async function HomeNewsBlock() {
     /* brief + editorial still ok */
   }
 
-  const articles = await getDailyNewsAsync(new Date(), { matches, players });
-  // Top story for „Heute für dich“: prefer external headline, else brief
+  const articles = await getDailyNewsAsync(
+    new Date(),
+    { matches, players },
+    loc
+  );
+
+  // Top: gleiche Sprache zuerst, sonst Brief
   const top =
-    articles.find((a) => a.id.startsWith("auto-") && a.sourceUrl) ||
+    articles.find(
+      (a) =>
+        a.isExternal &&
+        a.sourceUrl &&
+        (a.sourceLang === loc ||
+          (loc === "de" && a.sourceLang === "hr"))
+    ) ||
+    articles.find((a) => a.isExternal && a.sourceUrl) ||
     articles.find((a) => a.id.startsWith("daily-brief-")) ||
     articles[0] ||
     null;

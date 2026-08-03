@@ -51,7 +51,7 @@ export default async function HomePage({
               </div>
             }
           >
-            <HomeNewsBlock />
+            <HomeNewsBlock locale={locale} />
           </Suspense>
 
           <NationalTeamSection />
