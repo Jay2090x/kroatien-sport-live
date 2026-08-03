@@ -454,7 +454,7 @@
     "providerType": "Private editorial information website.",
     "contact": "Contact",
     "contactOnlyEmail": "Contact by email only (no residential address published):",
-    "impressumBody": "This site provides general information on fixtures, news and links to official third-party services. We do not host broadcasts or offer illegal streams. Third parties are responsible for linked content.",
+    "impressumBody": "This site provides general information on fixtures, editorial notes and aggregated headlines with links to the original source. We do not host broadcasts, offer illegal streams or republish third-party full texts (no framing). Linked content, rights and availability remain solely with the respective publishers.",
     "noPersonalData": "Note: For privacy reasons we do not publish private residential addresses or full names of natural persons on this public notice. Authorities and claimants with a legitimate interest may request required details by email.",
     "backHome": "Back home",
     "privacyIntro": "We take privacy seriously. This notice explains what data may be processed when you use the site.",
@@ -476,9 +476,9 @@
     "termsServiceTitle": "Nature of the service",
     "termsServiceBody": "Croatia Sport Live is an editorial information service about fixtures, news and official providers. It is not a streaming host and not an official federation or club site.",
     "termsLinksTitle": "External links",
-    "termsLinksBody": "Links lead to third-party sites. Availability, pricing, geo-restrictions and content are solely their responsibility. Channel tips are non-binding.",
+    "termsLinksBody": "Links lead to third-party sites (TV providers, news media). Availability, pricing, geo-restrictions and content are solely their responsibility. Headlines appear only as short teasers with a source link – we do not embed third-party articles. Channel tips are non-binding.",
     "termsUgcTitle": "User input",
-    "termsUgcBody": "Features such as favourites, votes or reports help improve tips. Abuse is prohibited. We may delete or ignore submissions.",
+    "termsUgcBody": "Features such as favourites, votes or status suggestions help improve tips. Users cannot change system status themselves – only suggest. Abuse is prohibited. We may delete or ignore submissions.",
     "termsLiabilityTitle": "Liability",
     "termsLiabilityBody": "To the extent permitted by law we are not liable for damages from use of the site or third-party services. Live data and TV tips may be incomplete or outdated."
   }
