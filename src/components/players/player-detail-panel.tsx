@@ -26,6 +26,7 @@ import {
   getPlayerProfile,
   buildMinimalProfile,
 } from "@/lib/data/player-profiles";
+import { fmtStat, getUniformStatLines } from "@/lib/player-stats";
 import { cn, formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import type { Match } from "@/types";
@@ -219,29 +220,41 @@ export function PlayerDetailPanel() {
           </div>
         </div>
 
-        {/* Highlight-Stats – sofort sichtbar */}
-        {profile.highlight && (
-          <div className="mt-3 rounded-xl border-2 border-border bg-secondary/40 px-3 py-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-              {tLoc(profile.highlight.label, locale)}
-            </p>
-            <div className="mt-1.5 grid grid-cols-4 gap-2 text-center">
-              {[
-                [profile.highlight.apps, L.apps],
-                [profile.highlight.goals, L.goals],
-                [profile.highlight.assists, L.assists],
-                [profile.highlight.yellow, L.yellow],
-              ].map(([n, l]) => (
-                <div key={String(l)}>
-                  <p className="text-xl font-bold tabular-nums leading-none">
-                    {n}
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">{l}</p>
-                </div>
-              ))}
+        {/* Einheitliche Stats: Club + Nationalteam – gleiche Struktur für alle */}
+        <div className="mt-3 space-y-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("uniformStats")}
+          </p>
+          {getUniformStatLines(profile).map((line) => (
+            <div
+              key={line.kind}
+              className="rounded-xl border border-border bg-secondary/40 px-3 py-2"
+            >
+              <p className="truncate text-[10px] font-semibold text-muted-foreground">
+                {tLoc(line.label, locale)}
+              </p>
+              <div className="mt-1.5 grid grid-cols-4 gap-2 text-center">
+                {(
+                  [
+                    [line.apps, L.apps],
+                    [line.goals, L.goals],
+                    [line.assists, L.assists],
+                    [line.yellow, L.yellow],
+                  ] as const
+                ).map(([n, l]) => (
+                  <div key={String(l)}>
+                    <p className="text-lg font-bold tabular-nums leading-none sm:text-xl">
+                      {fmtStat(n)}
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">
+                      {l}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          ))}
+        </div>
 
         {/* Links kompakt */}
         <div className="mt-2 flex flex-wrap gap-2">

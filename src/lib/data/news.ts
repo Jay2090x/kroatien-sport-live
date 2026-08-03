@@ -1307,7 +1307,8 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
 ];
 
 /**
- * Live-Anker + redaktionelle Stories, neueste zuerst
+ * Echte News + sehr sparsame Live-Anker.
+ * Keine Pseudo-News pro Club-Spiel („X spielt am Freitag“) – das gehört ins Live-Board.
  */
 export function getDailyNews(
   now = new Date(),
@@ -1317,87 +1318,7 @@ export function getDailyNews(
   const matches = live?.matches ?? [];
   const generated: NewsArticle[] = [];
 
-  const nt = filterNationalTeamMatches(matches);
-
-  const nextNt = nt
-    .filter(
-      (m) =>
-        m.status === "scheduled" ||
-        m.status === "live" ||
-        m.status === "halftime" ||
-        m.status === "postponed"
-    )
-    .sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())[0];
-
-  if (nextNt) {
-    generated.push({
-      id: `live-next-${nextNt.id}`,
-      date: today,
-      featured: true,
-      category: "live",
-      tag: { de: "Termin", en: "Fixture", hr: "Termin" },
-      title: {
-        de: `Nächstes Länderspiel: ${nextNt.homeTeam} – ${nextNt.awayTeam}`,
-        en: `Next international: ${nextNt.homeTeam} – ${nextNt.awayTeam}`,
-        hr: `Iduća utakmica: ${nextNt.homeTeam} – ${nextNt.awayTeam}`,
-      },
-      summary: {
-        de: `${fmtKick(nextNt.kickoff, "de")} · ${nextNt.leagueName}${nextNt.venue ? ` · ${nextNt.venue}` : ""}`,
-        en: `${fmtKick(nextNt.kickoff, "en")} · ${nextNt.leagueName}${nextNt.venue ? ` · ${nextNt.venue}` : ""}`,
-        hr: `${fmtKick(nextNt.kickoff, "hr")} · ${nextNt.leagueName}${nextNt.venue ? ` · ${nextNt.venue}` : ""}`,
-      },
-      body: {
-        de: `Live-API-Stand: Das nächste Kroatien-Länderspiel ist ${nextNt.homeTeam} gegen ${nextNt.awayTeam} am ${fmtKick(nextNt.kickoff, "de")}. Wettbewerb: ${nextNt.leagueName}. ${nextNt.venue ? `Ort: ${nextNt.venue}.` : ""} Unter Bilić starten die Vatreni den neuen Zyklus – Details in der Nationalteam-Rubrik.`,
-        en: `Live API: Croatia’s next international is ${nextNt.homeTeam} vs ${nextNt.awayTeam} on ${fmtKick(nextNt.kickoff, "en")}. Competition: ${nextNt.leagueName}. ${nextNt.venue ? `Venue: ${nextNt.venue}.` : ""} Under Bilić the new cycle begins – details in the national-team section.`,
-        hr: `Live API: iduća utakmica je ${nextNt.homeTeam} – ${nextNt.awayTeam}, ${fmtKick(nextNt.kickoff, "hr")}. Natjecanje: ${nextNt.leagueName}. ${nextNt.venue ? `Mjesto: ${nextNt.venue}.` : ""} Pod Bilićem počinje novi ciklus – detalji u rubrici reprezentacije.`,
-      },
-      image: {
-        url: IMG.nationsLeague,
-        alt: {
-          de: "UEFA Nations League",
-          en: "UEFA Nations League",
-          hr: "UEFA Liga nacija",
-        },
-      },
-    });
-  }
-
-  const lastNt = nt
-    .filter((m) => m.status === "finished" && m.homeScore != null && m.awayScore != null)
-    .sort((a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime())[0];
-
-  if (lastNt) {
-    generated.push({
-      id: `live-result-${lastNt.id}`,
-      date: lastNt.kickoff.slice(0, 10),
-      category: "live",
-      tag: { de: "Ergebnis", en: "Result", hr: "Rezultat" },
-      title: {
-        de: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
-        en: `${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}`,
-        hr: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
-      },
-      summary: {
-        de: `Beendetes Länderspiel · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "de")}`,
-        en: `Finished international · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "en")}`,
-        hr: `Završena utakmica · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "hr")}`,
-      },
-      body: {
-        de: `Endstand laut Live-Daten: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Quelle: angebundene Sport-APIs. Vollständige Liste unter Nationalteam → Ergebnisse.`,
-        en: `Final score per live data: ${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}. Source: connected sports APIs. Full list under National team → results.`,
-        hr: `Konačni rezultat prema live podacima: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Izvor: sportski API-ji. Potpuni popis pod Reprezentacija.`,
-      },
-      image: {
-        url: IMG.croatia,
-        alt: {
-          de: "Kroatien",
-          en: "Croatia",
-          hr: "Hrvatska",
-        },
-      },
-    });
-  }
-
+  // Nur 1 echtes Live-Match als Anker (wenn läuft) – kein Spielplan-Spam
   const liveClub = matches.find(
     (m) =>
       isLiveStatus(m.status) &&
@@ -1409,7 +1330,6 @@ export function getDailyNews(
       .slice(0, 4)
       .map((p) => p.playerName)
       .join(", ");
-    const allNames = liveClub.croatianPlayers.map((p) => p.playerName).join(", ");
     generated.push({
       id: `live-club-${liveClub.id}`,
       date: today,
@@ -1422,14 +1342,14 @@ export function getDailyNews(
         hr: `Uživo: ${liveClub.homeTeam} – ${liveClub.awayTeam}`,
       },
       summary: {
-        de: `Stand ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names || "Kroaten im Spiel"}`,
-        en: `Score ${liveClub.homeScore ?? "–"}–${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names || "Croatians involved"}`,
-        hr: `Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names || "Hrvati u igri"}`,
+        de: `Stand ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
+        en: `Score ${liveClub.homeScore ?? "–"}–${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
+        hr: `Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
       },
       body: {
-        de: `Live aus angebundenen APIs: ${liveClub.homeTeam} gegen ${liveClub.awayTeam} (${liveClub.leagueName}). Aktueller Stand ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` in Minute ${liveClub.minute}` : ""}.\n\nKroatische Spieler: ${allNames || "siehe Live-Board"}.\n\nDetails und bestätigte TV-Hinweise (falls vorhanden) im Live-Board.`,
-        en: `Live from connected APIs: ${liveClub.homeTeam} vs ${liveClub.awayTeam} (${liveClub.leagueName}). Score ${liveClub.homeScore ?? "–"}–${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` at ${liveClub.minute}'` : ""}.\n\nCroatian players: ${allNames || "see live board"}.\n\nDetails and confirmed TV tips (if any) on the live board.`,
-        hr: `Uživo s API-ja: ${liveClub.homeTeam} – ${liveClub.awayTeam} (${liveClub.leagueName}). Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` u ${liveClub.minute}'` : ""}.\n\nHrvatski igrači: ${allNames || "vidi live board"}.\n\nDetalji i potvrđeni TV savjeti (ako postoje) na live boardu.`,
+        de: `Live aus angebundenen APIs: ${liveClub.homeTeam} gegen ${liveClub.awayTeam} (${liveClub.leagueName}). Kroaten: ${names}. Termine und TV: Live-Board.`,
+        en: `Live from APIs: ${liveClub.homeTeam} vs ${liveClub.awayTeam} (${liveClub.leagueName}). Croatians: ${names}. Fixtures & TV: live board.`,
+        hr: `Uživo s API-ja: ${liveClub.homeTeam} – ${liveClub.awayTeam} (${liveClub.leagueName}). Hrvati: ${names}. Termini i TV: live board.`,
       },
       image: {
         url: IMG.pitch,
@@ -1439,75 +1359,55 @@ export function getDailyNews(
     });
   }
 
-  // Club-Spiele mit Kroaten in den nächsten 7 Tagen – je Spiel eine knappe News
-  const weekClub = matches
-    .filter((m) => {
-      if (m.status !== "scheduled" && m.status !== "postponed") return false;
-      if (!m.croatianPlayers.length) return false;
-      if (/croat|kroat|hrvat/i.test(`${m.homeTeam} ${m.awayTeam}`)) return false;
-      const t = new Date(m.kickoff).getTime();
-      return t >= now.getTime() && t <= now.getTime() + 7 * 24 * 3600_000;
-    })
-    .sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())
-    .slice(0, 12);
-
-  for (const nextClub of weekClub) {
-    const names = nextClub.croatianPlayers
-      .slice(0, 4)
-      .map((p) => p.playerName)
-      .join(", ");
-    const allNames = nextClub.croatianPlayers
-      .map((p) => p.playerName)
-      .join(", ");
-    const pid = nextClub.croatianPlayers[0]?.playerId;
-    generated.push({
-      id: `live-upcoming-club-${nextClub.id}`,
-      date: today,
-      featured: weekClub.indexOf(nextClub) < 3,
-      category: "live",
-      tag: { de: "Diese Woche", en: "This week", hr: "Ovaj tjedan" },
-      title: {
-        de: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Kroaten"} im Spiel`,
-        en: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Croatians"} involved`,
-        hr: `${nextClub.homeTeam} – ${nextClub.awayTeam}: ${names || "Hrvati"} na utakmici`,
-      },
-      summary: {
-        de: `${fmtKick(nextClub.kickoff, "de")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
-        en: `${fmtKick(nextClub.kickoff, "en")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
-        hr: `${fmtKick(nextClub.kickoff, "hr")} · ${nextClub.leagueName}${nextClub.venue ? ` · ${nextClub.venue}` : ""}`,
-      },
-      body: {
-        de: `Aus den Live-Daten (nächste 7 Tage): ${nextClub.homeTeam} gegen ${nextClub.awayTeam} in der ${nextClub.leagueName}. Kick-off ${fmtKick(nextClub.kickoff, "de")}.${nextClub.venue ? ` Stadion: ${nextClub.venue}.` : ""}\n\nKroatische Spieler laut Datenlage: ${allNames || "noch nicht zugeordnet"}.\n\nKein spekulativer TV-Hinweis – nur wenn redaktionell bestätigt. Mehr im Live-Board und Spieler-Tracker.`,
-        en: `From live data (next 7 days): ${nextClub.homeTeam} vs ${nextClub.awayTeam} in ${nextClub.leagueName}. Kick-off ${fmtKick(nextClub.kickoff, "en")}.${nextClub.venue ? ` Venue: ${nextClub.venue}.` : ""}\n\nCroatian players per data: ${allNames || "not yet mapped"}.\n\nNo speculative TV tip – only if editorially confirmed. More on the live board and player tracker.`,
-        hr: `Iz live podataka (sljedećih 7 dana): ${nextClub.homeTeam} – ${nextClub.awayTeam} u ${nextClub.leagueName}. Početak ${fmtKick(nextClub.kickoff, "hr")}.${nextClub.venue ? ` Stadion: ${nextClub.venue}.` : ""}\n\nHrvatski igrači prema podacima: ${allNames || "još nisu mapirani"}.\n\nBez spekulativnog TV savjeta – samo ako je urednički potvrđeno. Više na live boardu i trackeru.`,
-      },
-      // Sichere thematische Bilder (Liga/Wettbewerb), keine Spieler-Cutouts aus Dritt-CDNs
-      image: {
-        url:
-          /premier|pl\b/i.test(nextClub.leagueName)
-            ? IMG.premierLeague
-            : /bundesliga/i.test(nextClub.leagueName)
-              ? IMG.euro
-              : /serie/i.test(nextClub.leagueName)
-                ? IMG.serieA
-                : /hnl/i.test(nextClub.leagueName)
-                  ? IMG.hnl
-                  : IMG.stadium,
-        alt: {
-          de: nextClub.leagueName,
-          en: nextClub.leagueName,
-          hr: nextClub.leagueName,
+  // NT-Ergebnis nur wenn frisch (≤ 10 Tage) – sonst kein „News“-Rauschen
+  const nt = filterNationalTeamMatches(matches);
+  const lastNt = nt
+    .filter(
+      (m) =>
+        m.status === "finished" &&
+        m.homeScore != null &&
+        m.awayScore != null
+    )
+    .sort(
+      (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
+    )[0];
+  if (lastNt) {
+    const ageDays =
+      (now.getTime() - new Date(lastNt.kickoff).getTime()) / (24 * 3600_000);
+    if (ageDays <= 10) {
+      generated.push({
+        id: `live-result-${lastNt.id}`,
+        date: lastNt.kickoff.slice(0, 10),
+        category: "live",
+        tag: { de: "Ergebnis", en: "Result", hr: "Rezultat" },
+        title: {
+          de: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
+          en: `${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}`,
+          hr: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
         },
-      },
-      playerId: pid,
-    });
+        summary: {
+          de: `Länderspiel · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "de")}`,
+          en: `International · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "en")}`,
+          hr: `Reprezentacija · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "hr")}`,
+        },
+        body: {
+          de: `Endstand: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Quelle: Sport-APIs. Mehr unter Nationalteam.`,
+          en: `Final: ${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}. Source: sports APIs. More under National team.`,
+          hr: `Konačno: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Izvor: sportski API. Više pod Reprezentacija.`,
+        },
+        image: {
+          url: IMG.croatia,
+          alt: { de: "Kroatien", en: "Croatia", hr: "Hrvatska" },
+        },
+      });
+    }
   }
 
-  // Editorial: frisch halten – 21 Tage, Featured bis 45 Tage
+  // Editorial: 30 Tage + featured bis 60
   const cutoff = new Date(now);
-  cutoff.setDate(cutoff.getDate() - 21);
+  cutoff.setDate(cutoff.getDate() - 30);
   const featuredCutoff = new Date(now);
-  featuredCutoff.setDate(featuredCutoff.getDate() - 45);
+  featuredCutoff.setDate(featuredCutoff.getDate() - 60);
   const cutoffIso = todayIso(cutoff);
   const featuredIso = todayIso(featuredCutoff);
   const editorial = EDITORIAL_NEWS.filter(
@@ -1516,15 +1416,11 @@ export function getDailyNews(
       (a.date >= cutoffIso || (a.featured && a.date >= featuredIso))
   );
   const map = new Map<string, NewsArticle>();
-  for (const a of [...generated, ...editorial]) map.set(a.id, a);
+  for (const a of [...editorial, ...generated]) map.set(a.id, a);
 
-  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 40);
+  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 36);
 }
 
-/**
- * Tages-Ranking: Frische zuerst, dann Live-Anker, dann starke Auto-Headlines,
- * dann redaktionelle Backgrounder. Verhindert „alte Basic-Stories“ oben.
- */
 function freshnessBoost(date: string, now = new Date()): number {
   const age =
     (now.getTime() - new Date(date + "T12:00:00Z").getTime()) /
@@ -1540,21 +1436,47 @@ function freshnessBoost(date: string, now = new Date()): number {
   return -20;
 }
 
+/** true = Pseudo-Spielplan / reines Fixture-Listing, keine Story */
+export function isFixturePseudoNews(a: NewsArticle): boolean {
+  return (
+    a.id.startsWith("live-upcoming-club-") ||
+    a.id.startsWith("live-next-") ||
+    a.tag?.de === "Diese Woche" ||
+    a.tag?.de === "Termin"
+  );
+}
+
+/**
+ * Ranking: echte Headlines (auto + editorial) vor Fixture-Spam.
+ */
 function rankNews(a: NewsArticle, now = new Date()): number {
+  if (isFixturePseudoNews(a)) return -1000;
+
   let score = freshnessBoost(a.date, now);
-  if (a.featured) score += 12;
-  if (a.category === "live") score += 28;
-  if (a.id.startsWith("auto-")) score += 22; // daily external headlines
-  if (a.id.startsWith("live-")) score += 18;
-  if (a.sourceUrl) score += 8;
-  if (a.category === "transfer") score += 6;
-  if (a.category === "vatreni") score += 5;
-  // Alte rein redaktionelle Stories absenken
+
+  // Frische externe Headlines mit Quelle = Kern des News-Feeds
+  if (a.id.startsWith("auto-")) score += 55;
+  if (a.sourceUrl) score += 18;
+
+  // Redaktionelle Stories
   if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) {
-    const age =
-      (now.getTime() - new Date(a.date + "T12:00:00Z").getTime()) /
-      (24 * 3600_000);
-    if (age > 14) score -= 25;
+    score += 20;
+    if (a.featured) score += 10;
+  }
+
+  // Echte Live-Anker (laufendes Spiel / frisches NT-Ergebnis)
+  if (a.id.startsWith("live-club-")) score += 40;
+  if (a.id.startsWith("live-result-")) score += 15;
+
+  if (a.category === "transfer") score += 12;
+  if (a.category === "vatreni") score += 8;
+  if (a.category === "live" && !a.id.startsWith("live-")) score += 5;
+
+  const age =
+    (now.getTime() - new Date(a.date + "T12:00:00Z").getTime()) /
+    (24 * 3600_000);
+  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-") && age > 21) {
+    score -= 30;
   }
   return score;
 }
@@ -1577,16 +1499,19 @@ export async function getDailyNewsAsync(
   const baseRaw = getDailyNews(now, live);
   try {
     const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    const auto = await fetchAutoNews(16);
+    const auto = await fetchAutoNews(20);
     const map = new Map<string, NewsArticle>();
-    // Auto + live first in map insertion; sort decides final order
-    for (const a of [...auto, ...baseRaw]) map.set(a.id, a);
+    // Auto first – echte Headlines dominieren den Feed
+    for (const a of [...auto, ...baseRaw]) {
+      if (isFixturePseudoNews(a)) continue;
+      map.set(a.id, a);
+    }
     return assignUniqueNewsImages(
       Array.from(map.values()).sort((x, y) => sortNews(x, y)),
-      36
+      32
     );
   } catch {
-    return baseRaw;
+    return baseRaw.filter((a) => !isFixturePseudoNews(a));
   }
 }
 
