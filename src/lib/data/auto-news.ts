@@ -134,7 +134,7 @@ function extractTitleAndSource(titleRaw: string): {
   title: string;
   source: string;
 } {
-  let t = sanitizeNewsDisplay(titleRaw, 160);
+  const t = sanitizeNewsDisplay(titleRaw, 160);
   if (!t) return { title: "", source: "" };
   const parts = t.split(/\s+[-–|]\s+/);
   if (parts.length >= 2) {
@@ -184,10 +184,7 @@ function categorize(title: string): NewsArticle["category"] {
 }
 
 /** Summary: nur lokalisierter Hinweis – nie fremdsprachiger HTML-Müll */
-function localizedTeaser(
-  source: string,
-  lang: Locale
-): NewsLocaleText {
+function localizedTeaser(source: string): NewsLocaleText {
   const src = source || "Media";
   return {
     de: `Meldung von ${src}. Volltext nur in der Originalquelle (kein Framing, kein Volltext-Hosting).`,
@@ -196,7 +193,7 @@ function localizedTeaser(
   };
 }
 
-function tagFor(source: string, lang: Locale): NewsLocaleText {
+function tagFor(source: string): NewsLocaleText {
   const s = source || "Feed";
   return { de: s, en: s, hr: s };
 }
@@ -338,7 +335,7 @@ export async function fetchAutoNews(
     const titleClean = sanitizeNewsDisplay(item.title, 140);
     if (!isUsableHeadline(titleClean)) continue;
 
-    const teaser = localizedTeaser(item.source, locale);
+    const teaser = localizedTeaser(item.source);
     // Title in all locales = original (same language as feed)
     const title: NewsLocaleText = {
       de: titleClean,
@@ -352,7 +349,7 @@ export async function fetchAutoNews(
       id,
       date: parseDate(item.pubDate),
       category: categorize(titleClean),
-      tag: tagFor(item.source, item.lang),
+      tag: tagFor(item.source),
       title,
       summary: teaser,
       body: {

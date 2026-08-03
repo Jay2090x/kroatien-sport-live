@@ -136,7 +136,6 @@ export default async function NewsArticlePage({
 
   const title = safeText(tNews(article.title, locale));
   const summary = safeText(tNews(article.summary, locale));
-  const body = safeText(tNews(article.body, locale));
   const paras = bodyParagraphs(tNews(article.body, locale));
   const cat = tNews(NEWS_CATEGORY_LABEL[article.category], locale);
   const tag = safeText(tNews(article.tag, locale));

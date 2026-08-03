@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ExternalLink, Newspaper, Loader2 } from "lucide-react";
+import { Newspaper, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   getDailyNews,
