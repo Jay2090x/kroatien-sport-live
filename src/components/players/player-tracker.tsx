@@ -42,8 +42,11 @@ export function PlayerTracker() {
     return filteredPlayers.filter((p) => set.has(p.id));
   }, [filteredPlayers, favoritesOnly, favoriteIds]);
 
-  const unavailableCount = list.filter(
-    (p) => !isExpectedToPlay(p.availability)
+  const listedCount = list.filter((p) =>
+    isExpectedToPlay(p.availability)
+  ).length;
+  const unclearCount = list.filter(
+    (p) => (p.availability ?? "unknown") === "unknown"
   ).length;
   const searching = Boolean(filters.search.trim());
 
@@ -72,13 +75,16 @@ export function PlayerTracker() {
                 {t("hint")}
                 <span className="text-muted-foreground/90">
                   {" "}
-                  · {list.length - unavailableCount} {t("fit")}
-                  {unavailableCount > 0
-                    ? ` · ${unavailableCount} ${t("out")}`
+                  · {listedCount} {t("listed")}
+                  {unclearCount > 0
+                    ? ` · ${unclearCount} ${t("unclear")}`
                     : ""}
                 </span>
               </>
             )}
+          </p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground/90">
+            {t("statusExplainer")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">

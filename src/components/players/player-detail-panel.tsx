@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import {
+  getAvailabilityDisplayShort,
   getAvailabilityLabel,
   getAvailabilityMeta,
   isExpectedToPlay,
@@ -87,6 +88,7 @@ export function PlayerDetailPanel() {
 
   const meta = getAvailabilityMeta(player.availability);
   const statusLabel = getAvailabilityLabel(player.availability, locale);
+  const statusShort = getAvailabilityDisplayShort(player, locale);
   const playing = isExpectedToPlay(player.availability);
 
   const L = {
@@ -164,8 +166,13 @@ export function PlayerDetailPanel() {
                   "rounded-full border px-2 py-0.5 text-[10px] font-bold",
                   meta.badgeClass
                 )}
+                title={
+                  player.availabilityNote
+                    ? `${statusLabel} · ${player.availabilityNote}`
+                    : statusLabel
+                }
               >
-                {meta.emoji} {statusLabel}
+                {statusShort}
               </span>
               <Badge variant="secondary" className="text-[10px]">
                 {player.leagueName}

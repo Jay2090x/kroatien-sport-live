@@ -37,14 +37,14 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   modric: {
     playerId: "modric",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Mittelfeld · Kapitän",
+      en: "Midfield · Captain",
+      hr: "Vezni · Kapetan",
     },
     bio: {
-      de: "Luka Modrić ist ein kroatischer Fußballspieler, der seit 2025 bei der AC Mailand unter Vertrag steht. Mit Real Madrid gewann er zahlreiche Titel, darunter mehrmals die spanische Meisterschaft und die Champions League. Modrić gilt als einer der komplettesten Mittelfeldspieler seiner Generation und ist Kapitän der kroatischen Nationalmannschaft.",
-      en: "Luka Modrić is a Croatian footballer who has been contracted to AC Milan since 2025. With Real Madrid he won numerous titles, including multiple Spanish championships and Champions League trophies. He is widely regarded as one of the most complete midfielders of his generation and captains Croatia.",
-      hr: "Luka Modrić hrvatski je nogometaš koji je od 2025. na ugovoru u AC Milanu. S Real Madridom osvojio je brojne trofeje, uključujući više naslova La Lige i Lige prvaka. Smatra se jednim od najkompletnijih veznjaka svoje generacije i kapetan je hrvatske reprezentacije.",
+      de: "Seit 2025 bei AC Mailand; zuvor lange Real Madrid. Mit Real Madrid gewann er zahlreiche Titel, darunter mehrmals die spanische Meisterschaft und die Champions League. Modrić gilt als einer der komplettesten Mittelfeldspieler seiner Generation und ist Kapitän der kroatischen Nationalmannschaft.",
+      en: "At AC Milan since 2025; previously a long Real Madrid career. With Real Madrid he won numerous titles, including multiple Spanish championships and Champions League trophies. He is widely regarded as one of the most complete midfielders of his generation and captains Croatia.",
+      hr: "Od 2025. u AC Milanu; prije dugo u Real Madridu. S Real Madridom osvojio je brojne trofeje, uključujući više naslova La Lige i Lige prvaka. Smatra se jednim od najkompletnijih veznjaka svoje generacije i kapetan je hrvatske reprezentacije.",
     },
     born: "1985-09-09",
     birthPlace: {
@@ -211,9 +211,9 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   gvardiol: {
     playerId: "gvardiol",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
       de: "Joško Gvardiol ist Innenverteidiger bei Manchester City und Stammspieler der kroatischen Nationalmannschaft. Er gilt als einer der besten jungen Verteidiger Europas – stark im Aufbau und defensiv robust.",
@@ -325,9 +325,9 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   kovacic: {
     playerId: "kovacic",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
       de: "Mateo Kovačić ist Mittelfeldspieler bei Manchester City und langjähriger Nationalspieler. Er bringt Erfahrung aus der Champions League und mehreren Top-Ligen mit.",
@@ -411,9 +411,9 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   baturina: {
     playerId: "baturina",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
       de: "Martin Baturina ist ein offensiver Mittelfeldspieler bei Como 1907 und eines der größten Talente der kroatischen Generation nach 2000.",
@@ -568,9 +568,9 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   stanisic: {
     playerId: "stanisic",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
       de: "Josip Stanišić ist flexibler Verteidiger bei Bayern München und Nationalspieler – einsetzbar rechts und in der Innenverteidigung.",
@@ -645,9 +645,9 @@ export const PLAYER_PROFILES: Record<string, PlayerProfileData> = {
   perisic: {
     playerId: "perisic",
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
       de: "Ivan Perišić ist ein erfahrener Flügelspieler bei PSV und Weltmeisterschafts-Finalist 2018 mit Kroatien.",
@@ -727,14 +727,14 @@ export function buildMinimalProfile(
   return {
     playerId,
     role: {
-      de: "Kroatischer Fußballspieler",
-      en: "Croatian footballer",
-      hr: "Hrvatski nogometaš",
+      de: "Profi · Nationalteam",
+      en: "Pro · National team",
+      hr: "Pro · Reprezentacija",
     },
     bio: {
-      de: `${name} ist kroatischer Fußballspieler bei ${club}. Detaillierte Karriere-Statistiken folgen, sobald sie redaktionell gepflegt sind.`,
-      en: `${name} is a Croatian footballer at ${club}. Detailed career stats will appear once curated.`,
-      hr: `${name} hrvatski je nogometaš u klubu ${club}. Detaljne karijerne statistike bit će dodane nakon uredničke obrade.`,
+      de: `${name} · ${club}. Profil-Details und einheitliche Karriere-Stats werden redaktionell ergänzt.`,
+      en: `${name} · ${club}. Profile details and consistent career stats are added editorially.`,
+      hr: `${name} · ${club}. Detalji profila i usporedive statistike dodaju se urednički.`,
     },
     currentTeams: {
       de: club,

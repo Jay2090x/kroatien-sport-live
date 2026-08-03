@@ -1503,54 +1503,88 @@ export function getDailyNews(
     });
   }
 
-  // Editorial: nur letzte ~60 Tage + immer featured/breaking
+  // Editorial: frisch halten – 21 Tage, Featured bis 45 Tage
   const cutoff = new Date(now);
-  cutoff.setDate(cutoff.getDate() - 60);
+  cutoff.setDate(cutoff.getDate() - 21);
+  const featuredCutoff = new Date(now);
+  featuredCutoff.setDate(featuredCutoff.getDate() - 45);
   const cutoffIso = todayIso(cutoff);
+  const featuredIso = todayIso(featuredCutoff);
   const editorial = EDITORIAL_NEWS.filter(
-    (a) => a.date <= today && (a.date >= cutoffIso || a.featured)
+    (a) =>
+      a.date <= today &&
+      (a.date >= cutoffIso || (a.featured && a.date >= featuredIso))
   );
   const map = new Map<string, NewsArticle>();
-  // Live-generated first for same-day relevance
   for (const a of [...generated, ...editorial]) map.set(a.id, a);
 
-  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 60);
+  return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 40);
 }
 
 /**
- * Strikt nach Aktualität (Datum absteigend).
- * Bei gleichem Tag: featured zuerst, dann redaktionell vor live/auto.
+ * Tages-Ranking: Frische zuerst, dann Live-Anker, dann starke Auto-Headlines,
+ * dann redaktionelle Backgrounder. Verhindert „alte Basic-Stories“ oben.
  */
+function freshnessBoost(date: string, now = new Date()): number {
+  const age =
+    (now.getTime() - new Date(date + "T12:00:00Z").getTime()) /
+    (24 * 3600_000);
+  if (Number.isNaN(age)) return 0;
+  if (age <= 0.5) return 100;
+  if (age <= 1) return 90;
+  if (age <= 2) return 75;
+  if (age <= 3) return 55;
+  if (age <= 7) return 35;
+  if (age <= 14) return 15;
+  if (age <= 30) return 5;
+  return -20;
+}
+
+function rankNews(a: NewsArticle, now = new Date()): number {
+  let score = freshnessBoost(a.date, now);
+  if (a.featured) score += 12;
+  if (a.category === "live") score += 28;
+  if (a.id.startsWith("auto-")) score += 22; // daily external headlines
+  if (a.id.startsWith("live-")) score += 18;
+  if (a.sourceUrl) score += 8;
+  if (a.category === "transfer") score += 6;
+  if (a.category === "vatreni") score += 5;
+  // Alte rein redaktionelle Stories absenken
+  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) {
+    const age =
+      (now.getTime() - new Date(a.date + "T12:00:00Z").getTime()) /
+      (24 * 3600_000);
+    if (age > 14) score -= 25;
+  }
+  return score;
+}
+
 function sortNews(a: NewsArticle, b: NewsArticle): number {
-  const byDate = b.date.localeCompare(a.date);
-  if (byDate !== 0) return byDate;
-  if (a.featured && !b.featured) return -1;
-  if (!a.featured && b.featured) return 1;
-  const tier = (x: NewsArticle) => {
-    if (x.id.startsWith("auto-")) return 3;
-    if (x.id.startsWith("live-")) return 2;
-    return 1;
-  };
-  return tier(a) - tier(b);
+  const now = new Date();
+  const byRank = rankNews(b, now) - rankNews(a, now);
+  if (byRank !== 0) return byRank;
+  return b.date.localeCompare(a.date);
 }
 
 /**
- * Redaktionell + Live-Anker + wenige Auto-Headlines (async).
- * Für SSR-Seiten und Sitemap.
+ * Live-Anker + redaktionell + viele frische Auto-Headlines (async).
+ * Primärer Weg für „täglich beste News“.
  */
 export async function getDailyNewsAsync(
   now = new Date(),
   live?: { matches?: Match[]; players?: Player[] }
 ): Promise<NewsArticle[]> {
-  // getDailyNews ohne final unique – wir mergen sauber neu
   const baseRaw = getDailyNews(now, live);
   try {
     const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    // Nur wenige Auto-Stories, redaktionell bleibt im Vordergrund
-    const auto = await fetchAutoNews(4);
+    const auto = await fetchAutoNews(16);
     const map = new Map<string, NewsArticle>();
-    for (const a of [...baseRaw, ...auto]) map.set(a.id, a);
-    return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 50);
+    // Auto + live first in map insertion; sort decides final order
+    for (const a of [...auto, ...baseRaw]) map.set(a.id, a);
+    return assignUniqueNewsImages(
+      Array.from(map.values()).sort((x, y) => sortNews(x, y)),
+      36
+    );
   } catch {
     return baseRaw;
   }

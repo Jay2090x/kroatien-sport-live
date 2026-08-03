@@ -22,12 +22,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/** Fußball standard – andere Sportarten nur bei aktiver Auswahl */
 const SPORTS: SportId[] = [
-  "all",
   "football",
   "handball",
   "basketball",
   "waterpolo",
+  "all",
   "tv",
 ];
 
@@ -52,7 +53,7 @@ export function LiveMatchBoard() {
     useDashboard();
 
   const catalog = useMemo(() => getGuideCatalog(), []);
-  const [sport, setSport] = useState<SportId>("all");
+  const [sport, setSport] = useState<SportId>("football");
   const [query, setQuery] = useState("");
   const [tvSlots, setTvSlots] = useState<TvGuideSlot[]>(catalog.tvGuide);
   const [mergedRemote, setMergedRemote] = useState<GuideMatch[] | null>(null);

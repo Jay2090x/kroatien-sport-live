@@ -5,11 +5,10 @@ import { useTranslations } from "next-intl";
 import { User } from "lucide-react";
 import type { Match, Player } from "@/types";
 import {
+  getAvailabilityDisplayShort,
   getAvailabilityMeta,
-  getAvailabilityShort,
   isExpectedToPlay,
 } from "@/lib/player-availability";
-import { getPlayerProfile } from "@/lib/data/player-profiles";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
@@ -20,18 +19,19 @@ export interface PlayerCardProps {
   player: Player;
   selected?: boolean;
   nextMatch?: Match;
-  /** All matches – used only for derived W/D/L form */
+  /** Same match pool for all cards → comparable form */
   allMatches?: Match[];
   locale: string;
   liveLabel: string;
   nextPrefix: string;
   onSelect: () => void;
-  /** Compact for favorites row – still same slots */
   variant?: "default" | "compact";
 }
 
 /**
- * Einheitliche, vergleichbare Spielerkarte (fixed slots).
+ * Professionelle, einheitliche Spielerkarte.
+ * Gleiche Slots für alle: Foto · Name · Club · Position · Status · Nächstes Spiel · Form.
+ * Keine inkonsistenten Karriere-Stats (WM vs Liga vs Saison).
  */
 export function PlayerCard({
   player,
@@ -48,9 +48,7 @@ export function PlayerCard({
   const tStatus = useTranslations("Status");
   const meta = getAvailabilityMeta(player.availability ?? "unknown");
   const out = !isExpectedToPlay(player.availability);
-  const short = getAvailabilityShort(player.availability, locale);
-  const profile = getPlayerProfile(player.id);
-  const stats = resolveStats(player, profile);
+  const short = getAvailabilityDisplayShort(player, locale);
   const form = allMatches
     ? computePlayerForm(player.id, allMatches, 5)
     : [];
@@ -69,39 +67,42 @@ export function PlayerCard({
           : tStatus("srcUnknown");
 
   const statusTitle = [
-    meta.emoji,
     short,
-    conf !== "confirmed" ? `(${tStatus(conf)})` : "",
+    conf !== "confirmed" ? `(${tStatus(conf)})` : tStatus("confirmed"),
     sourceLabel,
     player.availabilityNote,
   ]
     .filter(Boolean)
     .join(" · ");
 
-  const photo = variant === "compact" ? 48 : 56;
+  const photo = variant === "compact" ? 52 : 60;
+  const age = ageFromDob(player.dateOfBirth);
 
   return (
     <div
       className={cn(
-        "flex h-full min-h-[7.5rem] w-full gap-2 rounded-xl border border-border bg-card p-2.5 shadow-sm transition-all hover:border-primary/45 hover:shadow-md",
+        "flex h-full w-full gap-2 rounded-xl border border-border bg-card p-2.5 shadow-sm transition-all hover:border-primary/45 hover:shadow-md",
         selected && "border-primary ring-2 ring-primary/25",
-        out && player.availability !== "unknown" && "opacity-95"
+        out &&
+          player.availability !== "unknown" &&
+          player.availability !== "available" &&
+          "opacity-95"
       )}
     >
       <button
         type="button"
         onClick={onSelect}
         aria-pressed={selected}
-        className="grid min-w-0 flex-1 grid-cols-[auto_1fr] grid-rows-[auto_auto_auto_auto] gap-x-2.5 gap-y-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+        className="grid min-w-0 flex-1 grid-cols-[auto_1fr] gap-x-2.5 gap-y-1.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
       >
-        {/* Photo – always same cell */}
+        {/* Photo */}
         <div
           className={cn(
-            "row-span-3 relative shrink-0 overflow-hidden rounded-xl bg-secondary ring-1",
-            out && player.availability === "vacation"
-              ? "ring-sky-500/40 grayscale-[25%]"
-              : out && player.availability === "injured"
-                ? "ring-red-500/40 grayscale-[20%]"
+            "relative shrink-0 overflow-hidden rounded-xl bg-secondary ring-1 row-span-4 self-start",
+            player.availability === "injured"
+              ? "ring-red-500/40"
+              : player.availability === "vacation"
+                ? "ring-sky-500/35"
                 : "ring-border"
           )}
           style={{ width: photo, height: photo }}
@@ -126,81 +127,80 @@ export function PlayerCard({
         {/* Name + status */}
         <div className="flex min-w-0 items-start justify-between gap-1.5">
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold leading-tight" title={player.name}>
+            <p
+              className="truncate text-sm font-bold leading-tight tracking-tight"
+              title={player.name}
+            >
               {player.name}
             </p>
             <p
               className="mt-0.5 truncate text-[11px] text-muted-foreground"
-              title={`${player.club}${player.shirtNumber != null ? ` #${player.shirtNumber}` : ""} · ${player.leagueName}`}
+              title={`${player.club} · ${player.leagueName}`}
             >
               {player.club}
-              {player.shirtNumber != null ? ` · #${player.shirtNumber}` : ""}
-              {" · "}
-              {shortLeague(player.leagueName)}
+              <span className="text-muted-foreground/70">
+                {" · "}
+                {shortLeague(player.leagueName)}
+              </span>
             </p>
           </div>
           <span
             className={cn(
               "shrink-0 rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase tabular-nums",
               meta.badgeClass,
-              conf === "likely" && "opacity-90",
-              conf === "unknown" && "font-semibold"
+              conf === "unknown" && "opacity-90"
             )}
             title={statusTitle}
           >
-            {meta.emoji !== "·" ? `${meta.emoji} ` : ""}
             {short}
           </span>
         </div>
 
-        {/* Position + stats row – always 3 stats */}
-        <div className="col-start-2 flex min-w-0 flex-wrap items-center gap-1">
+        {/* Comparable meta: position · age · shirt – same for every player */}
+        <div className="flex min-w-0 flex-wrap items-center gap-1">
           <Badge variant="outline" className="px-1.5 py-0 text-[10px] font-bold">
             {player.position}
           </Badge>
-          <span className="inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-secondary/40 px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground">
-            <span title={t("statApps")}>
-              <b className="text-foreground">{fmtStat(stats.apps)}</b>
-              <span className="ml-0.5 opacity-70">S</span>
+          {age != null && (
+            <span
+              className="rounded-md border border-border/70 bg-secondary/40 px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground"
+              title={t("age")}
+            >
+              {age}
             </span>
-            <span className="opacity-30">|</span>
-            <span title={t("statGoals")}>
-              <b className="text-foreground">{fmtStat(stats.goals)}</b>
-              <span className="ml-0.5 opacity-70">T</span>
+          )}
+          {player.shirtNumber != null && (
+            <span className="rounded-md border border-border/70 bg-secondary/40 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
+              #{player.shirtNumber}
             </span>
-            <span className="opacity-30">|</span>
-            <span title={t("statAssists")}>
-              <b className="text-foreground">{fmtStat(stats.assists)}</b>
-              <span className="ml-0.5 opacity-70">A</span>
-            </span>
-          </span>
+          )}
         </div>
 
-        {/* Next match – always a line */}
+        {/* Next match – primary comparable value */}
         <p
           className={cn(
-            "col-span-2 truncate text-[10px] font-medium",
-            nextLine ? "text-primary/90" : "text-muted-foreground"
+            "min-w-0 truncate text-[11px] font-medium leading-snug",
+            nextLine ? "text-primary" : "text-muted-foreground"
           )}
           title={nextLine ?? t("noMatches")}
         >
           {nextLine ?? t("noMatches")}
         </p>
 
-        {/* Form W/D/L only when scores known */}
-        {form.length > 0 && (
-          <div
-            className="col-span-2 flex items-center gap-1"
-            title={t("formHint")}
-          >
-            <span className="text-[9px] font-semibold uppercase text-muted-foreground">
-              {t("form")}
-            </span>
-            {form.map((r, i) => (
-              <FormDot key={`${r}-${i}`} result={r} />
-            ))}
-          </div>
-        )}
+        {/* Form from same feed for everyone – never mix career tables */}
+        <div
+          className="flex min-h-[1rem] items-center gap-1"
+          title={form.length ? t("formHint") : t("formEmpty")}
+        >
+          <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("form")}
+          </span>
+          {form.length > 0 ? (
+            form.map((r, i) => <FormDot key={`${r}-${i}`} result={r} />)
+          ) : (
+            <span className="text-[10px] text-muted-foreground/80">–</span>
+          )}
+        </div>
       </button>
 
       <FavoriteButton
@@ -212,27 +212,19 @@ export function PlayerCard({
   );
 }
 
-function fmtStat(n: number | null): string {
-  return n == null || Number.isNaN(n) ? "–" : String(n);
+function ageFromDob(iso?: string): number | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age -= 1;
+  return age >= 15 && age <= 50 ? age : null;
 }
 
 function shortLeague(name: string): string {
-  return name.replace(/ · .*$/, "").slice(0, 18);
-}
-
-function resolveStats(
-  player: Player,
-  profile: ReturnType<typeof getPlayerProfile>
-): { apps: number | null; goals: number | null; assists: number | null } {
-  const hl = profile?.highlight;
-  if (hl) {
-    return { apps: hl.apps, goals: hl.goals, assists: hl.assists };
-  }
-  const row = profile?.teams?.[0]?.stats?.[0];
-  if (row) {
-    return { apps: row.apps, goals: row.goals, assists: row.assists };
-  }
-  return { apps: null, goals: null, assists: null };
+  return name.replace(/ · .*$/, "").slice(0, 16);
 }
 
 function FormDot({ result }: { result: FormResult }) {

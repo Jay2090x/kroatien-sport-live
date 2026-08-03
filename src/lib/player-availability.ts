@@ -1,12 +1,13 @@
 /**
- * Spieler-Verfügbarkeit – systemseitig, mit Konfidenz.
- * User melden nur Vorschläge; kein Self-Edit.
+ * Spieler-Verfügbarkeit – ehrlich, mit Quelle und Konfidenz.
  *
+ * Wir behaupten KEINE Fitness ohne Beleg.
  * Priorität:
- * 1) Editorial SYSTEM_STATUS (confirmed)
- * 2) Saisonkalender pro Liga (likely vacation / unknown)
- * 3) Match-Signal: Club-Spiel in 14 Tagen (likely available)
- * 4) default: unknown (kein falsches Grün)
+ * 1) Editorial SYSTEM_STATUS (confirmed) – z.B. Verletzung
+ * 2) Live-Spiel mit Spieler im Feed → im Einsatz (likely)
+ * 3) Spielplan: Club-Spiel in den nächsten 14 Tagen gelistet → „im Spielplan“ (likely)
+ * 4) Saisonpause ohne Termin → Pause (likely, Kalender)
+ * 5) default: unknown
  */
 
 import type {
@@ -32,25 +33,25 @@ export const AVAILABILITY_OPTIONS: {
 }[] = [
   {
     id: "available",
-    labelDe: "Fit / einsatzbereit",
-    labelEn: "Available",
-    labelHr: "Spreman / dostupan",
-    shortDe: "Fit",
-    shortEn: "Fit",
-    shortHr: "Spreman",
-    emoji: "✅",
+    labelDe: "Im Spielplan / einsatzbereit",
+    labelEn: "In squad / available",
+    labelHr: "U rasporedu / dostupan",
+    shortDe: "Plan",
+    shortEn: "Listed",
+    shortHr: "Rasp.",
+    emoji: "●",
     expectedToPlay: true,
     badgeClass: "border-emerald-500/40 bg-emerald-500/15 text-emerald-300",
   },
   {
     id: "vacation",
-    labelDe: "Urlaub / Sommerpause",
-    labelEn: "On vacation / break",
+    labelDe: "Urlaub / Saisonpause",
+    labelEn: "Break / off-season",
     labelHr: "Odmor / pauza",
     shortDe: "Pause",
     shortEn: "Off",
     shortHr: "Odmor",
-    emoji: "🏖️",
+    emoji: "○",
     expectedToPlay: false,
     badgeClass: "border-sky-500/40 bg-sky-500/15 text-sky-300",
   },
@@ -62,7 +63,7 @@ export const AVAILABILITY_OPTIONS: {
     shortDe: "Verletzt",
     shortEn: "Injured",
     shortHr: "Ozljeda",
-    emoji: "🩹",
+    emoji: "!",
     expectedToPlay: false,
     badgeClass: "border-red-500/40 bg-red-500/15 text-red-300",
   },
@@ -74,7 +75,7 @@ export const AVAILABILITY_OPTIONS: {
     shortDe: "Gesperrt",
     shortEn: "Banned",
     shortHr: "Susp.",
-    emoji: "🟥",
+    emoji: "!",
     expectedToPlay: false,
     badgeClass: "border-orange-500/40 bg-orange-500/15 text-orange-300",
   },
@@ -86,7 +87,7 @@ export const AVAILABILITY_OPTIONS: {
     shortDe: "Kader",
     shortEn: "Squad",
     shortHr: "Kadar",
-    emoji: "📋",
+    emoji: "–",
     expectedToPlay: false,
     badgeClass: "border-zinc-500/40 bg-zinc-500/15 text-zinc-300",
   },
@@ -98,7 +99,7 @@ export const AVAILABILITY_OPTIONS: {
     shortDe: "Fraglich",
     shortEn: "Doubt",
     shortHr: "Upitno",
-    emoji: "❓",
+    emoji: "?",
     expectedToPlay: false,
     badgeClass: "border-amber-500/40 bg-amber-500/15 text-amber-300",
   },
@@ -117,8 +118,8 @@ export const AVAILABILITY_OPTIONS: {
 ];
 
 /**
- * Manuelle Redaktions-Overrides – confirmed.
- * Bei bekannten Fakten pflegen.
+ * Manuelle Redaktions-Overrides – nur bei belegten Fakten.
+ * Ohne Quelle bleibt der Status „unknown“ / Spielplan-Signal.
  */
 export const SYSTEM_STATUS: Record<
   string,
@@ -127,19 +128,22 @@ export const SYSTEM_STATUS: Record<
     note: string;
   }
 > = {
-  // Beispiele / Platzhalter – bei bestätigten News erweitern
+  // Beispiel: nur pflegen wenn redaktionell bestätigt
+  // "player-id": { availability: "injured", note: "Knie – Club-Meldung TT.MM.JJJJ" },
 };
 
 /** Monat 0–11: typische Sommerpause (likely, nicht confirmed) */
 const SUMMER_BREAK: Partial<
-  Record<LeagueId, { startMonth: number; startDay: number; endMonth: number; endDay: number }>
+  Record<
+    LeagueId,
+    { startMonth: number; startDay: number; endMonth: number; endDay: number }
+  >
 > = {
   "premier-league": { startMonth: 5, startDay: 20, endMonth: 7, endDay: 12 },
   bundesliga: { startMonth: 5, startDay: 20, endMonth: 7, endDay: 15 },
   "serie-a": { startMonth: 5, startDay: 25, endMonth: 7, endDay: 15 },
   laliga: { startMonth: 5, startDay: 25, endMonth: 7, endDay: 12 },
   "ligue-1": { startMonth: 5, startDay: 20, endMonth: 7, endDay: 12 },
-  // HNL oft früher unterwegs – engeres Fenster
   hnl: { startMonth: 5, startDay: 25, endMonth: 6, endDay: 25 },
 };
 
@@ -168,10 +172,58 @@ export type ResolvedAvailability = {
   source: AvailabilitySource;
 };
 
+export type MatchListing = {
+  liveNow: boolean;
+  upcomingWithinDays: boolean;
+  nextKickoff?: string;
+};
+
+export function getPlayerMatchListing(
+  playerId: string,
+  matches: Match[] | undefined,
+  now: Date = new Date(),
+  withinDays = 14
+): MatchListing {
+  if (!matches?.length) {
+    return { liveNow: false, upcomingWithinDays: false };
+  }
+  const horizon = now.getTime() + withinDays * 24 * 3600 * 1000;
+  let liveNow = false;
+  let upcomingWithinDays = false;
+  let nextKickoff: string | undefined;
+
+  for (const m of matches) {
+    if (!m.croatianPlayers.some((p) => p.playerId === playerId)) continue;
+    const t = new Date(m.kickoff).getTime();
+    if (Number.isNaN(t)) continue;
+
+    if (m.status === "live" || m.status === "halftime") {
+      liveNow = true;
+      if (!nextKickoff || t < new Date(nextKickoff).getTime()) {
+        nextKickoff = m.kickoff;
+      }
+      continue;
+    }
+
+    if (
+      (m.status === "scheduled" || m.status === "postponed") &&
+      t >= now.getTime() - 2 * 3600 * 1000 &&
+      t <= horizon
+    ) {
+      upcomingWithinDays = true;
+      if (!nextKickoff || t < new Date(nextKickoff).getTime()) {
+        nextKickoff = m.kickoff;
+      }
+    }
+  }
+
+  return { liveNow, upcomingWithinDays, nextKickoff };
+}
+
 export function resolveSystemAvailability(
   player: Player,
   now: Date = new Date(),
-  ctx?: { upcomingMatchWithinDays?: boolean }
+  ctx?: MatchListing
 ): ResolvedAvailability {
   const manual = SYSTEM_STATUS[player.id];
   if (manual) {
@@ -180,6 +232,28 @@ export function resolveSystemAvailability(
       availabilityNote: manual.note,
       confidence: "confirmed",
       source: "editorial",
+    };
+  }
+
+  // Live im Feed = stärkstes automatisches Signal
+  if (ctx?.liveNow) {
+    return {
+      availability: "available",
+      availabilityNote:
+        "Aktuell in einem Live-Spiel der Datenquelle gelistet (kein medizinischer Befund).",
+      confidence: "likely",
+      source: "match_signal",
+    };
+  }
+
+  // Spielplan: in den nächsten 14 Tagen einem Club-Spiel zugeordnet
+  if (ctx?.upcomingWithinDays) {
+    return {
+      availability: "available",
+      availabilityNote:
+        "In den nächsten 14 Tagen einem Club-Spiel in unseren Daten zugeordnet – kein bestätigter Fitness-Status.",
+      confidence: "likely",
+      source: "match_signal",
     };
   }
 
@@ -194,19 +268,9 @@ export function resolveSystemAvailability(
       breakWin.endDay
     )
   ) {
-    // Match-Signal bricht reines Vacation-Guess
-    if (ctx?.upcomingMatchWithinDays) {
-      return {
-        availability: "available",
-        availabilityNote:
-          "Club-Spiel in den nächsten 14 Tagen geplant – Einsatz eher möglich (nicht bestätigt).",
-        confidence: "likely",
-        source: "match_signal",
-      };
-    }
     return {
       availability: "vacation",
-      availabilityNote: `Saisonpause ${player.leagueName} (Kalender-Schätzung, Stand ${now
+      availabilityNote: `Typische Saisonpause ${player.leagueName} (Kalender-Schätzung ${now
         .toISOString()
         .slice(0, 10)}) – kein bestätigter Fitness-Status.`,
       confidence: "likely",
@@ -214,20 +278,10 @@ export function resolveSystemAvailability(
     };
   }
 
-  if (ctx?.upcomingMatchWithinDays) {
-    return {
-      availability: "available",
-      availabilityNote:
-        "Anstehendes Club-Spiel in den Daten – Fitness nicht einzeln verifiziert.",
-      confidence: "likely",
-      source: "match_signal",
-    };
-  }
-
   return {
     availability: "unknown",
     availabilityNote:
-      "Keine redaktionelle oder kalendarische Bestätigung – Status unklar.",
+      "Keine redaktionelle Meldung und kein Spielplan-Eintrag in den nächsten 14 Tagen – wir spekulieren nicht.",
     confidence: "unknown",
     source: "default",
   };
@@ -262,25 +316,32 @@ export function getAvailabilityShort(
   return meta.shortDe;
 }
 
+/** Display short that reflects source honesty */
+export function getAvailabilityDisplayShort(
+  player: Pick<
+    Player,
+    "availability" | "availabilitySource" | "availabilityConfidence"
+  >,
+  locale: string
+): string {
+  const status = player.availability ?? "unknown";
+  const src = player.availabilitySource;
+  if (status === "available" && src === "match_signal") {
+    if (locale === "en") return "Listed";
+    if (locale === "hr") return "Na listi";
+    return "Gelistet";
+  }
+  if (status === "available" && src === "editorial") {
+    if (locale === "en") return "Fit";
+    if (locale === "hr") return "Spreman";
+    return "Fit";
+  }
+  return getAvailabilityShort(status, locale);
+}
+
 export function isExpectedToPlay(status?: PlayerAvailability): boolean {
   if (!status || status === "unknown") return false;
   return getAvailabilityMeta(status).expectedToPlay;
-}
-
-function playerHasUpcomingMatch(
-  playerId: string,
-  matches: Match[] | undefined,
-  now: Date,
-  withinDays = 14
-): boolean {
-  if (!matches?.length) return false;
-  const horizon = now.getTime() + withinDays * 24 * 3600 * 1000;
-  return matches.some((m) => {
-    if (m.status !== "scheduled" && m.status !== "postponed") return false;
-    const t = new Date(m.kickoff).getTime();
-    if (t < now.getTime() || t > horizon) return false;
-    return m.croatianPlayers.some((p) => p.playerId === playerId);
-  });
 }
 
 /** Alle Spieler mit System-Status anreichern */
@@ -290,10 +351,8 @@ export function applySystemAvailability(
 ): Player[] {
   const now = new Date();
   return players.map((p) => {
-    const upcoming = playerHasUpcomingMatch(p.id, matches, now);
-    const resolved = resolveSystemAvailability(p, now, {
-      upcomingMatchWithinDays: upcoming,
-    });
+    const listing = getPlayerMatchListing(p.id, matches, now, 14);
+    const resolved = resolveSystemAvailability(p, now, listing);
     return {
       ...p,
       availability: resolved.availability,

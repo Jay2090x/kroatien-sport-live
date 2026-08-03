@@ -3,7 +3,7 @@ import { getDailyNewsAsync } from "@/lib/data/news";
 import { getDashboardData } from "@/lib/data/service";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 300;
+export const revalidate = 900;
 
 export async function GET() {
   try {
@@ -18,10 +18,17 @@ export async function GET() {
     }
     const articles = await getDailyNewsAsync(new Date(), { matches, players });
     return NextResponse.json(
-      { articles, updatedAt: new Date().toISOString() },
+      {
+        articles,
+        updatedAt: new Date().toISOString(),
+        meta: {
+          count: articles.length,
+          sources: "live-fixtures + editorial + public RSS aggregation",
+        },
+      },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+          "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
         },
       }
     );

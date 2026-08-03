@@ -32,7 +32,7 @@ interface StatusSuggestion {
 export function StatusSuggestionForm({ player }: { player: Player }) {
   const t = useTranslations("PlayerDetail");
   const locale = useLocale();
-  const current = player.availability ?? "available";
+  const current = player.availability ?? "unknown";
   const meta = getAvailabilityMeta(current);
   const currentLabel = getAvailabilityLabel(current, locale);
 
