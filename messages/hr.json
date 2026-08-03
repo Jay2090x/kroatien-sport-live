@@ -190,8 +190,8 @@
   },
   "Today": {
     "title": "Danas za tebe",
-    "subtitleFavs": "Tvoji omiljeni u 48 sati + top naslov",
-    "subtitleDefault": "Iduće utakmice s Hrvatima + top naslov – označi omiljene za fokus",
+    "subtitleFavs": "Omiljeni u 48h · top naslov · brzi linkovi",
+    "subtitleDefault": "Iduće utakmice · top naslov · board/tracker – označi omiljene za fokus",
     "addFavs": "Dodaj omiljene",
     "next48": "Sljedećih 48 sati",
     "noMatches": "Nema termina u sljedećih 48 sati u feedu.",
@@ -200,7 +200,12 @@
     "openOriginal": "Otvori original",
     "readMore": "Pročitaj više",
     "allNews": "Sve vijesti",
-    "noStory": "Nema učitanog naslova – provjeri rubriku vijesti."
+    "noStory": "Nema učitanog naslova – provjeri rubriku vijesti.",
+    "quickTitle": "Brzo",
+    "ctaBoard": "Live board",
+    "ctaWeek": "Moj tjedan",
+    "ctaPlayers": "Tracker igrača",
+    "ctaNews": "Vijesti i brief"
   },
   "News": {
     "title": "Vijesti",
@@ -220,6 +225,9 @@
     "externalHint": "Naslov agregiran od „{source}“. Ne hostamo tuđe full tekstove niti zamjenjujemo originalno izvještavanje.",
     "originalLang": "Izvorni jezik naslova: {lang}",
     "legalNote": "Urednički info servis. Vanjski linkovi: prava i sadržaj ostaju kod izdavača. Bez ilegalnih streamova, bez VPN-a, bez affiliate oglasa na startu.",
+    "loadingHeadlines": "Učitavanje naslova…",
+    "headlinesDegraded": "Vanjski naslovi trenutno nisu dostupni – dnevni brief i uredništvo ostaju.",
+    "readEditorial": "Pročitaj urednički tekst",
     "today": "Danas",
     "readMore": "Pročitaj više",
     "readLess": "Manje",

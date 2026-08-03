@@ -7,6 +7,7 @@ import type { Locale } from "@/i18n/routing";
 import type { Match, Player } from "@/types";
 import { assignUniqueNewsImages } from "@/lib/data/news-images";
 import { buildDailyBrief } from "@/lib/data/daily-brief";
+import { getEditorialSlot } from "@/lib/data/editorial-slot";
 
 export type NewsLocaleText = Record<Locale, string>;
 
@@ -1312,8 +1313,10 @@ export function getDailyNews(
       a.date <= today &&
       (a.date >= cutoffIso || (a.featured && a.date >= featuredIso))
   );
+  const slot = getEditorialSlot(now);
   const map = new Map<string, NewsArticle>();
   map.set(brief.id, brief);
+  map.set(slot.id, slot);
   for (const a of editorial) map.set(a.id, a);
 
   return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 36);
@@ -1361,8 +1364,9 @@ function rankNews(a: NewsArticle, now = new Date()): number {
 
   let score = freshnessBoost(a.date, now);
 
-  // Tagesbrief immer weit oben am heutigen Tag
+  // Tagesbrief + redaktioneller Slot oben
   if (a.id.startsWith("daily-brief-")) score += 90;
+  if (a.id.startsWith("editorial-slot-")) score += 85;
 
   // Frische externe Headlines mit Quelle = Kern des News-Feeds
   if (a.id.startsWith("auto-")) score += 60;

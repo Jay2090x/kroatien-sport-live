@@ -190,8 +190,8 @@
   },
   "Today": {
     "title": "Today for you",
-    "subtitleFavs": "Your favorites in 48 hours + top headline",
-    "subtitleDefault": "Next matches with Croatians + top headline – star favorites for focus",
+    "subtitleFavs": "Favorites in 48h · top headline · quick links",
+    "subtitleDefault": "Next matches · top headline · board/tracker – star favorites for focus",
     "addFavs": "Add favorites",
     "next48": "Next 48 hours",
     "noMatches": "No fixtures in the next 48 hours in the feed.",
@@ -200,7 +200,12 @@
     "openOriginal": "Open original",
     "readMore": "Read more",
     "allNews": "All news",
-    "noStory": "No headline loaded – check the news section."
+    "noStory": "No headline loaded – check the news section.",
+    "quickTitle": "Quick",
+    "ctaBoard": "Live board",
+    "ctaWeek": "My week",
+    "ctaPlayers": "Player tracker",
+    "ctaNews": "News & brief"
   },
   "News": {
     "title": "News",
@@ -220,6 +225,9 @@
     "externalHint": "Headline aggregated from “{source}”. We do not host full third-party articles or replace original reporting.",
     "originalLang": "Original headline language: {lang}",
     "legalNote": "Editorial information service. External links: rights and content remain with the publisher. No illegal streams, no VPN, no affiliate ads at launch.",
+    "loadingHeadlines": "Loading headlines…",
+    "headlinesDegraded": "External headlines are temporarily unavailable – daily brief and editorial remain available.",
+    "readEditorial": "Read editorial",
     "today": "Today",
     "readMore": "Read more",
     "readLess": "Show less",

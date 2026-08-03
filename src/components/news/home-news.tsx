@@ -27,8 +27,9 @@ export async function HomeNewsBlock({ locale }: { locale: string }) {
     loc
   );
 
-  // Top: gleiche Sprache zuerst, sonst Brief
+  // Top: redaktioneller Slot / Brief vor EN-Spam; sonst passende externe Headline
   const top =
+    articles.find((a) => a.id.startsWith("editorial-slot-")) ||
     articles.find(
       (a) =>
         a.isExternal &&
@@ -36,8 +37,8 @@ export async function HomeNewsBlock({ locale }: { locale: string }) {
         (a.sourceLang === loc ||
           (loc === "de" && a.sourceLang === "hr"))
     ) ||
-    articles.find((a) => a.isExternal && a.sourceUrl) ||
     articles.find((a) => a.id.startsWith("daily-brief-")) ||
+    articles.find((a) => a.isExternal && a.sourceUrl) ||
     articles[0] ||
     null;
 

@@ -1,20 +1,28 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Sparkles, Star, Newspaper, ExternalLink } from "lucide-react";
+import {
+  Sparkles,
+  Star,
+  Newspaper,
+  ExternalLink,
+  Radio,
+  Users,
+} from "lucide-react";
 import { useMemo } from "react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { useFavorites } from "@/components/favorites/favorites-context";
 import { Link } from "@/i18n/navigation";
 import { formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
+import { cleanNewsText } from "@/lib/data/news-images";
 import { tNews, type NewsArticle } from "@/lib/data/news";
 import type { Match } from "@/types";
 
 const MS_48H = 48 * 60 * 60 * 1000;
 
 /**
- * „Heute für dich“: Favoriten-Spiele 48h + Top-Headline + Quick-Links
+ * „Heute für dich“: Favoriten 48h + Top-Headline + Quick-CTAs
  */
 export function TodayForYou({
   topHeadline,
@@ -31,28 +39,27 @@ export function TodayForYou({
 
   const upcoming = useMemo(() => {
     const now = Date.now();
-    const pool = matches
+    return matches
       .filter((m) => {
         const tMs = new Date(m.kickoff).getTime();
         if (Number.isNaN(tMs)) return false;
         if (m.status === "cancelled" || m.status === "finished") return false;
         if (tMs < now - 2 * 3600_000) return false;
         if (tMs - now > MS_48H) return false;
-        if (favSet.size === 0) {
-          // ohne Favoriten: Spiele mit Kroaten
-          return m.croatianPlayers.length > 0;
-        }
+        if (favSet.size === 0) return m.croatianPlayers.length > 0;
         return m.croatianPlayers.some((p) => favSet.has(p.playerId));
       })
       .sort(
         (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
       )
       .slice(0, 4);
-    return pool;
   }, [matches, favSet]);
 
   const headline = topHeadline;
   const hasFavs = favoriteIds.length > 0;
+  const externalHeadline = Boolean(
+    headline?.isExternal || headline?.id.startsWith("auto-")
+  );
 
   return (
     <section
@@ -84,9 +91,9 @@ export function TodayForYou({
         )}
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-3">
         {/* Matches 48h */}
-        <div className="rounded-xl border border-border/80 bg-card/70 p-3">
+        <div className="rounded-xl border border-border/80 bg-card/70 p-3 lg:col-span-1">
           <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             {t("next48")}
           </p>
@@ -108,14 +115,15 @@ export function TodayForYou({
           )}
           <a
             href="#live-board"
-            className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
+            className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
           >
-            {t("openBoard")} →
+            <Radio className="h-3.5 w-3.5" />
+            {t("openBoard")}
           </a>
         </div>
 
         {/* Top headline */}
-        <div className="rounded-xl border border-border/80 bg-card/70 p-3">
+        <div className="rounded-xl border border-border/80 bg-card/70 p-3 lg:col-span-1">
           <p className="mb-2 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             <Newspaper className="h-3.5 w-3.5" />
             {t("topStory")}
@@ -123,16 +131,16 @@ export function TodayForYou({
           {headline ? (
             <div>
               <p className="text-[10px] font-medium text-muted-foreground">
-                {tNews(headline.tag, locale)}
+                {cleanNewsText(tNews(headline.tag, locale), 48)}
               </p>
               <p className="mt-1 text-sm font-bold leading-snug">
-                {tNews(headline.title, locale)}
+                {cleanNewsText(tNews(headline.title, locale), 140)}
               </p>
               <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                {tNews(headline.summary, locale)}
+                {cleanNewsText(tNews(headline.summary, locale), 160)}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {headline.sourceUrl ? (
+                {externalHeadline && headline.sourceUrl ? (
                   <a
                     href={headline.sourceUrl}
                     target="_blank"
@@ -161,6 +169,51 @@ export function TodayForYou({
           ) : (
             <p className="text-sm text-muted-foreground">{t("noStory")}</p>
           )}
+        </div>
+
+        {/* Quick CTAs */}
+        <div className="rounded-xl border border-border/80 bg-card/70 p-3 lg:col-span-1">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("quickTitle")}
+          </p>
+          <ul className="space-y-1.5">
+            <li>
+              <a
+                href="#live-board"
+                className="flex items-center gap-2 rounded-lg border border-border/60 px-2.5 py-2 text-sm font-semibold transition-colors hover:border-primary/40 hover:bg-secondary/40"
+              >
+                <Radio className="h-4 w-4 text-live" />
+                {t("ctaBoard")}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#favorites"
+                className="flex items-center gap-2 rounded-lg border border-border/60 px-2.5 py-2 text-sm font-semibold transition-colors hover:border-primary/40 hover:bg-secondary/40"
+              >
+                <Star className="h-4 w-4 text-amber-400" />
+                {t("ctaWeek")}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#players"
+                className="flex items-center gap-2 rounded-lg border border-border/60 px-2.5 py-2 text-sm font-semibold transition-colors hover:border-primary/40 hover:bg-secondary/40"
+              >
+                <Users className="h-4 w-4 text-primary" />
+                {t("ctaPlayers")}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#news"
+                className="flex items-center gap-2 rounded-lg border border-border/60 px-2.5 py-2 text-sm font-semibold transition-colors hover:border-primary/40 hover:bg-secondary/40"
+              >
+                <Newspaper className="h-4 w-4 text-primary" />
+                {t("ctaNews")}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </section>

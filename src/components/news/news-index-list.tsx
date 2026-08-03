@@ -18,22 +18,32 @@ export function NewsIndexList({
   articles,
   locale,
   readMore,
+  openSource,
 }: {
   articles: NewsArticle[];
   locale: string;
   readMore: string;
+  openSource?: string;
 }) {
   return (
     <ul className="space-y-2">
-      {articles.map((a) => (
-        <NewsListCard
-          key={a.id}
-          article={a}
-          locale={locale}
-          dateLabel={formatNewsDate(a.date, locale)}
-          readMoreLabel={readMore}
-        />
-      ))}
+      {articles.map((a) => {
+        const external = Boolean(
+          a.isExternal ||
+            (a.id.startsWith("auto-") && a.sourceUrl?.startsWith("http"))
+        );
+        return (
+          <NewsListCard
+            key={a.id}
+            article={a}
+            locale={locale}
+            dateLabel={formatNewsDate(a.date, locale)}
+            readMoreLabel={
+              external && openSource ? openSource : readMore
+            }
+          />
+        );
+      })}
     </ul>
   );
 }

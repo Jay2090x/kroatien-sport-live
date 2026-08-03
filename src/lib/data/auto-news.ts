@@ -83,6 +83,16 @@ const FEEDS: FeedDef[] = [
 const TRUSTED =
   /index\.hr|jutarnji\.hr|gol\.dnevnik\.hr|hrt\.hr|hns\.team|espn\.com|bbc\.|reuters\.|goal\.com|theguardian\.com|uefa\.com|fifa\.com|vecernji\.hr|24sata\.hr/i;
 
+/** Domains/Titel die wir nie listen (Spam, Foren, reiner Clickbait) */
+const BLACKLIST =
+  /pinterest\.|facebook\.com\/groups|reddit\.com\/r\/|tiktok\.com|doubleclick|outbrain|taboola|blogspot\.|wordpress\.com\/tag|quiz|clickbait|transfermarkt\.[a-z]+\/.*seite/i;
+
+const CACHE_TTL_MS = 20 * 60 * 1000;
+type CacheEntry = { at: number; articles: NewsArticle[] };
+const autoNewsGlobal = globalThis as unknown as {
+  __kslAutoNewsCache?: CacheEntry;
+};
+
 const RELEVANCE =
   /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|vukovar|gvardiol|kova[cč]i[cć]|peri[sš]i[cć]|livakovi[cć]|budimir|pa[sš]ali[cć]|brozovi[cć]|vu[sš]kovi[cć]|baturina|su[cč]i[cć]|stan[ií][sš]i[cć]|nogomet|football|soccer|serie\s*a|premier|bundesliga|nations|liga\s*nacija|reprezent|izbornik|transfer|ugovor|world\s*cup|svjetsko|konferencijsk|liga\s*prvaka|champions|inter|milan/i;
 
@@ -298,6 +308,7 @@ function parseRssItems(
       (block.match(/<description[^>]*>([\s\S]*?)<\/description>/i) ??
         [])[1] ?? "";
 
+    if (BLACKLIST.test(`${titleClean} ${link} ${description}`)) continue;
     if (!RELEVANCE.test(`${titleClean} ${description}`)) continue;
 
     const score = scoreItem(
@@ -345,12 +356,18 @@ async function fetchFeed(feed: FeedDef, limit: number): Promise<RawItem[]> {
 }
 
 export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
+  const cached = autoNewsGlobal.__kslAutoNewsCache;
+  if (cached && Date.now() - cached.at < CACHE_TTL_MS) {
+    return cached.articles.slice(0, max);
+  }
+
   const perFeed = 10;
   const results = await Promise.all(FEEDS.map((f) => fetchFeed(f, perFeed)));
   const flat = results.flat();
 
   const byKey = new Map<string, RawItem>();
   for (const item of flat) {
+    if (BLACKLIST.test(`${item.title} ${item.link}`)) continue;
     const key = slugify(item.title).slice(0, 52);
     if (!key) continue;
     const prev = byKey.get(key);
@@ -362,7 +379,7 @@ export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
   const seenIds = new Set<string>();
 
   for (const item of ranked) {
-    if (articles.length >= max) break;
+    if (articles.length >= 40) break;
     const { cleanTitle, source: fromTitle } = extractSourceFromTitle(
       item.title
     );
@@ -376,9 +393,11 @@ export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
 
     // Ohne Original-Link: kein Auto-Artikel (rechtlich + UX)
     if (!item.link.startsWith("http")) continue;
+    if (BLACKLIST.test(item.link)) continue;
 
     const cat = categorize(cleanTitle, item.description);
     const texts = buildLocalizedShell(cleanTitle, source, item.lang);
+    // Nur thematische Assets – keine Publisher-Fotos scrapen
     const themeUrl =
       themeImageForArticle(id, cleanTitle) ?? THEME_IMAGES.croatia;
     const ageDays =
@@ -403,5 +422,6 @@ export async function fetchAutoNews(max = 24): Promise<NewsArticle[]> {
     });
   }
 
-  return articles;
+  autoNewsGlobal.__kslAutoNewsCache = { at: Date.now(), articles };
+  return articles.slice(0, max);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ExternalLink, Newspaper } from "lucide-react";
+import { ExternalLink, Newspaper, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   getDailyNews,
@@ -9,6 +9,7 @@ import {
   type NewsArticle,
   tNews,
 } from "@/lib/data/news";
+import { cleanNewsText } from "@/lib/data/news-images";
 import { Badge } from "@/components/ui/badge";
 import { format, parseISO } from "date-fns";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
@@ -31,6 +32,7 @@ function formatNewsDate(iso: string, locale: string): string {
 function storyScore(a: NewsArticle): number {
   let s = 0;
   if (a.id.startsWith("daily-brief-")) s += 100;
+  if (a.id.startsWith("editorial-slot-")) s += 95;
   if (a.id.startsWith("auto-")) s += 55;
   if (a.sourceUrl) s += 25;
   if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) s += 20;
@@ -45,8 +47,15 @@ function storyScore(a: NewsArticle): number {
   return s;
 }
 
+function isExternal(a: NewsArticle): boolean {
+  return Boolean(
+    a.isExternal ||
+      (a.id.startsWith("auto-") && a.sourceUrl?.startsWith("http"))
+  );
+}
+
 /**
- * News-UI: Tagesbrief + Headlines (SSR initialArticles) + optionaler Client-Refresh.
+ * News-UI: Redaktions-Slot + Brief + externe Headlines (nur Karten → Original)
  */
 export function NewsSection({
   initialArticles,
@@ -57,6 +66,8 @@ export function NewsSection({
   const locale = useLocale();
   const { matches, players } = useDashboard();
   const [remote, setRemote] = useState<NewsArticle[] | null>(null);
+  const [loading, setLoading] = useState(!initialArticles?.length);
+  const [fetchFailed, setFetchFailed] = useState(false);
 
   const fallback = useMemo(
     () =>
@@ -68,23 +79,36 @@ export function NewsSection({
   );
 
   useEffect(() => {
-    // If server already provided a full feed (with auto), skip unless empty
     if (
       initialArticles?.some(
-        (a) => a.id.startsWith("auto-") || a.id.startsWith("daily-brief-")
+        (a) =>
+          a.id.startsWith("auto-") ||
+          a.id.startsWith("daily-brief-") ||
+          a.id.startsWith("editorial-slot-")
       )
     ) {
+      setLoading(false);
       return;
     }
     let cancelled = false;
+    setLoading(true);
     fetch(`/api/news?locale=${locale}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data: { articles?: NewsArticle[] } | null) => {
-        if (!cancelled && data?.articles?.length) {
+        if (cancelled) return;
+        if (data?.articles?.length) {
           setRemote(data.articles.filter(isStoryNews));
+          setFetchFailed(false);
+        } else {
+          setFetchFailed(true);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setFetchFailed(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -96,7 +120,10 @@ export function NewsSection({
   }, [remote, fallback]);
 
   const brief = articles.find((a) => a.id.startsWith("daily-brief-"));
-  const rest = articles.filter((a) => a.id !== brief?.id);
+  const editorial = articles.find((a) => a.id.startsWith("editorial-slot-"));
+  const rest = articles.filter(
+    (a) => a.id !== brief?.id && a.id !== editorial?.id
+  );
 
   const mustRead = rest.slice(0, MUST_READ);
   const ticker = rest.slice(MUST_READ, MUST_READ + TICKER_MAX);
@@ -106,17 +133,20 @@ export function NewsSection({
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: t("title"),
-      itemListElement: articles.slice(0, 12).map((a, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "NewsArticle",
-          headline: tNews(a.title, locale),
-          description: tNews(a.summary, locale),
-          datePublished: a.date,
-          inLanguage: locale,
-        },
-      })),
+      itemListElement: articles
+        .filter((a) => !isExternal(a))
+        .slice(0, 12)
+        .map((a, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "NewsArticle",
+            headline: cleanNewsText(tNews(a.title, locale), 160),
+            description: cleanNewsText(tNews(a.summary, locale), 200),
+            datePublished: a.date,
+            inLanguage: locale,
+          },
+        })),
     }),
     [articles, locale, t]
   );
@@ -152,7 +182,52 @@ export function NewsSection({
         </div>
       </div>
 
-      {/* Tagesbrief – immer zuerst */}
+      {loading && !articles.length && (
+        <div className="mb-4 flex items-center justify-center gap-2 rounded-xl border border-dashed border-border px-3 py-8 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          {t("loadingHeadlines")}
+        </div>
+      )}
+
+      {fetchFailed && !mustRead.length && articles.length <= 2 && (
+        <p className="mb-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-100/90">
+          {t("headlinesDegraded")}
+        </p>
+      )}
+
+      {/* Redaktioneller Slot */}
+      {editorial && (
+        <div className="mb-3 rounded-xl border border-primary/25 bg-card p-3.5 sm:p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className="text-[10px]">{tNews(editorial.tag, locale)}</Badge>
+            <time
+              dateTime={editorial.date}
+              className="text-[11px] text-muted-foreground"
+            >
+              {formatNewsDate(editorial.date, locale)}
+            </time>
+          </div>
+          <h3 className="mt-1.5 text-base font-bold leading-snug sm:text-lg">
+            <Link
+              href={`/news/${editorial.id}`}
+              className="hover:text-primary focus-visible:underline"
+            >
+              {tNews(editorial.title, locale)}
+            </Link>
+          </h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+            {tNews(editorial.summary, locale)}
+          </p>
+          <Link
+            href={`/news/${editorial.id}`}
+            className="mt-2 inline-flex text-xs font-semibold text-primary hover:underline"
+          >
+            {t("readEditorial")} →
+          </Link>
+        </div>
+      )}
+
+      {/* Tagesbrief */}
       {brief && (
         <div className="mb-4 rounded-xl border-2 border-primary/30 bg-primary/5 p-3.5 sm:p-4">
           <div className="flex flex-wrap items-center gap-2">
@@ -187,7 +262,7 @@ export function NewsSection({
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
         {t("mustRead")}
       </p>
-      {mustRead.length === 0 ? (
+      {mustRead.length === 0 && !loading ? (
         <p className="rounded-xl border border-dashed border-border bg-card/40 px-3 py-5 text-center text-sm text-muted-foreground">
           {t("emptyStories")}
         </p>
@@ -200,7 +275,7 @@ export function NewsSection({
               locale={locale}
               dateLabel={formatNewsDate(article.date, locale)}
               readMoreLabel={
-                article.sourceUrl ? t("openSource") : t("readMore")
+                isExternal(article) ? t("openSource") : t("readMore")
               }
               compact
             />
@@ -214,35 +289,42 @@ export function NewsSection({
             {t("ticker")}
           </p>
           <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card/50">
-            {ticker.map((a) => (
-              <li key={a.id}>
-                {a.sourceUrl ? (
-                  <a
-                    href={a.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/50"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">
-                        {tNews(a.title, locale)}
+            {ticker.map((a) => {
+              const title = cleanNewsText(tNews(a.title, locale), 120);
+              const external = isExternal(a);
+              if (external && a.sourceUrl) {
+                return (
+                  <li key={a.id}>
+                    <a
+                      href={a.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/50"
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium">
+                          {title}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {cleanNewsText(tNews(a.tag, locale), 40)}
+                        </span>
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {tNews(a.tag, locale)}
+                      <span className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+                        {formatNewsDate(a.date, locale)}
+                        <ExternalLink className="h-3 w-3" />
                       </span>
-                    </span>
-                    <span className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
-                      {formatNewsDate(a.date, locale)}
-                      <ExternalLink className="h-3 w-3" />
-                    </span>
-                  </a>
-                ) : (
+                    </a>
+                  </li>
+                );
+              }
+              return (
+                <li key={a.id}>
                   <Link
                     href={`/news/${a.id}`}
                     className="flex items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/50"
                   >
                     <span className="min-w-0 truncate text-sm font-medium">
-                      {tNews(a.title, locale)}
+                      {title}
                     </span>
                     <time
                       dateTime={a.date}
@@ -251,9 +333,9 @@ export function NewsSection({
                       {formatNewsDate(a.date, locale)}
                     </time>
                   </Link>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}

@@ -111,7 +111,12 @@ export default async function NewsIndexPage({
           </p>
         </header>
 
-        <NewsIndexList articles={articles} locale={locale} readMore={t("readMore")} />
+        <NewsIndexList
+          articles={articles}
+          locale={locale}
+          readMore={t("readMore")}
+          openSource={t("openSource")}
+        />
       </main>
       <Footer />
     </>

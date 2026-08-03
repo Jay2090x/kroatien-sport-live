@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -16,8 +17,9 @@ import {
 } from "@/lib/data/news-images";
 
 /**
- * Kompakte News-Zeile: festes 72×72 Vorschau · Titel · Teaser · Weiterlesen
- * Logos/Portraits: object-contain; Fotos: object-cover
+ * News-Karte:
+ * – Extern: nur Original-Link (keine Pseudo-Artikel-Seite)
+ * – Intern (Brief/Redaktion): Link zu /news/[slug]
  */
 export function NewsListCard({
   article,
@@ -43,10 +45,41 @@ export function NewsListCard({
     : title;
   const logoStyle = isLogoOrPortrait(src);
   const isCutout = /cutout/i.test(src);
+  const external = Boolean(
+    article.isExternal ||
+      (article.sourceUrl?.startsWith("http") && article.id.startsWith("auto-"))
+  );
   const showCat =
-    !article.isExternal &&
+    !external &&
     tag &&
     !tag.toLowerCase().includes(cat.toLowerCase());
+
+  const thumb = (
+    <div
+      className={cn(
+        "relative block h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg border border-border",
+        isCutout
+          ? "bg-gradient-to-b from-[#0b1f4a] to-[#1a3a6b]"
+          : "bg-secondary"
+      )}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={72}
+        height={72}
+        className={cn(
+          "h-full w-full",
+          logoStyle
+            ? isCutout
+              ? "object-contain object-bottom p-0.5"
+              : "object-contain p-1.5"
+            : "object-cover"
+        )}
+        unoptimized
+      />
+    </div>
+  );
 
   return (
     <li>
@@ -58,33 +91,25 @@ export function NewsListCard({
         )}
       >
         <div className="flex items-start gap-3">
-          <Link
-            href={`/news/${article.id}`}
-            className={cn(
-              "relative block h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg border border-border",
-              isCutout
-                ? "bg-gradient-to-b from-[#0b1f4a] to-[#1a3a6b]"
-                : "bg-secondary"
-            )}
-            tabIndex={-1}
-            aria-hidden
-          >
-            <Image
-              src={src}
-              alt={alt}
-              width={72}
-              height={72}
-              className={cn(
-                "h-full w-full",
-                logoStyle
-                  ? isCutout
-                    ? "object-contain object-bottom p-0.5"
-                    : "object-contain p-1.5"
-                  : "object-cover"
-              )}
-              unoptimized
-            />
-          </Link>
+          {external && article.sourceUrl ? (
+            <a
+              href={article.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={-1}
+              aria-hidden
+            >
+              {thumb}
+            </a>
+          ) : (
+            <Link
+              href={`/news/${article.id}`}
+              tabIndex={-1}
+              aria-hidden
+            >
+              {thumb}
+            </Link>
+          )}
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -96,13 +121,21 @@ export function NewsListCard({
                   {tag}
                 </Badge>
               )}
+              {external && (
+                <Badge
+                  variant="outline"
+                  className="px-1.5 py-0 text-[10px] font-medium"
+                >
+                  ↗
+                </Badge>
+              )}
               {showCat && <span>{cat}</span>}
               {showCat && <span aria-hidden>·</span>}
               <time dateTime={article.date}>{dateLabel}</time>
             </div>
 
             <h3 className="mt-1 text-sm font-semibold leading-snug tracking-tight sm:text-[15px]">
-              {article.sourceUrl ? (
+              {external && article.sourceUrl ? (
                 <a
                   href={article.sourceUrl}
                   target="_blank"
@@ -121,18 +154,21 @@ export function NewsListCard({
               )}
             </h3>
 
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
-              {summary}
-            </p>
+            {summary && (
+              <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
+                {summary}
+              </p>
+            )}
 
-            {article.sourceUrl ? (
+            {external && article.sourceUrl ? (
               <a
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline"
+                className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
-                {readMoreLabel} →
+                {readMoreLabel}
+                <ExternalLink className="h-3 w-3" />
               </a>
             ) : (
               <Link
