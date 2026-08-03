@@ -1,11 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { LiveMatchBoard } from "@/components/guide/live-match-board";
 import { MyWeek } from "@/components/favorites/my-week";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
-import { NewsSection } from "@/components/news/news-section";
+import { HomeNewsBlock } from "@/components/news/home-news";
 import { PlayerTracker } from "@/components/players/player-tracker";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
@@ -13,13 +14,8 @@ import { LegalStreamsStrip } from "@/components/tv/legal-streams-strip";
 import { ComingSoonSports } from "@/components/sports/coming-soon-sports";
 
 /**
- * Value hub (rechtlich konservativ):
- * 1) Live / Heute / 48h / 7d + Transparenz
- * 2) Meine Woche (Favoriten + ICS)
- * 3) Nationalteam (Kontext)
- * 4) News must-read + ticker
- * 5) Spieler-Tracker + Form
- * 6) Legal TV + Mehr
+ * Value hub:
+ * Live → Meine Woche → Heute für dich + News → NT → Tracker → Legal
  */
 export default async function HomePage({
   params,
@@ -48,9 +44,17 @@ export default async function HomePage({
 
           <MyWeek />
 
-          <NationalTeamSection />
+          <Suspense
+            fallback={
+              <div className="rounded-xl border border-dashed border-border px-3 py-8 text-center text-sm text-muted-foreground">
+                {t("loading")}
+              </div>
+            }
+          >
+            <HomeNewsBlock />
+          </Suspense>
 
-          <NewsSection />
+          <NationalTeamSection />
 
           <div id="players-wrap" className="space-y-8">
             <PlayerTracker />

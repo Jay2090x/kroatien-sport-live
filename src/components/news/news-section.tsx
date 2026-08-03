@@ -1,11 +1,11 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ExternalLink, Newspaper, Radio } from "lucide-react";
+import { ExternalLink, Newspaper } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   getDailyNews,
-  isFixturePseudoNews,
+  isStoryNews,
   type NewsArticle,
   tNews,
 } from "@/lib/data/news";
@@ -14,10 +14,9 @@ import { format, parseISO } from "date-fns";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Link } from "@/i18n/navigation";
 import { NewsListCard } from "@/components/news/news-list-card";
-import { isLiveStatus } from "@/lib/utils";
 
-const MUST_READ = 4;
-const TICKER_MAX = 10;
+const MUST_READ = 5;
+const TICKER_MAX = 12;
 
 function formatNewsDate(iso: string, locale: string): string {
   try {
@@ -29,37 +28,31 @@ function formatNewsDate(iso: string, locale: string): string {
   }
 }
 
-/** Echte Stories: externe Headlines + Redaktion – keine Fixture-Listen */
-function isStoryNews(a: NewsArticle): boolean {
-  if (isFixturePseudoNews(a)) return false;
-  if (a.id.startsWith("live-upcoming")) return false;
-  // Live-Anker nur wenn wirklich live / frisches Ergebnis
-  if (a.id.startsWith("live-next-")) return false;
-  return true;
-}
-
 function storyScore(a: NewsArticle): number {
   let s = 0;
-  if (a.id.startsWith("auto-")) s += 50;
-  if (a.sourceUrl) s += 20;
-  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) s += 25;
+  if (a.id.startsWith("daily-brief-")) s += 100;
+  if (a.id.startsWith("auto-")) s += 55;
+  if (a.sourceUrl) s += 25;
+  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) s += 20;
   if (a.featured) s += 10;
   if (a.category === "transfer" || a.category === "vatreni") s += 8;
-  if (a.id.startsWith("live-club-")) s += 30;
-  // fresher dates
   const age =
     (Date.now() - new Date(a.date + "T12:00:00Z").getTime()) / (24 * 3600_000);
   if (age <= 1) s += 40;
   else if (age <= 3) s += 25;
   else if (age <= 7) s += 12;
-  else if (age > 21) s -= 20;
+  else if (age > 21) s -= 25;
   return s;
 }
 
 /**
- * Must-read = echte Headlines; Live-Match-Chips separat (nicht als „News“).
+ * News-UI: Tagesbrief + Headlines (SSR initialArticles) + optionaler Client-Refresh.
  */
-export function NewsSection() {
+export function NewsSection({
+  initialArticles,
+}: {
+  initialArticles?: NewsArticle[];
+}) {
   const t = useTranslations("News");
   const locale = useLocale();
   const { matches, players } = useDashboard();
@@ -67,11 +60,22 @@ export function NewsSection() {
 
   const fallback = useMemo(
     () =>
-      getDailyNews(new Date(), { matches, players }).filter(isStoryNews),
-    [matches, players]
+      (initialArticles?.length
+        ? initialArticles
+        : getDailyNews(new Date(), { matches, players })
+      ).filter(isStoryNews),
+    [initialArticles, matches, players]
   );
 
   useEffect(() => {
+    // If server already provided a full feed (with auto), skip unless empty
+    if (
+      initialArticles?.some(
+        (a) => a.id.startsWith("auto-") || a.id.startsWith("daily-brief-")
+      )
+    ) {
+      return;
+    }
     let cancelled = false;
     fetch("/api/news")
       .then((r) => (r.ok ? r.json() : null))
@@ -84,43 +88,25 @@ export function NewsSection() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialArticles]);
 
   const articles = useMemo(() => {
-    const list = [...(remote ?? fallback)];
+    const list = [...(remote ?? fallback)].filter(isStoryNews);
     return list.sort((a, b) => storyScore(b) - storyScore(a));
   }, [remote, fallback]);
 
-  const { mustRead, ticker } = useMemo(() => {
-    const stories = articles.filter(isStoryNews);
-    // Prefer auto + editorial for must-read; allow 1 live-club if running
-    const preferred = stories.filter(
-      (a) =>
-        a.id.startsWith("auto-") ||
-        a.sourceUrl ||
-        (!a.id.startsWith("live-") && a.category !== "live") ||
-        a.id.startsWith("live-club-")
-    );
-    const pool = preferred.length >= MUST_READ ? preferred : stories;
-    const must = pool.slice(0, MUST_READ);
-    const mustIds = new Set(must.map((a) => a.id));
-    const tick = stories
-      .filter((a) => !mustIds.has(a.id))
-      .slice(0, TICKER_MAX);
-    return { mustRead: must, ticker: tick };
-  }, [articles]);
+  const brief = articles.find((a) => a.id.startsWith("daily-brief-"));
+  const rest = articles.filter((a) => a.id !== brief?.id);
 
-  const liveFixtures = useMemo(
-    () => matches.filter((m) => isLiveStatus(m.status)).slice(0, 4),
-    [matches]
-  );
+  const mustRead = rest.slice(0, MUST_READ);
+  const ticker = rest.slice(MUST_READ, MUST_READ + TICKER_MAX);
 
   const jsonLd = useMemo(
     () => ({
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: t("title"),
-      itemListElement: mustRead.map((a, i) => ({
+      itemListElement: articles.slice(0, 12).map((a, i) => ({
         "@type": "ListItem",
         position: i + 1,
         item: {
@@ -132,7 +118,7 @@ export function NewsSection() {
         },
       })),
     }),
-    [mustRead, locale, t]
+    [articles, locale, t]
   );
 
   return (
@@ -155,7 +141,7 @@ export function NewsSection() {
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="text-xs">
-            {t("daily")}
+            {t("daily")} · {articles.length}
           </Badge>
           <Link
             href="/news"
@@ -166,25 +152,35 @@ export function NewsSection() {
         </div>
       </div>
 
-      {/* Live-Spiele = Kontext-Chips, nicht als News-Story verkauft */}
-      {liveFixtures.length > 0 && (
-        <div className="mb-3">
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-            {t("liveNowStrip")}
-          </p>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {liveFixtures.map((m) => (
-              <Link
-                key={m.id}
-                href={`/match/${m.id}`}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-live/40 bg-live/10 px-2.5 py-1 text-[11px] font-semibold text-live"
-              >
-                <Radio className="h-3 w-3" aria-hidden />
-                {m.homeTeam.slice(0, 12)} {m.homeScore ?? "–"}:
-                {m.awayScore ?? "–"} {m.awayTeam.slice(0, 12)}
-              </Link>
-            ))}
+      {/* Tagesbrief – immer zuerst */}
+      {brief && (
+        <div className="mb-4 rounded-xl border-2 border-primary/30 bg-primary/5 p-3.5 sm:p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className="text-[10px]">{tNews(brief.tag, locale)}</Badge>
+            <time
+              dateTime={brief.date}
+              className="text-[11px] text-muted-foreground"
+            >
+              {formatNewsDate(brief.date, locale)}
+            </time>
           </div>
+          <h3 className="mt-1.5 text-base font-bold leading-snug sm:text-lg">
+            <Link
+              href={`/news/${brief.id}`}
+              className="hover:text-primary focus-visible:underline"
+            >
+              {tNews(brief.title, locale)}
+            </Link>
+          </h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+            {tNews(brief.summary, locale)}
+          </p>
+          <Link
+            href={`/news/${brief.id}`}
+            className="mt-2 inline-flex text-xs font-semibold text-primary hover:underline"
+          >
+            {t("readBrief")} →
+          </Link>
         </div>
       )}
 
@@ -225,10 +221,15 @@ export function NewsSection() {
                     href={a.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between gap-2 px-3 py-2 text-left transition-colors hover:bg-secondary/50"
+                    className="flex items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/50"
                   >
-                    <span className="min-w-0 truncate text-sm font-medium">
-                      {tNews(a.title, locale)}
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium">
+                        {tNews(a.title, locale)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {tNews(a.tag, locale)}
+                      </span>
                     </span>
                     <span className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
                       {formatNewsDate(a.date, locale)}
@@ -238,7 +239,7 @@ export function NewsSection() {
                 ) : (
                   <Link
                     href={`/news/${a.id}`}
-                    className="flex items-center justify-between gap-2 px-3 py-2 text-left transition-colors hover:bg-secondary/50"
+                    className="flex items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/50"
                   >
                     <span className="min-w-0 truncate text-sm font-medium">
                       {tNews(a.title, locale)}

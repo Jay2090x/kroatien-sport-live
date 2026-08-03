@@ -59,7 +59,9 @@ export default async function NewsIndexPage({
     /* ok */
   }
 
-  const articles = await getDailyNewsAsync(new Date(), { matches, players });
+  const articles = (
+    await getDailyNewsAsync(new Date(), { matches, players })
+  ).filter((a) => !a.id.startsWith("live-"));
 
   const jsonLd = {
     "@context": "https://schema.org",

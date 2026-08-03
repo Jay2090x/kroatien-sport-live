@@ -23,7 +23,8 @@ export async function GET() {
         updatedAt: new Date().toISOString(),
         meta: {
           count: articles.length,
-          sources: "live-fixtures + editorial + public RSS aggregation",
+          sources:
+            "daily-brief + whitelist RSS (Index/HRT/HNS/ESPN/…) + editorial",
         },
       },
       {

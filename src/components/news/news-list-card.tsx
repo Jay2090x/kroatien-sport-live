@@ -88,24 +88,46 @@ export function NewsListCard({
             </div>
 
             <h3 className="mt-1 text-sm font-semibold leading-snug tracking-tight sm:text-[15px]">
-              <Link
-                href={`/news/${article.id}`}
-                className="hover:text-primary focus-visible:underline focus-visible:outline-none"
-              >
-                {title}
-              </Link>
+              {article.sourceUrl ? (
+                <a
+                  href={article.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary focus-visible:underline focus-visible:outline-none"
+                >
+                  {title}
+                </a>
+              ) : (
+                <Link
+                  href={`/news/${article.id}`}
+                  className="hover:text-primary focus-visible:underline focus-visible:outline-none"
+                >
+                  {title}
+                </Link>
+              )}
             </h3>
 
             <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
               {summary}
             </p>
 
-            <Link
-              href={`/news/${article.id}`}
-              className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline"
-            >
-              {readMoreLabel} →
-            </Link>
+            {article.sourceUrl ? (
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline"
+              >
+                {readMoreLabel} →
+              </a>
+            ) : (
+              <Link
+                href={`/news/${article.id}`}
+                className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline"
+              >
+                {readMoreLabel} →
+              </Link>
+            )}
           </div>
         </div>
       </article>

@@ -5,9 +5,8 @@
 
 import type { Locale } from "@/i18n/routing";
 import type { Match, Player } from "@/types";
-import { isLiveStatus } from "@/lib/utils";
-import { filterNationalTeamMatches } from "@/lib/data/national-team";
 import { assignUniqueNewsImages } from "@/lib/data/news-images";
+import { buildDailyBrief } from "@/lib/data/daily-brief";
 
 export type NewsLocaleText = Record<Locale, string>;
 
@@ -38,28 +37,6 @@ export function newsSlug(article: NewsArticle): string {
 
 function todayIso(d = new Date()) {
   return d.toISOString().slice(0, 10);
-}
-
-function fmtKick(iso: string, locale: Locale): string {
-  try {
-    return new Date(iso).toLocaleString(
-      locale === "hr" ? "hr-HR" : locale === "en" ? "en-GB" : "de-DE",
-      { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }
-    );
-  } catch {
-    return iso;
-  }
-}
-
-function fmtDate(iso: string, locale: Locale): string {
-  try {
-    return new Date(iso).toLocaleDateString(
-      locale === "hr" ? "hr-HR" : locale === "en" ? "en-GB" : "de-DE",
-      { day: "numeric", month: "long", year: "numeric" }
-    );
-  } catch {
-    return iso.slice(0, 10);
-  }
 }
 
 /**
@@ -1307,101 +1284,15 @@ export const EDITORIAL_NEWS: NewsArticle[] = [
 ];
 
 /**
- * Echte News + sehr sparsame Live-Anker.
- * Keine Pseudo-News pro Club-Spiel („X spielt am Freitag“) – das gehört ins Live-Board.
+ * Sync-Feed: Tagesbrief + Redaktion (kein Fixture-Spam).
+ * Frische Headlines kommen nur über getDailyNewsAsync (RSS).
  */
 export function getDailyNews(
   now = new Date(),
   live?: { matches?: Match[]; players?: Player[] }
 ): NewsArticle[] {
   const today = todayIso(now);
-  const matches = live?.matches ?? [];
-  const generated: NewsArticle[] = [];
-
-  // Nur 1 echtes Live-Match als Anker (wenn läuft) – kein Spielplan-Spam
-  const liveClub = matches.find(
-    (m) =>
-      isLiveStatus(m.status) &&
-      m.croatianPlayers.length > 0 &&
-      !/croat|kroat|hrvat/i.test(`${m.homeTeam} ${m.awayTeam}`)
-  );
-  if (liveClub) {
-    const names = liveClub.croatianPlayers
-      .slice(0, 4)
-      .map((p) => p.playerName)
-      .join(", ");
-    generated.push({
-      id: `live-club-${liveClub.id}`,
-      date: today,
-      featured: true,
-      category: "live",
-      tag: { de: "LIVE", en: "LIVE", hr: "UŽIVO" },
-      title: {
-        de: `Live: ${liveClub.homeTeam} – ${liveClub.awayTeam}`,
-        en: `Live: ${liveClub.homeTeam} – ${liveClub.awayTeam}`,
-        hr: `Uživo: ${liveClub.homeTeam} – ${liveClub.awayTeam}`,
-      },
-      summary: {
-        de: `Stand ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
-        en: `Score ${liveClub.homeScore ?? "–"}–${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
-        hr: `Rezultat ${liveClub.homeScore ?? "–"}:${liveClub.awayScore ?? "–"}${liveClub.minute != null ? ` (${liveClub.minute}')` : ""} · ${names}`,
-      },
-      body: {
-        de: `Live aus angebundenen APIs: ${liveClub.homeTeam} gegen ${liveClub.awayTeam} (${liveClub.leagueName}). Kroaten: ${names}. Termine und TV: Live-Board.`,
-        en: `Live from APIs: ${liveClub.homeTeam} vs ${liveClub.awayTeam} (${liveClub.leagueName}). Croatians: ${names}. Fixtures & TV: live board.`,
-        hr: `Uživo s API-ja: ${liveClub.homeTeam} – ${liveClub.awayTeam} (${liveClub.leagueName}). Hrvati: ${names}. Termini i TV: live board.`,
-      },
-      image: {
-        url: IMG.pitch,
-        alt: { de: "Fußball", en: "Football", hr: "Nogomet" },
-      },
-      playerId: liveClub.croatianPlayers[0]?.playerId,
-    });
-  }
-
-  // NT-Ergebnis nur wenn frisch (≤ 10 Tage) – sonst kein „News“-Rauschen
-  const nt = filterNationalTeamMatches(matches);
-  const lastNt = nt
-    .filter(
-      (m) =>
-        m.status === "finished" &&
-        m.homeScore != null &&
-        m.awayScore != null
-    )
-    .sort(
-      (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
-    )[0];
-  if (lastNt) {
-    const ageDays =
-      (now.getTime() - new Date(lastNt.kickoff).getTime()) / (24 * 3600_000);
-    if (ageDays <= 10) {
-      generated.push({
-        id: `live-result-${lastNt.id}`,
-        date: lastNt.kickoff.slice(0, 10),
-        category: "live",
-        tag: { de: "Ergebnis", en: "Result", hr: "Rezultat" },
-        title: {
-          de: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
-          en: `${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}`,
-          hr: `${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}`,
-        },
-        summary: {
-          de: `Länderspiel · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "de")}`,
-          en: `International · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "en")}`,
-          hr: `Reprezentacija · ${lastNt.leagueName} · ${fmtDate(lastNt.kickoff, "hr")}`,
-        },
-        body: {
-          de: `Endstand: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Quelle: Sport-APIs. Mehr unter Nationalteam.`,
-          en: `Final: ${lastNt.homeTeam} ${lastNt.homeScore}–${lastNt.awayScore} ${lastNt.awayTeam}. Source: sports APIs. More under National team.`,
-          hr: `Konačno: ${lastNt.homeTeam} ${lastNt.homeScore}:${lastNt.awayScore} ${lastNt.awayTeam}. Izvor: sportski API. Više pod Reprezentacija.`,
-        },
-        image: {
-          url: IMG.croatia,
-          alt: { de: "Kroatien", en: "Croatia", hr: "Hrvatska" },
-        },
-      });
-    }
-  }
+  const brief = buildDailyBrief(now, live);
 
   // Editorial: 30 Tage + featured bis 60
   const cutoff = new Date(now);
@@ -1416,7 +1307,8 @@ export function getDailyNews(
       (a.date >= cutoffIso || (a.featured && a.date >= featuredIso))
   );
   const map = new Map<string, NewsArticle>();
-  for (const a of [...editorial, ...generated]) map.set(a.id, a);
+  map.set(brief.id, brief);
+  for (const a of editorial) map.set(a.id, a);
 
   return assignUniqueNewsImages(Array.from(map.values()).sort(sortNews), 36);
 }
@@ -1441,41 +1333,56 @@ export function isFixturePseudoNews(a: NewsArticle): boolean {
   return (
     a.id.startsWith("live-upcoming-club-") ||
     a.id.startsWith("live-next-") ||
+    a.id.startsWith("live-club-") ||
+    a.id.startsWith("live-result-") ||
     a.tag?.de === "Diese Woche" ||
-    a.tag?.de === "Termin"
+    a.tag?.de === "Termin" ||
+    a.tag?.de === "LIVE"
   );
 }
 
+/** Echte Stories für Must-read / UI */
+export function isStoryNews(a: NewsArticle): boolean {
+  if (isFixturePseudoNews(a)) return false;
+  return true;
+}
+
 /**
- * Ranking: echte Headlines (auto + editorial) vor Fixture-Spam.
+ * Ranking: Tagesbrief + frische Auto-Headlines + Redaktion.
  */
 function rankNews(a: NewsArticle, now = new Date()): number {
   if (isFixturePseudoNews(a)) return -1000;
 
   let score = freshnessBoost(a.date, now);
 
+  // Tagesbrief immer weit oben am heutigen Tag
+  if (a.id.startsWith("daily-brief-")) score += 90;
+
   // Frische externe Headlines mit Quelle = Kern des News-Feeds
-  if (a.id.startsWith("auto-")) score += 55;
-  if (a.sourceUrl) score += 18;
+  if (a.id.startsWith("auto-")) score += 60;
+  if (a.sourceUrl) score += 22;
 
   // Redaktionelle Stories
-  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-")) {
-    score += 20;
-    if (a.featured) score += 10;
+  if (
+    !a.id.startsWith("auto-") &&
+    !a.id.startsWith("live-") &&
+    !a.id.startsWith("daily-brief-")
+  ) {
+    score += 18;
+    if (a.featured) score += 12;
   }
-
-  // Echte Live-Anker (laufendes Spiel / frisches NT-Ergebnis)
-  if (a.id.startsWith("live-club-")) score += 40;
-  if (a.id.startsWith("live-result-")) score += 15;
 
   if (a.category === "transfer") score += 12;
   if (a.category === "vatreni") score += 8;
-  if (a.category === "live" && !a.id.startsWith("live-")) score += 5;
 
   const age =
     (now.getTime() - new Date(a.date + "T12:00:00Z").getTime()) /
     (24 * 3600_000);
-  if (!a.id.startsWith("auto-") && !a.id.startsWith("live-") && age > 21) {
+  if (
+    !a.id.startsWith("auto-") &&
+    !a.id.startsWith("daily-brief-") &&
+    age > 21
+  ) {
     score -= 30;
   }
   return score;
@@ -1499,16 +1406,16 @@ export async function getDailyNewsAsync(
   const baseRaw = getDailyNews(now, live);
   try {
     const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    const auto = await fetchAutoNews(20);
+    const auto = await fetchAutoNews(24);
     const map = new Map<string, NewsArticle>();
-    // Auto first – echte Headlines dominieren den Feed
-    for (const a of [...auto, ...baseRaw]) {
+    // Brief + auto + editorial
+    for (const a of [...baseRaw, ...auto]) {
       if (isFixturePseudoNews(a)) continue;
       map.set(a.id, a);
     }
     return assignUniqueNewsImages(
       Array.from(map.values()).sort((x, y) => sortNews(x, y)),
-      32
+      40
     );
   } catch {
     return baseRaw.filter((a) => !isFixturePseudoNews(a));
