@@ -28,7 +28,7 @@ function hostnameOf(url: string): string {
 }
 
 /**
- * Saubere News-Karte – nie HTML, externe nur → Original (mit Domain).
+ * News-Karte mit SEO-Teaser unter der Headline (nicht nur „Über Google“).
  */
 export function NewsListCard({
   article,
@@ -46,22 +46,15 @@ export function NewsListCard({
   const cat = tNews(NEWS_CATEGORY_LABEL[article.category], locale);
   const tag = sanitizeNewsDisplay(tNews(article.tag, locale), 48);
   const title =
-    sanitizeNewsDisplay(tNews(article.title, locale), 140) || "…";
+    sanitizeNewsDisplay(tNews(article.title, locale), 160) || "…";
 
-  // Summary: nur wenn sauber; bei externen oft nur Quelle-Hinweis
-  let summary = sanitizeNewsDisplay(tNews(article.summary, locale), 180);
-  if (looksLikeHtmlGarbage(summary) || summary === title) summary = "";
-  // Externe: summary optional kürzen – nicht Titel wiederholen
-  if (article.isExternal && summary.includes(title.slice(0, 40))) {
-    summary = sanitizeNewsDisplay(
-      locale === "en"
-        ? `Via ${article.sourceName || "source"} · open original`
-        : locale === "hr"
-          ? `Putem ${article.sourceName || "izvora"} · otvori original`
-          : `Über ${article.sourceName || "Quelle"} · Original öffnen`,
-      120
-    );
-  }
+  let summary = sanitizeNewsDisplay(tNews(article.summary, locale), 420);
+  if (looksLikeHtmlGarbage(summary)) summary = "";
+  // Kein Ersatz durch „Über Google“ mehr – Teaser bleibt SEO-Inhalt
+
+  const siteLabel =
+    article.sourceName ||
+    (article.sourceUrl ? hostnameOf(article.sourceUrl) : "");
 
   const src = article.image?.url || FALLBACK_THUMB;
   const alt = article.image
@@ -82,7 +75,7 @@ export function NewsListCard({
   const thumb = (
     <div
       className={cn(
-        "relative block h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg border border-border",
+        "relative block h-[4.75rem] w-[4.75rem] shrink-0 overflow-hidden rounded-lg border border-border sm:h-[5.25rem] sm:w-[5.25rem]",
         isCutout
           ? "bg-gradient-to-b from-[#0b1f4a] to-[#1a3a6b]"
           : "bg-secondary"
@@ -91,8 +84,8 @@ export function NewsListCard({
       <Image
         src={src}
         alt={alt}
-        width={72}
-        height={72}
+        width={84}
+        height={84}
         className={cn(
           "h-full w-full",
           logoStyle
@@ -112,7 +105,7 @@ export function NewsListCard({
         className={cn(
           "rounded-xl border border-border/80 bg-card shadow-sm transition-all hover:border-primary/40 hover:shadow-md",
           article.featured && "border-primary/35",
-          compact ? "p-2.5" : "p-3"
+          compact ? "p-3" : "p-3.5"
         )}
       >
         <div className="flex items-start gap-3">
@@ -142,14 +135,12 @@ export function NewsListCard({
                   {tag}
                 </Badge>
               )}
-              {!external && (
-                <Badge
-                  variant="outline"
-                  className="px-1.5 py-0 text-[10px] font-medium"
-                >
-                  {cat}
-                </Badge>
-              )}
+              <Badge
+                variant="outline"
+                className="px-1.5 py-0 text-[10px] font-medium"
+              >
+                {cat}
+              </Badge>
               {langBadge && external && langBadge !== locale.toUpperCase() && (
                 <Badge
                   variant="outline"
@@ -161,7 +152,7 @@ export function NewsListCard({
               <time dateTime={article.date}>{dateLabel}</time>
             </div>
 
-            <h3 className="mt-1 text-sm font-semibold leading-snug tracking-tight sm:text-[15px]">
+            <h3 className="mt-1 text-sm font-semibold leading-snug tracking-tight sm:text-base">
               {external && article.sourceUrl ? (
                 <a
                   href={article.sourceUrl}
@@ -182,7 +173,7 @@ export function NewsListCard({
             </h3>
 
             {summary ? (
-              <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-[13px] sm:leading-relaxed line-clamp-4">
                 {summary}
               </p>
             ) : null}
@@ -192,20 +183,18 @@ export function NewsListCard({
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1.5 inline-flex max-w-full items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                className="mt-2 inline-flex max-w-full items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
                 <span className="truncate">
                   {readMoreLabel}
-                  {article.sourceName || hostnameOf(article.sourceUrl)
-                    ? ` · ${article.sourceName || hostnameOf(article.sourceUrl)}`
-                    : ""}
+                  {siteLabel ? ` · ${siteLabel}` : ""}
                 </span>
                 <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
             ) : (
               <Link
                 href={`/news/${article.id}`}
-                className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline"
+                className="mt-2 inline-flex text-xs font-semibold text-primary hover:underline"
               >
                 {readMoreLabel} →
               </Link>

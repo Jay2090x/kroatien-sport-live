@@ -104,7 +104,7 @@ const RELEVANCE =
   /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|gvardiol|kova[cč]|peri[sš]|livakovi|budimir|nogomet|football|soccer|reprezent|izbornik|transfer|nations|liga\s*nacija|serie\s*a|milan|premier|bundesliga|kroatien/i;
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const CACHE_VER = "v3-locale";
+const CACHE_VER = "v4-seo-teaser";
 type CacheBucket = { at: number; articles: NewsArticle[] };
 const cacheStore = globalThis as unknown as {
   __kslNewsCache?: Record<string, CacheBucket>;
@@ -183,51 +183,115 @@ function categorize(title: string): NewsArticle["category"] {
   return "clubs";
 }
 
-/** SEO-freundlich: Headline + Kontext + Quelle, kein Fremd-Volltext */
-function localizedTeaser(title: string, source: string): NewsLocaleText {
-  const src = source || "Media";
+/**
+ * SEO-Teaser: Worum geht’s, warum relevant für Kroatien-Fans, was folgt auf KSL.
+ * Kein Fremd-Volltext – eigener erklärender Text + Quellenhinweis.
+ */
+function localizedTeaser(
+  title: string,
+  source: string,
+  category: NewsArticle["category"]
+): NewsLocaleText {
+  const src = source || "Medien";
+  const topic = topicBlurb(title, category);
   return {
-    de: `${title} – aktuelle Meldung über kroatischen Fußball (Quelle: ${src}). Zusammenfassung auf KSL; der vollständige Artikel erscheint nur beim Original-Anbieter.`,
-    en: `${title} – Croatian football update (source: ${src}). Short summary on KSL; the full article is only on the original publisher’s site.`,
-    hr: `${title} – aktualnost o hrvatskom nogometu (izvor: ${src}). Sažetak na KSL-u; puni članak samo kod izvornog izdavača.`,
+    de: `${topic.de} Die Headline „${title}“ greifen wir auf Kroatien Sport Live als Orientierung auf – mit Link zum Original bei ${src}. Hier findest du zusätzlich Termine kroatischer Profis im Live-Board, Nationalteam-Kalender und den Spieler-Tracker. Den vollständigen Artikel liest du beim Anbieter, nicht als Kopie bei uns.`,
+    en: `${topic.en} We surface the headline “${title}” on Croatia Sport Live for orientation – with a link to the original at ${src}. On this site you also get fixtures for Croatian pros, the national-team calendar and the player tracker. The full article is only on the publisher’s site, not republished here.`,
+    hr: `${topic.hr} Naslov „${title}“ donosimo na Kroatien Sport Live kao orijentaciju – s linkom na original kod ${src}. Ovdje dodatno imaš termine hrvatskih igrača na live boardu, kalendar reprezentacije i tracker. Puni članak čitaš kod izdavača, ne kao kopiju kod nas.`,
   };
 }
 
-function localizedBody(title: string, source: string, date: string): NewsLocaleText {
-  const src = source || "Media";
+function topicBlurb(
+  title: string,
+  category: NewsArticle["category"]
+): NewsLocaleText {
+  const t = title.toLowerCase();
+  if (
+    category === "transfer" ||
+    /transfer|vertrag|ugovor|rückkehr|return|verläng|produž|inter|milan|wechsel/i.test(
+      t
+    )
+  ) {
+    return {
+      de: "Transfer- und Vertragsnews rund um kroatische Profis und Clubs: Wer wechselt, verlängert oder steht im Gerücht – immer mit Blick auf die Vatreni-Perspektive.",
+      en: "Transfer and contract news around Croatian pros and clubs: moves, extensions and rumours – always with an eye on the national-team angle.",
+      hr: "Transferi i ugovori hrvatskih profesionalaca i klubova: tko mijenja klub, produžuje ili je u spekulacijama – uvijek s pogledom na reprezentaciju.",
+    };
+  }
+  if (
+    category === "hnl" ||
+    /hnl|hajduk|dinam|rijeka|osijek|uwcl|qualif|qualifikation/i.test(t)
+  ) {
+    return {
+      de: "HNL und kroatische Clubs in Europa: Vorschauen, Ergebnisse und Quali-Duelle – relevant für Form und Perspektiven junger Spieler und der Nationalmannschaft.",
+      en: "HNL and Croatian clubs in Europe: previews, results and qualifying ties – relevant for form and pathways for young players and the national team.",
+      hr: "HNL i hrvatski klubovi u Europi: najave, rezultati i kvalifikacije – važno za formu i perspektivu mladih igrača i reprezentacije.",
+    };
+  }
+  if (
+    category === "vatreni" ||
+    /vatren|reprezent|nations|bilic|bilić|izbornik|national/i.test(t)
+  ) {
+    return {
+      de: "Nationalmannschaft und Vatreni-Themen: Termine, Trainer, Kader-Diskussionen – ohne spekulative Aufstellungen, mit Fokus auf belegte Meldungen.",
+      en: "National team and Vatreni topics: fixtures, coaching, squad talk – no speculative line-ups, focus on solid reports.",
+      hr: "Reprezentacija i Vatreni: termini, izbornik, rasprava o kadru – bez spekulativnih sastava, fokus na pouzdane vijesti.",
+    };
+  }
+  return {
+    de: "Aktuelle Meldung aus dem Umfeld des kroatischen Fußballs – Clubs, Stars und Wettbewerbe, die für Fans der Vatreni zählen.",
+    en: "Latest item from Croatian football – clubs, stars and competitions that matter to Vatreni fans.",
+    hr: "Aktualnost iz hrvatskog nogometa – klubovi, zvijezde i natjecanja važna za navijače Vatrenih.",
+  };
+}
+
+function localizedBody(
+  title: string,
+  source: string,
+  date: string,
+  category: NewsArticle["category"]
+): NewsLocaleText {
+  const src = source || "Medien";
+  const teaser = localizedTeaser(title, src, category);
   return {
     de: [
       title,
       "",
-      `Stand der Headline: ${date}. Quelle der Meldung: ${src}.`,
+      teaser.de,
       "",
-      "Kroatien Sport Live fasst öffentlich verfügbare Headlines redaktionell zusammen und verlinkt auf den Originalartikel. Wir übernehmen keine Volltexte Dritter (kein Framing, kein Scraping von Artikeltexten).",
+      `Datum der Headline: ${date}. Medienquelle: ${src}.`,
       "",
-      "Mehr Kontext auf dieser Website: Live-Board mit Terminen kroatischer Profis, Nationalteam-Kalender und Spieler-Tracker mit nächstem Spiel und Status – jeweils mit Quellenangabe wo möglich.",
+      "Kroatien Sport Live ist ein redaktionelles Info-Angebot: Wir fassen öffentlich sichtbare Headlines zusammen und verlinken auf den Originalartikel. Wir hosten keine Volltexte Dritter (kein Framing, kein Artikel-Scraping).",
       "",
-      `Zum vollständigen Bericht: „Original öffnen“ → ${src}.`,
+      "Auf der Website parallel nutzbar: Live-Board (Spiele mit kroatischen Spielern, nächste 7 Tage), Nationalteam-Kalender, Spieler-Tracker mit nächstem Spiel und Status – sowie bestätigte TV-Hinweise, wo redaktionell belegt.",
+      "",
+      `Vollständiger Bericht beim Anbieter: ${src} (Button „Original öffnen“).`,
     ].join("\n\n"),
     en: [
       title,
       "",
-      `Headline date: ${date}. Source: ${src}.`,
+      teaser.en,
       "",
-      "Croatia Sport Live summarises publicly available headlines and links to the original article. We do not republish third-party full texts (no framing, no article scraping).",
+      `Headline date: ${date}. Media source: ${src}.`,
       "",
-      "More context on this site: live board for fixtures with Croatian players, national-team calendar and player tracker with next match and status – with sources where available.",
+      "Croatia Sport Live is an editorial information site: we summarise publicly visible headlines and link to the original article. We do not host third-party full texts (no framing, no article scraping).",
       "",
-      `Full report: “Open original” → ${src}.`,
+      "Also on the site: live board (fixtures with Croatian players, next 7 days), national-team calendar, player tracker with next match and status – plus confirmed TV tips where editorially verified.",
+      "",
+      `Full report at the publisher: ${src} (“Open original”).`,
     ].join("\n\n"),
     hr: [
       title,
       "",
-      `Datum naslova: ${date}. Izvor: ${src}.`,
+      teaser.hr,
       "",
-      "Kroatien Sport Live sažima javno dostupne naslove i linka na originalni članak. Ne preuzimamo tuđe full tekstove (bez framanja, bez scrapanja članaka).",
+      `Datum naslova: ${date}. Medijski izvor: ${src}.`,
       "",
-      "Više konteksta na ovoj stranici: live board s terminima hrvatskih igrača, kalendar reprezentacije i tracker s idućom utakmicom i statusom – s izvorima gdje je moguće.",
+      "Kroatien Sport Live je urednički info servis: sažimamo javno vidljive naslove i linkamo na original. Ne hostamo tuđe full tekstove (bez framanja, bez scrapanja članaka).",
       "",
-      `Puni izvještaj: „Otvori original“ → ${src}.`,
+      "Na stranici paralelno: live board (utakmice s hrvatskim igračima, 7 dana), kalendar reprezentacije, tracker s idućom utakmicom i statusom – te potvrđeni TV savjeti gdje je urednički dokazano.",
+      "",
+      `Puni izvještaj kod izdavača: ${src} („Otvori original“).`,
     ].join("\n\n"),
   };
 }
@@ -375,8 +439,9 @@ export async function fetchAutoNews(
     if (!isUsableHeadline(titleClean)) continue;
 
     const dateIso = parseDate(item.pubDate);
-    const teaser = localizedTeaser(titleClean, item.source);
-    const body = localizedBody(titleClean, item.source, dateIso);
+    const cat = categorize(titleClean);
+    const teaser = localizedTeaser(titleClean, item.source, cat);
+    const body = localizedBody(titleClean, item.source, dateIso, cat);
     const title: NewsLocaleText = {
       de: titleClean,
       en: titleClean,
@@ -388,7 +453,7 @@ export async function fetchAutoNews(
     articles.push({
       id,
       date: dateIso,
-      category: categorize(titleClean),
+      category: cat,
       tag: tagFor(item.source),
       title,
       summary: teaser,

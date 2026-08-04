@@ -179,8 +179,8 @@ export function NewsSection({
               {sanitizeNewsDisplay(tNews(editorial.title, locale), 160)}
             </Link>
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-            {sanitizeNewsDisplay(tNews(editorial.summary, locale), 220)}
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-4">
+            {sanitizeNewsDisplay(tNews(editorial.summary, locale), 360)}
           </p>
           <Link
             href={`/news/${editorial.id}`}
@@ -201,8 +201,8 @@ export function NewsSection({
               {sanitizeNewsDisplay(tNews(brief.title, locale), 160)}
             </Link>
           </h3>
-          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-            {sanitizeNewsDisplay(tNews(brief.summary, locale), 200)}
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-4">
+            {sanitizeNewsDisplay(tNews(brief.summary, locale), 360)}
           </p>
           <Link
             href={`/news/${brief.id}`}
