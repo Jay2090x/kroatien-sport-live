@@ -19,8 +19,16 @@ import {
   sanitizeNewsDisplay,
 } from "@/lib/data/news-text";
 
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
 /**
- * Saubere News-Karte – nie HTML, externe nur → Original.
+ * Saubere News-Karte – nie HTML, externe nur → Original (mit Domain).
  */
 export function NewsListCard({
   article,
@@ -174,7 +182,7 @@ export function NewsListCard({
             </h3>
 
             {summary ? (
-              <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
+              <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
                 {summary}
               </p>
             ) : null}
@@ -184,10 +192,15 @@ export function NewsListCard({
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                className="mt-1.5 inline-flex max-w-full items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
-                {readMoreLabel}
-                <ExternalLink className="h-3 w-3" />
+                <span className="truncate">
+                  {readMoreLabel}
+                  {article.sourceName || hostnameOf(article.sourceUrl)
+                    ? ` · ${article.sourceName || hostnameOf(article.sourceUrl)}`
+                    : ""}
+                </span>
+                <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
             ) : (
               <Link

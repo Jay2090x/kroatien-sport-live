@@ -51,6 +51,11 @@ export const DATE_FILTERS = [
  * Offizielle TV-/Mediathek-Anbieter (Launch: keine Paid-Giganten Sky/DAZN, kein VPN).
  * Nur öffentliche Links zu Anbieter-Homepages – wir hosten nichts.
  */
+/**
+ * Offizielle Anbieter-Homepages (keine Stream-URLs).
+ * Anzeige pro Spiel nur wenn in confirmed-broadcasts bestätigt.
+ * International bewusst erweiterbar (DE/AT/CH/UK …).
+ */
 export const TV_CHANNELS: TvChannel[] = [
   {
     id: "hrt",
@@ -89,8 +94,57 @@ export const TV_CHANNELS: TvChannel[] = [
     name: "MAX Sport",
     type: "paid",
     url: "https://www.maxsport.bg",
-    region: "BG/Balkan",
+    region: "BG",
     markets: ["BG"],
+  },
+  // DE / AT / CH – nur Homepages, nie spekulativ zuweisen
+  {
+    id: "zdf",
+    name: "ZDF",
+    type: "free",
+    url: "https://www.zdf.de/sport",
+    region: "DE",
+    markets: ["DE"],
+  },
+  {
+    id: "ard",
+    name: "ARD Sportschau",
+    type: "free",
+    url: "https://www.sportschau.de",
+    region: "DE",
+    markets: ["DE"],
+  },
+  {
+    id: "orf",
+    name: "ORF Sport",
+    type: "free",
+    url: "https://tv.orf.at/program/sport",
+    region: "AT",
+    markets: ["AT"],
+  },
+  {
+    id: "srf",
+    name: "SRF Sport",
+    type: "free",
+    url: "https://www.srf.ch/sport",
+    region: "CH",
+    markets: ["CH"],
+  },
+  {
+    id: "bbc-sport",
+    name: "BBC Sport",
+    type: "free",
+    url: "https://www.bbc.co.uk/sport/football",
+    region: "UK",
+    markets: ["GB", "UK"],
+  },
+  {
+    id: "nos",
+    name: "NOS",
+    type: "free",
+    url: "https://nos.nl/sport",
+    region: "NL",
+    markets: ["NL"],
   },
 ];
 

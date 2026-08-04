@@ -29,6 +29,7 @@ import {
 import { fmtStat, getUniformStatLines } from "@/lib/player-stats";
 import { cn, formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
+import { Link } from "@/i18n/navigation";
 import type { Match } from "@/types";
 import type { Locale } from "@/i18n/routing";
 import type { LocaleText, CareerSeasonStat } from "@/types/player-profile";
@@ -190,8 +191,8 @@ export function PlayerDetailPanel() {
               />
             </div>
 
-            <p className="text-sm leading-snug text-muted-foreground line-clamp-3">
-              {tLoc(profile.bio, locale)}
+            <p className="text-sm leading-snug text-muted-foreground">
+              {compactBio(tLoc(profile.bio, locale))}
             </p>
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11px] sm:text-xs">
@@ -464,25 +465,48 @@ function MiniMatch({
   const live = isLiveStatus(match.status);
   return (
     <li>
-      <button
-        type="button"
-        onClick={onOpen}
-        className="flex w-full items-center justify-between gap-2 rounded-lg border border-border px-2 py-1.5 text-left text-xs hover:bg-secondary/50"
-      >
-        <span className="min-w-0 truncate font-medium">
-          {localizeTeamName(match.homeTeam, locale)} –{" "}
-          {localizeTeamName(match.awayTeam, locale)}
-        </span>
-        <span className="shrink-0 tabular-nums text-muted-foreground">
-          {live
-            ? liveLabel
-            : match.status === "finished"
-              ? scoreDisplay(match.homeScore, match.awayScore)
-              : formatKickoff(match.kickoff, "d.M. HH:mm", locale)}
-        </span>
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-lg border border-border px-2 py-1.5 text-left text-xs hover:bg-secondary/50 hover:border-primary/40"
+        >
+          <span className="min-w-0 truncate font-medium">
+            {localizeTeamName(match.homeTeam, locale)} –{" "}
+            {localizeTeamName(match.awayTeam, locale)}
+          </span>
+          <span className="shrink-0 tabular-nums text-muted-foreground">
+            {live
+              ? liveLabel
+              : match.status === "finished"
+                ? scoreDisplay(match.homeScore, match.awayScore)
+                : formatKickoff(match.kickoff, "d.M. HH:mm", locale)}
+          </span>
+        </button>
+        <Link
+          href={`/match/${match.id}`}
+          className="shrink-0 rounded-lg border border-border px-2 py-1.5 text-[10px] font-semibold text-primary hover:bg-secondary/50"
+          title={match.id}
+        >
+          →
+        </Link>
+      </div>
     </li>
   );
+}
+
+/** Kompakte, vollständige Bio (max. ~320 Zeichen, an Satzende) */
+function compactBio(text: string, max = 320): string {
+  const t = text.replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const last = Math.max(
+    cut.lastIndexOf(". "),
+    cut.lastIndexOf("! "),
+    cut.lastIndexOf("? ")
+  );
+  if (last > max * 0.5) return cut.slice(0, last + 1).trim();
+  return cut.replace(/\s+\S*$/, "") + "…";
 }
 
 function formatBorn(

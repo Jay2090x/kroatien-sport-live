@@ -15,7 +15,7 @@ import { ComingSoonSports } from "@/components/sports/coming-soon-sports";
 
 /**
  * Value hub:
- * Live → Meine Woche → Heute für dich + News → NT → Tracker → Legal
+ * Live → Meine Woche → News → NT → Tracker → Legal
  */
 export default async function HomePage({
   params,

@@ -164,7 +164,7 @@ export function MatchDetailBody({
                       )}
                     </div>
 
-                    {events.length > 0 && (
+                    {events.length > 0 ? (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {events.map((e) => (
                           <span
@@ -182,6 +182,12 @@ export function MatchDetailBody({
                           </span>
                         ))}
                       </div>
+                    ) : (
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        {match.status === "scheduled"
+                          ? t("eventsPending")
+                          : t("eventsNone")}
+                      </p>
                     )}
 
                     {pl?.availabilityNote && !playing && (

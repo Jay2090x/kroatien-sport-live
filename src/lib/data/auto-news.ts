@@ -183,13 +183,52 @@ function categorize(title: string): NewsArticle["category"] {
   return "clubs";
 }
 
-/** Summary: nur lokalisierter Hinweis – nie fremdsprachiger HTML-Müll */
-function localizedTeaser(source: string): NewsLocaleText {
+/** SEO-freundlich: Headline + Kontext + Quelle, kein Fremd-Volltext */
+function localizedTeaser(title: string, source: string): NewsLocaleText {
   const src = source || "Media";
   return {
-    de: `Meldung von ${src}. Volltext nur in der Originalquelle (kein Framing, kein Volltext-Hosting).`,
-    en: `Report via ${src}. Full story only on the original site (no framing, no full-text hosting).`,
-    hr: `Vijest putem ${src}. Puni tekst samo na izvoru (bez framanja, bez hostanja full teksta).`,
+    de: `${title} – aktuelle Meldung über kroatischen Fußball (Quelle: ${src}). Zusammenfassung auf KSL; der vollständige Artikel erscheint nur beim Original-Anbieter.`,
+    en: `${title} – Croatian football update (source: ${src}). Short summary on KSL; the full article is only on the original publisher’s site.`,
+    hr: `${title} – aktualnost o hrvatskom nogometu (izvor: ${src}). Sažetak na KSL-u; puni članak samo kod izvornog izdavača.`,
+  };
+}
+
+function localizedBody(title: string, source: string, date: string): NewsLocaleText {
+  const src = source || "Media";
+  return {
+    de: [
+      title,
+      "",
+      `Stand der Headline: ${date}. Quelle der Meldung: ${src}.`,
+      "",
+      "Kroatien Sport Live fasst öffentlich verfügbare Headlines redaktionell zusammen und verlinkt auf den Originalartikel. Wir übernehmen keine Volltexte Dritter (kein Framing, kein Scraping von Artikeltexten).",
+      "",
+      "Mehr Kontext auf dieser Website: Live-Board mit Terminen kroatischer Profis, Nationalteam-Kalender und Spieler-Tracker mit nächstem Spiel und Status – jeweils mit Quellenangabe wo möglich.",
+      "",
+      `Zum vollständigen Bericht: „Original öffnen“ → ${src}.`,
+    ].join("\n\n"),
+    en: [
+      title,
+      "",
+      `Headline date: ${date}. Source: ${src}.`,
+      "",
+      "Croatia Sport Live summarises publicly available headlines and links to the original article. We do not republish third-party full texts (no framing, no article scraping).",
+      "",
+      "More context on this site: live board for fixtures with Croatian players, national-team calendar and player tracker with next match and status – with sources where available.",
+      "",
+      `Full report: “Open original” → ${src}.`,
+    ].join("\n\n"),
+    hr: [
+      title,
+      "",
+      `Datum naslova: ${date}. Izvor: ${src}.`,
+      "",
+      "Kroatien Sport Live sažima javno dostupne naslove i linka na originalni članak. Ne preuzimamo tuđe full tekstove (bez framanja, bez scrapanja članaka).",
+      "",
+      "Više konteksta na ovoj stranici: live board s terminima hrvatskih igrača, kalendar reprezentacije i tracker s idućom utakmicom i statusom – s izvorima gdje je moguće.",
+      "",
+      `Puni izvještaj: „Otvori original“ → ${src}.`,
+    ].join("\n\n"),
   };
 }
 
@@ -335,8 +374,9 @@ export async function fetchAutoNews(
     const titleClean = sanitizeNewsDisplay(item.title, 140);
     if (!isUsableHeadline(titleClean)) continue;
 
-    const teaser = localizedTeaser(item.source);
-    // Title in all locales = original (same language as feed)
+    const dateIso = parseDate(item.pubDate);
+    const teaser = localizedTeaser(titleClean, item.source);
+    const body = localizedBody(titleClean, item.source, dateIso);
     const title: NewsLocaleText = {
       de: titleClean,
       en: titleClean,
@@ -347,31 +387,12 @@ export async function fetchAutoNews(
       (Date.now() - new Date(item.pubDate).getTime()) / (24 * 3600_000);
     articles.push({
       id,
-      date: parseDate(item.pubDate),
+      date: dateIso,
       category: categorize(titleClean),
       tag: tagFor(item.source),
       title,
       summary: teaser,
-      body: {
-        de: [
-          titleClean,
-          "",
-          `Quelle: ${item.source}.`,
-          teaser.de,
-        ].join("\n\n"),
-        en: [
-          titleClean,
-          "",
-          `Source: ${item.source}.`,
-          teaser.en,
-        ].join("\n\n"),
-        hr: [
-          titleClean,
-          "",
-          `Izvor: ${item.source}.`,
-          teaser.hr,
-        ].join("\n\n"),
-      },
+      body,
       image: {
         url: themeImageForArticle(id, titleClean) ?? THEME_IMAGES.croatia,
         alt: { de: "News", en: "News", hr: "Vijest" },

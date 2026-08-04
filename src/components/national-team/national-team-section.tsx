@@ -19,12 +19,10 @@ import { formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import type { Match } from "@/types";
 import { cn } from "@/lib/utils";
-
-const FOCUS = 3;
+import { Link } from "@/i18n/navigation";
 
 /**
- * Vatreni als Kontext: nächste 1–3 Spiele prominent, Rest einklappbar.
- * Kein vollständiger Kalender-Duplikat zum Live-Board.
+ * Alle bekannten Länderspiele – kompakt, klickbar.
  */
 export function NationalTeamSection() {
   const t = useTranslations("Vatreni");
@@ -33,12 +31,11 @@ export function NationalTeamSection() {
   const { nationalTeamMatches, setSelectedMatch, selectedMatch, refreshLive } =
     useDashboard();
   const [localMatch, setLocalMatch] = useState<Match | null>(null);
-  const [showMore, setShowMore] = useState(false);
   const [showPast, setShowPast] = useState(false);
 
   const active = localMatch ?? selectedMatch;
 
-  const { focus, moreUpcoming, past, liveCount } = useMemo(() => {
+  const { upcoming, past, liveCount } = useMemo(() => {
     const seen = new Set<string>();
     const unique = nationalTeamMatches.filter((m) => {
       const day = m.kickoff.slice(0, 10);
@@ -55,7 +52,7 @@ export function NationalTeamSection() {
     const sorted = [...unique].sort(
       (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
     );
-    const upcoming = sorted.filter(
+    const up = sorted.filter(
       (m) =>
         m.status === "scheduled" ||
         m.status === "live" ||
@@ -68,8 +65,7 @@ export function NationalTeamSection() {
         (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
       );
     return {
-      focus: upcoming.slice(0, FOCUS),
-      moreUpcoming: upcoming.slice(FOCUS),
+      upcoming: up,
       past: finished,
       liveCount: sorted.filter((m) => isLiveStatus(m.status)).length,
     };
@@ -82,8 +78,8 @@ export function NationalTeamSection() {
 
   return (
     <section id="vatreni" className="scroll-mt-16" aria-labelledby="vatreni-title">
-      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-3.5 shadow-sm sm:p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-3 shadow-sm sm:p-3.5">
+        <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Sahovnica size="sm" />
             <div>
@@ -100,19 +96,16 @@ export function NationalTeamSection() {
                 )}
               </h2>
               <p className="text-[11px] text-muted-foreground">
-                {t("subtitleContext")}
+                {t("subtitleAll")}
               </p>
             </div>
           </div>
-          <div className="flex gap-1.5 text-[10px]">
-            <Badge variant="secondary" className="px-1.5 py-0">
-              {focus.length + (showMore ? moreUpcoming.length : 0)}{" "}
-              {t("upcoming")}
-            </Badge>
-          </div>
+          <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+            {upcoming.length} {t("upcoming")}
+          </Badge>
         </div>
 
-        {focus.length === 0 && past.length === 0 ? (
+        {upcoming.length === 0 && past.length === 0 ? (
           <EmptyState
             title={t("empty")}
             description={t("emptyHint")}
@@ -120,55 +113,23 @@ export function NationalTeamSection() {
             onAction={() => void refreshLive()}
           />
         ) : (
-          <div className="space-y-2.5">
-            {focus.length === 0 ? (
-              <EmptyState
-                title={t("emptyUpcoming")}
-                description={t("emptyUpcomingHint")}
-                className="py-6"
-              />
+          <div className="space-y-2">
+            {upcoming.length === 0 ? (
+              <p className="py-3 text-center text-xs text-muted-foreground">
+                {t("emptyUpcoming")}
+              </p>
             ) : (
-              <ul className="overflow-hidden rounded-xl border border-border/80 divide-y divide-border/80 bg-card/40">
-                {focus.map((m, i) => (
+              <ul className="overflow-hidden rounded-lg border border-border/80 divide-y divide-border/70 bg-card/40">
+                {upcoming.map((m) => (
                   <CompactRow
                     key={m.id}
                     match={m}
                     onOpen={() => openMatch(m)}
-                    highlight={i === 0}
                     locale={locale}
                     liveLabel={tMatch("live")}
                   />
                 ))}
-                {showMore &&
-                  moreUpcoming.map((m) => (
-                    <CompactRow
-                      key={m.id}
-                      match={m}
-                      onOpen={() => openMatch(m)}
-                      locale={locale}
-                      liveLabel={tMatch("live")}
-                    />
-                  ))}
               </ul>
-            )}
-
-            {moreUpcoming.length > 0 && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-7 w-full text-xs text-muted-foreground sm:w-auto"
-                onClick={() => setShowMore((v) => !v)}
-              >
-                {showMore ? (
-                  <ChevronUp className="h-3.5 w-3.5" />
-                ) : (
-                  <ChevronDown className="h-3.5 w-3.5" />
-                )}
-                {showMore
-                  ? t("hideMore")
-                  : t("showMore", { count: moreUpcoming.length })}
-              </Button>
             )}
 
             {past.length > 0 && (
@@ -188,8 +149,8 @@ export function NationalTeamSection() {
                   {t("pastToggle", { count: past.length })}
                 </Button>
                 {showPast && (
-                  <ul className="mt-1.5 overflow-hidden rounded-xl border border-border/60 divide-y divide-border/60 opacity-90">
-                    {past.slice(0, 8).map((m) => (
+                  <ul className="mt-1 overflow-hidden rounded-lg border border-border/60 divide-y divide-border/60 opacity-90">
+                    {past.map((m) => (
                       <CompactRow
                         key={m.id}
                         match={m}
@@ -224,14 +185,12 @@ export function NationalTeamSection() {
 function CompactRow({
   match: m,
   onOpen,
-  highlight,
   muted,
   locale,
   liveLabel,
 }: {
   match: Match;
   onOpen: () => void;
-  highlight?: boolean;
   muted?: boolean;
   locale: string;
   liveLabel: string;
@@ -248,28 +207,29 @@ function CompactRow({
 
   return (
     <li>
-      <button
-        type="button"
-        onClick={onOpen}
+      <div
         className={cn(
-          "flex w-full flex-col gap-1.5 px-3 py-2.5 text-left transition-colors hover:bg-secondary/40",
-          highlight && "bg-primary/[0.04]",
+          "flex w-full items-center gap-2 px-2.5 py-2 transition-colors hover:bg-secondary/40",
           muted && "opacity-80"
         )}
       >
-        <div className="flex w-full items-center gap-2">
-          <div className="w-[4.75rem] shrink-0 sm:w-[5.5rem]">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="flex min-w-0 flex-1 items-center gap-2 text-left"
+        >
+          <div className="w-[4.25rem] shrink-0 sm:w-[5rem]">
             {live ? (
               <span className="live-badge !text-[9px]">{liveLabel}</span>
             ) : (
               <>
                 <time
                   dateTime={m.kickoff}
-                  className="block text-[11px] font-semibold tabular-nums leading-tight text-primary"
+                  className="block text-[10px] font-semibold tabular-nums leading-tight text-primary"
                 >
                   {formatKickoff(m.kickoff, "d. MMM", locale)}
                 </time>
-                <span className="text-[11px] font-bold tabular-nums text-foreground/90">
+                <span className="text-[11px] font-bold tabular-nums">
                   {m.status === "finished"
                     ? scoreDisplay(m.homeScore, m.awayScore)
                     : formatKickoff(m.kickoff, "HH:mm", locale)}
@@ -277,51 +237,49 @@ function CompactRow({
               </>
             )}
           </div>
-
-          <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <TeamBadge src={homeLogo} name={homeName} />
-            <p className="min-w-0 truncate text-sm font-medium leading-snug">
-              {homeName}
-              <span className="mx-1 font-normal text-muted-foreground">–</span>
-              {awayName}
-            </p>
-            <TeamBadge src={awayLogo} name={awayName} />
-          </div>
-
+          <TeamBadge src={homeLogo} name={homeName} />
+          <p className="min-w-0 flex-1 truncate text-[13px] font-medium leading-snug">
+            {homeName}
+            <span className="mx-1 font-normal text-muted-foreground">–</span>
+            {awayName}
+          </p>
+          <TeamBadge src={awayLogo} name={awayName} />
           {live && (
             <span className="shrink-0 text-sm font-bold tabular-nums text-live">
               {scoreDisplay(m.homeScore, m.awayScore)}
             </span>
           )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-[5.5rem]">
-          <p className="truncate text-[10px] text-muted-foreground">
-            {comp}
-            {m.venue ? ` · ${m.venue}` : ""}
-          </p>
-          {/* Only channels already on match – confirmed/filtered upstream */}
-          <TvChips channels={m.tvChannels} max={3} />
-        </div>
-      </button>
+        </button>
+        <Link
+          href={`/match/${m.id}`}
+          className="shrink-0 text-[10px] font-semibold text-primary hover:underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          →
+        </Link>
+      </div>
+      <div className="flex flex-wrap items-center gap-1.5 px-2.5 pb-1.5 pl-[5rem] sm:pl-[6rem]">
+        <p className="truncate text-[10px] text-muted-foreground">{comp}</p>
+        <TvChips channels={m.tvChannels} max={2} />
+      </div>
     </li>
   );
 }
 
 function TeamBadge({ src, name }: { src: string | null; name: string }) {
   return (
-    <span className="relative inline-flex h-6 w-6 shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
+    <span className="relative inline-flex h-5 w-5 shrink-0 overflow-hidden rounded-full border border-border bg-secondary">
       {src ? (
         <Image
           src={src}
           alt=""
-          width={24}
-          height={24}
+          width={20}
+          height={20}
           className="h-full w-full object-contain p-0.5"
           unoptimized
         />
       ) : (
-        <span className="m-auto text-[9px] font-bold text-muted-foreground">
+        <span className="m-auto text-[8px] font-bold text-muted-foreground">
           {name.slice(0, 1)}
         </span>
       )}

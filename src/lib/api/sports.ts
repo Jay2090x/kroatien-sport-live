@@ -21,6 +21,7 @@ import {
 } from "@/lib/data/national-team";
 import { applySystemAvailability } from "@/lib/player-availability";
 import { fetchCroatiaNationalTeamMatches } from "@/lib/api/croatia-nt";
+import { enrichMatchesPlayerEvents } from "@/lib/api/tsdb-timeline";
 
 export interface LiveBundle {
   players: Player[];
@@ -152,6 +153,15 @@ async function fetchFromExternalApisInner(apiKeys?: {
   );
   // Nochmal NT-safe (nach Enrich)
   matches = dedupeFixtures(matches);
+
+  // Tore / Karten / Wechsel aus Timeline (begrenzt, live priorisiert)
+  try {
+    matches = await enrichMatchesPlayerEvents(matches, key, 8);
+  } catch (e) {
+    errors.push(
+      `timeline: ${e instanceof Error ? e.message : String(e)}`
+    );
+  }
 
   // Nur redaktionell bestätigte Live-TV-Rechte
   matches = matches.map((m) => ({

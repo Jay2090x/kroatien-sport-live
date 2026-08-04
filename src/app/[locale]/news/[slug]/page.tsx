@@ -42,6 +42,14 @@ function safeText(raw: string): string {
   return cleanNewsText(raw, 2000) || "";
 }
 
+function hostLabel(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
 function bodyParagraphs(text: string): string[] {
   return text
     .split(/\n\n+/)
@@ -288,7 +296,12 @@ export default async function NewsArticlePage({
                 rel="noopener noreferrer"
                 className="inline-flex max-w-full items-center gap-1.5 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
               >
-                <span className="truncate">{t("originalSource")}</span>
+                <span className="truncate">
+                  {t("originalSource")}
+                  {article.sourceName || hostLabel(article.sourceUrl)
+                    ? ` · ${article.sourceName || hostLabel(article.sourceUrl)}`
+                    : ""}
+                </span>
                 <ExternalLink className="h-3.5 w-3.5 shrink-0" />
               </a>
             </p>
