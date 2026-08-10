@@ -377,6 +377,7 @@ export function PlayerDetailPanel() {
                     <MiniMatch
                       key={m.id}
                       match={m}
+                      playerId={player.id}
                       onOpen={() => setSelectedMatch(m)}
                       liveLabel={tMatch("live")}
                       locale={locale}
@@ -395,6 +396,7 @@ export function PlayerDetailPanel() {
                     <MiniMatch
                       key={m.id}
                       match={m}
+                      playerId={player.id}
                       onOpen={() => setSelectedMatch(m)}
                       liveLabel={tMatch("live")}
                       locale={locale}
@@ -453,35 +455,58 @@ function StatRow({
 
 function MiniMatch({
   match,
+  playerId,
   onOpen,
   liveLabel,
   locale,
 }: {
   match: Match;
+  playerId: string;
   onOpen: () => void;
   liveLabel: string;
   locale: string;
 }) {
   const live = isLiveStatus(match.status);
+  const app = match.croatianPlayers.find((p) => p.playerId === playerId);
+  const bits: string[] = [];
+  if (app) {
+    if (app.didPlay === false) bits.push("DNP");
+    else {
+      if (app.isStarter) bits.push("XI");
+      if (app.minutesPlayed != null) bits.push(`${app.minutesPlayed}'`);
+      if (app.substitutedOn != null) bits.push(`↑${app.substitutedOn}'`);
+      if (app.substitutedOff != null) bits.push(`↓${app.substitutedOff}'`);
+      if (app.goals) bits.push(app.goals > 1 ? `⚽×${app.goals}` : "⚽");
+      if (app.yellowCards) bits.push("🟨");
+      if (app.redCard) bits.push("🟥");
+    }
+  }
   return (
     <li>
       <div className="flex items-center gap-1">
         <button
           type="button"
           onClick={onOpen}
-          className="flex min-w-0 flex-1 items-center justify-between gap-2 rounded-lg border border-border px-2 py-1.5 text-left text-xs hover:bg-secondary/50 hover:border-primary/40"
+          className="flex min-w-0 flex-1 flex-col gap-0.5 rounded-lg border border-border px-2 py-1.5 text-left text-xs hover:bg-secondary/50 hover:border-primary/40"
         >
-          <span className="min-w-0 truncate font-medium">
-            {localizeTeamName(match.homeTeam, locale)} –{" "}
-            {localizeTeamName(match.awayTeam, locale)}
-          </span>
-          <span className="shrink-0 tabular-nums text-muted-foreground">
-            {live
-              ? liveLabel
-              : match.status === "finished"
-                ? scoreDisplay(match.homeScore, match.awayScore)
-                : formatKickoff(match.kickoff, "d.M. HH:mm", locale)}
-          </span>
+          <div className="flex w-full items-center justify-between gap-2">
+            <span className="min-w-0 truncate font-medium">
+              {localizeTeamName(match.homeTeam, locale)} –{" "}
+              {localizeTeamName(match.awayTeam, locale)}
+            </span>
+            <span className="shrink-0 tabular-nums text-muted-foreground">
+              {live
+                ? liveLabel
+                : match.status === "finished"
+                  ? scoreDisplay(match.homeScore, match.awayScore)
+                  : formatKickoff(match.kickoff, "d.M. HH:mm", locale)}
+            </span>
+          </div>
+          {bits.length > 0 && (
+            <span className="text-[10px] font-medium tabular-nums text-primary">
+              {bits.join(" · ")}
+            </span>
+          )}
         </button>
         <Link
           href={`/match/${match.id}`}

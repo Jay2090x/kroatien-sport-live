@@ -321,6 +321,8 @@
     "form": "Forma",
     "formHint": "Nedavni klupski rezultati s ovim igračem u feedu (isti podaci za sve).",
     "formEmpty": "Još nema konačnih rezultata s ovim igračem u feedu.",
+    "lastApps": "Zadnji nastupi",
+    "lastAppsEmpty": "Nema nastupa s event podacima u feedu (lineup/timeline).",
     "age": "Dob"
   },
   "Status": {

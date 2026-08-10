@@ -1,23 +1,48 @@
 /**
- * Recent form (W/D/L) derived only from finished match scores we already show.
- * No invented results – empty if scores missing.
+ * Recent form (W/D/L) + last appearances with real event data.
+ * Only from matches already in the feed – nothing invented.
  */
 
-import type { Match, Player } from "@/types";
+import type { Match, MatchPlayerAppearance, Player } from "@/types";
 
 export type FormResult = "W" | "D" | "L";
+
+export type PlayerAppearanceSummary = {
+  matchId: string;
+  kickoff: string;
+  /** vs opponent short */
+  vs: string;
+  scoreLabel: string;
+  form?: FormResult;
+  app: MatchPlayerAppearance;
+  /** Compact chip text e.g. "XI · 90' · ⚽" */
+  chip: string;
+};
 
 export function computePlayerForm(
   playerId: string,
   matches: Match[],
   max = 5
 ): FormResult[] {
-  const finished = matches
+  return computePlayerAppearances(playerId, matches, max)
+    .map((a) => a.form)
+    .filter((f): f is FormResult => f != null);
+}
+
+/**
+ * Letzte Einsätze (live + beendet), neueste zuerst – mit Minuten/Events.
+ */
+export function computePlayerAppearances(
+  playerId: string,
+  matches: Match[],
+  max = 5
+): PlayerAppearanceSummary[] {
+  const relevant = matches
     .filter(
       (m) =>
-        m.status === "finished" &&
-        m.homeScore != null &&
-        m.awayScore != null &&
+        (m.status === "finished" ||
+          m.status === "live" ||
+          m.status === "halftime") &&
         m.croatianPlayers.some((p) => p.playerId === playerId)
     )
     .sort(
@@ -25,22 +50,77 @@ export function computePlayerForm(
     )
     .slice(0, max);
 
-  const out: FormResult[] = [];
-  for (const m of finished) {
-    const side = m.croatianPlayers.find((p) => p.playerId === playerId)
-      ?.teamSide;
-    if (!side || m.homeScore == null || m.awayScore == null) continue;
-    const hs = m.homeScore;
-    const as = m.awayScore;
-    if (hs === as) {
-      out.push("D");
-      continue;
+  const out: PlayerAppearanceSummary[] = [];
+  for (const m of relevant) {
+    const app = m.croatianPlayers.find((p) => p.playerId === playerId);
+    if (!app) continue;
+
+    const vs =
+      app.teamSide === "home"
+        ? m.awayTeam
+        : app.teamSide === "away"
+          ? m.homeTeam
+          : m.awayTeam;
+
+    let form: FormResult | undefined;
+    if (
+      m.status === "finished" &&
+      m.homeScore != null &&
+      m.awayScore != null &&
+      (app.teamSide === "home" || app.teamSide === "away")
+    ) {
+      if (m.homeScore === m.awayScore) form = "D";
+      else {
+        const homeWin = m.homeScore > m.awayScore;
+        form =
+          app.teamSide === "home"
+            ? homeWin
+              ? "W"
+              : "L"
+            : homeWin
+              ? "L"
+              : "W";
+      }
     }
-    const homeWin = hs > as;
-    if (side === "home") out.push(homeWin ? "W" : "L");
-    else out.push(homeWin ? "L" : "W");
+
+    const scoreLabel =
+      m.homeScore != null && m.awayScore != null
+        ? `${m.homeScore}:${m.awayScore}`
+        : "–";
+
+    out.push({
+      matchId: m.id,
+      kickoff: m.kickoff,
+      vs,
+      scoreLabel,
+      form,
+      app,
+      chip: appearanceChip(app),
+    });
   }
   return out;
+}
+
+function appearanceChip(app: MatchPlayerAppearance): string {
+  if (app.didPlay === false) return "DNP";
+  const bits: string[] = [];
+  if (app.isStarter === true) bits.push("XI");
+  else if (app.substitutedOn != null) bits.push(`↑${app.substitutedOn}'`);
+  else if (app.isStarter === false) bits.push("Bank");
+  if (app.minutesPlayed != null && app.minutesPlayed > 0)
+    bits.push(`${app.minutesPlayed}'`);
+  if (app.goals && app.goals > 0)
+    bits.push(app.goals > 1 ? `⚽×${app.goals}` : "⚽");
+  if (app.assists && app.assists > 0)
+    bits.push(app.assists > 1 ? `A×${app.assists}` : "A");
+  if (app.yellowCards && app.yellowCards > 0) bits.push("🟨");
+  if (app.redCard) bits.push("🟥");
+  if (app.substitutedOff != null) bits.push(`↓${app.substitutedOff}'`);
+  if (bits.length === 0) {
+    if (app.eventsKnown === false) return "?";
+    return "·";
+  }
+  return bits.join(" ");
 }
 
 export function formSummary(form: FormResult[]): string {

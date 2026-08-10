@@ -13,7 +13,13 @@ import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatKickoff, isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
-import { computePlayerForm, type FormResult } from "@/lib/player-form";
+import {
+  computePlayerAppearances,
+  computePlayerForm,
+  type FormResult,
+  type PlayerAppearanceSummary,
+} from "@/lib/player-form";
+import { Link } from "@/i18n/navigation";
 
 export interface PlayerCardProps {
   player: Player;
@@ -51,6 +57,9 @@ export function PlayerCard({
   const short = getAvailabilityDisplayShort(player, locale);
   const form = allMatches
     ? computePlayerForm(player.id, allMatches, 5)
+    : [];
+  const recentApps = allMatches
+    ? computePlayerAppearances(player.id, allMatches, 5)
     : [];
   const nextLine = nextMatch
     ? formatNextLine(nextMatch, player, nextPrefix, liveLabel, locale)
@@ -187,7 +196,7 @@ export function PlayerCard({
           {nextLine ?? t("noMatches")}
         </p>
 
-        {/* Form from same feed for everyone – never mix career tables */}
+        {/* Form W/D/L */}
         <div
           className="flex min-h-[1rem] items-center gap-1"
           title={form.length ? t("formHint") : t("formEmpty")}
@@ -201,6 +210,34 @@ export function PlayerCard({
             <span className="text-[10px] text-muted-foreground/80">–</span>
           )}
         </div>
+
+        {/* Letzte Einsätze: Minuten, Wechsel, Tore – aus Feed/API */}
+        <div
+          className="col-span-2 min-w-0 space-y-1"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <p className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("lastApps")}
+          </p>
+          {recentApps.length === 0 ? (
+            <p className="text-[10px] text-muted-foreground/80">
+              {t("lastAppsEmpty")}
+            </p>
+          ) : (
+            <ul className="space-y-0.5">
+              {recentApps.map((a) => (
+                <li key={a.matchId}>
+                  <AppearanceRow
+                    a={a}
+                    locale={locale}
+                    liveLabel={liveLabel}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </button>
 
       <FavoriteButton
@@ -211,6 +248,51 @@ export function PlayerCard({
     </div>
   );
 }
+
+function AppearanceRow({
+  a,
+  locale,
+  liveLabel,
+}: {
+  a: PlayerAppearanceSummary;
+  locale: string;
+  liveLabel: string;
+}) {
+  const when = formatKickoff(a.kickoff, "d.M.", locale);
+  const vs = localizeTeamName(a.vs, locale);
+  const formColor =
+    a.form === "W"
+      ? "text-emerald-400"
+      : a.form === "L"
+        ? "text-red-400"
+        : a.form === "D"
+          ? "text-muted-foreground"
+          : "text-live";
+
+  return (
+    <Link
+      href={`/match/${a.matchId}`}
+      className="flex min-w-0 items-center gap-1.5 rounded-md px-0.5 py-0.5 text-[10px] tabular-nums hover:bg-secondary/60"
+      title={`${when} vs ${vs} ${a.scoreLabel} · ${a.chip}`}
+    >
+      <span className="w-7 shrink-0 text-muted-foreground">{when}</span>
+      <span className={cn("w-3 shrink-0 font-black", formColor)}>
+        {a.form ?? "·"}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-muted-foreground">
+        vs {vs}
+      </span>
+      <span className="shrink-0 font-semibold text-foreground/90">
+        {a.scoreLabel}
+      </span>
+      <span className="max-w-[5.5rem] shrink-0 truncate font-medium text-primary">
+        {a.chip}
+      </span>
+    </Link>
+  );
+}
+
+
 
 function ageFromDob(iso?: string): number | null {
   if (!iso) return null;

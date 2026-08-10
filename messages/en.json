@@ -321,6 +321,8 @@
     "form": "Form",
     "formHint": "Recent club results with this player in the feed (same data for everyone).",
     "formEmpty": "No final scores with this player in the feed yet.",
+    "lastApps": "Recent apps",
+    "lastAppsEmpty": "No appearances with event data in the feed (lineup/timeline).",
     "age": "Age"
   },
   "Status": {
