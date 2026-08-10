@@ -19,6 +19,9 @@ import {
   CalendarClock,
   Clock,
   ShieldCheck,
+  History,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +60,7 @@ export function LiveMatchBoard() {
   const [query, setQuery] = useState("");
   const [tvSlots, setTvSlots] = useState<TvGuideSlot[]>(catalog.tvGuide);
   const [mergedRemote, setMergedRemote] = useState<GuideMatch[] | null>(null);
+  const [showFinished, setShowFinished] = useState(true);
 
   const localMerged = useMemo(
     () => mergeGuideWithLive(catalog.matches, liveMatches, locale),
@@ -116,7 +120,13 @@ export function LiveMatchBoard() {
       }
     }
 
-    return { live, today, next48, rest7 };
+    const finished = filtered
+      .filter((m) => m.status === "finished")
+      .sort(
+        (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
+      );
+
+    return { live, today, next48, rest7, finished };
   }, [filtered]);
 
   return (
@@ -238,6 +248,49 @@ export function LiveMatchBoard() {
             matches={buckets.rest7}
             cols="2"
           />
+
+          {/* Abgelaufene Spiele – aufklappbar, nicht verschwinden lassen */}
+          <section aria-labelledby="finished-title" className="space-y-3">
+            <button
+              type="button"
+              onClick={() => setShowFinished((v) => !v)}
+              className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-3 py-2.5 text-left hover:bg-secondary/40"
+            >
+              <div className="flex min-w-0 items-center gap-2">
+                <History className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <div>
+                  <p id="finished-title" className="text-sm font-bold">
+                    {t("finishedTitle")}
+                    {buckets.finished.length > 0
+                      ? ` (${buckets.finished.length})`
+                      : ""}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {t("finishedSub")}
+                  </p>
+                </div>
+              </div>
+              {showFinished ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
+            {showFinished &&
+              (buckets.finished.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-border bg-card/40 px-3 py-5 text-center text-sm text-muted-foreground">
+                  {t("noFinished")}
+                </p>
+              ) : (
+                <ul className="grid gap-3 sm:grid-cols-2">
+                  {buckets.finished.map((m) => (
+                    <li key={m.id}>
+                      <GuideMatchCard match={m} defaultOpen={false} />
+                    </li>
+                  ))}
+                </ul>
+              ))}
+          </section>
         </>
       )}
 

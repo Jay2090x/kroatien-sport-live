@@ -73,8 +73,26 @@ export default async function MatchPage({
     notFound();
   }
 
-  const match = data.matches.find((m) => m.id === id);
+  let match = data.matches.find((m) => m.id === id);
   if (!match) notFound();
+
+  // Frische Lineup/Timeline beim Öffnen der Match-Seite (echte Events)
+  if (
+    match.externalIds?.theSportsDb &&
+    match.croatianPlayers?.length &&
+    (match.status === "live" ||
+      match.status === "halftime" ||
+      match.status === "finished")
+  ) {
+    try {
+      const { enrichMatchPlayerEvents } = await import(
+        "@/lib/api/tsdb-timeline"
+      );
+      match = await enrichMatchPlayerEvents(match);
+    } catch {
+      /* keep base match */
+    }
+  }
 
   const sharePath =
     locale === "de" ? `/match/${id}` : `/${locale}/match/${id}`;
@@ -85,7 +103,7 @@ export default async function MatchPage({
       <main className="mx-auto max-w-xl px-3 py-6 sm:px-6 sm:py-8">
         <nav className="mb-5">
           <Link
-            href="/#dashboard"
+            href="/#live-board"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />

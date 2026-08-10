@@ -156,7 +156,7 @@ async function fetchFromExternalApisInner(apiKeys?: {
 
   // Tore / Karten / Wechsel aus Timeline (begrenzt, live priorisiert)
   try {
-    matches = await enrichMatchesPlayerEvents(matches, key, 8);
+    matches = await enrichMatchesPlayerEvents(matches, key, 18);
   } catch (e) {
     errors.push(
       `timeline: ${e instanceof Error ? e.message : String(e)}`

@@ -106,6 +106,10 @@ export interface MatchPlayerAppearance {
   position?: PlayerPosition;
   /** In der Startelf? */
   isStarter?: boolean;
+  /** Hat gespielt (true/false) – null/undefined = unbekannt */
+  didPlay?: boolean;
+  /** Lineup/Timeline von API geladen? */
+  eventsKnown?: boolean;
   minutesPlayed?: number;
   goals?: number;
   assists?: number;

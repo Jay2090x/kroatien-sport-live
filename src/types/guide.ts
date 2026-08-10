@@ -41,6 +41,15 @@ export interface StreamProvider {
 export interface GuideMatchPlayer {
   playerId: string;
   playerName: string;
+  isStarter?: boolean;
+  didPlay?: boolean;
+  minutesPlayed?: number;
+  goals?: number;
+  yellowCards?: number;
+  redCard?: boolean;
+  substitutedOn?: number | null;
+  substitutedOff?: number | null;
+  eventsKnown?: boolean;
 }
 
 export interface GuideMatch {

@@ -1,6 +1,7 @@
 /**
- * TheSportsDB Timeline + Lineup → Spieler-Events (Tore, Karten, Wechsel).
- * Nur echte API-Daten, keine Spekulation. Rate-Limit-freundlich (parallel begrenzt).
+ * TheSportsDB Timeline + Lineup → echte Spieler-Events.
+ * Zeigt: gespielt ja/nein, Minuten, Startelf/Bank, Ein-/Auswechslung, Tore, Karten.
+ * Nur API-Daten – wenn Timeline fehlt: eventsKnown=false (kein Raten).
  */
 
 import type { Match, MatchPlayerAppearance } from "@/types";
@@ -47,10 +48,15 @@ function namesMatch(a: string, b: string): boolean {
   const nb = normName(b);
   if (!na || !nb) return false;
   if (na === nb) return true;
-  // Nachname
-  const la = na.split(" ").pop() || na;
-  const lb = nb.split(" ").pop() || nb;
-  if (la.length > 3 && la === lb) return true;
+  const partsA = na.split(" ").filter((p) => p.length > 2);
+  const partsB = nb.split(" ").filter((p) => p.length > 2);
+  if (partsA.length && partsB.length) {
+    const lastA = partsA[partsA.length - 1]!;
+    const lastB = partsB[partsB.length - 1]!;
+    if (lastA.length > 3 && lastA === lastB) return true;
+    // shared significant token
+    if (partsA.some((p) => partsB.includes(p) && p.length > 3)) return true;
+  }
   return na.includes(nb) || nb.includes(na);
 }
 
@@ -62,11 +68,13 @@ function parseMin(raw?: string | null): number | null {
 
 function isGoal(type: string, detail: string): boolean {
   const t = `${type} ${detail}`.toLowerCase();
+  if (t.includes("missed") || t.includes("saved") || t.includes("disallowed"))
+    return false;
   return (
     /\bgoal\b/.test(t) ||
     t.includes("scored") ||
     t.includes("penalty scored") ||
-    (t.includes("penalty") && !t.includes("missed") && !t.includes("saved"))
+    (t.includes("penalty") && t.includes("goal"))
   );
 }
 
@@ -81,13 +89,13 @@ function isRed(type: string, detail: string): boolean {
 }
 
 function isSub(type: string): boolean {
-  return /subst|substitution|sub\b/i.test(type);
+  return /subst|substitution|\bsub\b/i.test(type);
 }
 
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
     const res = await fetch(url, {
-      next: { revalidate: 120 },
+      next: { revalidate: 90 },
       headers: { Accept: "application/json" },
     });
     if (!res.ok) return null;
@@ -97,17 +105,55 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
+function applyLineup(
+  croats: MatchPlayerAppearance[],
+  rows: LineupRow[]
+): MatchPlayerAppearance[] {
+  const anyHit = croats.some((c) =>
+    rows.some((r) => r.strPlayer && namesMatch(r.strPlayer, c.playerName))
+  );
+
+  return croats.map((c) => {
+    const hit = rows.find(
+      (r) => r.strPlayer && namesMatch(r.strPlayer, c.playerName)
+    );
+    if (!hit) {
+      // Lineup known but player not listed → likely not in squad
+      if (anyHit || rows.length >= 11) {
+        return {
+          ...c,
+          isStarter: false,
+          didPlay: false,
+          minutesPlayed: 0,
+          eventsKnown: true,
+        };
+      }
+      return { ...c, eventsKnown: c.eventsKnown };
+    }
+    const sub = (hit.strSubstitute || "").toLowerCase() === "yes";
+    return {
+      ...c,
+      isStarter: !sub,
+      // bench until timeline says subbed on
+      didPlay: !sub ? true : c.didPlay,
+      eventsKnown: true,
+    };
+  });
+}
+
 function applyTimeline(
   croats: MatchPlayerAppearance[],
-  rows: TimelineRow[]
+  rows: TimelineRow[],
+  matchFinished: boolean
 ): MatchPlayerAppearance[] {
   return croats.map((c) => {
-    let goals = c.goals ?? 0;
-    let assists = c.assists ?? 0;
-    let yellowCards = c.yellowCards ?? 0;
-    let redCard = c.redCard ?? false;
+    let goals = 0;
+    let assists = 0;
+    let yellowCards = 0;
+    let redCard = false;
     let substitutedOn = c.substitutedOn ?? null;
     let substitutedOff = c.substitutedOff ?? null;
+    let mentioned = false;
 
     for (const row of rows) {
       const player = row.strPlayer || "";
@@ -116,48 +162,66 @@ function applyTimeline(
       const detail = row.strTimelineDetail || "";
       const min = parseMin(row.intTime);
 
-      if (player && namesMatch(player, c.playerName)) {
+      const isPlayer = player && namesMatch(player, c.playerName);
+      const isAssistName = assist && namesMatch(assist, c.playerName);
+      const isDetail = detail && namesMatch(detail, c.playerName);
+
+      if (isPlayer) {
+        mentioned = true;
         if (isGoal(type, detail)) goals += 1;
         if (isYellow(type, detail)) yellowCards += 1;
         if (isRed(type, detail)) redCard = true;
-        if (isSub(type)) {
-          // Player leaving: strPlayer is often the one going off
-          if (substitutedOff == null && min != null) substitutedOff = min;
+        if (isSub(type) && min != null) {
+          // strPlayer on subst = usually player going OFF
+          if (substitutedOff == null) substitutedOff = min;
         }
       }
-      if (assist && namesMatch(assist, c.playerName)) {
-        if (isGoal(type, detail) || isSub(type)) {
-          // Assist on goal
-          if (isGoal(type, detail)) assists += 1;
-        }
-        // On subst, strAssist is often the player coming ON
-        if (isSub(type) && substitutedOn == null && min != null) {
+      if (isAssistName) {
+        mentioned = true;
+        if (isGoal(type, detail)) assists += 1;
+        if (isSub(type) && min != null && substitutedOn == null) {
+          // strAssist often = player coming ON
           substitutedOn = min;
         }
       }
-      // Some feeds put incoming player in strTimelineDetail on subst
-      if (
-        isSub(type) &&
-        detail &&
-        namesMatch(detail, c.playerName) &&
-        substitutedOn == null &&
-        min != null
-      ) {
+      if (isDetail && isSub(type) && min != null && substitutedOn == null) {
+        mentioned = true;
         substitutedOn = min;
       }
     }
 
-    // Minutes estimate
+    // Participation
+    let didPlay = c.didPlay;
+    if (c.isStarter === true) didPlay = true;
+    if (substitutedOn != null) didPlay = true;
+    if (substitutedOff != null) didPlay = true;
+    if (goals > 0 || assists > 0 || yellowCards > 0 || redCard) didPlay = true;
+    if (mentioned && didPlay == null) didPlay = true;
+    // Explicit bench + no sub on + finished → did not play
+    if (
+      matchFinished &&
+      c.isStarter === false &&
+      substitutedOn == null &&
+      !mentioned &&
+      c.eventsKnown
+    ) {
+      didPlay = false;
+    }
+
     let minutesPlayed = c.minutesPlayed;
-    if (minutesPlayed == null) {
+    if (didPlay === false) minutesPlayed = 0;
+    else if (minutesPlayed == null) {
       if (substitutedOn != null && substitutedOff != null) {
         minutesPlayed = Math.max(0, substitutedOff - substitutedOn);
       } else if (substitutedOn != null) {
-        minutesPlayed = Math.max(0, 90 - substitutedOn);
+        minutesPlayed = Math.max(1, 90 - substitutedOn);
       } else if (substitutedOff != null) {
         minutesPlayed = substitutedOff;
-      } else if (c.isStarter) {
+      } else if (c.isStarter === true && matchFinished) {
         minutesPlayed = 90;
+      } else if (c.isStarter === true && !matchFinished) {
+        // live: unknown exact minutes
+        minutesPlayed = undefined;
       }
     }
 
@@ -169,32 +233,13 @@ function applyTimeline(
       redCard: redCard || undefined,
       substitutedOn,
       substitutedOff,
-      minutesPlayed: minutesPlayed ?? undefined,
+      minutesPlayed,
+      didPlay: didPlay ?? undefined,
+      eventsKnown: true,
     };
   });
 }
 
-function applyLineup(
-  croats: MatchPlayerAppearance[],
-  rows: LineupRow[]
-): MatchPlayerAppearance[] {
-  return croats.map((c) => {
-    const hit = rows.find(
-      (r) => r.strPlayer && namesMatch(r.strPlayer, c.playerName)
-    );
-    if (!hit) return c;
-    const sub = (hit.strSubstitute || "").toLowerCase() === "yes";
-    return {
-      ...c,
-      isStarter: !sub,
-      position: c.position,
-    };
-  });
-}
-
-/**
- * Reichert ein Match mit Timeline/Lineup an (wenn TheSportsDB-ID vorhanden).
- */
 export async function enrichMatchPlayerEvents(
   match: Match,
   key?: string
@@ -219,21 +264,37 @@ export async function enrichMatchPlayerEvents(
     ),
   ]);
 
-  let croats = [...match.croatianPlayers];
-  if (lu?.lineup?.length) croats = applyLineup(croats, lu.lineup);
-  if (tl?.timeline?.length) croats = applyTimeline(croats, tl.timeline);
+  let croats: MatchPlayerAppearance[] = match.croatianPlayers.map((c) => ({
+    ...c,
+    eventsKnown: false,
+  }));
+
+  const hasLineup = Boolean(lu?.lineup?.length);
+  const hasTimeline = Boolean(tl?.timeline?.length);
+
+  if (hasLineup) croats = applyLineup(croats, lu!.lineup!);
+  if (hasTimeline) {
+    croats = applyTimeline(
+      croats,
+      tl!.timeline!,
+      match.status === "finished"
+    );
+  }
+
+  // If we got neither, mark unknown
+  if (!hasLineup && !hasTimeline) {
+    croats = croats.map((c) => ({ ...c, eventsKnown: false }));
+  }
 
   return { ...match, croatianPlayers: croats };
 }
 
-/**
- * Parallel begrenzt (Free-API-Limits).
- */
 export async function enrichMatchesPlayerEvents(
   matches: Match[],
   key?: string,
-  max = 8
+  max = 18
 ): Promise<Match[]> {
+  const now = Date.now();
   const candidates = matches
     .filter(
       (m) =>
@@ -241,21 +302,34 @@ export async function enrichMatchesPlayerEvents(
         m.croatianPlayers?.length &&
         (m.status === "live" ||
           m.status === "halftime" ||
-          m.status === "finished")
+          (m.status === "finished" &&
+            now - new Date(m.kickoff).getTime() < 10 * 24 * 3600_000))
     )
-    // Live first, then finished recent
     .sort((a, b) => {
-      const score = (m: Match) =>
-        m.status === "live" || m.status === "halftime" ? 2 : 1;
+      const score = (m: Match) => {
+        if (m.status === "live" || m.status === "halftime") return 100;
+        if (m.status === "finished") {
+          const age = now - new Date(m.kickoff).getTime();
+          return 50 - age / (24 * 3600_000);
+        }
+        return 0;
+      };
       return score(b) - score(a);
     })
     .slice(0, max);
 
   if (!candidates.length) return matches;
 
-  const enriched = await Promise.all(
-    candidates.map((m) => enrichMatchPlayerEvents(m, key))
-  );
+  // sequential batches of 4 to ease free-tier limits
+  const enriched: Match[] = [];
+  for (let i = 0; i < candidates.length; i += 4) {
+    const batch = candidates.slice(i, i + 4);
+    const part = await Promise.all(
+      batch.map((m) => enrichMatchPlayerEvents(m, key))
+    );
+    enriched.push(...part);
+  }
+
   const byId = new Map(enriched.map((m) => [m.id, m]));
   return matches.map((m) => byId.get(m.id) ?? m);
 }

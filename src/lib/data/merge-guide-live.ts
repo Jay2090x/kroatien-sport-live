@@ -79,6 +79,15 @@ export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
   const croatianPlayers = (m.croatianPlayers ?? []).map((p) => ({
     playerId: p.playerId,
     playerName: p.playerName,
+    isStarter: p.isStarter,
+    didPlay: p.didPlay,
+    minutesPlayed: p.minutesPlayed,
+    goals: p.goals,
+    yellowCards: p.yellowCards,
+    redCard: p.redCard,
+    substitutedOn: p.substitutedOn,
+    substitutedOff: p.substitutedOff,
+    eventsKnown: p.eventsKnown,
   }));
 
   return {
@@ -158,8 +167,9 @@ export function mergeGuideWithLive(
     .filter((m) => {
       if (m.status === "live") return true;
       if (m.status === "finished") {
+        // Abgelaufene Spiele 7 Tage behalten (aufklappbar im Board)
         const t = new Date(m.kickoff).getTime();
-        return t >= now - 2 * MS_DAY && t <= now;
+        return t >= now - 7 * MS_DAY && t <= now + MS_DAY;
       }
       return withinNextDays(m.kickoff, UPCOMING_WINDOW_DAYS, now);
     });

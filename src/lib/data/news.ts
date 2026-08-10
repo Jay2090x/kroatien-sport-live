@@ -112,6 +112,105 @@ const IMG = {
  */
 export const EDITORIAL_NEWS: NewsArticle[] = [
   {
+    id: "vatreni-legacy-successes-2026",
+    date: "2026-08-04",
+    featured: true,
+    category: "vatreni",
+    tag: {
+      de: "Erfolge",
+      en: "Success",
+      hr: "Uspjesi",
+    },
+    title: {
+      de: "Kroatische Fußball-Erfolge: Was die Vatreni geprägt hat",
+      en: "Croatian football successes: what shaped the Vatreni",
+      hr: "Hrvatski nogometni uspjesi: što je oblikovalo Vatrene",
+    },
+    summary: {
+      de: "WM-Finale 2018, WM-Bronze 2022, Nations-League- und EM-Highlights – die wichtigsten Erfolge der kroatischen Nationalmannschaft im Überblick für Fans und SEO-Kontext.",
+      en: "2018 World Cup final, 2022 bronze, Nations League and EURO highlights – Croatia’s key national-team successes for fans and context.",
+      hr: "Finale SP 2018., bronca 2022., Liga nacija i EP – ključni uspjesi hrvatske reprezentacije za navijače i kontekst.",
+    },
+    body: {
+      de: "Die kroatische A-Nationalmannschaft gehört seit der WM 2018 dauerhaft zur europäischen Spitze. Vize-Weltmeister 2018 in Russland, WM-Dritter 2022 in Katar und regelmäßige Teilnehmer an EM und UEFA Nations League – das sind die Bezugspunkte, an denen sich die aktuelle Generation unter Trainer Slaven Bilić misst.\n\nFür Fans und Suchmaschinen fassen wir die Erfolge nicht als leere Superlative, sondern als historischen Rahmen: Club-Form in den Top-Ligen (Serie A, Premier League, Bundesliga) speist die Nationalmannschaft. Auf Kroatien Sport Live siehst du deshalb parallel Live-Spiele mit kroatischen Profis, den Nationalteam-Kalender und den Spieler-Tracker – ohne spekulative Aufstellungen.\n\nWichtige Stichworte für die Orientierung: Vatreni, WM 2018, Bronze 2022, Nations League, EM-Qualifikation, HNS. Aktuelle Headlines und Transfernews ergänzen den historischen Blick – immer mit Link zur Originalquelle.",
+      en: "Since the 2018 World Cup Croatia’s senior team has stayed among Europe’s elite: runners-up in Russia 2018, bronze in Qatar 2022, regulars at EURO and the UEFA Nations League. That is the bar for the current generation under coach Slaven Bilić.\n\nWe frame those successes as context, not empty hype: club form in top leagues feeds the national side. On Croatia Sport Live you get live fixtures with Croatian pros, the national-team calendar and the player tracker – without speculative line-ups.\n\nUseful keywords: Vatreni, World Cup 2018, bronze 2022, Nations League, EURO qualifying, HNS. Current headlines and transfer news sit alongside that history – always with a link to the original source.",
+      hr: "Od SP-a 2018. A reprezentacija je stalno među europskom elitom: doprvaci u Rusiji 2018., bronca u Kataru 2022., redoviti na EP-u i UEFA Ligi nacija. To je mjerilo za generaciju pod izbornikom Slavenom Bilićem.\n\nUspjehe ne tretiramo kao prazne superlative nego kao kontekst: klupska forma u top ligama hrani reprezentaciju. Na Kroatien Sport Live paralelno vidiš live utakmice s hrvatskim igračima, kalendar reprezentacije i tracker – bez spekulativnih sastava.\n\nKljučne riječi: Vatreni, SP 2018., bronca 2022., Liga nacija, kvalifikacije, HNS. Aktualni naslovi i transferi nadopunjuju povijest – uvijek s linkom na izvor.",
+    },
+    image: {
+      url: IMG.worldCup,
+      alt: {
+        de: "Fußball-WM",
+        en: "World Cup",
+        hr: "Svjetsko prvenstvo",
+      },
+    },
+  },
+  {
+    id: "modric-ballondor-legacy-success",
+    date: "2026-08-03",
+    featured: true,
+    category: "clubs",
+    tag: {
+      de: "Legende",
+      en: "Legend",
+      hr: "Legenda",
+    },
+    title: {
+      de: "Luka Modrić und die kroatische Erfolgsgeschichte im Club-Fußball",
+      en: "Luka Modrić and Croatia’s club football success story",
+      hr: "Luka Modrić i hrvatska uspješnica u klupskom nogometu",
+    },
+    summary: {
+      de: "Ballon d’Or, Champions-League-Titel mit Real Madrid, jetzt AC Milan – der Kapitän der Vatreni als Symbol kroatischer Exzellenz in Europas Top-Clubs.",
+      en: "Ballon d’Or, Champions League titles with Real Madrid, now AC Milan – the Vatreni captain as a symbol of Croatian excellence in Europe’s top clubs.",
+      hr: "Zlatna lopta, naslovi Lige prvaka s Realom, sada AC Milan – kapetan Vatrenih kao simbol hrvatske izvrsnosti u top klubovima Europe.",
+    },
+    body: {
+      de: "Luka Modrić steht für den größten individuellen und kollektiven Erfolg kroatischer Fußballer der letzten Jahrzehnte: Ballon d’Or 2018, mehrfache Champions-League-Sieger mit Real Madrid, Kapitän der Vize-Weltmeister. Seine Station bei AC Milan (Vertrag bis 2027) hält ihn in der Serie A präsent – relevant für Form und Vorbild der jüngeren Generation (Gvardiol, Vušković, Baturina und Co.).\n\nAuf Kroatien Sport Live verfolgen wir seine und andere Club-Termine im Live-Board und Tracker. Erfolge wie seine dienen als redaktioneller Anker: nicht als Fan-Fiction, sondern als belegter Kontext neben aktuellen Headlines und Transfermeldungen mit Original-Link.",
+      en: "Luka Modrić embodies Croatia’s biggest individual and collective club successes of recent decades: Ballon d’Or 2018, multiple Champions League titles with Real Madrid, captain of the World Cup runners-up. His spell at AC Milan (deal to 2027) keeps him in Serie A – relevant for form and as a role model for the next wave (Gvardiol, Vušković, Baturina and others).\n\nOn Croatia Sport Live we track his and other club fixtures on the live board and tracker. Successes like his are editorial anchors: not fan fiction, but documented context next to current headlines and transfer notes with original links.",
+      hr: "Luka Modrić utjelovljuje najveće individualne i kolektivne klupske uspjehe hrvatskog nogometa: Zlatna lopta 2018., naslovi Lige prvaka s Realom, kapetan doprvaka svijeta. Epizoda u AC Milanu (ugovor do 2027.) drži ga u Serie A – važno za formu i kao uzor mlađoj generaciji (Gvardiol, Vušković, Baturina…).\n\nNa Kroatien Sport Live pratimo njegove i druge klupske termine na live boardu i trackeru. Takvi uspjesi su uredničko sidro: ne fan-fiction, nego dokumentirani kontekst uz aktualne naslove i transfere s originalnim linkom.",
+    },
+    playerId: "modric",
+    image: {
+      url: IMG.modric,
+      alt: {
+        de: "Luka Modrić",
+        en: "Luka Modrić",
+        hr: "Luka Modrić",
+      },
+    },
+  },
+  {
+    id: "hnl-europe-success-context-2026",
+    date: "2026-08-01",
+    featured: true,
+    category: "hnl",
+    tag: {
+      de: "HNL / Europa",
+      en: "HNL / Europe",
+      hr: "HNL / Europa",
+    },
+    title: {
+      de: "HNL-Clubs in Europa: Erfolge, Quali und Bedeutung für die Vatreni",
+      en: "HNL clubs in Europe: success, qualifying and why it matters for the Vatreni",
+      hr: "HNL klubovi u Europi: uspjesi, kvalifikacije i važnost za Vatrene",
+    },
+    summary: {
+      de: "Dinamo, Hajduk, Rijeka & Co. in europäischen Wettbewerben – Minuten und Erfahrung für den kroatischen Fußball, sichtbar im Live-Board.",
+      en: "Dinamo, Hajduk, Rijeka & co. in European competitions – minutes and experience for Croatian football, visible on the live board.",
+      hr: "Dinamo, Hajduk, Rijeka i ostali u Europi – minute i iskustvo za hrvatski nogomet, vidljivo na live boardu.",
+    },
+    body: {
+      de: "Europäische Qualifikationsrunden und Gruppenphasen der kroatischen Clubs sind mehr als Club-Prestige: Sie geben Spielern Spielpraxis auf hohem Niveau und speisen die Nationalmannschaft. Erfolge und knappe Duelle in Conference League, Europa League oder Champions-League-Quali gehören deshalb in den redaktionellen Rahmen von Kroatien Sport Live.\n\nWir listen anstehende und kürzlich beendete Spiele mit kroatischer Beteiligung im Live-Board (inkl. aufklappbarer Ergebnisse der letzten Tage) und verknüpfen sie mit dem Tracker. Aktuelle Headlines zu HNL und Europa ergänzen den Überblick – mit Teaser auf KSL und Volltext nur beim Original-Anbieter.",
+      en: "European qualifying and group stages for Croatian clubs are more than prestige: they give players high-level minutes and feed the national team. Successes and tight ties in the Conference League, Europa League or Champions League qualifiers belong in Croatia Sport Live’s editorial frame.\n\nWe list upcoming and recent fixtures with Croatian involvement on the live board (including expandable results from recent days) and link them to the tracker. Headlines on HNL and Europe complete the picture – teaser on KSL, full text only at the original publisher.",
+      hr: "Europske kvalifikacije i skupine hrvatskih klubova nisu samo prestiž: daju igračima minute na visokoj razini i hrane reprezentaciju. Uspjesi i tijesni dvoboji u Konferencijskoj ligi, Europskoj ligi ili kvalifikacijama Lige prvaka stoga spadaju u urednički okvir Kroatien Sport Live.\n\nNadolazeće i nedavne utakmice s hrvatskim igračima listamo na live boardu (uključujući proširene rezultate zadnjih dana) i vežemo ih na tracker. Naslovi o HNL-u i Europi dopunjuju pregled – teaser na KSL-u, full tekst samo kod izvornog izdavača.",
+    },
+    image: {
+      url: IMG.hnl,
+      alt: { de: "HNL", en: "HNL", hr: "HNL" },
+    },
+  },
+  {
     id: "modric-milan-contract-2027",
     date: "2026-07-23",
     featured: true,
