@@ -104,11 +104,14 @@ const BLACKLIST =
 const LOW_INTEREST =
   /^(live|ticker|ergebnis|ergebnisse|vorschau|preview|heute|today|video)\b|bilder|gallery|fotostrecke|so\s+lief|im\s+überblick|kurz\s*notiert|nachrichten\s*überblick|was\s+sie\s+wissen|top\s*stories|morning\s*brief/i;
 
-const RELEVANCE =
-  /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|gvardiol|kova[cč]|peri[sš]|livakovi|budimir|suk|maj[eе]r|pasalic|pašalić|brozovi|or[sš]i[cć]|petkovi|ivanu[sš]|modric|nogomet|football|soccer|reprezent|izbornik|transfer|nations|liga\s*nacija|serie\s*a|milan|premier|bundesliga|kroatien/i;
+/** Pflicht: Kroatien-Bezug im Titel – sonst raus (kein BVB-/PL-Spam) */
+const CROAT_SIGNAL =
+  /croat|kroatien|hrvat|vatren|hnl|hajduk|modri[cć]|modric|gvardiol|kova[cč]i[cć]|peri[sš]i[cć]|livakovi|budimir|pa[sš]ali[cć]|brozovi|maj[eе]r|su[cć]i[cć]|baturina|juranovi[cć]|stani[sš]i[cć]|petkovi[cć]|ivanu[sš]ec|sosa|bili[cć]|izbornik|reprezent|dinamo\s*zagreb|gnk\s*dinamo|rijeka|osijek|lokomotiva|varazdin|šibenik|sibenik/i;
+
+const RELEVANCE = CROAT_SIGNAL;
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const CACHE_VER = "v5-dedupe-interest";
+const CACHE_VER = "v6-croat-signal";
 
 /** Stopwords for near-duplicate fingerprints (de/en/hr) */
 const STOP = new Set(

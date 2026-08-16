@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { ValueBoard } from "@/components/players/value-board";
 import { LiveMatchBoard } from "@/components/guide/live-match-board";
 import { MyWeek } from "@/components/favorites/my-week";
 import { NationalTeamSection } from "@/components/national-team/national-team-section";
@@ -15,7 +16,7 @@ import { ComingSoonSports } from "@/components/sports/coming-soon-sports";
 
 /**
  * Value hub:
- * Live → Meine Woche → News → NT → Tracker → Legal
+ * Kroaten-Übersicht (nächstes+letztes Spiel) → Live → Woche → News → NT → Tracker
  */
 export default async function HomePage({
   params,
@@ -38,6 +39,8 @@ export default async function HomePage({
       <Navbar />
       <main className="pb-20 lg:pb-0">
         <div className="mx-auto max-w-7xl space-y-10 px-3 py-5 sm:space-y-12 sm:px-6 sm:py-7 lg:px-8">
+          <ValueBoard />
+
           <div id="live-board" className="scroll-mt-16">
             <LiveMatchBoard />
           </div>

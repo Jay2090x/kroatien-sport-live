@@ -318,6 +318,11 @@ export function mergeGuideWithLive(
       s === "live" ? 0 : s === "upcoming" ? 1 : 2;
     const d = rank(a.status) - rank(b.status);
     if (d !== 0) return d;
+    // Freundschaften nach hinten – Pflichtspiele zuerst
+    const friendly = (m: GuideMatch) =>
+      /friend|freundschaft|friendly/i.test(m.competition) ? 1 : 0;
+    const fd = friendly(a) - friendly(b);
+    if (fd !== 0) return fd;
     return new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime();
   });
 }

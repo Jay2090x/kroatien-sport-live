@@ -4,6 +4,17 @@
     "description": "Live board, TV vodič (HRT, Arena, Sportklub), legalni streamovi i tracker – mobilno i pouzdano.",
     "keywords": "Hrvatska Sport Live, HRT, Arena Sport, HNL, Vatreni, TV savjeti, vijesti"
   },
+  "ValueBoard": {
+    "title": "Hrvati na prvi pogled",
+    "subtitle": "Iduća klupska utakmica · zadnji rezultat · forma – prava vrijednost",
+    "next": "Iduća",
+    "last": "Zadnja",
+    "noNext": "Nema termina u feedu",
+    "noLast": "Nema rezultata u feedu",
+    "liveNow": "uživo",
+    "empty": "Nema klupskih termina. Pričekaj API ili osvježi.",
+    "footnote": "Mapiranje preko kluba (strogo). Minute/golovi samo kad API da lineup/timeline – inače rezultat + protivnik."
+  },
   "Guide": {
     "liveNow": "Uživo sada",
     "upcoming": "Uskoro",

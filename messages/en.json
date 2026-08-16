@@ -4,6 +4,17 @@
     "description": "Live board, TV guide (HRT, Arena, Sportklub), legal streams and tracker for Croatian sports – mobile-first & trustworthy.",
     "keywords": "Croatia Sport Live, HRT, Arena Sport, HNL, Vatreni, TV tips, news"
   },
+  "ValueBoard": {
+    "title": "Croatians at a glance",
+    "subtitle": "Next club fixture · last result · form – the core value",
+    "next": "Next match",
+    "last": "Last",
+    "noNext": "No fixture in feed",
+    "noLast": "No result in feed",
+    "liveNow": "live now",
+    "empty": "No club fixtures loaded. Wait for the API or refresh.",
+    "footnote": "Matched by club (strict). Minutes/goals only when the API provides lineup/timeline – otherwise score + opponent."
+  },
   "Guide": {
     "liveNow": "Live Now",
     "upcoming": "Upcoming",

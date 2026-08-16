@@ -1,9 +1,11 @@
 /**
  * Recent form (W/D/L) + last appearances with real event data.
+ * Club-aware: finds fixtures even if player not listed in croatianPlayers.
  * Only from matches already in the feed – nothing invented.
  */
 
 import type { Match, MatchPlayerAppearance, Player } from "@/types";
+import { teamsMatch } from "@/lib/team-match";
 
 export type FormResult = "W" | "D" | "L";
 
@@ -22,20 +24,48 @@ export type PlayerAppearanceSummary = {
 export function computePlayerForm(
   playerId: string,
   matches: Match[],
-  max = 5
+  max = 5,
+  player?: Player
 ): FormResult[] {
-  return computePlayerAppearances(playerId, matches, max)
+  return computePlayerAppearances(playerId, matches, max, player)
     .map((a) => a.form)
     .filter((f): f is FormResult => f != null);
 }
 
+function resolveSide(
+  playerId: string,
+  player: Player | undefined,
+  m: Match
+): "home" | "away" | null {
+  const listed = m.croatianPlayers.find((p) => p.playerId === playerId);
+  if (listed?.teamSide) return listed.teamSide;
+  if (player?.club) {
+    if (teamsMatch(player.club, m.homeTeam)) return "home";
+    if (teamsMatch(player.club, m.awayTeam)) return "away";
+  }
+  return null;
+}
+
+function matchInvolvesPlayer(
+  playerId: string,
+  player: Player | undefined,
+  m: Match
+): boolean {
+  if (m.croatianPlayers.some((p) => p.playerId === playerId)) return true;
+  if (!player?.club) return false;
+  return (
+    teamsMatch(player.club, m.homeTeam) || teamsMatch(player.club, m.awayTeam)
+  );
+}
+
 /**
- * Letzte Einsätze (live + beendet), neueste zuerst – mit Minuten/Events.
+ * Letzte Club-Spiele (live + beendet), neueste zuerst.
  */
 export function computePlayerAppearances(
   playerId: string,
   matches: Match[],
-  max = 5
+  max = 5,
+  player?: Player
 ): PlayerAppearanceSummary[] {
   const relevant = matches
     .filter(
@@ -43,7 +73,7 @@ export function computePlayerAppearances(
         (m.status === "finished" ||
           m.status === "live" ||
           m.status === "halftime") &&
-        m.croatianPlayers.some((p) => p.playerId === playerId)
+        matchInvolvesPlayer(playerId, player, m)
     )
     .sort(
       (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
@@ -52,13 +82,20 @@ export function computePlayerAppearances(
 
   const out: PlayerAppearanceSummary[] = [];
   for (const m of relevant) {
-    const app = m.croatianPlayers.find((p) => p.playerId === playerId);
-    if (!app) continue;
+    const side = resolveSide(playerId, player, m);
+    const listed = m.croatianPlayers.find((p) => p.playerId === playerId);
+    const app: MatchPlayerAppearance = listed ?? {
+      playerId,
+      playerName: player?.name ?? playerId,
+      teamSide: side ?? "home",
+      position: player?.position,
+      eventsKnown: false,
+    };
 
     const vs =
-      app.teamSide === "home"
+      side === "home"
         ? m.awayTeam
-        : app.teamSide === "away"
+        : side === "away"
           ? m.homeTeam
           : m.awayTeam;
 
@@ -67,19 +104,12 @@ export function computePlayerAppearances(
       m.status === "finished" &&
       m.homeScore != null &&
       m.awayScore != null &&
-      (app.teamSide === "home" || app.teamSide === "away")
+      side
     ) {
       if (m.homeScore === m.awayScore) form = "D";
       else {
         const homeWin = m.homeScore > m.awayScore;
-        form =
-          app.teamSide === "home"
-            ? homeWin
-              ? "W"
-              : "L"
-            : homeWin
-              ? "L"
-              : "W";
+        form = side === "home" ? (homeWin ? "W" : "L") : homeWin ? "L" : "W";
       }
     }
 
@@ -95,7 +125,7 @@ export function computePlayerAppearances(
       scoreLabel,
       form,
       app,
-      chip: appearanceChip(app),
+      chip: listed ? appearanceChip(listed) : "Club",
     });
   }
   return out;

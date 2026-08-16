@@ -22,6 +22,7 @@ import {
 import { applySystemAvailability } from "@/lib/player-availability";
 import { fetchCroatiaNationalTeamMatches } from "@/lib/api/croatia-nt";
 import { enrichMatchesPlayerEvents } from "@/lib/api/tsdb-timeline";
+import { teamsMatch, playerSideForMatch } from "@/lib/team-match";
 
 export interface LiveBundle {
   players: Player[];
@@ -586,19 +587,17 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
     e.idAwayTeam === CROATIA_NT_TEAM_ID;
 
   const croatianPlayers = players
-    .filter((p) => {
-      if (!p.club) return false;
-      return (
-        fuzzyTeamMatch(p.club, home) ||
-        fuzzyTeamMatch(p.club, away) ||
-        (p.clubId && (p.clubId === e.idHomeTeam || p.clubId === e.idAwayTeam))
-      );
-    })
     .map((p) => {
-      const side: "home" | "away" =
-        fuzzyTeamMatch(p.club, home) || p.clubId === e.idHomeTeam
-          ? "home"
-          : "away";
+      if (!p.club && !p.clubId) return null;
+      const side = playerSideForMatch(
+        p.club || "",
+        p.clubId,
+        home,
+        away,
+        e.idHomeTeam,
+        e.idAwayTeam
+      );
+      if (!side) return null;
       return {
         playerId: p.id,
         playerName: p.name,
@@ -608,7 +607,8 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
         isStarter: undefined,
         expectedToPlay: undefined,
       };
-    });
+    })
+    .filter((x): x is NonNullable<typeof x> => x != null);
 
   // NT: Match behalten auch ohne Kader (Kader oft noch nicht nominiert)
   // Club-Matches ohne kroatische Spieler weglassen
@@ -650,24 +650,9 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
   };
 }
 
+/** @deprecated use teamsMatch – kept name for call sites */
 function fuzzyTeamMatch(a: string, b: string): boolean {
-  const clean = (s: string) =>
-    s
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\b(fc|afc|sc|ssc|gnk|hnk|vfl|rb|ac|as|cf|fk|nk|sv|1\.)\b/g, "")
-      .replace(/[^a-z0-9\s]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  const ca = clean(a);
-  const cb = clean(b);
-  if (!ca || !cb) return false;
-  if (ca === cb) return true;
-  if (ca.includes(cb) || cb.includes(ca)) return true;
-  const a0 = ca.split(" ")[0];
-  const b0 = cb.split(" ")[0];
-  return a0.length > 3 && a0 === b0;
+  return teamsMatch(a, b);
 }
 
 function mapTsdbStatus(

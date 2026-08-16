@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { isExpectedToPlay } from "@/lib/player-availability";
-import type { Match } from "@/types";
 import { useMemo } from "react";
+import { buildNextMatchByPlayer } from "@/lib/player-schedule";
 
 /**
  * Kompakte, einheitliche Spieler-Liste
@@ -32,8 +32,8 @@ export function PlayerTracker() {
   const { favoritesOnly, setFavoritesOnly, favoriteIds } = useFavorites();
 
   const nextByPlayer = useMemo(
-    () => buildNextMatchIndex(matches),
-    [matches]
+    () => buildNextMatchByPlayer(players, matches),
+    [players, matches]
   );
 
   const list = useMemo(() => {
@@ -156,24 +156,4 @@ export function PlayerTracker() {
   );
 }
 
-function buildNextMatchIndex(matches: Match[]): Map<string, Match> {
-  const map = new Map<string, Match>();
-  const upcoming = matches
-    .filter(
-      (m) =>
-        m.status === "scheduled" ||
-        m.status === "live" ||
-        m.status === "halftime" ||
-        m.status === "postponed"
-    )
-    .sort(
-      (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
-    );
 
-  for (const m of upcoming) {
-    for (const p of m.croatianPlayers) {
-      if (!map.has(p.playerId)) map.set(p.playerId, m);
-    }
-  }
-  return map;
-}

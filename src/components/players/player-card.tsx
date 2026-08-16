@@ -19,6 +19,7 @@ import {
   type FormResult,
   type PlayerAppearanceSummary,
 } from "@/lib/player-form";
+import { teamsMatch } from "@/lib/team-match";
 import { Link } from "@/i18n/navigation";
 
 export interface PlayerCardProps {
@@ -56,10 +57,10 @@ export function PlayerCard({
   const out = !isExpectedToPlay(player.availability);
   const short = getAvailabilityDisplayShort(player, locale);
   const form = allMatches
-    ? computePlayerForm(player.id, allMatches, 5)
+    ? computePlayerForm(player.id, allMatches, 5, player)
     : [];
   const recentApps = allMatches
-    ? computePlayerAppearances(player.id, allMatches, 5)
+    ? computePlayerAppearances(player.id, allMatches, 5, player)
     : [];
   const nextLine = nextMatch
     ? formatNextLine(nextMatch, player, nextPrefix, liveLabel, locale)
@@ -332,7 +333,12 @@ function formatNextLine(
   liveLabel: string,
   locale: string
 ): string {
-  const side = m.croatianPlayers.find((p) => p.playerId === player.id)?.teamSide;
+  const listed = m.croatianPlayers.find((p) => p.playerId === player.id);
+  let side = listed?.teamSide;
+  if (!side && player.club) {
+    if (teamsMatch(player.club, m.homeTeam)) side = "home";
+    else if (teamsMatch(player.club, m.awayTeam)) side = "away";
+  }
   const rawOpp =
     side === "home"
       ? m.awayTeam
@@ -345,5 +351,9 @@ function formatNextLine(
   const when = isLiveStatus(m.status)
     ? liveLabel
     : formatKickoff(m.kickoff, "d. MMM HH:mm", locale);
-  return `${prefix}: ${when} · vs ${opp}`;
+  const score =
+    isLiveStatus(m.status) && m.homeScore != null
+      ? ` ${m.homeScore}:${m.awayScore ?? 0}`
+      : "";
+  return `${prefix}: ${when}${score} · vs ${opp}`;
 }
