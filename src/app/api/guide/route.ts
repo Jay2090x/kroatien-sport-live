@@ -27,7 +27,8 @@ export async function GET(req: NextRequest) {
     const matches = mergeGuideWithLive(
       catalog.matches,
       data.matches,
-      locale
+      locale,
+      data.players
     );
 
     const tvGuide = buildTvSchedule({

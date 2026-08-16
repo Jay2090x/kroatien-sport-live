@@ -98,13 +98,24 @@ const FEEDS_BY_LANG: Record<Locale, FeedDef[]> = {
 };
 
 const BLACKLIST =
-  /pinterest\.|facebook\.com\/groups|reddit\.com|tiktok\.com|doubleclick|outbrain|taboola|blogspot\.|quiz|clickbait|transfermarkt\.[a-z.]+\/.*seite|gemeinsame spiele|bilanz gegen/i;
+  /pinterest\.|facebook\.com\/groups|reddit\.com|tiktok\.com|doubleclick|outbrain|taboola|blogspot\.|quiz|clickbait|transfermarkt\.[a-z.]+\/.*seite|gemeinsame spiele|bilanz gegen|bildergalerie|foto-show|in\s*bildern|live-ticker\s*nur|umfrage:|jetzt\s*abstimmen/i;
+
+/** Zu generisch / reiner Füllstoff ohne Story-Signal */
+const LOW_INTEREST =
+  /^(live|ticker|ergebnis|ergebnisse|vorschau|preview|heute|today|video)\b|bilder|gallery|fotostrecke|so\s+lief|im\s+überblick|kurz\s*notiert|nachrichten\s*überblick|was\s+sie\s+wissen|top\s*stories|morning\s*brief/i;
 
 const RELEVANCE =
-  /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|gvardiol|kova[cč]|peri[sš]|livakovi|budimir|nogomet|football|soccer|reprezent|izbornik|transfer|nations|liga\s*nacija|serie\s*a|milan|premier|bundesliga|kroatien/i;
+  /croat|hrvat|modri|bili[cć]|vatren|hnl|hajduk|dinam|rijeka|osijek|gvardiol|kova[cč]|peri[sš]|livakovi|budimir|suk|maj[eе]r|pasalic|pašalić|brozovi|or[sš]i[cć]|petkovi|ivanu[sš]|modric|nogomet|football|soccer|reprezent|izbornik|transfer|nations|liga\s*nacija|serie\s*a|milan|premier|bundesliga|kroatien/i;
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const CACHE_VER = "v4-seo-teaser";
+const CACHE_VER = "v5-dedupe-interest";
+
+/** Stopwords for near-duplicate fingerprints (de/en/hr) */
+const STOP = new Set(
+  "der die das den dem des ein eine einer einem einen und oder mit von zu im in am auf für fur als auch nicht nur nach vor bei aus ist sind war wird werden the a an of to for in on at is are was were by with from as that this these those i u je na se za od do sa su ali ili kako sto što kad kada o a the".split(
+    /\s+/
+  )
+);
 type CacheBucket = { at: number; articles: NewsArticle[] };
 const cacheStore = globalThis as unknown as {
   __kslNewsCache?: Record<string, CacheBucket>;
@@ -118,6 +129,60 @@ function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 72);
+}
+
+/** Significant tokens for near-duplicate detection */
+export function titleTokens(title: string): string[] {
+  const cleaned = title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/[^a-z0-9äöüßčćžšđ\s]/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const raw = cleaned.split(" ").filter((w) => w.length > 2 && !STOP.has(w));
+  // Prefer longer tokens first; keep unique
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const w of raw.sort((a, b) => b.length - a.length)) {
+    if (seen.has(w)) continue;
+    seen.add(w);
+    out.push(w);
+    if (out.length >= 12) break;
+  }
+  return out.sort();
+}
+
+export function titleFingerprint(title: string): string {
+  return titleTokens(title).slice(0, 8).join("|");
+}
+
+/** Jaccard on token sets – near-dupes across feeds/languages */
+export function titleSimilarity(a: string, b: string): number {
+  const ta = new Set(titleTokens(a));
+  const tb = new Set(titleTokens(b));
+  if (!ta.size || !tb.size) return 0;
+  let inter = 0;
+  for (const t of ta) if (tb.has(t)) inter += 1;
+  const union = ta.size + tb.size - inter;
+  return union ? inter / union : 0;
+}
+
+function isNearDuplicate(title: string, kept: string[]): boolean {
+  const fp = titleFingerprint(title);
+  if (!fp) return false;
+  for (const k of kept) {
+    if (titleFingerprint(k) === fp) return true;
+    if (titleSimilarity(title, k) >= 0.52) return true;
+    // Same first 4 long tokens in any order → often same wire story
+    const a = titleTokens(title).filter((t) => t.length > 3).slice(0, 5);
+    const b = new Set(
+      titleTokens(k).filter((t) => t.length > 3).slice(0, 5)
+    );
+    if (a.length >= 3 && a.filter((t) => b.has(t)).length >= 3) return true;
+  }
+  return false;
 }
 
 function parseDate(raw: string): string {
@@ -156,12 +221,32 @@ function scoreTitle(
   prefer?: string
 ): number {
   let score = 10;
-  if (/modri|gvardiol|kova[cč]|bili[cć]|vatren|izbornik/i.test(title))
+  if (/modri|gvardiol|kova[cč]|bili[cć]|vatren|izbornik|suk|pasalic|pašalić|brozovi/i.test(
+    title
+  ))
     score += 40;
-  if (/hnl|hajduk|dinam|rijeka/i.test(title)) score += 25;
-  if (/transfer|ugovor|verläng|contract|return|oprostit/i.test(title))
-    score += 18;
+  if (/hnl|hajduk|dinam|rijeka|osijek/i.test(title)) score += 25;
+  if (
+    /transfer|ugovor|verläng|contract|return|oprostit|vertrag|verpflicht|verpflichtet|wechs|signing/i.test(
+      title
+    )
+  )
+    score += 22;
+  if (
+    /verletz|injury|ozljed|kader|squad|nomin|beruf|nations|liga nacija|qualif|sieg|defeat|poraz|pobjeda|win\b|lost/i.test(
+      title
+    )
+  )
+    score += 16;
   if (prefer && link.toLowerCase().includes(prefer)) score += 20;
+  if (LOW_INTEREST.test(title)) score -= 35;
+  // Reine Namens-Meldungen ohne Verb/Story-Signal
+  if (
+    title.split(/\s+/).length <= 4 &&
+    !/transfer|vertrag|sieg|tor|gol|verläng|return|ozljed|injur/i.test(title)
+  ) {
+    score -= 12;
+  }
 
   const age =
     (Date.now() - new Date(pubDate).getTime()) / (24 * 3600_000);
@@ -320,6 +405,8 @@ function parseFeed(xml: string, feed: FeedDef, limit: number): Raw[] {
     const { title, source: fromTitle } = extractTitleAndSource(titleEnc);
     if (!isUsableHeadline(title)) continue;
     if (BLACKLIST.test(title)) continue;
+    if (LOW_INTEREST.test(title) && !/modri|gvardiol|vatren|bili[cć]|hnl|hajduk|dinam/i.test(title))
+      continue;
     if (!RELEVANCE.test(title)) continue;
 
     let link =
@@ -401,6 +488,7 @@ export async function fetchAutoNews(
   const batches = await Promise.all(feeds.map((f) => fetchOne(f, 12)));
   const flat = batches.flat();
 
+  // Exact + fingerprint map: keep highest score per near-same story
   const byKey = new Map<string, Raw>();
   for (const item of flat) {
     // Strict: only keep items whose feed language matches UI,
@@ -410,7 +498,9 @@ export async function fetchAutoNews(
         continue;
       }
     }
-    const key = slugify(item.title);
+    if (item.score < 18) continue;
+    const key =
+      titleFingerprint(item.title) || slugify(item.title);
     if (!key) continue;
     const prev = byKey.get(key);
     if (!prev || item.score > prev.score) byKey.set(key, item);
@@ -419,24 +509,27 @@ export async function fetchAutoNews(
   const ranked = Array.from(byKey.values()).sort((a, b) => b.score - a.score);
   const articles: NewsArticle[] = [];
   const seen = new Set<string>();
+  const keptTitles: string[] = [];
 
   // Cap HR extras on DE
   let hrCount = 0;
-  const hrCap = includeRelatedHR ? 4 : 0;
+  const hrCap = includeRelatedHR ? 3 : 0;
 
   for (const item of ranked) {
     if (articles.length >= max) break;
     if (item.lang === "hr" && locale === "de") {
       if (hrCount >= hrCap) continue;
-      hrCount += 1;
     }
-
-    const id = `auto-${slugify(item.title)}`.slice(0, 96);
-    if (seen.has(id)) continue;
-    seen.add(id);
 
     const titleClean = sanitizeNewsDisplay(item.title, 140);
     if (!isUsableHeadline(titleClean)) continue;
+    if (isNearDuplicate(titleClean, keptTitles)) continue;
+
+    const id = `auto-${slugify(titleClean)}`.slice(0, 96);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    keptTitles.push(titleClean);
+    if (item.lang === "hr" && locale === "de") hrCount += 1;
 
     const dateIso = parseDate(item.pubDate);
     const cat = categorize(titleClean);

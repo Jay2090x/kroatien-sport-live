@@ -1548,13 +1548,11 @@ export async function getDailyNewsAsync(
 ): Promise<NewsArticle[]> {
   const baseRaw = getDailyNews(now, live);
   try {
-    const { fetchAutoNews } = await import("@/lib/data/auto-news");
-    // DE: optional 4 HR; EN/HR: strikt eigene Sprache
-    const auto = await fetchAutoNews(
-      18,
-      locale,
-      locale === "de"
+    const { fetchAutoNews, titleSimilarity } = await import(
+      "@/lib/data/auto-news"
     );
+    // DE: optional HR; EN/HR: strikt eigene Sprache
+    const auto = await fetchAutoNews(16, locale, locale === "de");
     const map = new Map<string, NewsArticle>();
     for (const a of [...baseRaw, ...auto]) {
       if (isFixturePseudoNews(a)) continue;
@@ -1569,13 +1567,27 @@ export async function getDailyNewsAsync(
       }
       map.set(a.id, a);
     }
-    const list = assignUniqueNewsImages(
-      Array.from(map.values()).sort((x, y) =>
-        sortNewsForLocale(x, y, locale)
-      ),
-      40
+
+    // Aggressive near-dedupe across editorial + auto (same story, different sources)
+    const ranked = Array.from(map.values()).sort((x, y) =>
+      sortNewsForLocale(x, y, locale)
     );
-    return list.slice(0, 28);
+    const kept: NewsArticle[] = [];
+    for (const a of ranked) {
+      const titleA = a.title[locale] || a.title.de || a.title.en || "";
+      const isDup = kept.some((k) => {
+        const titleK = k.title[locale] || k.title.de || k.title.en || "";
+        if (!titleA || !titleK) return false;
+        if (a.id === k.id) return true;
+        // Prefer keeping non-auto editorial over near-identical auto
+        return titleSimilarity(titleA, titleK) >= 0.5;
+      });
+      if (isDup) continue;
+      kept.push(a);
+    }
+
+    const list = assignUniqueNewsImages(kept, 36);
+    return list.slice(0, 18);
   } catch {
     return baseRaw.filter((a) => !isFixturePseudoNews(a));
   }

@@ -76,6 +76,11 @@
     "noFinished": "No finished matches in the 7-day window.",
     "finishedBadge": "FT",
     "playerEvents": "Croatians in this match",
+    "playerPreview": "Croatians in this match (preview)",
+    "tapForDetails": "tap for details",
+    "lastApp": "Last",
+    "noLastApp": "No earlier appearance in the current feed",
+    "inSquadMapped": "Mapped via club/API",
     "dnpShort": "DNP",
     "didNotPlay": "Did not play",
     "startedXI": "Started",
@@ -85,9 +90,10 @@
     "subOff": "Off {min}'",
     "goalOne": "Goal",
     "goalsN": "{n} goals",
+    "assistsN": "{n} assist(s)",
     "yellowCard": "Yellow",
     "redCard": "Red",
-    "eventsUnknown": "No lineup/timeline from API",
+    "eventsUnknown": "No lineup/timeline from API – club mapping only",
     "eventsSparse": "Sparse event data"
   },
   "Nav": {
@@ -322,7 +328,7 @@
     "formHint": "Recent club results with this player in the feed (same data for everyone).",
     "formEmpty": "No final scores with this player in the feed yet.",
     "lastApps": "Recent apps",
-    "lastAppsEmpty": "No appearances with event data in the feed (lineup/timeline).",
+    "lastAppsEmpty": "No match for this player in the current feed (club mapping / 7–14 day window).",
     "age": "Age"
   },
   "Status": {

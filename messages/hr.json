@@ -76,6 +76,11 @@
     "noFinished": "Nema završenih utakmica u 7-dnevnom prozoru.",
     "finishedBadge": "Kraj",
     "playerEvents": "Hrvati na utakmici",
+    "playerPreview": "Hrvati na ovoj utakmici (najava)",
+    "tapForDetails": "dodirni za detalje",
+    "lastApp": "Zadnji",
+    "noLastApp": "Nema ranijeg nastupa u trenutnom feedu",
+    "inSquadMapped": "Mapirano preko kluba/API-ja",
     "dnpShort": "Nije igrao",
     "didNotPlay": "Nije igrao",
     "startedXI": "Prva postava",
@@ -85,9 +90,10 @@
     "subOff": "Izašao {min}'",
     "goalOne": "Gol",
     "goalsN": "{n} gola",
+    "assistsN": "{n} asistencija",
     "yellowCard": "Žuti",
     "redCard": "Crveni",
-    "eventsUnknown": "Nema lineup/timeline s API-ja",
+    "eventsUnknown": "Nema lineup/timeline s API-ja – samo mapiranje kluba",
     "eventsSparse": "Malo podataka o događajima"
   },
   "Nav": {
@@ -322,7 +328,7 @@
     "formHint": "Nedavni klupski rezultati s ovim igračem u feedu (isti podaci za sve).",
     "formEmpty": "Još nema konačnih rezultata s ovim igračem u feedu.",
     "lastApps": "Zadnji nastupi",
-    "lastAppsEmpty": "Nema nastupa s event podacima u feedu (lineup/timeline).",
+    "lastAppsEmpty": "U trenutnom feedu nema utakmice ovog igrača (mapiranje kluba / prozor 7–14 dana).",
     "age": "Dob"
   },
   "Status": {

@@ -101,7 +101,8 @@ export function computePlayerAppearances(
   return out;
 }
 
-function appearanceChip(app: MatchPlayerAppearance): string {
+/** Compact event chip for UI – exported for guide merge */
+export function appearanceChip(app: MatchPlayerAppearance): string {
   if (app.didPlay === false) return "DNP";
   const bits: string[] = [];
   if (app.isStarter === true) bits.push("XI");
@@ -117,8 +118,9 @@ function appearanceChip(app: MatchPlayerAppearance): string {
   if (app.redCard) bits.push("🟥");
   if (app.substitutedOff != null) bits.push(`↓${app.substitutedOff}'`);
   if (bits.length === 0) {
-    if (app.eventsKnown === false) return "?";
-    return "·";
+    // Im Kader gemappt, aber keine Timeline – ehrlich, kein leerer Strich
+    if (app.eventsKnown === false) return "Kader";
+    return "Kader";
   }
   return bits.join(" ");
 }

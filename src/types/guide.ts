@@ -41,15 +41,28 @@ export interface StreamProvider {
 export interface GuideMatchPlayer {
   playerId: string;
   playerName: string;
+  /** Position code e.g. FW/MF */
+  position?: string;
+  /** Club name for context on upcoming fixtures */
+  club?: string;
+  teamSide?: "home" | "away";
   isStarter?: boolean;
   didPlay?: boolean;
   minutesPlayed?: number;
   goals?: number;
+  assists?: number;
   yellowCards?: number;
   redCard?: boolean;
   substitutedOn?: number | null;
   substitutedOff?: number | null;
   eventsKnown?: boolean;
+  /**
+   * Compact prior appearance (other finished match in feed), e.g.
+   * "1:0 W · vs Arsenal · 90' XI" — honest, never invented.
+   */
+  lastAppSummary?: string;
+  /** Availability short label if known from tracker */
+  availabilityShort?: string;
 }
 
 export interface GuideMatch {

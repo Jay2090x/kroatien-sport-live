@@ -134,7 +134,12 @@ async function fetchFromExternalApisInner(apiKeys?: {
 
   // Live-Scores: Tages-Events mergen (Status aktualisieren)
   try {
-    const liveDay = await fetchSoccerDays(key, players, [-1, 0, 1, 2, 3]);
+    // Vergangene Tage für Form/Last-Apps + kommende für Vorschau
+    const liveDay = await fetchSoccerDays(
+      key,
+      players,
+      [-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+    );
     matches = mergeMatchScores(matches, liveDay);
     // Day-Events die noch fehlen hinzufügen
     for (const m of liveDay) {
@@ -156,7 +161,7 @@ async function fetchFromExternalApisInner(apiKeys?: {
 
   // Tore / Karten / Wechsel aus Timeline (begrenzt, live priorisiert)
   try {
-    matches = await enrichMatchesPlayerEvents(matches, key, 18);
+    matches = await enrichMatchesPlayerEvents(matches, key, 32);
   } catch (e) {
     errors.push(
       `timeline: ${e instanceof Error ? e.message : String(e)}`
@@ -526,8 +531,9 @@ async function fetchTeamEvents(
         if (next.error) errors.push(next.error);
         if (last.error) errors.push(last.error);
         return [
-          ...(last.data?.results ?? []).slice(0, 3),
-          ...(next.data?.events ?? []).slice(0, 5),
+          // Mehr Vergangenheit = echte „letzte Einsätze“ im Tracker/Board
+          ...(last.data?.results ?? []).slice(0, 6),
+          ...(next.data?.events ?? []).slice(0, 6),
         ];
       })
     );

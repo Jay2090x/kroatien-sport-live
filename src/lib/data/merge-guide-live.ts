@@ -1,15 +1,21 @@
 /**
  * Merges catalog + live API. Next 7 days only for upcoming.
  * TV streams only if confirmed live broadcast (certainty confirmed).
- * Includes Croatian player names from API.
+ * Croatian players: club/position + last appearance from feed (honest).
  */
 
-import type { Match, TvChannel } from "@/types";
-import type { GuideMatch, StreamProvider, StreamQuality } from "@/types/guide";
+import type { Match, MatchPlayerAppearance, Player, TvChannel } from "@/types";
+import type {
+  GuideMatch,
+  GuideMatchPlayer,
+  StreamProvider,
+  StreamQuality,
+} from "@/types/guide";
 import { isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import { isAllowedTvChannel } from "@/lib/constants";
 import { resolveMatchTvChannels } from "@/lib/broadcast-rights";
+import { appearanceChip } from "@/lib/player-form";
 
 const MS_DAY = 24 * 3600_000;
 export const UPCOMING_WINDOW_DAYS = 7;
@@ -62,8 +68,124 @@ function withinNextDays(kickoff: string, days: number, now = Date.now()): boolea
   return t >= now - 3 * 3600_000 && t <= now + days * MS_DAY;
 }
 
+function shortOpp(name: string, locale: string): string {
+  const n = localizeTeamName(name, locale);
+  return n.length > 18 ? `${n.slice(0, 16)}…` : n;
+}
+
+/** Vorheriger Einsatz desselben Spielers (andere Partie im Feed). */
+function lastAppForPlayer(
+  playerId: string,
+  currentMatchId: string,
+  allMatches: Match[],
+  locale: string
+): string | undefined {
+  const prev = allMatches
+    .filter(
+      (m) =>
+        m.id !== currentMatchId &&
+        (m.status === "finished" ||
+          m.status === "live" ||
+          m.status === "halftime") &&
+        m.croatianPlayers?.some((p) => p.playerId === playerId)
+    )
+    .sort(
+      (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
+    )[0];
+  if (!prev) return undefined;
+
+  const app = prev.croatianPlayers.find((p) => p.playerId === playerId);
+  if (!app) return undefined;
+
+  const vs =
+    app.teamSide === "home"
+      ? prev.awayTeam
+      : app.teamSide === "away"
+        ? prev.homeTeam
+        : prev.awayTeam;
+
+  let form = "";
+  if (
+    prev.status === "finished" &&
+    prev.homeScore != null &&
+    prev.awayScore != null &&
+    (app.teamSide === "home" || app.teamSide === "away")
+  ) {
+    if (prev.homeScore === prev.awayScore) form = "D";
+    else {
+      const homeWin = prev.homeScore > prev.awayScore;
+      form =
+        app.teamSide === "home"
+          ? homeWin
+            ? "W"
+            : "L"
+          : homeWin
+            ? "L"
+            : "W";
+    }
+  }
+
+  const score =
+    prev.homeScore != null && prev.awayScore != null
+      ? `${prev.homeScore}:${prev.awayScore}`
+      : "–";
+  const chip = appearanceChip(app);
+  const bits = [
+    score,
+    form || null,
+    `vs ${shortOpp(vs, locale)}`,
+    chip && chip !== "·" ? chip : null,
+  ].filter(Boolean);
+  return bits.join(" · ");
+}
+
+function toGuidePlayer(
+  p: MatchPlayerAppearance,
+  m: Match,
+  allMatches: Match[],
+  playersById: Map<string, Player>,
+  locale: string
+): GuideMatchPlayer {
+  const profile = playersById.get(p.playerId);
+  const avail = profile?.availability;
+  let availabilityShort: string | undefined;
+  if (avail && avail !== "available" && avail !== "unknown") {
+    availabilityShort = avail;
+  }
+
+  return {
+    playerId: p.playerId,
+    playerName: p.playerName,
+    position: p.position || profile?.position,
+    club: profile?.club,
+    teamSide: p.teamSide,
+    isStarter: p.isStarter,
+    didPlay: p.didPlay,
+    minutesPlayed: p.minutesPlayed,
+    goals: p.goals,
+    assists: p.assists,
+    yellowCards: p.yellowCards,
+    redCard: p.redCard,
+    substitutedOn: p.substitutedOn,
+    substitutedOff: p.substitutedOff,
+    eventsKnown: p.eventsKnown,
+    lastAppSummary: lastAppForPlayer(
+      p.playerId,
+      m.id,
+      allMatches,
+      locale
+    ),
+    availabilityShort,
+  };
+}
+
 /** Convert dashboard Match → GuideMatch */
-export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
+export function matchToGuideMatch(
+  m: Match,
+  locale = "de",
+  allMatches: Match[] = [],
+  playersById: Map<string, Player> = new Map()
+): GuideMatch {
   const confirmed = resolveMatchTvChannels(m);
   const streams = confirmed
     .map((ch, i) => channelToStream(ch, i))
@@ -76,19 +198,10 @@ export function matchToGuideMatch(m: Match, locale = "de"): GuideMatch {
     return true;
   });
 
-  const croatianPlayers = (m.croatianPlayers ?? []).map((p) => ({
-    playerId: p.playerId,
-    playerName: p.playerName,
-    isStarter: p.isStarter,
-    didPlay: p.didPlay,
-    minutesPlayed: p.minutesPlayed,
-    goals: p.goals,
-    yellowCards: p.yellowCards,
-    redCard: p.redCard,
-    substitutedOn: p.substitutedOn,
-    substitutedOff: p.substitutedOff,
-    eventsKnown: p.eventsKnown,
-  }));
+  const pool = allMatches.length ? allMatches : [m];
+  const croatianPlayers = (m.croatianPlayers ?? []).map((p) =>
+    toGuidePlayer(p, m, pool, playersById, locale)
+  );
 
   return {
     id: `api-${m.id}`,
@@ -153,16 +266,18 @@ function fixtureKey(m: GuideMatch): string {
 export function mergeGuideWithLive(
   catalogMatches: GuideMatch[],
   liveMatches: Match[],
-  locale = "de"
+  locale = "de",
+  players: Player[] = []
 ): GuideMatch[] {
   const now = Date.now();
+  const playersById = new Map(players.map((p) => [p.id, p]));
 
   // Re-resolve TV on API matches (confirmed only)
   const fromApi = liveMatches
     .filter((m) => m.status !== "cancelled")
     .map((m) => {
       const withTv = { ...m, tvChannels: resolveMatchTvChannels(m) };
-      return matchToGuideMatch(withTv, locale);
+      return matchToGuideMatch(withTv, locale, liveMatches, playersById);
     })
     .filter((m) => {
       if (m.status === "live") return true;

@@ -76,6 +76,11 @@
     "noFinished": "Keine beendeten Spiele im 7-Tage-Fenster.",
     "finishedBadge": "Beendet",
     "playerEvents": "Kroaten im Spiel",
+    "playerPreview": "Kroaten in diesem Spiel (Vorschau)",
+    "tapForDetails": "tippen für Details",
+    "lastApp": "Zuletzt",
+    "noLastApp": "Kein früherer Einsatz im aktuellen Feed",
+    "inSquadMapped": "Im Kader gemappt (Club/API)",
     "dnpShort": "DNP",
     "didNotPlay": "Nicht gespielt",
     "startedXI": "Startelf",
@@ -85,9 +90,10 @@
     "subOff": "Aus {min}'",
     "goalOne": "Tor",
     "goalsN": "{n} Tore",
+    "assistsN": "{n} Vorlage(n)",
     "yellowCard": "Gelb",
     "redCard": "Rot",
-    "eventsUnknown": "Keine Lineup/Timeline von der API",
+    "eventsUnknown": "Keine Lineup/Timeline von der API – nur Club-Zuordnung",
     "eventsSparse": "Wenig Event-Daten"
   },
   "Nav": {
@@ -322,7 +328,7 @@
     "formHint": "Letzte Club-Ergebnisse mit diesem Spieler im Feed (gleicher Datenstand für alle).",
     "formEmpty": "Noch keine Endstände mit diesem Spieler im Feed.",
     "lastApps": "Letzte Einsätze",
-    "lastAppsEmpty": "Keine Einsätze mit Event-Daten im Feed (Lineup/Timeline).",
+    "lastAppsEmpty": "Im aktuellen Feed kein Spiel dieses Spielers (Club-Zuordnung / 7–14 Tage Fenster).",
     "age": "Alter"
   },
   "Status": {

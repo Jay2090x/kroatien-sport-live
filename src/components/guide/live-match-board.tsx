@@ -52,8 +52,13 @@ function isSameLocalDay(a: Date, b: Date): boolean {
 export function LiveMatchBoard() {
   const t = useTranslations("Guide");
   const locale = useLocale();
-  const { matches: liveMatches, lastUpdated, refreshLive, isRefreshing } =
-    useDashboard();
+  const {
+    matches: liveMatches,
+    players,
+    lastUpdated,
+    refreshLive,
+    isRefreshing,
+  } = useDashboard();
 
   const catalog = useMemo(() => getGuideCatalog(), []);
   const [sport, setSport] = useState<SportId>("football");
@@ -63,8 +68,9 @@ export function LiveMatchBoard() {
   const [showFinished, setShowFinished] = useState(true);
 
   const localMerged = useMemo(
-    () => mergeGuideWithLive(catalog.matches, liveMatches, locale),
-    [catalog.matches, liveMatches, locale]
+    () =>
+      mergeGuideWithLive(catalog.matches, liveMatches, locale, players),
+    [catalog.matches, liveMatches, locale, players]
   );
 
   const matches = mergedRemote ?? localMerged;

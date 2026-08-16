@@ -95,21 +95,26 @@ export function GuideMatchCard({
           )}
         </div>
 
-        {/* Kroaten + Kurz-Events */}
+        {/* Kroaten: immer sichtbar mit echten Infos */}
         {players.length > 0 ? (
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <p className="flex min-w-0 items-start gap-1.5 text-[11px] text-muted-foreground">
               <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
               <span className="min-w-0 font-semibold text-foreground/90">
-                {t("croatians")}
+                {t("croatians")} ({players.length})
               </span>
             </p>
-            <ul className="flex flex-wrap gap-1">
-              {players.slice(0, 6).map((p) => (
+            <ul className="space-y-1">
+              {players.slice(0, open ? players.length : 4).map((p) => (
                 <li key={p.playerId || p.playerName}>
-                  <PlayerEventChip p={p} t={t} />
+                  <PlayerInfoRow p={p} match={match} t={t} compact={!open} />
                 </li>
               ))}
+              {!open && players.length > 4 && (
+                <li className="text-[10px] text-muted-foreground">
+                  +{players.length - 4} · {t("tapForDetails")}
+                </li>
+              )}
             </ul>
           </div>
         ) : match.sport === "football" ? (
@@ -147,28 +152,20 @@ export function GuideMatchCard({
         <div className="space-y-2 border-t border-border px-3 py-3 sm:px-3.5">
           {players.length > 0 && (
             <div className="mb-2">
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("playerEvents")}
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {live || finished
+                  ? t("playerEvents")
+                  : t("playerPreview")}
               </p>
               <ul className="space-y-1.5">
                 {players.map((p) => (
                   <li
                     key={p.playerId || p.playerName}
-                    className="rounded-lg border border-border/70 bg-secondary/30 px-2.5 py-1.5 text-[12px]"
+                    className="rounded-lg border border-border/70 bg-secondary/30 px-2.5 py-2 text-[12px]"
                   >
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      {p.playerId ? (
-                        <Link
-                          href={`/player/${p.playerId}`}
-                          className="font-semibold text-primary hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {p.playerName}
-                        </Link>
-                      ) : (
-                        <span className="font-semibold">{p.playerName}</span>
-                      )}
-                      <PlayerEventLine p={p} t={t} />
+                    <PlayerInfoRow p={p} match={match} t={t} compact={false} />
+                    <div className="mt-1 pl-0.5">
+                      <PlayerEventLine p={p} match={match} t={t} />
                     </div>
                   </li>
                 ))}
@@ -201,39 +198,106 @@ export function GuideMatchCard({
   );
 }
 
-function PlayerEventChip({
+function PlayerInfoRow({
   p,
+  match,
   t,
+  compact,
 }: {
   p: GuideMatchPlayer;
+  match: GuideMatch;
   t: ReturnType<typeof useTranslations>;
+  compact: boolean;
 }) {
-  const bits: string[] = [shortName(p.playerName)];
-  if (p.didPlay === false) bits.push(t("dnpShort"));
-  else {
-    if (p.minutesPlayed != null) bits.push(`${p.minutesPlayed}'`);
-    if (p.goals) bits.push(`⚽${p.goals > 1 ? p.goals : ""}`);
-    if (p.substitutedOn != null) bits.push(`↑${p.substitutedOn}'`);
-    if (p.substitutedOff != null) bits.push(`↓${p.substitutedOff}'`);
-    if (p.yellowCards) bits.push("🟨");
-    if (p.redCard) bits.push("🟥");
-  }
+  const sideLabel =
+    p.teamSide === "home"
+      ? match.homeTeam
+      : p.teamSide === "away"
+        ? match.awayTeam
+        : p.club;
+
+  const meta: string[] = [];
+  if (p.position) meta.push(String(p.position).slice(0, 3).toUpperCase());
+  if (sideLabel) meta.push(shortName(sideLabel));
+
+  const eventBits = compactEventBits(p, t);
+
   return (
-    <span className="inline-flex items-center rounded-md border border-border bg-secondary/50 px-1.5 py-0.5 text-[10px] font-medium tabular-nums">
-      {bits.join(" · ")}
-    </span>
+    <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-[11px] leading-snug">
+      {p.playerId ? (
+        <Link
+          href={`/player/${p.playerId}`}
+          className="font-semibold text-primary hover:underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {compact ? shortName(p.playerName) : p.playerName}
+        </Link>
+      ) : (
+        <span className="font-semibold text-foreground">
+          {compact ? shortName(p.playerName) : p.playerName}
+        </span>
+      )}
+      {meta.length > 0 && (
+        <span className="text-muted-foreground">{meta.join(" · ")}</span>
+      )}
+      {eventBits.length > 0 && (
+        <span className="font-medium tabular-nums text-foreground/90">
+          {eventBits.join(" ")}
+        </span>
+      )}
+      {p.availabilityShort && (
+        <span className="rounded bg-sky-500/15 px-1 text-[10px] font-bold uppercase text-sky-300">
+          {p.availabilityShort}
+        </span>
+      )}
+      {compact && p.lastAppSummary && match.status === "upcoming" && (
+        <span
+          className="w-full truncate text-[10px] text-muted-foreground"
+          title={p.lastAppSummary}
+        >
+          {t("lastApp")}: {p.lastAppSummary}
+        </span>
+      )}
+    </div>
   );
+}
+
+function compactEventBits(
+  p: GuideMatchPlayer,
+  t: ReturnType<typeof useTranslations>
+): string[] {
+  if (p.didPlay === false) return [t("dnpShort")];
+  const bits: string[] = [];
+  if (p.minutesPlayed != null) bits.push(`${p.minutesPlayed}'`);
+  if (p.goals) bits.push(`⚽${p.goals > 1 ? p.goals : ""}`);
+  if (p.assists) bits.push(`A${p.assists > 1 ? p.assists : ""}`);
+  if (p.substitutedOn != null) bits.push(`↑${p.substitutedOn}'`);
+  if (p.substitutedOff != null) bits.push(`↓${p.substitutedOff}'`);
+  if (p.yellowCards) bits.push("🟨");
+  if (p.redCard) bits.push("🟥");
+  if (p.isStarter === true && bits.length === 0) bits.push("XI");
+  return bits;
 }
 
 function PlayerEventLine({
   p,
+  match,
   t,
 }: {
   p: GuideMatchPlayer;
+  match: GuideMatch;
   t: ReturnType<typeof useTranslations>;
 }) {
   const parts: string[] = [];
-  if (p.didPlay === false) {
+
+  if (match.status === "upcoming") {
+    if (p.club) parts.push(p.club);
+    if (p.position) parts.push(String(p.position));
+    if (p.availabilityShort) parts.push(p.availabilityShort);
+    if (p.lastAppSummary) parts.push(`${t("lastApp")}: ${p.lastAppSummary}`);
+    else parts.push(t("noLastApp"));
+    if (parts.length === 0) parts.push(t("inSquadMapped"));
+  } else if (p.didPlay === false) {
     parts.push(t("didNotPlay"));
   } else {
     if (p.isStarter === true) parts.push(t("startedXI"));
@@ -249,13 +313,18 @@ function PlayerEventLine({
       parts.push(
         p.goals > 1 ? t("goalsN", { n: p.goals }) : t("goalOne")
       );
+    if (p.assists) parts.push(t("assistsN", { n: p.assists }));
     if (p.yellowCards) parts.push(t("yellowCard"));
     if (p.redCard) parts.push(t("redCard"));
   }
+
   if (parts.length === 0) {
     if (p.eventsKnown === false) parts.push(t("eventsUnknown"));
     else parts.push(t("eventsSparse"));
+    if (p.lastAppSummary)
+      parts.push(`${t("lastApp")}: ${p.lastAppSummary}`);
   }
+
   return (
     <span className="text-[11px] text-muted-foreground">{parts.join(" · ")}</span>
   );
