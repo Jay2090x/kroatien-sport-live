@@ -6,6 +6,8 @@ import { AppProviders } from "@/components/providers/app-providers";
 import { getDashboardData } from "@/lib/data/service";
 import { FALLBACK_PLAYERS } from "@/lib/data/fallback-players";
 import { SITE } from "@/lib/constants";
+import { absoluteUrl, languageAlternates } from "@/lib/seo";
+import { SiteJsonLd } from "@/components/seo/json-ld";
 import type { Metadata } from "next";
 
 /** Live-Daten – kein harter SSG-Crash bei API-Fehlern */
@@ -24,6 +26,7 @@ export async function generateMetadata({
   const { locale } = await params;
   try {
     const t = await getTranslations({ locale, namespace: "Meta" });
+    const url = absoluteUrl(locale, "/");
     return {
       title: {
         default: t("title"),
@@ -35,8 +38,8 @@ export async function generateMetadata({
       openGraph: {
         type: "website",
         locale:
-          locale === "hr" ? "hr_HR" : locale === "en" ? "en_US" : "de_DE",
-        url: SITE.url,
+          locale === "hr" ? "hr_HR" : locale === "en" ? "en_GB" : "de_DE",
+        url,
         siteName: SITE.name,
         title: t("title"),
         description: t("description"),
@@ -48,12 +51,8 @@ export async function generateMetadata({
       },
       robots: { index: true, follow: true },
       alternates: {
-        canonical: SITE.url,
-        languages: {
-          de: SITE.url,
-          en: `${SITE.url}/en`,
-          hr: `${SITE.url}/hr`,
-        },
+        canonical: url,
+        languages: languageAlternates("/"),
       },
     };
   } catch {
@@ -105,6 +104,16 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(locale)};`,
+        }}
+      />
+      <SiteJsonLd
+        locale={locale}
+        matches={data.matches}
+        faq={faqFromMessages(messages)}
+      />
       <AppProviders
         initialMatches={data.matches}
         initialPlayers={data.players}
@@ -116,4 +125,17 @@ export default async function LocaleLayout({
       </AppProviders>
     </NextIntlClientProvider>
   );
+}
+
+function faqFromMessages(
+  messages: Record<string, unknown>
+): { q: string; a: string }[] {
+  const faq = messages.Faq as Record<string, string> | undefined;
+  if (!faq) return [];
+  return [1, 2, 3, 4, 5]
+    .map((n) => ({
+      q: faq[`q${n}`] ?? "",
+      a: n === 1 ? (faq.a1Fallback ?? faq.a1 ?? "") : (faq[`a${n}`] ?? ""),
+    }))
+    .filter((x) => x.q && x.a);
 }

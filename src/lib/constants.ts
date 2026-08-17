@@ -4,7 +4,7 @@ export const SITE = {
   name: "Kroatien Sport Live",
   shortName: "KSL",
   description:
-    "Redaktionelle Hinweise zu Spielen kroatischer Fußballspieler, Nationalteam und offiziellen TV-Anbietern – ohne Streaming-Hosting.",
+    "Nächstes Spiel und letzte Ergebnisse kroatischer Profis, Vatreni-Kalender und Headlines mit Original-Link – ohne Streaming-Hosting.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://kroatien-sport-live.vercel.app",
   locale: "de",
   /** Kontakt nur per E-Mail – keine personenbezogenen Daten im Impressum-Text */

@@ -111,7 +111,7 @@ const CROAT_SIGNAL =
 const RELEVANCE = CROAT_SIGNAL;
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const CACHE_VER = "v6-croat-signal";
+const CACHE_VER = "v7-short-teaser";
 
 /** Stopwords for near-duplicate fingerprints (de/en/hr) */
 const STOP = new Set(
@@ -283,9 +283,9 @@ function localizedTeaser(
   const src = source || "Medien";
   const topic = topicBlurb(title, category);
   return {
-    de: `${topic.de} Die Headline „${title}“ greifen wir auf Kroatien Sport Live als Orientierung auf – mit Link zum Original bei ${src}. Hier findest du zusätzlich Termine kroatischer Profis im Live-Board, Nationalteam-Kalender und den Spieler-Tracker. Den vollständigen Artikel liest du beim Anbieter, nicht als Kopie bei uns.`,
-    en: `${topic.en} We surface the headline “${title}” on Croatia Sport Live for orientation – with a link to the original at ${src}. On this site you also get fixtures for Croatian pros, the national-team calendar and the player tracker. The full article is only on the publisher’s site, not republished here.`,
-    hr: `${topic.hr} Naslov „${title}“ donosimo na Kroatien Sport Live kao orijentaciju – s linkom na original kod ${src}. Ovdje dodatno imaš termine hrvatskih igrača na live boardu, kalendar reprezentacije i tracker. Puni članak čitaš kod izdavača, ne kao kopiju kod nas.`,
+    de: `${topic.de} Headline bei ${src}: „${title}“. Volltext nur im Original – hier der Kontext für Vatreni-Fans.`,
+    en: `${topic.en} Headline at ${src}: “${title}”. Full text only at the publisher – context for Vatreni fans here.`,
+    hr: `${topic.hr} Naslov kod ${src}: „${title}“. Puni tekst samo u originalu – ovdje kontekst za navijače Vatrenih.`,
   };
 }
 

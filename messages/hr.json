@@ -1,8 +1,38 @@
 {
   "Meta": {
-    "title": "Hrvatska Sport Live – streamovi, TV vodič i Vatreni",
-    "description": "Live board, TV vodič (HRT, Arena, Sportklub), legalni streamovi i tracker – mobilno i pouzdano.",
-    "keywords": "Hrvatska Sport Live, HRT, Arena Sport, HNL, Vatreni, TV savjeti, vijesti"
+    "title": "Hrvatska Sport Live – Vatreni, klupski termini i rezultati",
+    "description": "Iduća utakmica i zadnji rezultati hrvatskih profesionalaca, kalendar Vatrenih i naslovi s linkom na original. Bez ilegalnih streamova – TV samo uz potvrđen prijenos.",
+    "keywords": "Vatreni, Hrvatska reprezentacija, Modrić, HNL, hrvatski igrači, iduća utakmica, Hrvatska Sport Live"
+  },
+  "Hero": {
+    "kicker": "Urednički hub Vatrenih",
+    "title": "Hrvatski profesionalci. Iduća utakmica. Zadnji rezultat.",
+    "lead": "Tko igra kada, kako je klub zadnji put završio – i iduća utakmica reprezentacije. Bez ilegalnih streamova, bez nagađanih TV prava, bez izmišljenog sastava.",
+    "nextNt": "Iduća utakmica reprezentacije",
+    "noNt": "Nema predstojeće utakmice reprezentacije u feedu – klupski termini dolje.",
+    "statLive": "uživo",
+    "statWeek": "u 7 dana",
+    "p1Title": "Termini igrača",
+    "p1Body": "Iduća i zadnja klupska utakmica po Hrvatu – strogo prema pravom klubu.",
+    "p2Title": "Naslovi s izvorom",
+    "p2Body": "Samo vijesti s hrvatskim kutom. Puni tekst ostaje kod izdavača.",
+    "p3Title": "Pravno oprezno",
+    "p3Body": "Bez streamova, bez VPN-a, TV samo nakon uredničke potvrde."
+  },
+  "Faq": {
+    "title": "Česta pitanja",
+    "subtitle": "Kratko i iskreno – da znaš čemu stranica služi.",
+    "q1": "Kada sljedeći put igra hrvatska reprezentacija?",
+    "a1Live": "{fixture} {when}. Termini i rezultati su na live boardu i u rubrici reprezentacije.",
+    "a1Fallback": "Čim je utakmica u feedu, pojavi se u heru i rubrici reprezentacije. Sastave navodimo tek nakon službene nominacije.",
+    "q2": "Gdje mogu legalno gledati utakmice?",
+    "a2": "Ne hostamo prijenose i kanale navodimo samo kad je live urednički potvrđen. Inače linkamo službene stranice (npr. HRT). Bez ilegalnih streamova, bez prodaje VPN-a.",
+    "q3": "Koji hrvatski igrači imaju utakmicu danas ili ovaj tjedan?",
+    "a3": "Tablica „Hrvati na prvi pogled“ pokazuje iduću utakmicu, zadnji rezultat i formu. Tracker ispod ima fotografije, status i nastupe.",
+    "q4": "Jesu li vijesti kopije tuđih članaka?",
+    "a4": "Ne. Pokazujemo naslov, vlastiti kratki teaser i link na original. Bez framanja, bez scrapanja full teksta.",
+    "q5": "Je li Hrvatska Sport Live službena stranica saveza?",
+    "a5": "Nije. To je neovisna urednička info-stranica. Službeni izvori ostaju HNS, klubovi i licencirani emitenti."
   },
   "ValueBoard": {
     "title": "Hrvati na prvi pogled",
@@ -109,11 +139,13 @@
   },
   "Nav": {
     "home": "Početna",
+    "glance": "Pregled",
+    "faq": "FAQ",
     "vatreni": "Reprezentacija",
     "news": "Vijesti",
     "matches": "Utakmice",
     "players": "Igrači",
-    "tv": "TV i streamovi",
+    "tv": "TV",
     "moreSports": "Više sportova",
     "brandName": "Hrvatska Sport",
     "brandLive": "Uživo",

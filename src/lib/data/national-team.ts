@@ -4,7 +4,6 @@
  */
 
 import type { Match } from "@/types";
-import { TV_CHANNELS } from "@/lib/constants";
 
 /** TheSportsDB: Croatia national team */
 export const CROATIA_NT_TEAM_ID = "133912";
@@ -14,10 +13,6 @@ export const CROATIA_NT_LABEL = {
   de: "Kroatien Nationalmannschaft",
   en: "Croatia National Team",
 } as const;
-
-function pick(...ids: string[]) {
-  return TV_CHANNELS.filter((c) => ids.includes(c.id));
-}
 
 /**
  * Teamnamen normalisieren (Croatia/Kroatien, Czechia/Czech Republic, …)
@@ -161,9 +156,8 @@ export function enrichNationalTeamMatch(match: Match): Match {
     league: league as Match["league"],
     // Unbekannter Kader = leere Liste (nicht 20+ Spekulationen)
     croatianPlayers: match.croatianPlayers?.length ? match.croatianPlayers : [],
-    tvChannels: match.tvChannels?.length
-      ? match.tvChannels
-      : pick("hrt", "hrt2", "arena-sport"),
+    // TV nur wenn bereits bestätigt – nie HRT/Arena raten
+    tvChannels: match.tvChannels ?? [],
   };
 }
 

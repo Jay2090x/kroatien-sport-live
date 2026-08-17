@@ -1,8 +1,38 @@
 {
   "Meta": {
-    "title": "Croatia Sport Live – streams, TV guide & Vatreni",
-    "description": "Live board, TV guide (HRT, Arena, Sportklub), legal streams and tracker for Croatian sports – mobile-first & trustworthy.",
-    "keywords": "Croatia Sport Live, HRT, Arena Sport, HNL, Vatreni, TV tips, news"
+    "title": "Croatia Sport Live – Vatreni, club fixtures & results",
+    "description": "Next match and last results of Croatian pros, Vatreni calendar and headlines with original links. No illegal streams – TV only when a broadcast is confirmed.",
+    "keywords": "Vatreni, Croatia national team, Modric, HNL, Croatian players, next international, Croatia Sport Live"
+  },
+  "Hero": {
+    "kicker": "Editorial Vatreni hub",
+    "title": "Croatian pros. Next match. Last result.",
+    "lead": "Who plays when, how the club last finished – and the next international. No illegal streams, no guessed TV rights, no invented squads.",
+    "nextNt": "Next international",
+    "noNt": "No upcoming international in the current feed – club fixtures below.",
+    "statLive": "live now",
+    "statWeek": "in 7 days",
+    "p1Title": "Player fixtures",
+    "p1Body": "Next and last club match per Croatian – matched strictly to the real club.",
+    "p2Title": "Headlines with source",
+    "p2Body": "Only stories with a Croatia angle. Full text stays with the publisher.",
+    "p3Title": "Legally careful",
+    "p3Body": "No streams, no VPN, TV only after editorial confirmation."
+  },
+  "Faq": {
+    "title": "FAQ",
+    "subtitle": "Short and honest – so you know what this site is for.",
+    "q1": "When does the Croatia national team play next?",
+    "a1Live": "{fixture} on {when}. Dates and results are on the live board and in the national-team section.",
+    "a1Fallback": "As soon as an international is in the feed it appears in the hero and national-team section. We list squads only after official nomination.",
+    "q2": "Where can I watch matches legally?",
+    "a2": "We do not host broadcasts and only name channels when a live transmission is editorially confirmed. Otherwise we link official homepages (e.g. HRT). No illegal streams, no VPN sales.",
+    "q3": "Which Croatian players have a match today or this week?",
+    "a3": "The “Croatians at a glance” table lists next club fixture, last result and form. The tracker below has photos, status and more appearances.",
+    "q4": "Are the news copies of other articles?",
+    "a4": "No. We show the headline plus our own short teaser and a link to the original. No framing, no full-text scraping.",
+    "q5": "Is Croatia Sport Live official?",
+    "a5": "No. It is an independent editorial information site. Official sources remain HNS, clubs and licensed broadcasters."
   },
   "ValueBoard": {
     "title": "Croatians at a glance",
@@ -109,11 +139,13 @@
   },
   "Nav": {
     "home": "Home",
+    "glance": "Overview",
+    "faq": "FAQ",
     "vatreni": "National team",
     "news": "News",
     "matches": "Matches",
     "players": "Players",
-    "tv": "TV & Streams",
+    "tv": "TV",
     "moreSports": "More sports",
     "brandName": "Croatia Sport",
     "brandLive": "Live",

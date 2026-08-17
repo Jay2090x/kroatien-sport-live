@@ -25,6 +25,8 @@ import type { Locale } from "@/i18n/routing";
 import type { LocaleText } from "@/types/player-profile";
 import { ArrowLeft, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { clubMatchesForPlayer } from "@/lib/player-schedule";
+import { PlayerJsonLd } from "@/components/seo/json-ld";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -104,20 +106,13 @@ export default async function PlayerPage({
   const sharePath =
     locale === "de" ? `/player/${id}` : `/${locale}/player/${id}`;
 
-  const upcoming = data.matches
-    .filter(
-      (m) =>
-        m.croatianPlayers.some((p) => p.playerId === player.id) &&
-        m.status !== "finished" &&
-        m.status !== "cancelled"
-    )
-    .sort(
-      (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
-    )
+  const upcoming = clubMatchesForPlayer(player, data.matches)
+    .filter((m) => m.status !== "finished" && m.status !== "cancelled")
     .slice(0, 5);
 
   return (
     <>
+      <PlayerJsonLd player={player} locale={locale} />
       <Navbar />
       <main className="mx-auto max-w-xl px-3 py-6 sm:px-6 sm:py-8">
         <nav className="mb-5 flex flex-wrap items-center justify-between gap-2">

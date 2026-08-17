@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/constants";
 import { getAllNewsSlugs } from "@/lib/data/news";
+import { FALLBACK_PLAYERS } from "@/lib/data/fallback-players";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE.url;
@@ -49,6 +50,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: now,
         changeFrequency: "monthly" as const,
         priority: 0.3,
+      }))
+    ),
+    ...FALLBACK_PLAYERS.filter((p) => p.isActive !== false).flatMap((p) =>
+      (["", "/en", "/hr"] as const).map((prefix) => ({
+        url: `${base}${prefix}/player/${p.id}`,
+        lastModified: now,
+        changeFrequency: "daily" as const,
+        priority: 0.7,
       }))
     ),
   ];
