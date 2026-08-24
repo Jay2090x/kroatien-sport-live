@@ -547,6 +547,7 @@
     "privacyDataLocal": "Browser storage (localStorage), e.g. favourites, theme, votes on provider links, optional status reports – stays on your device.",
     "privacyDataPush": "Push notifications only after your explicit browser consent (optional).",
     "privacyDataLogs": "Technical hosting logs (e.g. Vercel): IP, time, user agent – for security and debugging, limited by the host.",
+    "privacyDataAnalytics": "Vercel Web Analytics: anonymised page views and visitor counts (no cookie, no personal profiling for ads). Purpose: measure reach.",
     "privacyDataThird": "When you open external links, the providers’ privacy policies apply. Image URLs may trigger third-party CDN requests.",
     "privacyPurposeTitle": "Purposes",
     "privacyPurposeBody": "Running the site, editorial content, optional favourites, regional TV tips, security. Currently no advertising and no affiliate programmes.",

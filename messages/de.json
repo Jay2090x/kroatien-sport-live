@@ -547,6 +547,7 @@
     "privacyDataLocal": "Daten im Browser (localStorage), z. B. Favoriten, Theme, Abstimmungen zu Anbieter-Links, optionale Status-Meldungen – verbleiben auf deinem Gerät.",
     "privacyDataPush": "Push-Benachrichtigungen nur nach deiner ausdrücklichen Einwilligung im Browser (optional).",
     "privacyDataLogs": "Technische Server-/Hosting-Logs (z. B. Vercel): IP-Adresse, Zeitpunkt, User-Agent – zur Betriebssicherheit und Fehleranalyse, begrenzt durch den Hoster.",
+    "privacyDataAnalytics": "Vercel Web Analytics: anonymisierte Seitenaufrufe und Besucherzahl (kein Cookie, keine personenbezogene Auswertung zu Werbezwecken). Zweck: Reichweite messen.",
     "privacyDataThird": "Beim Aufruf externer Links (HRT, Arena, Nachrichtenmedien, …) gelten die Datenschutzbestimmungen der jeweiligen Anbieter. Eingebundene Bild-URLs (z. B. TheSportsDB/CDN) können Anfragen an Dritt-Server auslösen – keine Scraping von Publisher-Fotos für News.",
     "privacyPurposeTitle": "Zwecke",
     "privacyPurposeBody": "Bereitstellung der Website, Anzeige redaktioneller Inhalte und aggregierter Headlines (mit Link), optionale Personalisierung (Favoriten), regionale TV-Hinweise, Sicherheit und Missbrauchsvermeidung. Derzeit keine Werbung und keine Affiliate-Programme.",

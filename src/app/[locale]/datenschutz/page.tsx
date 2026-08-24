@@ -57,6 +57,7 @@ export default async function PrivacyPage({
             <li>{t("privacyDataLocal")}</li>
             <li>{t("privacyDataPush")}</li>
             <li>{t("privacyDataLogs")}</li>
+            <li>{t("privacyDataAnalytics")}</li>
             <li>{t("privacyDataThird")}</li>
           </ul>
           <h2 className="text-base font-semibold text-foreground">

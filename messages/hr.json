@@ -547,6 +547,7 @@
     "privacyDataLocal": "Podaci u pregledniku (localStorage), npr. omiljeni, tema, glasovi, opcionalne prijave – ostaju na tvom uređaju.",
     "privacyDataPush": "Push obavijesti samo uz tvoju izričitu suglasnost u pregledniku (opcionalno).",
     "privacyDataLogs": "Tehnički logovi hostinga (npr. Vercel): IP, vrijeme, user-agent – radi sigurnosti, u okviru hosta.",
+    "privacyDataAnalytics": "Vercel Web Analytics: anonimizirani pageviewi i broj posjetitelja (bez cookieja, bez profiliranja za oglase). Svrha: mjeriti doseg.",
     "privacyDataThird": "Kod vanjskih linkova vrijede pravila pružatelja. Slike mogu pokrenuti zahtjeve prema CDN-ovima trećih strana.",
     "privacyPurposeTitle": "Svrhe",
     "privacyPurposeBody": "Rad stranice, urednički sadržaj, omiljeni, regionalni TV savjeti, sigurnost. Trenutno nema oglasa ni affiliate programa.",
