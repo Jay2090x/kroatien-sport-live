@@ -98,11 +98,11 @@ const FEEDS_BY_LANG: Record<Locale, FeedDef[]> = {
 };
 
 const BLACKLIST =
-  /pinterest\.|facebook\.com\/groups|reddit\.com|tiktok\.com|doubleclick|outbrain|taboola|blogspot\.|quiz|clickbait|transfermarkt\.[a-z.]+\/.*seite|gemeinsame spiele|bilanz gegen|bildergalerie|foto-show|in\s*bildern|live-ticker\s*nur|umfrage:|jetzt\s*abstimmen/i;
+  /pinterest\.|facebook\.com\/groups|reddit\.com|tiktok\.com|doubleclick|outbrain|taboola|blogspot\.|quiz|clickbait|transfermarkt\.[a-z.]+\/.*seite|gemeinsame spiele|bilanz gegen|bildergalerie|foto-show|in\s*bildern|live-ticker\s*nur|umfrage:|jetzt\s*abstimmen|spielerpositionen|player\s*positions|vereinsprofil|kaderliste/i;
 
 /** Zu generisch / reiner Füllstoff ohne Story-Signal */
 const LOW_INTEREST =
-  /^(live|ticker|ergebnis|ergebnisse|vorschau|preview|heute|today|video)\b|bilder|gallery|fotostrecke|so\s+lief|im\s+überblick|kurz\s*notiert|nachrichten\s*überblick|was\s+sie\s+wissen|top\s*stories|morning\s*brief/i;
+  /^(live|ticker|ergebnis|ergebnisse|vorschau|preview|heute|today|video)\b|bilder|gallery|fotostrecke|so\s+lief|im\s+überblick|kurz\s*notiert|nachrichten\s*überblick|was\s+sie\s+wissen|top\s*stories|morning\s*brief|spielerpositionen/i;
 
 /** Pflicht: Kroatien-Bezug im Titel – sonst raus (kein BVB-/PL-Spam) */
 const CROAT_SIGNAL =
@@ -111,7 +111,7 @@ const CROAT_SIGNAL =
 const RELEVANCE = CROAT_SIGNAL;
 
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const CACHE_VER = "v7-short-teaser";
+const CACHE_VER = "v8-unique-teaser";
 
 /** Stopwords for near-duplicate fingerprints (de/en/hr) */
 const STOP = new Set(
@@ -271,9 +271,96 @@ function categorize(title: string): NewsArticle["category"] {
   return "clubs";
 }
 
+type StoryKind =
+  | "sub"
+  | "stoppage"
+  | "goal"
+  | "lineup"
+  | "transfer"
+  | "injury"
+  | "result"
+  | "preview"
+  | "coach"
+  | "nt"
+  | "europe"
+  | "other";
+
+const STAR_NAMES: Array<{ re: RegExp; de: string; en: string; hr: string }> = [
+  { re: /modri/i, de: "Luka Modrić", en: "Luka Modrić", hr: "Luka Modrić" },
+  { re: /gvardiol/i, de: "Joško Gvardiol", en: "Joško Gvardiol", hr: "Joško Gvardiol" },
+  { re: /kova[cč]i/i, de: "Mateo Kovačić", en: "Mateo Kovačić", hr: "Mateo Kovačić" },
+  { re: /peri[sš]i/i, de: "Ivan Perišić", en: "Ivan Perišić", hr: "Ivan Perišić" },
+  { re: /livakovi/i, de: "Dominik Livaković", en: "Dominik Livaković", hr: "Dominik Livaković" },
+  { re: /pa[sš]ali/i, de: "Mario Pašalić", en: "Mario Pašalić", hr: "Mario Pašalić" },
+  { re: /baturina/i, de: "Martin Baturina", en: "Martin Baturina", hr: "Martin Baturina" },
+  { re: /su[cć]i[cć]/i, de: "Luka Sučić", en: "Luka Sučić", hr: "Luka Sučić" },
+  { re: /juranovi/i, de: "Josip Juranović", en: "Josip Juranović", hr: "Josip Juranović" },
+  { re: /stani[sš]i/i, de: "Josip Stanišić", en: "Josip Stanišić", hr: "Josip Stanišić" },
+  { re: /budimir/i, de: "Ante Budimir", en: "Ante Budimir", hr: "Ante Budimir" },
+  { re: /petkovi/i, de: "Bruno Petković", en: "Bruno Petković", hr: "Bruno Petković" },
+  { re: /ivanu[sš]ec/i, de: "Luka Ivanušec", en: "Luka Ivanušec", hr: "Luka Ivanušec" },
+  { re: /maj[eе]r/i, de: "Lovro Majer", en: "Lovro Majer", hr: "Lovro Majer" },
+  { re: /brozovi/i, de: "Marcelo Brozović", en: "Marcelo Brozović", hr: "Marcelo Brozović" },
+  { re: /sosa/i, de: "Borna Sosa", en: "Borna Sosa", hr: "Borna Sosa" },
+  { re: /kramari/i, de: "Andrej Kramarić", en: "Andrej Kramarić", hr: "Andrej Kramarić" },
+  { re: /bili[cć]/i, de: "Slaven Bilić", en: "Slaven Bilić", hr: "Slaven Bilić" },
+];
+
+const CLUBS: Array<{ re: RegExp; de: string; en: string; hr: string }> = [
+  { re: /\bmilan\b|ac milan/i, de: "AC Mailand", en: "AC Milan", hr: "AC Milan" },
+  { re: /manchester city|man city/i, de: "Manchester City", en: "Manchester City", hr: "Manchester City" },
+  { re: /hajduk/i, de: "Hajduk Split", en: "Hajduk Split", hr: "Hajduk Split" },
+  { re: /dinamo/i, de: "Dinamo Zagreb", en: "Dinamo Zagreb", hr: "Dinamo Zagreb" },
+  { re: /rijeka/i, de: "HNK Rijeka", en: "HNK Rijeka", hr: "HNK Rijeka" },
+  { re: /osijek/i, de: "NK Osijek", en: "NK Osijek", hr: "NK Osijek" },
+  { re: /midtjylland/i, de: "Midtjylland", en: "Midtjylland", hr: "Midtjylland" },
+  { re: /psv/i, de: "PSV Eindhoven", en: "PSV Eindhoven", hr: "PSV Eindhoven" },
+  { re: /atalanta/i, de: "Atalanta", en: "Atalanta", hr: "Atalanta" },
+  { re: /paok/i, de: "PAOK", en: "PAOK", hr: "PAOK" },
+  { re: /bayern/i, de: "Bayern München", en: "Bayern Munich", hr: "Bayern München" },
+  { re: /real sociedad/i, de: "Real Sociedad", en: "Real Sociedad", hr: "Real Sociedad" },
+];
+
+function namesInLocale(
+  title: string,
+  table: typeof STAR_NAMES,
+  loc: "de" | "en" | "hr"
+): string {
+  const hits = table.filter((r) => r.re.test(title)).slice(0, 2);
+  if (!hits.length) return "";
+  return hits.map((h) => h[loc]).join(" und ");
+}
+
+function detectKind(title: string, category: NewsArticle["category"]): StoryKind {
+  const t = title.toLowerCase();
+  if (/eingewechsel|eingewechselt|eingewechselt|von der bank|subst|bench|klupa|ušao/i.test(t))
+    return "sub";
+  if (/nachspielzeit|stoppage|injury time|sudačkoj|90\+|95'|96'/i.test(t))
+    return "stoppage";
+  if (/\btor\b|\bgoal\b|trifft|scored|gol\b|hattrick/i.test(t)) return "goal";
+  if (/aufstellung|line-?up|sastav|starting xi|startelf/i.test(t)) return "lineup";
+  if (
+    category === "transfer" ||
+    /transfer|vertrag|ugovor|verläng|wechsel|verpflicht/i.test(t)
+  )
+    return "transfer";
+  if (/verletz|injury|ozljed|ausfall|doubt/i.test(t)) return "injury";
+  if (/sieg|defeat|niederlage|pobjeda|poraz|gewonnen|verloren|\d+\s*[:\-]\s*\d+/i.test(t))
+    return "result";
+  if (/vorschau|preview|najava|heute|tonight/i.test(t)) return "preview";
+  if (/bili[cć]|izbornik|coach|trainer/i.test(t)) return "coach";
+  if (
+    /conference|europa league|champions|qualif|playoff|uel|uecl|ucl/i.test(t)
+  )
+    return "europe";
+  if (category === "vatreni" || /vatren|reprezent|nations|national/i.test(t))
+    return "nt";
+  return "other";
+}
+
 /**
- * SEO-Teaser: Worum geht’s, warum relevant für Kroatien-Fans, was folgt auf KSL.
- * Kein Fremd-Volltext – eigener erklärender Text + Quellenhinweis.
+ * Ein individueller Teaser pro Headline – kein Copy der Überschrift,
+ * keine Standard-Floskeln „Aktuelle Meldung aus dem Umfeld…“.
  */
 function localizedTeaser(
   title: string,
@@ -281,56 +368,119 @@ function localizedTeaser(
   category: NewsArticle["category"]
 ): NewsLocaleText {
   const src = source || "Medien";
-  const topic = topicBlurb(title, category);
-  return {
-    de: `${topic.de} Headline bei ${src}: „${title}“. Volltext nur im Original – hier der Kontext für Vatreni-Fans.`,
-    en: `${topic.en} Headline at ${src}: “${title}”. Full text only at the publisher – context for Vatreni fans here.`,
-    hr: `${topic.hr} Naslov kod ${src}: „${title}“. Puni tekst samo u originalu – ovdje kontekst za navijače Vatrenih.`,
-  };
-}
+  const kind = detectKind(title, category);
+  const whoDe = namesInLocale(title, STAR_NAMES, "de");
+  const whoEn = namesInLocale(title, STAR_NAMES, "en");
+  const whoHr = namesInLocale(title, STAR_NAMES, "hr");
+  const clubDe = namesInLocale(title, CLUBS, "de");
+  const clubEn = namesInLocale(title, CLUBS, "en");
+  const clubHr = namesInLocale(title, CLUBS, "hr");
+  const who = { de: whoDe, en: whoEn, hr: whoHr };
+  const club = { de: clubDe, en: clubEn, hr: clubHr };
 
-function topicBlurb(
-  title: string,
-  category: NewsArticle["category"]
-): NewsLocaleText {
-  const t = title.toLowerCase();
-  if (
-    category === "transfer" ||
-    /transfer|vertrag|ugovor|rückkehr|return|verläng|produž|inter|milan|wechsel/i.test(
-      t
-    )
-  ) {
-    return {
-      de: "Transfer- und Vertragsnews rund um kroatische Profis und Clubs: Wer wechselt, verlängert oder steht im Gerücht – immer mit Blick auf die Vatreni-Perspektive.",
-      en: "Transfer and contract news around Croatian pros and clubs: moves, extensions and rumours – always with an eye on the national-team angle.",
-      hr: "Transferi i ugovori hrvatskih profesionalaca i klubova: tko mijenja klub, produžuje ili je u spekulacijama – uvijek s pogledom na reprezentaciju.",
-    };
-  }
-  if (
-    category === "hnl" ||
-    /hnl|hajduk|dinam|rijeka|osijek|uwcl|qualif|qualifikation/i.test(t)
-  ) {
-    return {
-      de: "HNL und kroatische Clubs in Europa: Vorschauen, Ergebnisse und Quali-Duelle – relevant für Form und Perspektiven junger Spieler und der Nationalmannschaft.",
-      en: "HNL and Croatian clubs in Europe: previews, results and qualifying ties – relevant for form and pathways for young players and the national team.",
-      hr: "HNL i hrvatski klubovi u Europi: najave, rezultati i kvalifikacije – važno za formu i perspektivu mladih igrača i reprezentacije.",
-    };
-  }
-  if (
-    category === "vatreni" ||
-    /vatren|reprezent|nations|bilic|bilić|izbornik|national/i.test(t)
-  ) {
-    return {
-      de: "Nationalmannschaft und Vatreni-Themen: Termine, Trainer, Kader-Diskussionen – ohne spekulative Aufstellungen, mit Fokus auf belegte Meldungen.",
-      en: "National team and Vatreni topics: fixtures, coaching, squad talk – no speculative line-ups, focus on solid reports.",
-      hr: "Reprezentacija i Vatreni: termini, izbornik, rasprava o kadru – bez spekulativnih sastava, fokus na pouzdane vijesti.",
-    };
-  }
-  return {
-    de: "Aktuelle Meldung aus dem Umfeld des kroatischen Fußballs – Clubs, Stars und Wettbewerbe, die für Fans der Vatreni zählen.",
-    en: "Latest item from Croatian football – clubs, stars and competitions that matter to Vatreni fans.",
-    hr: "Aktualnost iz hrvatskog nogometa – klubovi, zvijezde i natjecanja važna za navijače Vatrenih.",
+  const line = (loc: "de" | "en" | "hr") => {
+    const w = who[loc];
+    const c = club[loc];
+    const subj =
+      w ||
+      c ||
+      (loc === "hr"
+        ? "Hrvatski nogomet"
+        : loc === "en"
+          ? "Croatian football"
+          : "der kroatische Fußball");
+
+    switch (kind) {
+      case "sub":
+        return loc === "de"
+          ? `${subj} kam von der Bank – der Bericht schildert, wie der Einsatz die Partie verändert hat. Für die Vatreni zählen solche Minuten vor dem nächsten Länderspiel.`
+          : loc === "en"
+            ? `${subj} came off the bench – the report covers how the cameo changed the match. Those minutes matter for Croatia’s next window.`
+            : `${subj} ušao je s klupe – izvještaj opisuje kako je nastup okrenuo utakmicu. Takve minute broje pred idući rok Vatrenih.`;
+      case "stoppage":
+        return loc === "de"
+          ? `${subj} stand in der Nachspielzeit im Mittelpunkt. Späte Szenen entscheiden oft Spiele – und die Formkurve vor der Nationalmannschaft.`
+          : loc === "en"
+            ? `${subj} was central in stoppage time. Late moments decide matches – and the form curve before the next Croatia camp.`
+            : `${subj} bio je ključan u sudačkoj nadoknadi. Kasne scene odlučuju utakmice – i formu pred okupljanje Vatrenih.`;
+      case "goal":
+        return loc === "de"
+          ? `${subj} war am Treffer beteiligt. Der Originalbericht nennt den Spielstand und die Szene – hier nur die Einordnung für Kroaten-Fans.`
+          : loc === "en"
+            ? `${subj} was involved in the goal. The original report has the score and the clip – here only the Croatia-fan angle.`
+            : `${subj} bio je uključen u gol. Original donosi rezultat i scenu – ovdje samo kut za navijače Vatrenih.`;
+      case "lineup":
+        return loc === "de"
+          ? `${c ? `Aufstellung: ${c}` : "Eine Aufstellung"} ist raus. Wer startet, wer sitzt – das ist die konkrete Info, nicht eine allgemeine Club-News.`
+          : loc === "en"
+            ? `${c ? `Line-up: ${c}` : "A line-up"} is out. Who starts, who sits – that’s the actual news, not a generic club note.`
+            : `${c ? `Sastav: ${c}` : "Sastav"} je objavljen. Tko kreće, tko sjedi – to je konkretna vijest, ne opća klupska nota.`;
+      case "transfer":
+        return loc === "de"
+          ? `${subj}: Vertrags- oder Wechselthema. Wir verlinken die Quelle, erfinden aber keinen Deal – erst zählen, was öffentlich bestätigt ist.`
+          : loc === "en"
+            ? `${subj}: contract or transfer talk. We link the source and do not invent a deal – only what is publicly confirmed.`
+            : `${subj}: ugovor ili transfer. Linkamo izvor, ne izmišljamo deal – broji samo što je javno potvrđeno.`;
+      case "injury":
+        return loc === "de"
+          ? `${subj} und Fitness: der Bericht betrifft Einsatzfähigkeit. Für Tracker und Länderspiele gilt weiter: nur mit Quelle, kein Raten.`
+          : loc === "en"
+            ? `${subj} and fitness: the report is about availability. For the tracker and internationals we still only follow sourced notes.`
+            : `${subj} i forma: izvještaj je o raspoloživosti. Za tracker i reprezentaciju i dalje samo s izvorom.`;
+      case "result":
+        return loc === "de"
+          ? `${c ? `${c}: ` : ""}${w ? `${w} im Spiel` : "Ergebnis im kroatischen Blick"}. Den genauen Stand liest du im Original – hier die Einordnung für Form und nächste Termine.`
+          : loc === "en"
+            ? `${c ? `${c}: ` : ""}${w ? `${w} featured` : "a result with a Croatian angle"}. Full score in the original – here the form and fixture takeaway.`
+            : `${c ? `${c}: ` : ""}${w ? `${w} na utakmici` : "rezultat s hrvatskim kutom"}. Točan rezultat u originalu – ovdje forma i idući termini.`;
+      case "preview":
+        return loc === "de"
+          ? `Vorschau${c ? ` auf ${c}` : ""}${w ? ` mit ${w}` : ""}. Wer spielt wann – das Original hat die Details, wir halten den Vatreni-Kontext fest.`
+          : loc === "en"
+            ? `Preview${c ? ` of ${c}` : ""}${w ? ` featuring ${w}` : ""}. Who plays when is in the original; we keep the Vatreni context.`
+            : `Najava${c ? ` za ${c}` : ""}${w ? ` s ${w}` : ""}. Tko igra kada je u originalu; mi držimo kontekst Vatrenih.`;
+      case "coach":
+        return loc === "de"
+          ? `${w || "Der Trainerstab"} im Fokus: Personal, Kader oder Aussage. Keine spekulativen Aufstellungen – nur was die Quelle konkret schreibt.`
+          : loc === "en"
+            ? `${w || "The coaching staff"} in focus: personnel, squad or a quote. No guessed line-ups – only what the source actually says.`
+            : `${w || "Stručni stožer"} u fokusu: kadar ili izjava. Bez nagađanih sastava – samo što izvor konkretno piše.`;
+      case "europe":
+        return loc === "de"
+          ? `${c || "Ein kroatischer Club"} im Europapokal${w ? ` – ${w}` : ""}. Quali und Playoffs entscheiden über Minuten auf hohem Niveau.`
+          : loc === "en"
+            ? `${c || "A Croatian club"} in Europe${w ? ` – ${w}` : ""}. Qualifiers and play-offs decide high-level minutes.`
+            : `${c || "Hrvatski klub"} u Europi${w ? ` – ${w}` : ""}. Kvalifikacije i play-offi odlučuju o minutama na visokoj razini.`;
+      case "nt":
+        return loc === "de"
+          ? `Nationalmannschaft${w ? `: ${w}` : ""}. Termine und Kader nur, wenn der Verband oder eine belastbare Quelle spricht.`
+          : loc === "en"
+            ? `National team${w ? `: ${w}` : ""}. Fixtures and squads only when the federation or a solid source speaks.`
+            : `Reprezentacija${w ? `: ${w}` : ""}. Termini i kadar samo kad savez ili pouzdan izvor govori.`;
+      default:
+        if (w) {
+          return loc === "de"
+            ? `${w}${c ? ` (${c})` : ""} steht in dieser Meldung im Mittelpunkt. Den Ablauf liest du bei ${src} – wir ordnen nur für Vatreni-Fans ein.`
+            : loc === "en"
+              ? `${w}${c ? ` (${c})` : ""} is the focus of this item. The full story is at ${src} – we only frame it for Vatreni fans.`
+              : `${w}${c ? ` (${c})` : ""} je u središtu vijesti. Cijeli tekst je kod ${src} – mi samo uokvirujemo za navijače Vatrenih.`;
+        }
+        if (c) {
+          return loc === "de"
+            ? `${c} in den Schlagzeilen. Was genau passiert ist, steht im Original bei ${src} – relevant, weil kroatische Profis oder der HNL betroffen sind.`
+            : loc === "en"
+              ? `${c} in the headlines. What actually happened is in the original at ${src} – relevant because Croatian pros or the HNL are involved.`
+              : `${c} u naslovima. Što se točno dogodilo čitaš kod ${src} – bitno jer su uključeni hrvatski profesionalci ili HNL.`;
+        }
+        return loc === "de"
+          ? `Kurze Einordnung dieser Headline für Vatreni-Fans. Den Bericht selbst öffnest du bei ${src}.`
+          : loc === "en"
+            ? `A short Vatreni-fan take on this headline. Open the report itself at ${src}.`
+            : `Kratki kut za navijače Vatrenih. Sam izvještaj otvori kod ${src}.`;
+    }
   };
+
+  return { de: line("de"), en: line("en"), hr: line("hr") };
 }
 
 function localizedBody(
