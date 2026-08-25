@@ -85,6 +85,8 @@ export interface GuideMatch {
   croatianPlayers?: GuideMatchPlayer[];
   /** Optional deep-link into app match id */
   appMatchId?: string;
+  /** Highlight video (YouTube) if API provided one */
+  videoUrl?: string;
 }
 
 export interface TvGuideSlot {

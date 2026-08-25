@@ -224,6 +224,7 @@ export function matchToGuideMatch(
     streams: uniqueStreams,
     croatianPlayers,
     appMatchId: m.id,
+    videoUrl: m.videoUrl,
   };
 }
 

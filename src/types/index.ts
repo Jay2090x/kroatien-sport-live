@@ -143,6 +143,8 @@ export interface Match {
   croatianPlayers: MatchPlayerAppearance[];
   tvChannels?: TvChannel[];
   streamHints?: string[];
+  /** Offizieller Highlight-Link von TheSportsDB, falls vorhanden */
+  videoUrl?: string;
   externalIds?: {
     theSportsDb?: string;
     footballData?: string;

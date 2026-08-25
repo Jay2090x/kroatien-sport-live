@@ -31,6 +31,12 @@ import { cn, formatKickoff, isLiveStatus, scoreDisplay } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import { Link } from "@/i18n/navigation";
 import type { Match } from "@/types";
+import { clubMatchesForPlayer } from "@/lib/player-schedule";
+import { computePlayerAppearances } from "@/lib/player-form";
+import {
+  highlightHref,
+  youtubePlayerMatchUrl,
+} from "@/lib/match-video";
 import type { Locale } from "@/i18n/routing";
 import type { LocaleText, CareerSeasonStat } from "@/types/player-profile";
 
@@ -69,24 +75,22 @@ export function PlayerDetailPanel() {
 
   const safeTeamTab = Math.min(teamTab, Math.max(0, profile.teams.length - 1));
 
-  const upcoming = matches
-    .filter(
-      (m) =>
-        m.croatianPlayers.some((p) => p.playerId === player.id) &&
-        m.status !== "finished" &&
-        m.status !== "cancelled"
-    )
-    .sort((a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime())
-    .slice(0, 4);
-
-  const recent = matches
-    .filter(
-      (m) =>
-        m.croatianPlayers.some((p) => p.playerId === player.id) &&
-        m.status === "finished"
-    )
-    .sort((a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime())
+  const clubMs = clubMatchesForPlayer(player, matches);
+  const upcoming = clubMs
+    .filter((m) => m.status !== "finished" && m.status !== "cancelled")
     .slice(0, 3);
+  const recent = [...clubMs]
+    .filter((m) => m.status === "finished")
+    .sort(
+      (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
+    )
+    .slice(0, 5);
+  const recentApps = computePlayerAppearances(
+    player.id,
+    matches,
+    5,
+    player
+  );
 
   const meta = getAvailabilityMeta(player.availability);
   const statusLabel = getAvailabilityLabel(player.availability, locale);
@@ -221,30 +225,36 @@ export function PlayerDetailPanel() {
           </div>
         </div>
 
-        {/* Einheitliche Stats: Club + Nationalteam – gleiche Struktur für alle */}
+        {/* Letzte Einsätze im Feed – primäre Statistik, nicht Karriere-Lücken */}
         <div className="mt-3 space-y-2">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-            {t("uniformStats")}
+            {t("lastFive")}
           </p>
-          {getUniformStatLines(profile).map((line) => (
-            <div
-              key={line.kind}
-              className="rounded-xl border border-border bg-secondary/40 px-3 py-2"
-            >
-              <p className="truncate text-[10px] font-semibold text-muted-foreground">
-                {tLoc(line.label, locale)}
-              </p>
-              <div className="mt-1.5 grid grid-cols-4 gap-2 text-center">
+          {recentApps.length === 0 ? (
+            <p className="text-xs text-muted-foreground">{t("lastFiveEmpty")}</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 gap-2 rounded-xl border border-border bg-secondary/40 px-3 py-2 text-center">
                 {(
                   [
-                    [line.apps, L.apps],
-                    [line.goals, L.goals],
-                    [line.assists, L.assists],
-                    [line.yellow, L.yellow],
+                    [recentApps.length, L.apps],
+                    [
+                      recentApps.reduce((s, a) => s + (a.app.goals ?? 0), 0) ||
+                        null,
+                      L.goals,
+                    ],
+                    [
+                      recentApps.filter((a) => a.form === "W").length,
+                      "W",
+                    ],
+                    [
+                      recentApps.filter((a) => a.form === "L").length,
+                      "L",
+                    ],
                   ] as const
                 ).map(([n, l]) => (
                   <div key={String(l)}>
-                    <p className="text-lg font-bold tabular-nums leading-none sm:text-xl">
+                    <p className="text-lg font-bold tabular-nums leading-none">
                       {fmtStat(n)}
                     </p>
                     <p className="mt-0.5 text-[10px] text-muted-foreground">
@@ -253,9 +263,63 @@ export function PlayerDetailPanel() {
                   </div>
                 ))}
               </div>
-            </div>
-          ))}
+              <ul className="space-y-1">
+                {recent.map((m) => (
+                  <MiniMatch
+                    key={m.id}
+                    match={m}
+                    playerId={player.id}
+                    playerName={player.name}
+                    onOpen={() => setSelectedMatch(m)}
+                    liveLabel={tMatch("live")}
+                    locale={locale}
+                    videoLabel={t("video")}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
         </div>
+
+        {/* Karriere nur wenn echte Zahlen existieren */}
+        {getUniformStatLines(profile).some((l) => l.apps != null) && (
+          <div className="mt-3 space-y-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("uniformStats")}
+            </p>
+            {getUniformStatLines(profile)
+              .filter((line) => line.apps != null)
+              .map((line) => (
+                <div
+                  key={line.kind}
+                  className="rounded-xl border border-border bg-secondary/40 px-3 py-2"
+                >
+                  <p className="truncate text-[10px] font-semibold text-muted-foreground">
+                    {tLoc(line.label, locale)}
+                  </p>
+                  <div className="mt-1.5 grid grid-cols-4 gap-2 text-center">
+                    {(
+                      [
+                        [line.apps, L.apps],
+                        [line.goals, L.goals],
+                        [line.assists, L.assists],
+                        [line.yellow, L.yellow],
+                      ] as const
+                    ).map(([n, l]) => (
+                      <div key={String(l)}>
+                        <p className="text-lg font-bold tabular-nums leading-none sm:text-xl">
+                          {fmtStat(n)}
+                        </p>
+                        <p className="mt-0.5 text-[10px] text-muted-foreground">
+                          {l}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
 
         {/* Links kompakt */}
         <div className="mt-2 flex flex-wrap gap-2">
@@ -287,124 +351,102 @@ export function PlayerDetailPanel() {
           )}
         </div>
 
-        {/* Stats – eingeklappt max 4 Zeilen */}
-        <div className="mt-4">
-          <div className="mb-1.5 flex items-center justify-between gap-2">
-            <h3 className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              {L.stats}
-            </h3>
-            {profile.teams.length > 1 && (
-              <div className="flex flex-wrap gap-1">
-                {profile.teams.map((tab, i) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => {
-                      setTeamTab(i);
-                      setShowAllStats(false);
-                    }}
-                    className={cn(
-                      "rounded-md px-2 py-0.5 text-[10px] font-bold uppercase",
-                      safeTeamTab === i
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {tLoc(tab.label, locale)}
-                  </button>
-                ))}
-              </div>
+        {activeStats.length > 0 && (
+          <div className="mt-4">
+            <div className="mb-1.5 flex items-center justify-between gap-2">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                {L.stats}
+              </h3>
+              {profile.teams.length > 1 && (
+                <div className="flex flex-wrap gap-1">
+                  {profile.teams.map((tab, i) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        setTeamTab(i);
+                        setShowAllStats(false);
+                      }}
+                      className={cn(
+                        "rounded-md px-2 py-0.5 text-[10px] font-bold uppercase",
+                        safeTeamTab === i
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {tLoc(tab.label, locale)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="overflow-x-auto rounded-lg border-2 border-border">
+              <table className="w-full min-w-[280px] text-left text-xs">
+                <thead>
+                  <tr className="border-b border-border bg-secondary/60 text-[10px] text-muted-foreground">
+                    <th className="px-2 py-1.5 font-semibold">{L.year}</th>
+                    <th className="px-1.5 py-1.5 text-center font-semibold">
+                      {L.apps}
+                    </th>
+                    <th className="px-1.5 py-1.5 text-center font-semibold">
+                      {L.goals}
+                    </th>
+                    <th className="px-1.5 py-1.5 text-center font-semibold">
+                      {L.assists}
+                    </th>
+                    <th className="px-1.5 py-1.5 text-center font-semibold">
+                      {L.yellow}
+                    </th>
+                    <th className="px-1.5 py-1.5 text-center font-semibold">
+                      {L.red}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {statsPreview.map((r) => (
+                    <StatRow
+                      key={r.season + tLoc(r.competition, locale)}
+                      r={r}
+                      locale={locale}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {activeStats.length > 4 && (
+              <button
+                type="button"
+                onClick={() => setShowAllStats((v) => !v)}
+                className="mt-1.5 text-[11px] font-semibold text-primary hover:underline"
+              >
+                {showAllStats
+                  ? L.less
+                  : `${L.more} (+${activeStats.length - 4})`}
+              </button>
             )}
           </div>
+        )}
 
-          {activeStats.length === 0 ? (
-            <p className="text-xs text-muted-foreground">{L.noStats}</p>
-          ) : (
-            <>
-              <div className="overflow-x-auto rounded-lg border-2 border-border">
-                <table className="w-full min-w-[280px] text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-border bg-secondary/60 text-[10px] text-muted-foreground">
-                      <th className="px-2 py-1.5 font-semibold">{L.year}</th>
-                      <th className="px-1.5 py-1.5 text-center font-semibold">
-                        {L.apps}
-                      </th>
-                      <th className="px-1.5 py-1.5 text-center font-semibold">
-                        {L.goals}
-                      </th>
-                      <th className="px-1.5 py-1.5 text-center font-semibold">
-                        {L.assists}
-                      </th>
-                      <th className="px-1.5 py-1.5 text-center font-semibold">
-                        {L.yellow}
-                      </th>
-                      <th className="px-1.5 py-1.5 text-center font-semibold">
-                        {L.red}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {statsPreview.map((r) => (
-                      <StatRow key={r.season + tLoc(r.competition, locale)} r={r} locale={locale} />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {activeStats.length > 4 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAllStats((v) => !v)}
-                  className="mt-1.5 text-[11px] font-semibold text-primary hover:underline"
-                >
-                  {showAllStats ? L.less : `${L.more} (+${activeStats.length - 4})`}
-                </button>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Nächste + letzte Spiele kompakt */}
-        {(upcoming.length > 0 || recent.length > 0) && (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {upcoming.length > 0 && (
-              <div>
-                <h3 className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase text-muted-foreground">
-                  <CalendarDays className="h-3.5 w-3.5 text-primary" />
-                  {L.next}
-                </h3>
-                <ul className="space-y-1">
-                  {upcoming.map((m) => (
-                    <MiniMatch
-                      key={m.id}
-                      match={m}
-                      playerId={player.id}
-                      onOpen={() => setSelectedMatch(m)}
-                      liveLabel={tMatch("live")}
-                      locale={locale}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
-            {recent.length > 0 && (
-              <div>
-                <h3 className="mb-1 text-[11px] font-bold uppercase text-muted-foreground">
-                  {L.recent}
-                </h3>
-                <ul className="space-y-1">
-                  {recent.map((m) => (
-                    <MiniMatch
-                      key={m.id}
-                      match={m}
-                      playerId={player.id}
-                      onOpen={() => setSelectedMatch(m)}
-                      liveLabel={tMatch("live")}
-                      locale={locale}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
+        {upcoming.length > 0 && (
+          <div className="mt-4">
+            <h3 className="mb-1 flex items-center gap-1 text-[11px] font-bold uppercase text-muted-foreground">
+              <CalendarDays className="h-3.5 w-3.5 text-primary" />
+              {L.next}
+            </h3>
+            <ul className="space-y-1">
+              {upcoming.map((m) => (
+                <MiniMatch
+                  key={m.id}
+                  match={m}
+                  playerId={player.id}
+                  playerName={player.name}
+                  onOpen={() => setSelectedMatch(m)}
+                  liveLabel={tMatch("live")}
+                  locale={locale}
+                  videoLabel={t("video")}
+                />
+              ))}
+            </ul>
           </div>
         )}
 
@@ -456,15 +498,19 @@ function StatRow({
 function MiniMatch({
   match,
   playerId,
+  playerName,
   onOpen,
   liveLabel,
   locale,
+  videoLabel,
 }: {
   match: Match;
   playerId: string;
+  playerName?: string;
   onOpen: () => void;
   liveLabel: string;
   locale: string;
+  videoLabel?: string;
 }) {
   const live = isLiveStatus(match.status);
   const app = match.croatianPlayers.find((p) => p.playerId === playerId);
@@ -508,6 +554,22 @@ function MiniMatch({
             </span>
           )}
         </button>
+        {match.status === "finished" && (
+          <a
+            href={
+              match.videoUrl
+                ? highlightHref(match)
+                : youtubePlayerMatchUrl(playerName || "", match)
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-lg border border-red-500/30 p-1.5 text-red-500 hover:bg-red-500/10"
+            title={videoLabel || "YouTube"}
+            aria-label={videoLabel || "YouTube"}
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+          </a>
+        )}
         <Link
           href={`/match/${match.id}`}
           className="shrink-0 rounded-lg border border-border px-2 py-1.5 text-[10px] font-semibold text-primary hover:bg-secondary/50"

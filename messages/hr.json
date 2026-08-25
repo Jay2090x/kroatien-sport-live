@@ -8,6 +8,7 @@
     "kicker": "Urednički hub Vatrenih",
     "title": "Hrvatski profesionalci. Iduća utakmica. Zadnji rezultat.",
     "lead": "Tko igra kada, kako je klub zadnji put završio – i iduća utakmica reprezentacije. Bez ilegalnih streamova, bez nagađanih TV prava, bez izmišljenog sastava.",
+    "leadShort": "Iduća klupska utakmica, zadnji rezultat, highlightsi – bez hostanja streamova.",
     "nextNt": "Iduća utakmica reprezentacije",
     "noNt": "Nema predstojeće utakmice reprezentacije u feedu – klupski termini dolje.",
     "statLive": "uživo",
@@ -43,7 +44,8 @@
     "noLast": "Nema rezultata u feedu",
     "liveNow": "uživo",
     "empty": "Nema klupskih termina. Pričekaj API ili osvježi.",
-    "footnote": "Mapiranje preko kluba (strogo). Minute/golovi samo kad API da lineup/timeline – inače rezultat + protivnik."
+    "footnote": "Klupski termini iz live feeda. Play otvara YouTube (pretraga highlightsa ili API video).",
+    "video": "Highlightsi na YouTubeu"
   },
   "Guide": {
     "liveNow": "Uživo sada",
@@ -411,6 +413,9 @@
     "recent": "Zadnje",
     "stats": "Statistika",
     "uniformStats": "Usporedivo: klub-sezona + reprezentacija",
+    "lastFive": "Zadnje klupske utakmice (feed)",
+    "lastFiveEmpty": "Nema završene klupske utakmice u trenutnom feedu.",
+    "video": "Highlightsi na YouTubeu",
     "moreStats": "Više statistike",
     "less": "Manje",
     "close": "Zatvori",

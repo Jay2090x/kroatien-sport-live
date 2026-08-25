@@ -8,6 +8,7 @@
     "kicker": "Editorial Vatreni hub",
     "title": "Croatian pros. Next match. Last result.",
     "lead": "Who plays when, how the club last finished – and the next international. No illegal streams, no guessed TV rights, no invented squads.",
+    "leadShort": "Next club fixture, last result, highlights – no stream hosting.",
     "nextNt": "Next international",
     "noNt": "No upcoming international in the current feed – club fixtures below.",
     "statLive": "live now",
@@ -43,7 +44,8 @@
     "noLast": "No result in feed",
     "liveNow": "live now",
     "empty": "No club fixtures loaded. Wait for the API or refresh.",
-    "footnote": "Matched by club (strict). Minutes/goals only when the API provides lineup/timeline – otherwise score + opponent."
+    "footnote": "Club fixtures from the live feed. Play opens YouTube (highlight search or API video).",
+    "video": "Highlights on YouTube"
   },
   "Guide": {
     "liveNow": "Live Now",
@@ -411,6 +413,9 @@
     "recent": "Recent",
     "stats": "Stats",
     "uniformStats": "Comparable: club season + national team",
+    "lastFive": "Recent club matches (feed)",
+    "lastFiveEmpty": "No finished club match in the current feed.",
+    "video": "Highlights on YouTube",
     "moreStats": "More stats",
     "less": "Less",
     "close": "Close",

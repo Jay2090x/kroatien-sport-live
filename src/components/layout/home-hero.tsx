@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ShieldCheck, CalendarDays, Newspaper } from "lucide-react";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { isNationalTeamMatch } from "@/lib/data/national-team";
 import { Link } from "@/i18n/navigation";
@@ -9,9 +8,7 @@ import { formatKickoff, isLiveStatus } from "@/lib/utils";
 import { localizeTeamName } from "@/lib/team-names";
 import { useMemo } from "react";
 
-/**
- * Editorial masthead: who we are, next Vatreni, trust signals.
- */
+/** Kompakter Kopf: nächstes Länderspiel + Live-Zähler. */
 export function HomeHero() {
   const t = useTranslations("Hero");
   const locale = useLocale();
@@ -42,96 +39,41 @@ export function HomeHero() {
   }, [matches]);
 
   return (
-    <header className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.07] sahovnica-bg"
-        aria-hidden
-      />
+    <header className="relative overflow-hidden rounded-2xl border border-border bg-card px-4 py-4 sm:px-5">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#c8102e] via-white to-[#171796]" />
-
-      <div className="relative space-y-4 px-4 py-5 sm:px-6 sm:py-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
-          {t("kicker")}
-        </p>
-        <div className="max-w-2xl">
-          <h1 className="text-2xl font-black tracking-tight sm:text-3xl">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl font-black tracking-tight sm:text-2xl">
             {t("title")}
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-            {t("lead")}
-          </p>
+          <p className="mt-1 text-[13px] text-muted-foreground">{t("leadShort")}</p>
         </div>
-
-        {nextNt ? (
-          <Link
-            href={`/match/${nextNt.id}`}
-            className="block max-w-xl rounded-xl border border-primary/25 bg-primary/5 px-3.5 py-3 transition-colors hover:border-primary/45"
-          >
-            <p className="text-[10px] font-bold uppercase tracking-wide text-primary">
-              {t("nextNt")}
-            </p>
-            <p className="mt-0.5 text-base font-bold leading-snug">
-              {localizeTeamName(nextNt.homeTeam, locale)}
-              {" – "}
-              {localizeTeamName(nextNt.awayTeam, locale)}
-            </p>
-            <p className="text-[12px] text-muted-foreground">
-              {formatKickoff(nextNt.kickoff, "EEE d. MMM · HH:mm", locale)}
-              {nextNt.leagueName
-                ? ` · ${nextNt.leagueName.replace(/ · .*$/, "")}`
-                : ""}
-              {nextNt.venue ? ` · ${nextNt.venue}` : ""}
-            </p>
-          </Link>
-        ) : (
-          <p className="text-[12px] text-muted-foreground">{t("noNt")}</p>
-        )}
-
-        <ul className="flex flex-wrap gap-2 text-[11px]">
-          <li className="rounded-full border border-border bg-background/70 px-2.5 py-1 font-semibold tabular-nums">
+        <ul className="flex shrink-0 flex-wrap gap-1.5 text-[11px] font-semibold">
+          <li className="rounded-full border border-border px-2.5 py-1 tabular-nums">
             {liveCount} {t("statLive")}
           </li>
-          <li className="rounded-full border border-border bg-background/70 px-2.5 py-1 font-semibold tabular-nums">
+          <li className="rounded-full border border-border px-2.5 py-1 tabular-nums">
             {weekCount} {t("statWeek")}
           </li>
         </ul>
-
-        <ul className="grid gap-2 sm:grid-cols-3">
-          <Trust
-            icon={CalendarDays}
-            title={t("p1Title")}
-            body={t("p1Body")}
-          />
-          <Trust icon={Newspaper} title={t("p2Title")} body={t("p2Body")} />
-          <Trust
-            icon={ShieldCheck}
-            title={t("p3Title")}
-            body={t("p3Body")}
-          />
-        </ul>
       </div>
+      {nextNt && (
+        <Link
+          href={`/match/${nextNt.id}`}
+          className="mt-3 block rounded-xl border border-primary/25 bg-primary/5 px-3 py-2 hover:border-primary/45"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-wide text-primary">
+            {t("nextNt")}
+          </span>
+          <p className="text-sm font-bold">
+            {localizeTeamName(nextNt.homeTeam, locale)} –{" "}
+            {localizeTeamName(nextNt.awayTeam, locale)}
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            {formatKickoff(nextNt.kickoff, "EEE d. MMM · HH:mm", locale)}
+          </p>
+        </Link>
+      )}
     </header>
-  );
-}
-
-function Trust({
-  icon: Icon,
-  title,
-  body,
-}: {
-  icon: typeof ShieldCheck;
-  title: string;
-  body: string;
-}) {
-  return (
-    <li className="flex gap-2.5 rounded-xl border border-border/80 bg-background/50 px-3 py-2.5">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-      <div>
-        <p className="text-[12px] font-bold leading-tight">{title}</p>
-        <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
-          {body}
-        </p>
-      </div>
-    </li>
   );
 }

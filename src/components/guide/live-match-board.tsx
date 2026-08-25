@@ -17,8 +17,6 @@ import {
   Search,
   Radio,
   CalendarClock,
-  Clock,
-  ShieldCheck,
   History,
   ChevronDown,
   ChevronUp,
@@ -26,25 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 
 /** Fußball standard – andere Sportarten nur bei aktiver Auswahl */
-const SPORTS: SportId[] = [
-  "football",
-  "handball",
-  "basketball",
-  "waterpolo",
-  "all",
-  "tv",
-];
-
-const MS_48H = 48 * 60 * 60 * 1000;
 const MS_7D = 7 * 24 * 60 * 60 * 1000;
-
-function isSameLocalDay(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
 
 /**
  * Hub: Live · Heute · nächste 48h · Rest der 7 Tage + Transparenz
@@ -61,11 +41,11 @@ export function LiveMatchBoard() {
   } = useDashboard();
 
   const catalog = useMemo(() => getGuideCatalog(), []);
-  const [sport, setSport] = useState<SportId>("football");
+  const [sport] = useState<SportId>("football");
   const [query, setQuery] = useState("");
   const [tvSlots, setTvSlots] = useState<TvGuideSlot[]>(catalog.tvGuide);
   const [mergedRemote, setMergedRemote] = useState<GuideMatch[] | null>(null);
-  const [showFinished, setShowFinished] = useState(true);
+  const [showFinished, setShowFinished] = useState(false);
 
   const localMerged = useMemo(
     () =>
@@ -98,8 +78,7 @@ export function LiveMatchBoard() {
   );
 
   const buckets = useMemo(() => {
-    const now = new Date();
-    const nowMs = now.getTime();
+    const nowMs = Date.now();
     const live = filtered.filter((m) => m.status === "live");
     const upcoming = filtered
       .filter((m) => m.status === "upcoming")
@@ -107,23 +86,11 @@ export function LiveMatchBoard() {
         (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()
       );
 
-    const today: GuideMatch[] = [];
-    const next48: GuideMatch[] = [];
-    const rest7: GuideMatch[] = [];
-
+    const next: GuideMatch[] = [];
     for (const m of upcoming) {
-      const k = new Date(m.kickoff);
-      const tMs = k.getTime();
-      if (Number.isNaN(tMs)) continue;
-      if (tMs - nowMs > MS_7D) continue; // hard 7-day window
-
-      if (isSameLocalDay(k, now)) {
-        today.push(m);
-      } else if (tMs - nowMs <= MS_48H) {
-        next48.push(m);
-      } else {
-        rest7.push(m);
-      }
+      const tMs = new Date(m.kickoff).getTime();
+      if (Number.isNaN(tMs) || tMs - nowMs > MS_7D) continue;
+      next.push(m);
     }
 
     const finished = filtered
@@ -132,7 +99,7 @@ export function LiveMatchBoard() {
         (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
       );
 
-    return { live, today, next48, rest7, finished };
+    return { live, next, finished };
   }, [filtered]);
 
   return (
@@ -147,30 +114,6 @@ export function LiveMatchBoard() {
             className="h-11 rounded-xl border-border bg-card/80 pl-10 text-sm"
             aria-label={t("searchPlaceholder")}
           />
-        </div>
-        <div
-          className="flex gap-1.5 overflow-x-auto pb-0.5"
-          role="group"
-          aria-label={t("sportFilter")}
-        >
-          {SPORTS.map((id) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setSport(id)}
-              aria-pressed={sport === id}
-              className={cn(
-                "shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-bold transition-colors",
-                sport === id
-                  ? id === "tv"
-                    ? "border-primary/60 bg-primary/15 text-primary"
-                    : "border-live bg-live/15 text-live"
-                  : "border-border bg-card/80 text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {t(`sport.${id}`)}
-            </button>
-          ))}
         </div>
         <div className="flex flex-wrap items-start gap-x-2 gap-y-1 text-[10px] text-muted-foreground">
           <p>
@@ -189,69 +132,43 @@ export function LiveMatchBoard() {
             </button>
           </p>
         </div>
-        <p className="flex items-start gap-1.5 rounded-lg border border-border/70 bg-secondary/30 px-2.5 py-2 text-[10px] leading-snug text-muted-foreground">
-          <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500/90" aria-hidden />
-          <span>{t("transparency")}</span>
-        </p>
       </div>
 
       {sport !== "tv" && (
         <>
-          <MatchBucket
-            id="live-now-title"
-            title={t("liveNow")}
-            subtitle={t("liveNowSub")}
-            icon={<Radio className="h-4 w-4 text-live" aria-hidden />}
-            badge={
-              buckets.live.length > 0 ? (
+          {buckets.live.length > 0 && (
+            <MatchBucket
+              id="live-now-title"
+              title={t("liveNow")}
+              subtitle={t("liveNowSub")}
+              icon={<Radio className="h-4 w-4 text-live" aria-hidden />}
+              badge={
                 <span className="live-badge !text-[9px]">
                   {buckets.live.length}
                 </span>
-              ) : null
-            }
-            empty={t("noLive")}
-            matches={buckets.live}
-            cols="1"
-          />
+              }
+              empty={t("noLive")}
+              matches={buckets.live}
+              cols="1"
+            />
+          )}
 
           <MatchBucket
-            id="today-title"
-            title={t("todayTitle")}
-            subtitle={t("todaySub")}
-            icon={<Clock className="h-4 w-4 text-primary" aria-hidden />}
-            badge={
-              buckets.today.length > 0 ? (
-                <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                  {buckets.today.length}
-                </span>
-              ) : null
-            }
-            empty={t("noToday")}
-            matches={buckets.today}
-            cols="2"
-          />
-
-          <MatchBucket
-            id="next48-title"
-            title={t("next48Title")}
-            subtitle={t("next48Sub")}
+            id="upcoming-title"
+            title={t("upcoming")}
+            subtitle={t("upcomingSub")}
             icon={
               <CalendarClock className="h-4 w-4 text-primary" aria-hidden />
             }
-            empty={t("noNext48")}
-            matches={buckets.next48}
-            cols="2"
-          />
-
-          <MatchBucket
-            id="week-title"
-            title={t("weekTitle")}
-            subtitle={t("weekSub")}
-            icon={
-              <CalendarClock className="h-4 w-4 text-muted-foreground" aria-hidden />
+            badge={
+              buckets.next.length > 0 ? (
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                  {buckets.next.length}
+                </span>
+              ) : null
             }
-            empty={t("noWeek")}
-            matches={buckets.rest7}
+            empty={t("noUpcoming")}
+            matches={buckets.next}
             cols="2"
           />
 

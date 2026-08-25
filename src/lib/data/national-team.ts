@@ -122,6 +122,7 @@ export function dedupeFixtures(matches: Match[]): Match[] {
         : drop.croatianPlayers,
       homeTeamLogo: keep.homeTeamLogo || drop.homeTeamLogo,
       awayTeamLogo: keep.awayTeamLogo || drop.awayTeamLogo,
+      videoUrl: keep.videoUrl || drop.videoUrl,
       leagueName: keep.leagueName || drop.leagueName,
     });
   }

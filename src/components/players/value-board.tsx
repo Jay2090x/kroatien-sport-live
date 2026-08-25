@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { User, Radio } from "lucide-react";
+import { User, Radio, Play } from "lucide-react";
+import { youtubePlayerMatchUrl, highlightHref } from "@/lib/match-video";
 import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { buildPlayerSchedule } from "@/lib/player-schedule";
 import { Link } from "@/i18n/navigation";
@@ -34,7 +35,7 @@ export function ValueBoard() {
 
   return (
     <section
-      id="value-board"
+      id="players"
       className="scroll-mt-14"
       aria-labelledby="value-board-title"
     >
@@ -139,13 +140,29 @@ export function ValueBoard() {
                         {t("last")}
                       </p>
                       {r.last ? (
-                        <Link
-                          href={`/match/${r.last.id}`}
-                          className="block truncate text-[12px] font-medium leading-snug text-foreground/90 hover:underline"
-                          title={r.lastLabel ?? undefined}
-                        >
-                          {r.lastLabel}
-                        </Link>
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <Link
+                            href={`/match/${r.last.id}`}
+                            className="min-w-0 flex-1 truncate text-[12px] font-medium leading-snug text-foreground/90 hover:underline"
+                            title={r.lastLabel ?? undefined}
+                          >
+                            {r.lastLabel}
+                          </Link>
+                          <a
+                            href={
+                              r.last.videoUrl
+                                ? highlightHref(r.last)
+                                : youtubePlayerMatchUrl(p.name, r.last)
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="shrink-0 rounded-md border border-red-500/30 p-0.5 text-red-500 hover:bg-red-500/10"
+                            title={t("video")}
+                            aria-label={t("video")}
+                          >
+                            <Play className="h-3.5 w-3.5 fill-current" />
+                          </a>
+                        </div>
                       ) : (
                         <p className="text-[12px] text-muted-foreground">
                           {t("noLast")}

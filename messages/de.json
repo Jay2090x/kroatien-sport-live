@@ -8,6 +8,7 @@
     "kicker": "Redaktioneller Vatreni-Hub",
     "title": "Kroatische Profis. Nächstes Spiel. Letztes Ergebnis.",
     "lead": "Wer spielt wann, wie hat der Club zuletzt abgeschlossen – und was ist das nächste Länderspiel. Ohne illegale Streams, ohne geratene TV-Rechte, ohne erfundenen Kader.",
+    "leadShort": "Nächstes Club-Spiel, letztes Ergebnis, Highlights – ohne Stream-Hosting.",
     "nextNt": "Nächstes Länderspiel",
     "noNt": "Kein anstehendes Länderspiel im aktuellen Feed – Club-Termine unten.",
     "statLive": "jetzt live",
@@ -43,7 +44,8 @@
     "noLast": "Kein Ergebnis im Feed",
     "liveNow": "gerade live",
     "empty": "Keine Club-Termine geladen. API kurz warten oder neu laden.",
-    "footnote": "Zuordnung über Club (strikt). Minuten/Tore nur wenn die API Lineup/Timeline liefert – sonst Ergebnis + Gegner."
+    "footnote": "Club-Termine aus dem Live-Feed. Play öffnet YouTube (Highlight-Suche oder API-Video).",
+    "video": "Highlights auf YouTube"
   },
   "Guide": {
     "liveNow": "Live Now",
@@ -411,6 +413,9 @@
     "recent": "Zuletzt",
     "stats": "Statistik",
     "uniformStats": "Vergleichbar: Club-Saison + Nationalteam",
+    "lastFive": "Letzte Club-Spiele (Feed)",
+    "lastFiveEmpty": "Kein beendetes Club-Spiel im aktuellen Feed.",
+    "video": "Highlights auf YouTube",
     "moreStats": "Mehr Statistik",
     "less": "Weniger",
     "close": "Schließen",

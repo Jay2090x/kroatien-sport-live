@@ -743,5 +743,13 @@ export function buildMinimalProfile(
     },
     teams: [],
     gallery: [],
+    youtubeUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(
+      `${name} ${club} highlights`
+    )}`,
+    youtubeTitle: {
+      de: `${name} – Highlights suchen`,
+      en: `${name} – search highlights`,
+      hr: `${name} – traži highlightse`,
+    },
   };
 }

@@ -503,6 +503,7 @@ interface TsdbEvent {
   idHomeTeam?: string;
   idAwayTeam?: string;
   strPostponed?: string;
+  strVideo?: string | null;
 }
 
 async function fetchTeamEvents(
@@ -533,8 +534,8 @@ async function fetchTeamEvents(
         if (last.error) errors.push(last.error);
         return [
           // Mehr Vergangenheit = echte „letzte Einsätze“ im Tracker/Board
-          ...(last.data?.results ?? []).slice(0, 6),
-          ...(next.data?.events ?? []).slice(0, 6),
+          ...(last.data?.results ?? []).slice(0, 10),
+          ...(next.data?.events ?? []).slice(0, 5),
         ];
       })
     );
@@ -646,6 +647,7 @@ function mapEventToMatch(e: TsdbEvent, players: Player[]): Match | null {
     venue: e.strVenue || undefined,
     croatianPlayers,
     tvChannels: [],
+    videoUrl: e.strVideo?.startsWith("http") ? e.strVideo : undefined,
     externalIds: { theSportsDb: e.idEvent },
   };
 }

@@ -6,18 +6,12 @@ import { HomeHero } from "@/components/layout/home-hero";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { ValueBoard } from "@/components/players/value-board";
 import { LiveMatchBoard } from "@/components/guide/live-match-board";
-import { MyWeek } from "@/components/favorites/my-week";
-import { NationalTeamSection } from "@/components/national-team/national-team-section";
 import { HomeNewsBlock } from "@/components/news/home-news";
-import { PlayerTracker } from "@/components/players/player-tracker";
-import { FaqSection } from "@/components/home/faq-section";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { PlayerDetailPanel } from "@/components/players/player-detail-panel";
-import { LegalStreamsStrip } from "@/components/tv/legal-streams-strip";
 
 /**
- * Editorial hub:
- * Hero → Kroaten-Übersicht → Live → Woche → News → NT → Tracker → FAQ
+ * Schlanker Hub: Hero → Spieler (nächstes+letztes+Video) → Spiele → News
  */
 export default async function HomePage({
   params,
@@ -31,7 +25,7 @@ export default async function HomePage({
   return (
     <>
       <a
-        href="#value-board"
+        href="#players"
         className="absolute left-4 top-4 z-[100] -translate-y-[200%] rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg transition-transform focus:translate-y-0 focus-visible:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {t("skipToContent")}
@@ -39,7 +33,7 @@ export default async function HomePage({
 
       <Navbar />
       <main className="pb-20 lg:pb-0">
-        <div className="mx-auto max-w-7xl space-y-10 px-3 py-5 sm:space-y-12 sm:px-6 sm:py-7 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-8 px-3 py-4 sm:space-y-10 sm:px-6 sm:py-6 lg:px-8">
           <HomeHero />
 
           <ValueBoard />
@@ -47,8 +41,6 @@ export default async function HomePage({
           <div id="live-board" className="scroll-mt-16">
             <LiveMatchBoard />
           </div>
-
-          <MyWeek />
 
           <Suspense
             fallback={
@@ -59,16 +51,6 @@ export default async function HomePage({
           >
             <HomeNewsBlock locale={locale} />
           </Suspense>
-
-          <NationalTeamSection />
-
-          <div id="players-wrap" className="space-y-8">
-            <PlayerTracker />
-          </div>
-
-          <LegalStreamsStrip />
-
-          <FaqSection />
         </div>
       </main>
       <Footer />
