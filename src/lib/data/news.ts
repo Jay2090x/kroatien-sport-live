@@ -1464,12 +1464,10 @@ function rankNews(a: NewsArticle, now = new Date()): number {
 
   let score = freshnessBoost(a.date, now);
 
-  // Tagesbrief + redaktioneller Slot oben
-  if (a.id.startsWith("daily-brief-")) score += 90;
-  if (a.id.startsWith("editorial-slot-")) score += 85;
-
-  // Frische externe Headlines mit Quelle = Kern des News-Feeds
-  if (a.id.startsWith("auto-")) score += 60;
+  // Frische externe Headlines vor alten Redaktionsstücken
+  if (a.id.startsWith("auto-")) score += 70;
+  if (a.id.startsWith("daily-brief-")) score += 25;
+  if (a.id.startsWith("editorial-slot-")) score += 10;
   if (a.sourceUrl) score += 22;
 
   // Redaktionelle Stories
@@ -1552,7 +1550,7 @@ export async function getDailyNewsAsync(
       "@/lib/data/auto-news"
     );
     // DE: optional HR; EN/HR: strikt eigene Sprache
-    const auto = await fetchAutoNews(16, locale, locale === "de");
+    const auto = await fetchAutoNews(28, locale, locale === "de");
     const map = new Map<string, NewsArticle>();
     for (const a of [...baseRaw, ...auto]) {
       if (isFixturePseudoNews(a)) continue;
@@ -1587,7 +1585,7 @@ export async function getDailyNewsAsync(
     }
 
     const list = assignUniqueNewsImages(kept, 36);
-    return list.slice(0, 18);
+    return list.slice(0, 28);
   } catch {
     return baseRaw.filter((a) => !isFixturePseudoNews(a));
   }

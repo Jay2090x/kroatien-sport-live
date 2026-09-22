@@ -110,7 +110,7 @@ const CROAT_SIGNAL =
 
 const RELEVANCE = CROAT_SIGNAL;
 
-const CACHE_TTL_MS = 15 * 60 * 1000;
+const CACHE_TTL_MS = 5 * 60 * 1000;
 const CACHE_VER = "v8-unique-teaser";
 
 /** Stopwords for near-duplicate fingerprints (de/en/hr) */
@@ -603,7 +603,7 @@ async function fetchOne(feed: FeedDef, limit: number): Promise<Raw[]> {
           "Mozilla/5.0 (compatible; KroatienSportLive/2.0; +https://kroatien-sport-live.vercel.app)",
         Accept: "application/rss+xml, application/xml, text/xml, */*",
       },
-      next: { revalidate: 900 },
+      next: { revalidate: 180 },
     });
     if (!res.ok) return [];
     return parseFeed(await res.text(), feed, limit);

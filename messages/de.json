@@ -48,8 +48,12 @@
     "video": "Highlights auf YouTube"
   },
   "Guide": {
-    "liveNow": "Live Now",
+    "liveNow": "Jetzt live",
     "upcoming": "Demnächst",
+    "resultsNow": "Ergebnisse",
+    "resultsNowSub": "Letzte 48 Stunden – Score, Kroaten, Highlight",
+    "noRecent": "Keine beendeten Spiele in den letzten 48 Stunden.",
+    "olderResults": "Ältere Ergebnisse ({n})",
     "live": "LIVE",
     "countdown": "Anpfiff in",
     "streams": "Offizielle Anbieter",

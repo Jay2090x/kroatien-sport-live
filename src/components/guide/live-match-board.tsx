@@ -45,7 +45,7 @@ export function LiveMatchBoard() {
   const [query, setQuery] = useState("");
   const [tvSlots, setTvSlots] = useState<TvGuideSlot[]>(catalog.tvGuide);
   const [mergedRemote, setMergedRemote] = useState<GuideMatch[] | null>(null);
-  const [showFinished, setShowFinished] = useState(false);
+  const [showOlder, setShowOlder] = useState(false);
 
   const localMerged = useMemo(
     () =>
@@ -98,8 +98,15 @@ export function LiveMatchBoard() {
       .sort(
         (a, b) => new Date(b.kickoff).getTime() - new Date(a.kickoff).getTime()
       );
+    const recentCut = nowMs - 48 * 60 * 60 * 1000;
+    const recent = finished.filter(
+      (m) => new Date(m.kickoff).getTime() >= recentCut
+    );
+    const older = finished.filter(
+      (m) => new Date(m.kickoff).getTime() < recentCut
+    );
 
-    return { live, next, finished };
+    return { live, next, recent, older };
   }, [filtered]);
 
   return (
@@ -172,48 +179,50 @@ export function LiveMatchBoard() {
             cols="2"
           />
 
-          {/* Abgelaufene Spiele – aufklappbar, nicht verschwinden lassen */}
-          <section aria-labelledby="finished-title" className="space-y-3">
-            <button
-              type="button"
-              onClick={() => setShowFinished((v) => !v)}
-              className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-3 py-2.5 text-left hover:bg-secondary/40"
-            >
-              <div className="flex min-w-0 items-center gap-2">
-                <History className="h-4 w-4 shrink-0 text-muted-foreground" />
-                <div>
-                  <p id="finished-title" className="text-sm font-bold">
-                    {t("finishedTitle")}
-                    {buckets.finished.length > 0
-                      ? ` (${buckets.finished.length})`
-                      : ""}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {t("finishedSub")}
-                  </p>
-                </div>
-              </div>
-              {showFinished ? (
-                <ChevronUp className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              )}
-            </button>
-            {showFinished &&
-              (buckets.finished.length === 0 ? (
-                <p className="rounded-xl border border-dashed border-border bg-card/40 px-3 py-5 text-center text-sm text-muted-foreground">
-                  {t("noFinished")}
-                </p>
-              ) : (
+          <MatchBucket
+            id="results-title"
+            title={t("resultsNow")}
+            subtitle={t("resultsNowSub")}
+            icon={<History className="h-4 w-4 text-muted-foreground" aria-hidden />}
+            badge={
+              buckets.recent.length > 0 ? (
+                <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-bold">
+                  {buckets.recent.length}
+                </span>
+              ) : null
+            }
+            empty={t("noRecent")}
+            matches={buckets.recent}
+            cols="2"
+          />
+
+          {buckets.older.length > 0 && (
+            <section className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setShowOlder((v) => !v)}
+                className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-3 py-2.5 text-left hover:bg-secondary/40"
+              >
+                <span className="text-sm font-bold">
+                  {t("olderResults", { n: buckets.older.length })}
+                </span>
+                {showOlder ? (
+                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                )}
+              </button>
+              {showOlder && (
                 <ul className="grid gap-3 sm:grid-cols-2">
-                  {buckets.finished.map((m) => (
+                  {buckets.older.map((m) => (
                     <li key={m.id}>
                       <GuideMatchCard match={m} defaultOpen={false} />
                     </li>
                   ))}
                 </ul>
-              ))}
-          </section>
+              )}
+            </section>
+          )}
         </>
       )}
 

@@ -50,6 +50,10 @@
   "Guide": {
     "liveNow": "Uživo sada",
     "upcoming": "Uskoro",
+    "resultsNow": "Rezultati",
+    "resultsNowSub": "Zadnjih 48 sati – rezultat, Hrvati, highlight",
+    "noRecent": "Nema završenih utakmica u zadnjih 48 sati.",
+    "olderResults": "Stariji rezultati ({n})",
     "live": "UŽIVO",
     "countdown": "Početak za",
     "streams": "Službeni pružatelji",

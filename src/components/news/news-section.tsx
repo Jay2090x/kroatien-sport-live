@@ -19,7 +19,7 @@ import { useDashboard } from "@/components/dashboard/dashboard-context";
 import { Link } from "@/i18n/navigation";
 import { NewsListCard } from "@/components/news/news-list-card";
 
-const HEADLINE_MAX = 8;
+const HEADLINE_MAX = 16;
 
 function formatNewsDate(iso: string, locale: string): string {
   try {
@@ -40,17 +40,18 @@ function isExternal(a: NewsArticle): boolean {
 
 function storyScore(a: NewsArticle, locale: string): number {
   let s = 0;
-  if (a.id.startsWith("editorial-slot-")) s += 100;
-  if (a.id.startsWith("daily-brief-")) s += 90;
-  if (a.isExternal) s += 40;
-  if (a.sourceLang === locale) s += 50;
-  if (locale === "de" && a.sourceLang === "hr") s += 20;
-  if (a.featured) s += 10;
   const age =
     (Date.now() - new Date(a.date + "T12:00:00Z").getTime()) / (24 * 3600_000);
-  if (age <= 2) s += 30;
-  else if (age <= 7) s += 10;
-  else if (age > 21) s -= 40;
+  if (age <= 1) s += 90;
+  else if (age <= 2) s += 60;
+  else if (age <= 4) s += 25;
+  else if (age <= 7) s += 5;
+  else s -= 50;
+  if (a.isExternal || a.id.startsWith("auto-")) s += 40;
+  if (a.sourceLang === locale) s += 25;
+  if (locale === "de" && a.sourceLang === "hr") s += 12;
+  if (a.id.startsWith("editorial-slot-") && age > 2) s -= 80;
+  if (a.id.startsWith("daily-brief-") && age > 1) s -= 40;
   return s;
 }
 
@@ -78,32 +79,30 @@ export function NewsSection({
   );
 
   useEffect(() => {
-    if (
-      initialArticles?.some(
-        (a) =>
-          a.id.startsWith("auto-") ||
-          a.id.startsWith("daily-brief-") ||
-          a.id.startsWith("editorial-slot-")
-      )
-    ) {
-      setLoading(false);
-      return;
-    }
     let cancelled = false;
-    setLoading(true);
-    fetch(`/api/news?locale=${locale}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: { articles?: NewsArticle[] } | null) => {
-        if (!cancelled && data?.articles?.length) {
-          setRemote(data.articles.filter(isStoryNews));
-        }
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    const pull = () =>
+      fetch(`/api/news?locale=${locale}`, { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data: { articles?: NewsArticle[] } | null) => {
+          if (!cancelled && data?.articles?.length) {
+            setRemote(data.articles.filter(isStoryNews));
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+
+    if (!initialArticles?.length) {
+      setLoading(true);
+      void pull();
+    } else {
+      setLoading(false);
+    }
+    const id = window.setInterval(pull, 5 * 60_000);
     return () => {
       cancelled = true;
+      window.clearInterval(id);
     };
   }, [initialArticles, locale]);
 

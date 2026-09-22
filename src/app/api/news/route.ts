@@ -4,7 +4,7 @@ import { getDashboardData } from "@/lib/data/service";
 import type { Locale } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 900;
+export const revalidate = 180;
 
 export async function GET(req: NextRequest) {
   try {
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
+          "Cache-Control": "public, s-maxage=180, stale-while-revalidate=300",
         },
       }
     );

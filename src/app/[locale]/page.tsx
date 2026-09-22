@@ -36,8 +36,6 @@ export default async function HomePage({
         <div className="mx-auto max-w-7xl space-y-8 px-3 py-4 sm:space-y-10 sm:px-6 sm:py-6 lg:px-8">
           <HomeHero />
 
-          <ValueBoard />
-
           <div id="live-board" className="scroll-mt-16">
             <LiveMatchBoard />
           </div>
@@ -51,6 +49,8 @@ export default async function HomePage({
           >
             <HomeNewsBlock locale={locale} />
           </Suspense>
+
+          <ValueBoard />
         </div>
       </main>
       <Footer />

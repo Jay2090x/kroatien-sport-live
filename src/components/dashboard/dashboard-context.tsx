@@ -140,9 +140,10 @@ export function DashboardProvider({
   }, []);
 
   React.useEffect(() => {
-    const id = window.setInterval(() => {
-      void refreshLive();
-    }, 120_000);
+    const tick = () => {
+      if (document.visibilityState === "visible") void refreshLive();
+    };
+    const id = window.setInterval(tick, 60_000);
     return () => window.clearInterval(id);
   }, [refreshLive]);
 

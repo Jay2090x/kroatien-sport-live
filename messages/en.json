@@ -50,6 +50,10 @@
   "Guide": {
     "liveNow": "Live Now",
     "upcoming": "Upcoming",
+    "resultsNow": "Results",
+    "resultsNowSub": "Last 48 hours – score, Croatians, highlight",
+    "noRecent": "No finished matches in the last 48 hours.",
+    "olderResults": "Older results ({n})",
     "live": "LIVE",
     "countdown": "Kick-off in",
     "streams": "Official providers",
