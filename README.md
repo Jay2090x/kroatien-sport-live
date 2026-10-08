@@ -1,173 +1,43 @@
 # Kroatien Sport Live
 
-Moderne, SEO-freundliche Next.js-15-Website für **kroatische Fußballspieler und Spiele** – Live-Ergebnisse, Player-Tracker, TV-Tipps und Web-Push.
+Schlanke Seite rund um den kroatischen Fußball – nur drei Bereiche:
 
-**Stack:** Next.js 15 (App Router) · TypeScript · Tailwind CSS 4 · shadcn-style UI · Supabase · next-intl · Vercel
+1. **Vatreni** – nächstes Länderspiel mit Countdown, letzte 5 Ergebnisse, Nations-League-Gruppe
+2. **SuperSport HNL** – Tabelle (aus Einzelergebnissen berechnet), aktuelle und letzte Runde, verschobene Spiele
+3. **News** – max. 8 Schlagzeilen (Titel, Quelle, Zeit, Link zum Original)
 
----
+Next.js 15 (App Router), komplett serverseitig gerendert, kein Datenbank-/Cron-/API-Key-Bedarf, läuft im Vercel-Hobby-Plan.
 
-## Features
+## Datenquellen (alle kostenlos, ohne Konto)
 
-- Sticky Navbar mit Šahovnica-Logo, Suche, Theme-Toggle, Settings
-- Hero mit Live-Stats und CTAs
-- Dashboard: Live/Upcoming Matches, Filter-Chips, Datum-Filter, Match-Cards, TV-Modal
-- Player-Tracker: Grid, Klick filtert Matches, nächste Spiele
-- Upcoming-Kalender (Listen-View)
-- TV & Streams (HRT, Sky, DAZN, …) + VPN-Affiliate mit Disclosure
-- Settings: API-Keys (localStorage + optional Supabase)
-- Hybrid-Daten: Free APIs + Fallback (Juli 2026, u. a. Modrić @ AC Milan)
-- i18n: Deutsch primär, Englisch unter `/en`
-- SEO: Metadata, sitemap, robots
-- Cron-Refresh: `/api/refresh` (Vercel Cron alle 15 Min.)
+| Bereich | Quelle | Endpunkt |
+|---|---|---|
+| Länderspiele | ESPN (öffentlich, inoffiziell) | `site.api.espn.com/apis/site/v2/sports/soccer/all/teams/477/schedule` (+ `?fixture=true`) |
+| Nations-League-Gruppe | ESPN | `site.api.espn.com/apis/v2/sports/soccer/uefa.nations/standings` |
+| Fallback Länderspiele | OpenLigaDB | `api.openligadb.de/getmatchdata/nla/<Jahr>` |
+| SuperSport HNL | TheSportsDB (Free-Key `123`) | `eventsround.php?id=4629&r=<Runde>&s=<Saison>` |
+| News | HRT Sport RSS, Google News RSS | `feed.hrt.hr/sport/page.xml`, `news.google.com/rss/search?...` |
 
----
+## Aktualisierung & Caching
 
-## Schnellstart (lokal)
+`src/lib/cache.ts` kapselt `unstable_cache` (Vercel Data Cache):
 
-### Voraussetzungen
+- Standard 10 min, **60 s im Fenster ±3 h um einen Kroatien-Anpfiff**, News 15 min, HNL 1 h
+  (abgeschlossene ältere Runden 7 Tage, Runden mit Nachholspielen weiterhin stündlich)
+- Die Startseite ist ISR mit `revalidate = 60`.
+- Schlägt eine Quelle fehl, bleibt der letzte gute Stand stehen. Gibt es noch keinen, zeigt die
+  Seite „derzeit keine Daten“. Es werden nie Daten erfunden. Jede Box zeigt „Stand: … Uhr“ (Wiener Zeit).
 
-- Node.js 20+
-- npm 10+
-- Optional: Supabase-Projekt
-
-### Installation
+## Entwicklung
 
 ```bash
-cd kroatien-sport-live
-cp .env.example .env.local
-npm install
-npm run dev
+npm ci
+npm run dev          # http://localhost:3000
+npm run lint && npm run typecheck && npm run build
+npm run verify:hnl   # vergleicht die berechnete HNL-Tabelle mit Wikipedia
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000).
+## Rechtliches
 
-Ohne Supabase/API-Keys laufen **Fallback-Daten** (Demo-Spiele + Spieler) – die Seite ist sofort nutzbar.
-
-### Scripts
-
-| Befehl | Beschreibung |
-|--------|--------------|
-| `npm run dev` | Dev-Server (Turbopack) |
-| `npm run build` | Production Build |
-| `npm run start` | Production Server |
-| `npm run lint` | ESLint |
-
----
-
-## Umgebungsvariablen
-
-Siehe `.env.example`. Wichtigste Keys:
-
-```env
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-THESPORTSDB_API_KEY=3
-FOOTBALL_DATA_API_KEY=
-CRON_SECRET=langer-zufallsstring
-ONESIGNAL_APP_ID=
-ONESIGNAL_REST_API_KEY=
-```
-
----
-
-## Supabase einrichten
-
-1. Projekt auf [supabase.com](https://supabase.com) anlegen  
-2. SQL aus `supabase/migrations/001_init.sql` im SQL Editor ausführen  
-3. Optional `supabase/seed.sql`  
-4. Keys in `.env.local` eintragen  
-5. Für Live-Updates: **Database → Replication → `matches`** für Realtime aktivieren  
-6. Daten aktualisieren:
-
-```bash
-curl -X POST http://localhost:3000/api/refresh \
-  -H "Authorization: Bearer $CRON_SECRET" \
-  -H "Content-Type: application/json"
-```
-
----
-
-## API-Routen
-
-| Route | Methode | Zweck |
-|-------|---------|--------|
-| `/api/matches` | GET | Matches JSON |
-| `/api/players` | GET | Players JSON |
-| `/api/refresh` | POST/GET | Externe APIs → Supabase |
-| `/api/settings` | POST | Settings (Auth optional) |
-| `/api/notifications` | POST | OneSignal / Push |
-
----
-
-## Vercel Deployment
-
-1. Repo zu GitHub pushen  
-2. [vercel.com](https://vercel.com) → Import Project  
-3. Env-Vars aus `.env.example` setzen  
-4. Deploy  
-
-`vercel.json` enthält:
-
-- Region `fra1` (EU)
-- Cron alle 15 Min. auf `/api/refresh`
-- Security Headers
-
-**Cron-Auth:** In Production `CRON_SECRET` setzen. Vercel Cron sendet den Request an den Pfad; ergänze bei Bedarf Auth-Header in deinem Cron-Setup oder nutze Vercel’s `CRON_SECRET` Pattern.
-
----
-
-## Projektstruktur
-
-```
-src/
-  app/
-    [locale]/          # i18n Seiten (de/en)
-    api/                # Route Handlers
-    actions/            # Server Actions
-  components/
-    ui/                 # Button, Card, Dialog, …
-    layout/             # Navbar, Hero, Footer
-    matches/            # Dashboard, Cards, Modal, Calendar
-    players/            # Player-Tracker
-    tv/                 # TV & Streams
-    settings/           # Settings Modal
-  lib/
-    data/               # Fallback + Service
-    api/                # TheSportsDB, football-data.org
-    supabase/           # Browser + Server Clients
-    notifications/      # Web Push / OneSignal
-  i18n/                 # next-intl Routing
-  types/                # TypeScript Typen
-messages/               # de.json, en.json
-supabase/migrations/    # SQL Schema
-```
-
----
-
-## Design
-
-- Dark Mode Default (`next-themes`)
-- Kroatische Farben: Rot `#c8102e`, dezente Šahovnica
-- Premium Sport-Look (Sofascore/OneFootball-inspiriert)
-- Mobile-first, Focus-States, `prefers-reduced-motion`
-
----
-
-## Erweiterungen (Hooks im Code)
-
-- Weitere Sportarten: Typen in `src/types`, Fallback-Daten ergänzen  
-- Echte Live-Scores: API-Keys + Mapping in `src/lib/api/sports.ts`  
-- Supabase Realtime: Kommentar in `src/lib/notifications/push.ts`  
-- Auth: Supabase Auth + `user_settings` RLS  
-- Graphite/E2E: Playwright Tests ergänzen  
-
----
-
-## Lizenz & Disclaimer
-
-Keine illegalen Streams. TV-Links führen zu offiziellen Anbietern.  
-VPN-Empfehlungen können Affiliate-Links sein (klar ausgewiesen).
-
-© Kroatien Sport Live
+Keine Logos, Fotos oder fremden Volltexte; Quellen werden im Footer genannt.
+Impressum ohne Klarnamen (Kontakt per E-Mail, `NEXT_PUBLIC_CONTACT_EMAIL`).

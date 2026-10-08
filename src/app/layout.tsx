@@ -1,36 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SITE } from "@/lib/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-/**
- * Root layout – locale-spezifische Metadata kommt aus [locale]/layout
- * next-intl erwartet dieses Root-Layout ohne html/body-Duplikate idealerweise,
- * aber Next.js 15 erfordert html/body hier oder im locale-layout.
- * Wir halten Root minimal und setzen html/body im locale-layout.
- */
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://kroatien-sport-live.vercel.app"
-  ),
-  applicationName: "Kroatien Sport Live",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "KSL",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: `${SITE.name} – Vatreni, SuperSport HNL & News`,
+    template: `%s · ${SITE.name}`,
   },
-  formatDetection: {
-    telephone: false,
+  description: SITE.description,
+  applicationName: SITE.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: SITE.name,
+    title: `${SITE.name} – Vatreni, SuperSport HNL & News`,
+    description: SITE.description,
   },
   icons: {
     icon: [
@@ -39,26 +26,19 @@ export const metadata: Metadata = {
     ],
     apple: "/icon-192.png",
   },
-  manifest: "/manifest.webmanifest",
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#05080f" },
-    { media: "(prefers-color-scheme: light)", color: "#c8102e" },
-  ],
-  other: {
-    "mobile-web-app-capable": "yes",
-  },
+  formatDetection: { telephone: false },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: "#d7141a",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="de" suppressHydrationWarning className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-dvh font-sans antialiased`}
-      >
+    <html lang="de">
+      <body>
         {children}
         <Analytics />
       </body>

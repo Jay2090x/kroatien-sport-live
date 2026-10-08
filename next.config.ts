@@ -1,25 +1,22 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
-
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "media.api-sports.io" },
-      { protocol: "https", hostname: "www.thesportsdb.com" },
-      { protocol: "https", hostname: "r2.thesportsdb.com" },
-      { protocol: "https", hostname: "**.thesportsdb.com" },
-      { protocol: "https", hostname: "crests.football-data.org" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "plus.unsplash.com" },
-      { protocol: "https", hostname: "a.espncdn.com" },
-      { protocol: "https", hostname: "**.supabase.co" },
-    ],
-  },
-  // Vercel / Edge-friendly
   poweredByHeader: false,
   compress: true,
+  async redirects() {
+    // Alte URLs (Sprachversionen, Detailseiten) auf die schlanke Startseite umleiten
+    return [
+      { source: "/de", destination: "/", permanent: false },
+      { source: "/de/:path(impressum|datenschutz|nutzung)", destination: "/:path", permanent: false },
+      { source: "/:locale(de|en|hr)/:path*", destination: "/", permanent: false },
+      { source: "/:locale(en|hr)", destination: "/", permanent: false },
+      { source: "/news/:path*", destination: "/#news", permanent: false },
+      { source: "/news", destination: "/#news", permanent: false },
+      { source: "/match/:path*", destination: "/#vatreni", permanent: false },
+      { source: "/player/:path*", destination: "/", permanent: false },
+      { source: "/manifest.webmanifest", destination: "/", permanent: false },
+    ];
+  },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;
