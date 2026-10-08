@@ -9,6 +9,7 @@ export function SiteFooter() {
           <a href="https://www.espn.com/soccer/" rel="noopener" target="_blank">ESPN</a> (Länderspiele,
           Nations-League-Tabelle, Spielerdaten, MMA, Tennis, NBA) ·{" "}
           <a href="https://www.thesportsdb.com/" rel="noopener" target="_blank">TheSportsDB</a> (SuperSport HNL, Handball-/Basketball-Termine) ·{" "}
+          <a href="https://www.eurohandball.com/" rel="noopener" target="_blank">EHF</a> (Handball-Länderspiele) ·{" "}
           <a href="https://www.openligadb.de/" rel="noopener" target="_blank">OpenLigaDB</a> (Ersatzquelle Länderspiele) ·{" "}
           <a href="https://sport.hrt.hr/" rel="noopener" target="_blank">HRT Sport</a> und Google News (Schlagzeilen, Links
           zum Original) ·{" "}

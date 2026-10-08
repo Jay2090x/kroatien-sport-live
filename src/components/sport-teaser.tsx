@@ -33,7 +33,7 @@ export function SportTeaser({ data }: { data: SportData | null }) {
           ))}
           {data.upcoming.length > 0 ? (
             <ul className="sis">
-              {data.upcoming.slice(0, 4).map((i) => (
+              {data.upcoming.slice(0, Math.max(0, 5 - data.fighters.length)).map((i) => (
                 <SportRow key={i.key} item={i} />
               ))}
             </ul>
@@ -43,7 +43,7 @@ export function SportTeaser({ data }: { data: SportData | null }) {
           <p className="more-link">
             <Link href="/sport">Alle Termine, Ergebnisse &amp; Schlagzeilen →</Link>
           </p>
-          <Stand fetchedAt={data.fetchedAt} source="ESPN, TheSportsDB, HRT" />
+          <Stand fetchedAt={data.fetchedAt} source="ESPN, TheSportsDB, EHF, HRT" />
         </>
       )}
     </section>

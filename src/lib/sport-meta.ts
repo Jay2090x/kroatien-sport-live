@@ -44,7 +44,8 @@ export const TSDB_TEAMS: Array<{
   sport: Sport;
   national: boolean;
 }> = [
-  { id: "140561", name: "Kroatien", sport: "handball", national: true },
+  // Handball-Nationalteam bewusst NICHT über TheSportsDB: dort stand am 08.10.2026
+  // „Kroatien – Niederlande, 04.11.“, laut EHF ist es Kroatien – Litauen → kuratiert (NT_FIXTURES).
   { id: "140420", name: "Kroatien", sport: "basketball", national: true },
   { id: "141555", name: "RK Zagreb", sport: "handball", national: false },
   { id: "145925", name: "RK Nexe", sport: "handball", national: false },
@@ -92,6 +93,25 @@ export const TOURNAMENTS: Array<{
   },
 ];
 
+/**
+ * Kuratierte Länderspiele aus offiziellen Spielplänen (manuell geprüft).
+ * start = UTC; timeKnown=false → nur Datum anzeigen.
+ * Vergangene Termine verschwinden automatisch.
+ */
+export const NT_FIXTURES: Array<{
+  sport: Sport;
+  start: string;
+  timeKnown: boolean;
+  home: string;
+  away: string;
+  competition: string;
+  source: string;
+}> = [
+  // EHF-Spielplan „European Championship Men 2028 Qualifiers“, Gruppe 1 (statistics.eurohandball.com, Stand 08.10.2026)
+  { sport: "handball", start: "2026-11-04T16:00:00Z", timeKnown: true, home: "Kroatien", away: "Litauen", competition: "Handball-EM-Qualifikation · Split", source: "EHF" },
+  { sport: "handball", start: "2026-11-07T12:00:00Z", timeKnown: false, home: "Finnland", away: "Kroatien", competition: "Handball-EM-Qualifikation · Vantaa", source: "EHF" },
+];
+
 /** HRT-Kategorien (URL-Pfad) für Nicht-Fußball-Schlagzeilen */
 export const HRT_SPORT_CATEGORIES: Record<string, Sport | "other"> = {
   kosarka: "basketball",
@@ -100,3 +120,39 @@ export const HRT_SPORT_CATEGORIES: Record<string, Sport | "other"> = {
   "vise-sportova": "other",
   vaterpolo: "other",
 };
+
+/**
+ * Schlagzeilen-Filter: nur Titel mit Bezug zu kroatischen Athleten/Teams.
+ * Vergleich ohne Diakritika, in Kleinbuchstaben, auf Wortanfang.
+ * (Nur für Schlagzeilen – Daten-Zuordnungen laufen weiterhin über IDs.)
+ */
+export const CROATIAN_HEADLINE_KEYWORDS: string[] = [
+  // allgemein
+  "hrvat", "vatren", "kauboj", "barakud", "kockast",
+  // Klubs
+  "cibona", "cedevita", "zadar", "split", "zagreb", "nexe", "podravk", "sesvet", "dubrav", "kvarner",
+  "jadran", "mladost", "primorj", "jug ", "solaris", "sibenik", "osijek", "rijek", "dinamo",
+  // Tennis
+  "cilic", "mektic", "pavic", "vekic", "ruzic", "ciric", "prizmic", "coric", "marcinko", "fett", "dodig",
+  // Basketball
+  "zubac", "matkovic", "hezonja", "saric", "bogdanovic", "smailagic", "prkacin",
+  // Handball / Wasserball
+  "duvnjak", "cindric", "martinovic", "sostaric", "mandic", "kuzmanovic", "sigurdsson", "lucin", "srna",
+  "vrlic", "fatovic", "lozina", "bukic", "popadic",
+  // Kampfsport, Ski, Leichtathletik, weitere
+  "soldic", "hrgovic", "ljutic", "zubcic", "perkovic", "cvjetko", "jurisic",
+  "sinkovic",
+];
+
+function fold(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d");
+}
+
+export function isCroatianHeadline(title: string): boolean {
+  const t = ` ${fold(title).replace(/[^a-z0-9]+/g, " ")} `;
+  return CROATIAN_HEADLINE_KEYWORDS.some((k) => t.includes(` ${k}`));
+}

@@ -8,7 +8,9 @@ import {
   MMA_FIGHTERS,
   NBA_PLAYERS,
   TOURNAMENTS,
+  NT_FIXTURES,
   TSDB_TEAMS,
+  isCroatianHeadline,
   type Sport,
 } from "../sport-meta";
 import { parseRss } from "./rss";
@@ -630,16 +632,39 @@ async function loadSport(now: number): Promise<SportData> {
   for (const { t, s } of tsdbRaw) {
     const raw = track(s, `Spielplan ${t.name} (${t.sport === "handball" ? "Handball" : "Basketball"}) derzeit nicht abrufbar.`);
     const it = raw ? { ...raw } : null;
-    if (!it || !it.start || Date.parse(it.start) < now - 3 * H) continue;
+    // TheSportsDB liefert keinen Live-/End-Status → Termin ausblenden, sobald er begonnen hat
+    // (ohne Uhrzeit: erst nach Ende des Tages).
+    if (!it || !it.start || Date.parse(it.start) + (it.timeKnown ? 0 : D) < now) continue;
     if (t.national) national.push(it);
     else if (inWindow(it, 14 * D)) upcoming.push(it);
+  }
+  // Kuratierte Länderspiele (offizielle Spielpläne)
+  for (const f of NT_FIXTURES) {
+    if (Date.parse(f.start) + (f.timeKnown ? 3 * H : D) < now) continue;
+    national.push({
+      key: `nt-${f.sport}-${f.start}`,
+      sport: f.sport,
+      who: "Kroatien",
+      vs: `${f.home} – ${f.away}`,
+      competition: f.competition,
+      start: f.start,
+      timeKnown: f.timeKnown,
+      state: "pre",
+      source: f.source,
+    });
+  }
+  for (const it of upcoming) {
+    // Tennis: ESPN-Uhrzeiten für spätere Matches eines Spieltags sind nur Schätzungen
+    // (Beispiel Samsun-VF 09.10.: ESPN 12:00, andere Quelle 10:00) → nur Datum zeigen.
+    if (it.sport === "tennis" && it.state === "pre") it.timeKnown = false;
   }
   for (const it of [...national, ...upcoming]) {
     if (it.source === "TheSportsDB" && it.start && Date.parse(it.start) - now > TSDB_TIME_HORIZON) it.timeKnown = false;
   }
 
   const headlines = (track(headlinesRaw, "HRT-Schlagzeilen derzeit nicht abrufbar.") ?? []).filter(
-    (h) => Date.parse(h.publishedAt) >= now - 3 * D
+    // nur Schlagzeilen mit kroatischem Bezug (Athlet/Team), max. 8
+    (h) => Date.parse(h.publishedAt) >= now - 3 * D && isCroatianHeadline(h.title)
   );
 
   const byStart = (a: SportItem, b: SportItem) => Date.parse(a.start ?? "") - Date.parse(b.start ?? "");

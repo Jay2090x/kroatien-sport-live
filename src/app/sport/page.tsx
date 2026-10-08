@@ -38,7 +38,7 @@ export default async function SportPage() {
           <p className="intro">
             Kroatische Athletinnen, Athleten und Teams abseits des Fußballs – Termine, Ergebnisse und Schlagzeilen.
           </p>
-          {data ? <Stand fetchedAt={data.fetchedAt} source="ESPN, TheSportsDB, HRT" /> : <NoData what="Andere Sportarten" />}
+          {data ? <Stand fetchedAt={data.fetchedAt} source="ESPN, TheSportsDB, EHF, HRT" /> : <NoData what="Andere Sportarten" />}
         </section>
 
         {data && (
@@ -181,12 +181,17 @@ export default async function SportPage() {
                 </li>
                 <li>
                   <strong>Tennis:</strong> alle Matches mit kroatischer Beteiligung (Länderkennung bei ESPN) in laufenden
-                  ATP- und WTA-Turnieren. Ohne feste Ansetzung steht „Uhrzeit offen“.
+                  ATP- und WTA-Turnieren. Bei kommenden Matches nur das Datum – Tennis-Uhrzeiten hängen vom Spielverlauf
+                  davor ab und sind vorab nicht verlässlich.
                 </li>
                 <li>
-                  <strong>Handball &amp; Basketball (Teams):</strong> nächste Spiele über TheSportsDB. Ergebnisse dieser
-                  Teams zeigen wir nicht, weil die kostenlose Schnittstelle sie unvollständig liefert – siehe
-                  Schlagzeilen.
+                  <strong>Handball &amp; Basketball (Teams):</strong> nächste Klubspiele und Basketball-Länderspiele über
+                  TheSportsDB, Handball-Länderspiele aus dem offiziellen EHF-Spielplan. Ergebnisse dieser Teams zeigen
+                  wir nicht, weil die kostenlose Schnittstelle sie unvollständig liefert – siehe Schlagzeilen.
+                </li>
+                <li>
+                  <strong>Schlagzeilen:</strong> nur Meldungen mit Bezug zu kroatischen Athletinnen, Athleten oder Teams
+                  (Stichwortliste), höchstens 8.
                 </li>
                 <li>
                   Für Wasserball, Ski-Weltcup und Leichtathletik gibt es derzeit keine verlässliche kostenlose
