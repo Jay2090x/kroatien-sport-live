@@ -665,3 +665,308 @@ details.prev summary {
   outline: 3px solid var(--blue);
   outline-offset: 2px;
 }
+
+/* ── Navigation: aktive Seite ───────────── */
+.nav a[aria-current="page"] {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+@media (max-width: 420px) {
+  .nav a {
+    padding: 6px 8px;
+  }
+}
+
+.more-link {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ── Spielerseite ───────────────────────── */
+.page-spieler {
+  display: grid;
+  gap: 16px;
+  padding-top: 16px;
+  padding-bottom: 24px;
+}
+
+.h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.pill {
+  text-decoration: none;
+}
+
+.intro {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pgroup-h {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 4px 0 8px;
+}
+
+.players {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 760px) {
+  .players {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.player {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+
+.player-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+}
+
+.player-head h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.player-club {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.label {
+  margin: 8px 0 2px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.next p {
+  margin: 0;
+}
+
+.next-when {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.next-when time {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.next-teams {
+  font-size: 0.9rem;
+}
+
+.lu {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 2px !important;
+}
+
+.lu-pending {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.lu-start {
+  color: var(--win);
+}
+
+.lu-bench {
+  color: #a16207;
+}
+
+.lu-out {
+  color: var(--loss);
+}
+
+.pgs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pg {
+  padding: 4px 0;
+  border-top: 1px dashed var(--line);
+}
+
+.pg:first-child {
+  border-top: 0;
+}
+
+.pg-head {
+  display: flex;
+  gap: 8px;
+  font-size: 0.875rem;
+  min-width: 0;
+}
+
+.pg-date {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.pg-teams .own {
+  font-weight: 700;
+}
+
+.pg-score {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  padding: 0 2px;
+}
+
+.pg-vs {
+  color: var(--muted);
+}
+
+.pg-extra {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.pg-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  font-size: 0.78rem;
+  align-items: center;
+}
+
+.pg-comp {
+  color: var(--muted);
+}
+
+.perf {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  font-weight: 600;
+}
+
+.perf-out {
+  color: var(--loss);
+}
+
+.perf-bench {
+  color: #a16207;
+}
+
+.perf-na {
+  color: var(--muted);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.ev {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 600;
+}
+
+.ev-assist {
+  color: var(--blue);
+}
+
+.cardicon {
+  display: inline-block;
+  width: 9px;
+  height: 12px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.cardicon-y {
+  background: #facc15;
+  border: 1px solid #ca8a04;
+}
+
+.cardicon-r {
+  background: #dc2626;
+  border: 1px solid #991b1b;
+}
+
+.pnote {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.pnote-warn {
+  color: #9a3412;
+  background: #fff7ed;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.pnote-info {
+  color: var(--muted);
+}
+
+.notes ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.notes li + li {
+  margin-top: 4px;
+}

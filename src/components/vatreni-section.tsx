@@ -1,5 +1,6 @@
 import type { VatreniData } from "@/lib/sources/vatreni";
 import type { NtMatch } from "@/lib/sources/types";
+import Link from "next/link";
 import { formatKickoff, formatShortDate } from "@/lib/time";
 import { Countdown } from "./countdown";
 import { NoData, Stand } from "./stand";
@@ -119,6 +120,9 @@ export function VatreniSection({ data }: { data: VatreniData }) {
         </>
       )}
       <Stand fetchedAt={data.fetchedAt} source={data.source} />
+      <p className="more-link">
+        <Link href="/spieler">Alle Spieler: letztes &amp; nächstes Spiel, Minuten, Tore, Karten →</Link>
+      </p>
 
       {data.group && (
         <>

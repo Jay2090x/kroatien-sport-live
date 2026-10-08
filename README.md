@@ -18,6 +18,23 @@ Next.js 15 (App Router), komplett serverseitig gerendert, kein Datenbank-/Cron-/
 | SuperSport HNL | TheSportsDB (Free-Key `123`) | `eventsround.php?id=4629&r=<Runde>&s=<Saison>` |
 | News | HRT Sport RSS, Google News RSS | `feed.hrt.hr/sport/page.xml`, `news.google.com/rss/search?...` |
 
+## Spielerseite (`/spieler`)
+
+- **Kader:** alle Spieler aus den ESPN-Spieltagskadern der letzten Länderspielphase
+  (Spiele bis 21 Tage vor dem letzten Länderspiel). Hinweise zu Absagen pflegt `SQUAD_NOTES`
+  in `src/lib/players-meta.ts`; sie werden nur für genau diese Phase angezeigt.
+- **Verein:** ESPN-Athletenprofil (`athlete.team.id`). Die Zuordnung läuft nur über IDs,
+  nie über Namensähnlichkeit.
+- **Spiele:** ESPN-Teamspielplan ohne Testspiele. HNL-Ligaspiele kommen von TheSportsDB;
+  dort gibt es kostenlos keine Spielerdaten.
+- **Einsatzdaten:** ESPN-Spielbericht (Kader, Wechsel, Karten, Tore, Vorlagen). Minuten werden
+  ohne Nachspielzeit berechnet.
+- **„Spielt er?“:** Ab 2 h vor Anpfiff wird der Spielbericht geprüft (Startelf, Bank, nicht im
+  Kader). Vorher heißt es „Aufstellung noch nicht bekannt“.
+- **Verletzungen:** Es gibt keine freie, verlässliche Quelle, daher werden keine angezeigt.
+  Sperren erscheinen nur als Regel-Hinweis nach einer Roten Karte.
+- **Cache:** 30 min, 5 min rund um einen Anpfiff; abgeschlossene Spielberichte 24 h.
+
 ## Aktualisierung & Caching
 
 `src/lib/cache.ts` kapselt `unstable_cache` (Vercel Data Cache):

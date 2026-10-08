@@ -1,6 +1,7 @@
 import { cachedSource, REVALIDATE, type Sourced } from "../cache";
 import { fetchJson } from "../http";
 import { hnlTeam } from "../names";
+import { mapLimit } from "../async";
 
 /**
  * SuperSport HNL über TheSportsDB (Free-Key "123", kein Konto nötig).
@@ -58,6 +59,8 @@ export interface HnlData {
   previousRound: number | null;
   previousRoundMatches: HnlMatch[];
   postponed: HnlMatch[];
+  /** alle Saisonspiele (für die Spielerseite) */
+  matches: HnlMatch[];
 }
 
 const FINISHED = new Set(["FT", "AET", "PEN", "MATCH FINISHED", "AFTER EXTRA TIME", "AFTER PENALTIES"]);
@@ -196,19 +199,6 @@ function getRound(season: string, round: number, old: boolean) {
   );
 }
 
-async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = new Array(items.length);
-  let i = 0;
-  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-    while (i < items.length) {
-      const idx = i++;
-      out[idx] = await fn(items[idx]);
-    }
-  });
-  await Promise.all(workers);
-  return out;
-}
-
 export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
   const season = await getSeason();
   const nextRound = await getNextRound();
@@ -250,7 +240,16 @@ export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
   const postponed = all.filter((m) => m.state === "postponed").sort((a, b) => a.round - b.round);
 
   return {
-    data: { season, table, currentRound: current, currentRoundMatches, previousRound, previousRoundMatches, postponed },
+    data: {
+      season,
+      table,
+      currentRound: current,
+      currentRoundMatches,
+      previousRound,
+      previousRoundMatches,
+      postponed,
+      matches: all,
+    },
     fetchedAt,
   };
 }

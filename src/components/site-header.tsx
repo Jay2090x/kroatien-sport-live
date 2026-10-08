@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
 
-export function SiteHeader({ withNav = true }: { withNav?: boolean }) {
+export function SiteHeader({
+  withNav = true,
+  current,
+}: {
+  withNav?: boolean;
+  current?: "spieler";
+}) {
   return (
     <header className="site-header">
       <div className="flagband" aria-hidden="true" />
@@ -15,9 +21,12 @@ export function SiteHeader({ withNav = true }: { withNav?: boolean }) {
         </Link>
         {withNav && (
           <nav aria-label="Abschnitte" className="nav">
-            <a href="#vatreni">Vatreni</a>
-            <a href="#hnl">HNL</a>
-            <a href="#news">News</a>
+            <Link href="/#vatreni">Vatreni</Link>
+            <Link href="/spieler" aria-current={current === "spieler" ? "page" : undefined}>
+              Spieler
+            </Link>
+            <Link href="/#hnl">HNL</Link>
+            <Link href="/#news">News</Link>
           </nav>
         )}
       </div>

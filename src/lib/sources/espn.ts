@@ -7,7 +7,7 @@ import type { GroupRow, GroupTable, MatchState, NtMatch } from "./types";
  * Kroatien = Team-ID 477.
  */
 export const ESPN_CROATIA_ID = "477";
-const SITE_API = "https://site.api.espn.com/apis/site/v2/sports/soccer";
+export const SITE_API = "https://site.api.espn.com/apis/site/v2/sports/soccer";
 const STANDINGS_API = "https://site.api.espn.com/apis/v2/sports/soccer";
 
 export const ESPN_URLS = {
@@ -18,21 +18,21 @@ export const ESPN_URLS = {
   nationsStandings: `${STANDINGS_API}/uefa.nations/standings`,
 };
 
-interface EspnScore {
+export interface EspnScore {
   value?: number;
   displayValue?: string;
 }
-interface EspnCompetitor {
+export interface EspnCompetitor {
   homeAway?: "home" | "away";
   team?: { id?: string; displayName?: string };
   score?: EspnScore | string | number;
   shootoutScore?: number;
 }
-interface EspnStatus {
+export interface EspnStatus {
   displayClock?: string;
   type?: { name?: string; state?: string; completed?: boolean; shortDetail?: string };
 }
-interface EspnEvent {
+export interface EspnEvent {
   id: string;
   date: string;
   league?: { slug?: string; name?: string };
@@ -46,7 +46,7 @@ interface EspnEvent {
   }>;
 }
 
-const COMPETITION_DE: Record<string, string> = {
+export const COMPETITION_DE: Record<string, string> = {
   "uefa.nations": "UEFA Nations League",
   "fifa.friendly": "Freundschaftsspiel",
   "fifa.world": "FIFA-Weltmeisterschaft",
@@ -64,7 +64,7 @@ export function leagueSlugOf(e: EspnEvent): string | undefined {
   return undefined;
 }
 
-function scoreOf(c?: EspnCompetitor): number | null {
+export function scoreOf(c?: EspnCompetitor): number | null {
   const s = c?.score;
   if (s == null) return null;
   if (typeof s === "number") return s;
@@ -77,7 +77,7 @@ function scoreOf(c?: EspnCompetitor): number | null {
   return null;
 }
 
-function stateOf(status?: EspnStatus): MatchState {
+export function stateOf(status?: EspnStatus): MatchState {
   const name = (status?.type?.name ?? "").toUpperCase();
   if (name.includes("POSTPONED") || name.includes("DELAYED")) return "postponed";
   if (name.includes("CANCEL") || name.includes("ABANDON")) return "cancelled";
@@ -133,7 +133,7 @@ export function mapEspnEvent(e: EspnEvent): NtMatch | null {
   };
 }
 
-async function loadEvents(url: string): Promise<EspnEvent[]> {
+export async function loadEvents(url: string): Promise<EspnEvent[]> {
   const json = await fetchJson<{ events?: EspnEvent[] }>(url);
   if (!Array.isArray(json.events)) throw new Error(`ESPN: no events array (${url})`);
   return json.events;

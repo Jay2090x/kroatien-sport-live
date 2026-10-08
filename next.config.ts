@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       { source: "/news/:path*", destination: "/#news", permanent: false },
       { source: "/news", destination: "/#news", permanent: false },
       { source: "/match/:path*", destination: "/#vatreni", permanent: false },
-      { source: "/player/:path*", destination: "/", permanent: false },
+      { source: "/player/:path*", destination: "/spieler", permanent: false },
       { source: "/manifest.webmanifest", destination: "/", permanent: false },
     ];
   },
