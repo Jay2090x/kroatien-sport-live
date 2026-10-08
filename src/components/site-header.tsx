@@ -6,7 +6,7 @@ export function SiteHeader({
   current,
 }: {
   withNav?: boolean;
-  current?: "spieler";
+  current?: "spieler" | "sport";
 }) {
   return (
     <header className="site-header">
@@ -27,6 +27,9 @@ export function SiteHeader({
             </Link>
             <Link href="/#hnl">HNL</Link>
             <Link href="/#news">News</Link>
+            <Link href="/sport" aria-current={current === "sport" ? "page" : undefined}>
+              Sport
+            </Link>
           </nav>
         )}
       </div>

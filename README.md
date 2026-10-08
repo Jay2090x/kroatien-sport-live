@@ -35,6 +35,28 @@ Next.js 15 (App Router), komplett serverseitig gerendert, kein Datenbank-/Cron-/
   Sperren erscheinen nur als Regel-Hinweis nach einer Roten Karte.
 - **Cache:** 30 min, 5 min rund um einen Anpfiff; abgeschlossene Spielberichte 24 h.
 
+## Andere Sportarten (`/sport`)
+
+Kompakter Teaser auf der Startseite, Details unter `/sport`. Alle Athleten/Teams sind fest in
+`src/lib/sport-meta.ts` mit stabilen Quell-IDs hinterlegt (kein Namens-Matching).
+
+| Bereich | Quelle (kostenlos) | Inhalt |
+|---|---|---|
+| 🥊 MMA (Roberto Soldić) | ESPN Core API, Athlete-Eventlog | nächster angekündigter Kampf (sonst „noch kein Kampf angekündigt“), letzter Kampf mit Methode/Runde |
+| 🎾 Tennis | ESPN ATP/WTA-Scoreboard (aktuell + vor 2 Tagen) | Kroatinnen/Kroaten (Ländercode `CRO`) in Einzel & Doppel; ESPN-Platzhaltertermine werden als „Termin noch offen“ angezeigt |
+| 🏀 NBA (Zubac, Matković, Hezonja) | ESPN Athlete + Team-Schedule + Boxscore | nächstes Spiel (14 Tage), letztes Ergebnis (4 Tage) mit Minuten/Punkten |
+| 🤾🏀 Nationalteams, RK Zagreb, RK Nexe | TheSportsDB (Free-Key) `eventsnext` | nächste Spiele; Uhrzeit erst ab 7 Tagen vorher, davor nur Datum |
+| 🤾 Handball-WM 2027 | kuratiert (IHF-Spielplan via Wikipedia) | Gruppenspiele Kroatiens, verschwindet nach Turnierende |
+| 📰 Schlagzeilen | HRT-Sport-RSS (Kategorien Košarka, Rukomet, Tenis, Više sportova, Vaterpolo) | nur Titel + Link |
+
+Caching: 1 h Standard, 10 min an Event-Tagen, MMA/TSDB 3 h, Schlagzeilen 15 min; bei Fehlern
+bleiben die letzten guten Daten stehen („Stand: …“).
+
+Bewusste Lücken: keine Ergebnisse aus TheSportsDB (Free-Endpunkt liefert nur Heimspiele),
+keine kroatischen Basketball-Klubs (TSDB-Spielpläne nachweislich falsch), keine Uhrzeiten
+bei MMA, kein Wasserball/Ski/Leichtathletik (keine verlässliche freie Datenquelle – nur
+HRT-Schlagzeilen).
+
 ## Aktualisierung & Caching
 
 `src/lib/cache.ts` kapselt `unstable_cache` (Vercel Data Cache):
