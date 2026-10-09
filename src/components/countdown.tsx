@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Dict } from "@/lib/i18n";
 
 function parts(ms: number) {
   const totalMin = Math.max(0, Math.floor(ms / 60_000));
@@ -11,7 +12,7 @@ function parts(ms: number) {
 }
 
 /** Countdown bis zum Anpfiff (rein clientseitig, damit gecachtes HTML nie falsch zählt). */
-export function Countdown({ kickoff }: { kickoff: string }) {
+export function Countdown({ kickoff, t }: { kickoff: string; t: Dict["countdown"] }) {
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
@@ -26,24 +27,24 @@ export function Countdown({ kickoff }: { kickoff: string }) {
   if (diff <= 0) {
     return (
       <div className="countdown">
-        <span className="countdown-note">Anpfiff erfolgt – Spielstand folgt</span>
+        <span className="countdown-note">{t.started}</span>
       </div>
     );
   }
   const { days, hours, minutes } = parts(diff);
   return (
-    <div className="countdown" role="timer" aria-label="Zeit bis zum Anpfiff">
+    <div className="countdown" role="timer" aria-label={t.label}>
       <span className="cd-unit">
         <strong>{days}</strong>
-        <small>{days === 1 ? "Tag" : "Tage"}</small>
+        <small>{days === 1 ? t.day : t.days}</small>
       </span>
       <span className="cd-unit">
         <strong>{hours}</strong>
-        <small>Std.</small>
+        <small>{t.hours}</small>
       </span>
       <span className="cd-unit">
         <strong>{minutes}</strong>
-        <small>Min.</small>
+        <small>{t.minutes}</small>
       </span>
     </div>
   );

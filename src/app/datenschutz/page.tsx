@@ -28,8 +28,14 @@ export default function DatenschutzPage() {
           Reichweite messen.
         </li>
         <li>
-          Keine Cookies, keine Konten, keine Push-Benachrichtigungen, keine Einbettung externer Bilder oder Videos.
-          Spieldaten und Schlagzeilen werden serverseitig abgerufen – dein Browser kontaktiert dafür keine Dritten.
+          Ein technisch notwendiges Cookie „lang“ (Wert „de“ oder „hr“, 1 Jahr) speichert nur die gewählte Sprache,
+          wenn du sie umschaltest. Keine Tracking-Cookies, keine Konten, keine Push-Benachrichtigungen. Spieldaten und
+          Schlagzeilen werden serverseitig abgerufen – dein Browser kontaktiert dafür keine Dritten.
+        </li>
+        <li>
+          Highlight-Videos (YouTube, offizielle Kanäle): Sie werden erst geladen, wenn du auf „Video laden“ klickst
+          (Zwei-Klick-Lösung über youtube-nocookie.com). Erst dann überträgt dein Browser Daten (z. B. IP-Adresse) an
+          Google/YouTube; es gelten deren Datenschutzbestimmungen. Ohne Klick wird keine Verbindung aufgebaut.
         </li>
         <li>
           Beim Klick auf externe Links (z. B. HRT, Google News, Nachrichtenmedien) gelten die Datenschutzbestimmungen

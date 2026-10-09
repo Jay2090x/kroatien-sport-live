@@ -80,3 +80,12 @@ npm run verify:hnl   # vergleicht die berechnete HNL-Tabelle mit Wikipedia
 
 Keine Logos, Fotos oder fremden Volltexte; Quellen werden im Footer genannt.
 Impressum ohne Klarnamen (Kontakt per E-Mail, `NEXT_PUBLIC_CONTACT_EMAIL`).
+
+## Zeitleiste, Sportfilter, Sprache (DE/HR), News & Highlights
+
+- **Zeitleiste** (`src/lib/timeline.ts`, `src/components/timeline.tsx`): eine gemeinsame Liste für Start-Teaser und `/sport` – Fußball (Vatreni, HNL), MMA, Boxen, Tennis, NBA, Handball. Termine aufsteigend, Ergebnisse absteigend, gruppiert nach Tag (Wiener Zeit); ohne feste Uhrzeit am Tagesende („Uhrzeit offen“).
+- **Sportfilter** (`src/components/sport-filter.tsx`): `?sport=fussball|mma|boxen|tennis|basketball|handball`, gilt für die ganze Seite (Zeitleiste, News, Highlights, Vatreni/HNL ein-/ausgeblendet). Inline-Skript + CSS verhindern Aufblitzen vor dem Hydrieren; Seiten bleiben statisch (ISR).
+- **Sprache**: Deutsch unter `/…`, Kroatisch unter `/hr/…` (`src/lib/i18n.ts`). Umschalter im Header setzt Cookie `lang`; `src/middleware.ts` leitet bei `lang=hr` bzw. `?lang=hr` weiter. Schlagzeilen bleiben in Originalsprache.
+- **Boxen** (`src/lib/sources/boxing.ts`): kuratiert + Wikipedia-Abgleich (neuerer Kampf auf Wikipedia wird automatisch übernommen).
+- **News** (`src/lib/sources/news.ts`): 5 min Cache, max. 36 h alt (sonst Auffüllen bis 6), nur DE/HR, gereiht nach Interesse-Stichwörtern + Aktualität.
+- **Highlights** (`src/lib/sources/videos.ts`): nur offizielle, einbettbare YouTube-Clips (HNS, MAXSport, UFC/Soldić), max. 7 Tage alt, Zwei-Klick-Einbettung über youtube-nocookie.com.

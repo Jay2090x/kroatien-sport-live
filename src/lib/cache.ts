@@ -43,7 +43,7 @@ export async function cachedSource<T>(
 export const REVALIDATE = {
   default: 600, // 10 min
   live: 60, // ±3 h um einen Kroatien-Anpfiff
-  news: 900, // 15 min
+  news: 300, // 5 min
   hnl: 3600, // 1 h
   hnlOldRound: 7 * 24 * 3600, // abgeschlossene, ältere Runden
   day: 24 * 3600,

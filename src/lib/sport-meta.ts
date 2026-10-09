@@ -4,21 +4,158 @@
  * nie über Namensähnlichkeit. Tennis: ESPN-Länderkennung "cro".
  */
 
-export type Sport = "mma" | "tennis" | "basketball" | "handball";
+export type Sport = "football" | "mma" | "boxing" | "tennis" | "basketball" | "handball";
+
+/** Reihenfolge im Filter */
+export const SPORTS: Sport[] = ["football", "mma", "boxing", "tennis", "basketball", "handball"];
 
 export const SPORT_EMOJI: Record<Sport, string> = {
-  mma: "🥊",
+  football: "⚽",
+  mma: "🥋",
+  boxing: "🥊",
   tennis: "🎾",
   basketball: "🏀",
   handball: "🤾",
 };
 
 export const SPORT_LABEL: Record<Sport, string> = {
+  football: "Fußball",
   mma: "MMA",
+  boxing: "Boxen",
   tennis: "Tennis",
   basketball: "Basketball",
   handball: "Handball",
 };
+
+/** URL-Werte für ?sport= (teilbare Links, in beiden Sprachen gleich) */
+export const SPORT_SLUG: Record<Sport, string> = {
+  football: "fussball",
+  mma: "mma",
+  boxing: "boxen",
+  tennis: "tennis",
+  basketball: "basketball",
+  handball: "handball",
+};
+
+export function sportFromSlug(slug: string | null | undefined): Sport | null {
+  if (!slug) return null;
+  const s = slug.toLowerCase();
+  return SPORTS.find((k) => SPORT_SLUG[k] === s) ?? null;
+}
+
+/**
+ * Boxen – kuratiert und manuell gegen mehrere Quellen geprüft (Stand 09.10.2026).
+ * Es gibt keine kostenlose Boxen-API ohne Konto (ESPN führt kein Boxen, BoxRec
+ * verlangt Login, TheSportsDB-Free-Key liefert nur 15 Events/Saison).
+ * Automatik: Ist auf Wikipedia (Kampfrekord-Tabelle) ein NEUERER Kampf eingetragen
+ * als hier, wird der Wikipedia-Eintrag angezeigt. Angekündigte Kämpfe nur mit Quelle.
+ */
+export interface BoxFight {
+  /** Kampftag (Ortszeit) "YYYY-MM-DD" */
+  date: string;
+  opponent: string;
+  event: string;
+  place: string;
+  outcome?: "W" | "L" | "D";
+  /** z. B. "TKO", "UD" */
+  method?: string;
+  round?: string;
+  /** Titel o. Ä., je Sprache */
+  note?: { de: string; hr: string };
+  source: string;
+}
+
+export const BOXERS: Array<{
+  id: string;
+  name: string;
+  /** Wikipedia (en) Seitentitel für den Abgleich; leer = nur kuratiert */
+  wiki: string;
+  division: { de: string; hr: string };
+  last: BoxFight | null;
+  next: BoxFight | null;
+  info?: { de: string; hr: string };
+}> = [
+  {
+    id: "hrgovic",
+    name: "Filip Hrgović",
+    wiki: "Filip_Hrgović",
+    division: { de: "Schwergewicht · IBF-Weltmeister", hr: "teška kategorija · IBF prvak svijeta" },
+    last: {
+      date: "2026-08-29",
+      opponent: "Moses Itauma",
+      event: "IBF-WM",
+      place: "The O2 Arena, London",
+      outcome: "W",
+      method: "TKO",
+      round: "9",
+      note: { de: "IBF-Schwergewichtstitel gewonnen", hr: "osvojio IBF naslov u teškoj kategoriji" },
+      source: "Wikipedia, BoxingScene, DNEVNIK.hr",
+    },
+    next: null,
+    info: {
+      de: "Pflichtverteidigung gegen Frank Sanchez laut IBF bis 1. März 2027 fällig – Termin und Ort noch nicht offiziell.",
+      hr: "Obvezna obrana protiv Franka Sancheza prema IBF-u do 1. ožujka 2027. – datum i mjesto još nisu službeni.",
+    },
+  },
+  {
+    id: "plantic",
+    name: "Luka Plantić",
+    wiki: "Luka_Plantić",
+    division: { de: "Supermittelgewicht", hr: "supersrednja kategorija" },
+    last: {
+      date: "2026-08-29",
+      opponent: "Lester Martínez",
+      event: "WBC-Interims-WM",
+      place: "Los Angeles",
+      outcome: "L",
+      method: "TKO",
+      round: "10",
+      note: { de: "Kampf um den WBC-Interimstitel", hr: "borba za privremeni WBC naslov" },
+      source: "WBC, Sportnet, Net.hr",
+    },
+    next: null,
+  },
+  {
+    id: "milun",
+    name: "Marko Milun",
+    wiki: "Marko_Milun",
+    division: { de: "Schwergewicht", hr: "teška kategorija" },
+    last: {
+      date: "2026-09-19",
+      opponent: "Piotr Ćwik",
+      event: "Fight Night Zagreb",
+      place: "Zagrebački velesajam, Zagreb",
+      outcome: "W",
+      method: "RTD",
+      round: "2",
+      source: "Wikipedia, Ferata",
+    },
+    next: null,
+  },
+  {
+    id: "smakici",
+    name: "Agron Smakići",
+    wiki: "",
+    division: { de: "Schwergewicht", hr: "teška kategorija" },
+    last: {
+      date: "2026-05-09",
+      opponent: "Bakhodir Jalolov",
+      event: "Profiboxen",
+      place: "Co-op Live, Manchester",
+      outcome: "L",
+      method: "TKO",
+      round: "7",
+      source: "BoxingScene, box.live",
+    },
+    next: {
+      date: "2026-10-17",
+      opponent: "István Bernáth",
+      event: "BKFC Belgrade (Bare-Knuckle)",
+      place: "Beogradska Arena, Belgrad",
+      source: "BKFC, CroRing, Combat Press",
+    },
+  },
+];
 
 /** MMA-Kämpfer (ESPN-Athleten-ID) */
 export const MMA_FIGHTERS: Array<{ espnId: string; name: string; org: string }> = [

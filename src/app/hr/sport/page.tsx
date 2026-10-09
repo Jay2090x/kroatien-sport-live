@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { SportView } from "@/views/sport";
 import { dict } from "@/lib/i18n";
 
-/** ISR jede Minute; Quellen 1 h gecacht (10 min rund um Termine), siehe sport.ts. */
 export const revalidate = 60;
 export const maxDuration = 60;
 
-const t = dict("de");
+const t = dict("hr");
 export const metadata: Metadata = {
   title: t.sport.metaTitle,
   description: t.sport.metaDesc,
-  alternates: { canonical: "/sport", languages: { de: "/sport", hr: "/hr/sport" } },
+  alternates: { canonical: "/hr/sport", languages: { de: "/sport", hr: "/hr/sport" } },
+  openGraph: { locale: "hr_HR" },
 };
 
-export default function SportPage() {
-  return <SportView lang="de" />;
+export default function SportPageHr() {
+  return <SportView lang="hr" />;
 }

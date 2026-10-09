@@ -1,6 +1,7 @@
 import type { GameRef, NextLineup, PlayerGame, PlayerNext, PlayerRow } from "@/lib/sources/players";
 import type { Performance } from "@/lib/sources/espn-summary";
 import { formatKickoff, formatShortDate } from "@/lib/time";
+import { dataLabel, dict, type Dict, type Lang } from "@/lib/i18n";
 
 function Score({ g }: { g: GameRef }) {
   if (g.homeScore == null || g.awayScore == null) return <span className="pg-vs">–</span>;
@@ -11,18 +12,18 @@ function Score({ g }: { g: GameRef }) {
   );
 }
 
-function Teams({ g, isHome }: { g: GameRef; isHome: boolean }) {
+function Teams({ g, isHome, lang }: { g: GameRef; isHome: boolean; lang: Lang }) {
   return (
     <span className="pg-teams">
-      <span className={isHome ? "own" : undefined}>{g.home}</span> <Score g={g} />{" "}
-      <span className={!isHome ? "own" : undefined}>{g.away}</span>
+      <span className={isHome ? "own" : undefined}>{dataLabel(g.home, lang)}</span> <Score g={g} />{" "}
+      <span className={!isHome ? "own" : undefined}>{dataLabel(g.away, lang)}</span>
       {g.extra ? <span className="pg-extra"> {g.extra}</span> : null}
     </span>
   );
 }
 
-function Card({ color, minute }: { color: "y" | "r"; minute: string }) {
-  const label = color === "y" ? "Gelbe Karte" : "Rote Karte";
+function Card({ color, minute, t }: { color: "y" | "r"; minute: string; t: Dict }) {
+  const label = color === "y" ? t.players.yellowCard : t.players.redCard;
   return (
     <span className="ev" title={`${label} ${minute}`}>
       <span className={`cardicon cardicon-${color}`} aria-hidden="true" />
@@ -32,79 +33,80 @@ function Card({ color, minute }: { color: "y" | "r"; minute: string }) {
   );
 }
 
-function PerfLine({ p }: { p: Performance }) {
-  if (!p.inSquad) return <span className="perf perf-out">Nicht im Spieltagskader</span>;
-  if (!p.played) return <span className="perf perf-bench">Auf der Bank, nicht eingesetzt</span>;
+function PerfLine({ p, t }: { p: Performance; t: Dict }) {
+  const T = t.players;
+  if (!p.inSquad) return <span className="perf perf-out">{T.notInSquad}</span>;
+  if (!p.played) return <span className="perf perf-bench">{T.benchUnused}</span>;
   const parts: string[] = [];
-  if (p.starter) parts.push("Startelf");
-  if (p.subIn) parts.push(`eingewechselt ${p.subIn === "?" ? "" : p.subIn}`.trim());
-  if (p.subOut) parts.push(`ausgewechselt ${p.subOut === "?" ? "" : p.subOut}`.trim());
-  if (p.minutes != null) parts.push(`${p.minutes} Min.`);
+  if (p.starter) parts.push(T.starter);
+  if (p.subIn) parts.push(`${T.subIn} ${p.subIn === "?" ? "" : p.subIn}`.trim());
+  if (p.subOut) parts.push(`${T.subOut} ${p.subOut === "?" ? "" : p.subOut}`.trim());
+  if (p.minutes != null) parts.push(`${p.minutes} ${T.min}`);
   return (
     <span className="perf">
       <span>{parts.join(" · ")}</span>
       {p.goals > 0 && (
-        <span className="ev" title={`${p.goals} Tor(e)`}>
+        <span className="ev" title={`${p.goals} ${T.goals}`}>
           <span aria-hidden="true">⚽</span>
-          <span className="sr-only">Tor</span>
+          <span className="sr-only">{T.goal}</span>
           {p.goals > 1 ? `×${p.goals} ` : ""}
           {p.goalMinutes.join(", ")}
         </span>
       )}
       {p.assists != null && p.assists > 0 && (
-        <span className="ev ev-assist" title={`${p.assists} Torvorlage(n)`}>
-          {p.assists > 1 ? `${p.assists} Vorlagen` : "Vorlage"}
+        <span className="ev ev-assist" title={`${p.assists} ${T.assists}`}>
+          {p.assists > 1 ? `${p.assists} ${T.assists}` : T.assist}
         </span>
       )}
-      {p.ownGoals > 0 && <span className="ev">Eigentor</span>}
+      {p.ownGoals > 0 && <span className="ev">{T.ownGoal}</span>}
       {p.yellow.map((m, i) => (
-        <Card key={`y${i}`} color="y" minute={m} />
+        <Card key={`y${i}`} color="y" minute={m} t={t} />
       ))}
-      {p.red && <Card color="r" minute={p.red} />}
+      {p.red && <Card color="r" minute={p.red} t={t} />}
     </span>
   );
 }
 
-function GameLine({ pg }: { pg: PlayerGame }) {
+function GameLine({ pg, lang, t }: { pg: PlayerGame; lang: Lang; t: Dict }) {
   const g = pg.game;
   return (
     <li className="pg">
       <div className="pg-head">
-        <span className="pg-date">{formatShortDate(g.kickoff)}</span>
-        <Teams g={g} isHome={pg.isHome} />
+        <span className="pg-date">{formatShortDate(g.kickoff, lang)}</span>
+        <Teams g={g} isHome={pg.isHome} lang={lang} />
       </div>
       <div className="pg-sub">
-        <span className="pg-comp">{g.competition}</span>
-        {pg.perf ? <PerfLine p={pg.perf} /> : <span className="perf perf-na">{pg.perfNote ?? "keine Spielerdaten"}</span>}
+        <span className="pg-comp">{dataLabel(g.competition, lang)}</span>
+        {pg.perf ? <PerfLine p={pg.perf} t={t} /> : <span className="perf perf-na">{pg.perfNote ?? t.players.noPlayerData}</span>}
       </div>
     </li>
   );
 }
 
-const LINEUP: Record<NextLineup, { text: string; cls: string }> = {
-  pending: { text: "Aufstellung noch nicht bekannt (meist ca. 1 Std. vor Anpfiff)", cls: "lu-pending" },
-  unknown: { text: "Aufstellung noch nicht veröffentlicht", cls: "lu-pending" },
-  start: { text: "In der Startelf", cls: "lu-start" },
-  bench: { text: "Auf der Bank", cls: "lu-bench" },
-  out: { text: "Nicht im Spieltagskader", cls: "lu-out" },
-  nodata: { text: "Aufstellung: keine Daten verfügbar (HNL)", cls: "lu-pending" },
+const LINEUP_CLS: Record<NextLineup, string> = {
+  pending: "lu-pending",
+  unknown: "lu-pending",
+  start: "lu-start",
+  bench: "lu-bench",
+  out: "lu-out",
+  nodata: "lu-pending",
 };
 
-function NextLine({ n }: { n: PlayerNext }) {
+function NextLine({ n, lang, t }: { n: PlayerNext; lang: Lang; t: Dict }) {
   const g = n.game;
   const live = g.state === "in";
   const lu = n.callUpOpen && n.lineup === "pending"
-    ? { text: "Nominierung für dieses Länderspiel noch nicht bekannt", cls: "lu-pending" }
-    : LINEUP[n.lineup];
+    ? { text: t.players.lineup.callUpOpen, cls: "lu-pending" }
+    : { text: t.players.lineup[n.lineup], cls: LINEUP_CLS[n.lineup] };
   return (
     <div className="next">
       <p className="next-when">
-        {live ? <span className="pill pill-live">läuft</span> : null}
-        <time dateTime={g.kickoff}>{formatKickoff(g.kickoff)} Uhr</time>
-        <span className="pg-comp"> · {g.competition}</span>
+        {live ? <span className="pill pill-live">{t.live}</span> : null}
+        <time dateTime={g.kickoff}>{formatKickoff(g.kickoff, lang)} {t.oclock}</time>
+        <span className="pg-comp"> · {dataLabel(g.competition, lang)}</span>
       </p>
       <p className="next-teams">
-        <Teams g={g} isHome={n.isHome} />
+        <Teams g={g} isHome={n.isHome} lang={lang} />
       </p>
       <p className={`lu ${lu.cls}`}>{lu.text}</p>
       {n.suspensionHint && <p className="lu lu-out">⚠ {n.suspensionHint}</p>}
@@ -112,24 +114,25 @@ function NextLine({ n }: { n: PlayerNext }) {
   );
 }
 
-export function PlayerCard({ p }: { p: PlayerRow }) {
+export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
+  const t = dict(lang);
   return (
     <article className="player" aria-labelledby={`pl-${p.id}`}>
       <header className="player-head">
         <h3 id={`pl-${p.id}`}>{p.name}</h3>
-        <span className="player-club">{p.club ?? "Verein unbekannt"}</span>
+        <span className="player-club">{p.club ?? t.players.clubUnknown}</span>
       </header>
-      <p className="label">Nächstes Spiel</p>
-      {p.next ? <NextLine n={p.next} /> : <p className="muted small">Kein Spiel angesetzt bzw. derzeit keine Daten.</p>}
-      <p className="label">Letzte Spiele</p>
+      <p className="label">{t.players.next}</p>
+      {p.next ? <NextLine n={p.next} lang={lang} t={t} /> : <p className="muted small">{t.players.noNext}</p>}
+      <p className="label">{t.players.last}</p>
       {p.games.length ? (
         <ul className="pgs">
           {p.games.map((pg) => (
-            <GameLine key={`${pg.game.source}-${pg.game.id}`} pg={pg} />
+            <GameLine key={`${pg.game.source}-${pg.game.id}`} pg={pg} lang={lang} t={t} />
           ))}
         </ul>
       ) : (
-        <p className="muted small">derzeit keine Daten</p>
+        <p className="muted small">{t.players.noLast}</p>
       )}
       {p.notes.map((n, i) => (
         <p key={i} className={`pnote pnote-${n.kind}`}>

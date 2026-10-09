@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SITE } from "@/lib/site";
+import { SPORT_FILTER_BOOT, SPORT_FILTER_CSS } from "@/components/sport-filter";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -37,7 +38,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SPORT_FILTER_BOOT }} />
+        <style dangerouslySetInnerHTML={{ __html: SPORT_FILTER_CSS }} />
+      </head>
       <body>
         {children}
         <Analytics />

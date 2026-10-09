@@ -1,42 +1,44 @@
 import type { Sourced } from "@/lib/cache";
 import type { HnlData, HnlMatch } from "@/lib/sources/hnl";
 import { formatDay, formatTime } from "@/lib/time";
+import { dict, type Dict, type Lang } from "@/lib/i18n";
 import { NoData, Stand } from "./stand";
 
-function Fixture({ m }: { m: HnlMatch }) {
+function Fixture({ m, lang, t }: { m: HnlMatch; lang: Lang; t: Dict }) {
   const scored = m.homeScore != null && m.awayScore != null;
   return (
     <li className="fixture">
       <span className="f-when">
         {m.state === "postponed" ? (
-          "verschoben"
+          t.hnl.postponed
         ) : m.kickoff ? (
           <>
-            <span className="f-day">{formatDay(m.kickoff)}</span>
-            <span className="f-time">{formatTime(m.kickoff)}</span>
+            <span className="f-day">{formatDay(m.kickoff, lang)}</span>
+            <span className="f-time">{formatTime(m.kickoff, lang)}</span>
           </>
         ) : (
-          "offen"
+          t.hnl.open
         )}
       </span>
       <span className="f-home">{m.home}</span>
       <span className={`f-score${m.state === "live" ? " f-live" : ""}`}>
         {scored ? `${m.homeScore}:${m.awayScore}` : "–:–"}
-        {m.state === "live" && <span className="sr-only"> (läuft)</span>}
+        {m.state === "live" && <span className="sr-only"> ({t.hnl.running})</span>}
       </span>
       <span className="f-away">{m.away}</span>
     </li>
   );
 }
 
-export function HnlSection({ hnl }: { hnl: Sourced<HnlData> | null }) {
+export function HnlSection({ hnl, lang = "de" }: { hnl: Sourced<HnlData> | null; lang?: Lang }) {
+  const t = dict(lang);
   if (!hnl) {
     return (
       <section id="hnl" className="card" aria-labelledby="hnl-h">
         <div className="card-head">
           <h2 id="hnl-h">⚽ SuperSport HNL</h2>
         </div>
-        <NoData what="SuperSport HNL" />
+        <NoData what="SuperSport HNL" lang={lang} />
       </section>
     );
   }
@@ -49,7 +51,7 @@ export function HnlSection({ hnl }: { hnl: Sourced<HnlData> | null }) {
     <section id="hnl" className="card" aria-labelledby="hnl-h">
       <div className="card-head">
         <h2 id="hnl-h">⚽ SuperSport HNL</h2>
-        <span className="pill">Saison {d.season.replace(/^(\d{4})-\d{2}(\d{2})$/, "$1/$2")}</span>
+        <span className="pill">{t.hnl.season} {d.season.replace(/^(\d{4})-\d{2}(\d{2})$/, "$1/$2")}</span>
       </div>
 
       <div className="table-wrap">
@@ -57,14 +59,14 @@ export function HnlSection({ hnl }: { hnl: Sourced<HnlData> | null }) {
           <thead>
             <tr>
               <th scope="col" className="num">#</th>
-              <th scope="col" className="left">Verein</th>
-              <th scope="col" className="num">Sp</th>
-              <th scope="col" className="num hide-xs">S</th>
-              <th scope="col" className="num hide-xs">U</th>
-              <th scope="col" className="num hide-xs">N</th>
-              <th scope="col" className="num">Tore</th>
-              <th scope="col" className="num">Diff</th>
-              <th scope="col" className="num">Pkt</th>
+              <th scope="col" className="left">{t.hnl.club}</th>
+              <th scope="col" className="num">{t.vatreni.played}</th>
+              <th scope="col" className="num hide-xs">{t.hnl.w}</th>
+              <th scope="col" className="num hide-xs">{t.hnl.d}</th>
+              <th scope="col" className="num hide-xs">{t.hnl.l}</th>
+              <th scope="col" className="num">{t.vatreni.goals}</th>
+              <th scope="col" className="num">{t.hnl.diff}</th>
+              <th scope="col" className="num">{t.vatreni.points}</th>
             </tr>
           </thead>
           <tbody>
@@ -90,44 +92,43 @@ export function HnlSection({ hnl }: { hnl: Sourced<HnlData> | null }) {
         </table>
       </div>
       <p className="footnote">
-        Aus den Einzelergebnissen berechnet; bei Punktgleichheit nach Tordifferenz und Toren gereiht (offiziell
-        zählt teils der direkte Vergleich).
+        {t.hnl.tableNote}
         {d.postponed.length > 0 && (
           <>
             {" "}
-            Verschoben:{" "}
+            {t.hnl.postponedList}{" "}
             {d.postponed.map((m, i) => (
               <span key={m.id}>
                 {i > 0 ? ", " : ""}
-                {m.home} – {m.away} ({m.round}. Runde)
+                {m.home} – {m.away} ({t.hnl.round(m.round)})
               </span>
             ))}
-            {behind.length > 0 && <> – {behind.map((r) => r.team).join(" und ")} mit weniger Spielen.</>}
+            {behind.length > 0 && <> – {t.hnl.fewerGames(behind.map((r) => r.team).join(t.hnl.and))}</>}
           </>
         )}
       </p>
 
       {d.currentRoundMatches.length > 0 && (
         <>
-          <h3>{d.currentRound}. Runde</h3>
+          <h3>{t.hnl.round(d.currentRound)}</h3>
           <ul className="fixtures">
             {d.currentRoundMatches.map((m) => (
-              <Fixture key={m.id} m={m} />
+              <Fixture key={m.id} m={m} lang={lang} t={t} />
             ))}
           </ul>
         </>
       )}
       {d.previousRound && d.previousRoundMatches.length > 0 && (
         <details className="prev">
-          <summary>{d.previousRound}. Runde – Ergebnisse</summary>
+          <summary>{t.hnl.prevRound(d.previousRound)}</summary>
           <ul className="fixtures">
             {d.previousRoundMatches.map((m) => (
-              <Fixture key={m.id} m={m} />
+              <Fixture key={m.id} m={m} lang={lang} t={t} />
             ))}
           </ul>
         </details>
       )}
-      <Stand fetchedAt={hnl.fetchedAt} source="TheSportsDB" />
+      <Stand fetchedAt={hnl.fetchedAt} source="TheSportsDB" lang={lang} />
     </section>
   );
 }

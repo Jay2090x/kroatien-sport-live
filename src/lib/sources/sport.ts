@@ -1,25 +1,21 @@
 import { cachedSource, type Sourced } from "../cache";
-import { fetchJson, fetchText } from "../http";
+import { fetchJson } from "../http";
 import { mapLimit } from "../async";
 import { countryDe } from "../names";
 import {
   COMPETITION_DE,
-  HRT_SPORT_CATEGORIES,
   MMA_FIGHTERS,
   NBA_PLAYERS,
   TOURNAMENTS,
   NT_FIXTURES,
   TSDB_TEAMS,
-  isCroatianHeadline,
   type Sport,
 } from "../sport-meta";
-import { parseRss } from "./rss";
 
 /**
  * "Andere Sportarten" – nur kostenlose Quellen ohne Konto:
  *  - ESPN (MMA-Kampfhistorie, Tennis-Scoreboards ATP/WTA, NBA)
  *  - TheSportsDB Free-Key "123" (nächste Spiele von Nationalteams/Clubs)
- *  - HRT-Sport-RSS (Schlagzeilen, nur Titel + Link)
  * Es wird nichts geschätzt: Ohne angekündigten Termin heißt es
  * "noch kein Kampf/Spiel angekündigt".
  */
@@ -30,7 +26,6 @@ const ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports";
 const ESPN_WEB = "https://site.web.api.espn.com/apis/common/v3/sports";
 const ESPN_CORE = "https://sports.core.api.espn.com/v2/sports";
 const TSDB = "https://www.thesportsdb.com/api/v1/json/123";
-const HRT_FEED = "https://feed.hrt.hr/sport/page.xml";
 
 export const SPORT_REVALIDATE = {
   base: 3600, // 1 h
@@ -39,7 +34,6 @@ export const SPORT_REVALIDATE = {
   tsdb: 3 * 3600,
   athlete: 6 * 3600,
   final: 24 * 3600,
-  headlines: 900,
 } as const;
 
 export interface SportItem {
@@ -69,20 +63,12 @@ export interface FighterStatus {
   fetchedAt: string;
 }
 
-export interface Headline {
-  title: string;
-  url: string;
-  sport: Sport | "other";
-  publishedAt: string;
-}
-
 export interface SportData {
   fighters: FighterStatus[];
   upcoming: SportItem[];
   national: SportItem[];
   results: SportItem[];
   tournaments: typeof TOURNAMENTS;
-  headlines: Headline[];
   fetchedAt: string;
   gaps: string[];
 }
@@ -505,29 +491,6 @@ async function loadTsdbNext(team: (typeof TSDB_TEAMS)[number]): Promise<SportIte
 }
 
 /* ------------------------------------------------------------------ */
-/* HRT-Schlagzeilen (Nicht-Fußball)                                    */
-
-async function loadHeadlines(): Promise<Headline[]> {
-  const items = parseRss(await fetchText(HRT_FEED));
-  const out: Headline[] = [];
-  for (const it of items) {
-    let cat = "";
-    try {
-      cat = new URL(it.link).pathname.split("/").filter(Boolean)[0] ?? "";
-    } catch {
-      continue;
-    }
-    const sport = HRT_SPORT_CATEGORIES[cat];
-    if (!sport) continue;
-    const t = it.pubDate ? Date.parse(it.pubDate) : NaN;
-    if (Number.isNaN(t)) continue;
-    out.push({ title: it.title, url: it.link, sport, publishedAt: new Date(t).toISOString() });
-  }
-  if (items.length === 0) throw new Error("HRT: empty feed");
-  return out.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-}
-
-/* ------------------------------------------------------------------ */
 
 export async function getSport(now = Date.now()): Promise<SportData | null> {
   try {
@@ -550,7 +513,7 @@ async function loadSport(now: number): Promise<SportData> {
     return s.data;
   };
 
-  const [fightersRaw, tennisRaw, nbaRaw, tsdbRaw, headlinesRaw] = await Promise.all([
+  const [fightersRaw, tennisRaw, nbaRaw, tsdbRaw] = await Promise.all([
     mapLimit(MMA_FIGHTERS, 2, async (f) => ({
       f,
       s: await cachedSource(["sport", "mma", f.espnId], SPORT_REVALIDATE.mma, () => loadFighter(f.espnId, f.org)),
@@ -572,7 +535,6 @@ async function loadSport(now: number): Promise<SportData> {
       t,
       s: await cachedSource(["sport", "tsdb-next", t.id], SPORT_REVALIDATE.tsdb, () => loadTsdbNext(t)),
     })),
-    cachedSource(["sport", "hrt"], SPORT_REVALIDATE.headlines, loadHeadlines),
   ]);
 
   // MMA
@@ -662,11 +624,6 @@ async function loadSport(now: number): Promise<SportData> {
     if (it.source === "TheSportsDB" && it.start && Date.parse(it.start) - now > TSDB_TIME_HORIZON) it.timeKnown = false;
   }
 
-  const headlines = (track(headlinesRaw, "HRT-Schlagzeilen derzeit nicht abrufbar.") ?? []).filter(
-    // nur Schlagzeilen mit kroatischem Bezug (Athlet/Team), max. 8
-    (h) => Date.parse(h.publishedAt) >= now - 3 * D && isCroatianHeadline(h.title)
-  );
-
   const byStart = (a: SportItem, b: SportItem) => Date.parse(a.start ?? "") - Date.parse(b.start ?? "");
   // Doppelte (z. B. derselbe Termin aus zwei Quellen) entfernen
   const dedupe = (xs: SportItem[]) => [...new Map(xs.map((x) => [x.key, x])).values()];
@@ -674,11 +631,10 @@ async function loadSport(now: number): Promise<SportData> {
   if (fetchedAts.length === 0) throw new Error("no sport source available");
   return {
     fighters,
-    upcoming: dedupe(upcoming).sort(byStart).slice(0, 12),
+    upcoming: dedupe(upcoming).sort(byStart).slice(0, 30),
     national: dedupe(national).sort(byStart),
     results: dedupe(results).sort((a, b) => -byStart(a, b)).slice(0, 10),
     tournaments: TOURNAMENTS.filter((t) => Date.parse(`${t.to}T23:59:59Z`) >= now),
-    headlines: headlines.slice(0, 8),
     fetchedAt: fetchedAts.sort()[0],
     gaps,
   };

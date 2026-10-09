@@ -1,29 +1,32 @@
 import Link from "next/link";
+import { dict, type Lang } from "@/lib/i18n";
 
-export function SiteFooter() {
+export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
+  const t = dict(lang);
+  const de = lang === "de";
   return (
     <footer className="site-footer">
       <div className="container">
         <p className="credits">
-          <strong>Datenquellen:</strong>{" "}
-          <a href="https://www.espn.com/soccer/" rel="noopener" target="_blank">ESPN</a> (Länderspiele,
-          Nations-League-Tabelle, Spielerdaten, MMA, Tennis, NBA) ·{" "}
-          <a href="https://www.thesportsdb.com/" rel="noopener" target="_blank">TheSportsDB</a> (SuperSport HNL, Handball-/Basketball-Termine) ·{" "}
-          <a href="https://www.eurohandball.com/" rel="noopener" target="_blank">EHF</a> (Handball-Länderspiele) ·{" "}
-          <a href="https://www.openligadb.de/" rel="noopener" target="_blank">OpenLigaDB</a> (Ersatzquelle Länderspiele) ·{" "}
-          <a href="https://sport.hrt.hr/" rel="noopener" target="_blank">HRT Sport</a> und Google News (Schlagzeilen, Links
-          zum Original) ·{" "}
-          <a href="https://de.wikipedia.org/" rel="noopener" target="_blank">Wikipedia</a> (Abgleich der HNL-Tabelle,{" "}
-          <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" rel="noopener license" target="_blank">CC BY-SA 4.0</a>).
+          <strong>{t.footer.sources}:</strong>{" "}
+          <a href="https://www.espn.com/soccer/" rel="noopener" target="_blank">ESPN</a>{" "}
+          {de ? "(Länderspiele, Nations-League-Tabelle, Spielerdaten, MMA, Tennis, NBA)" : "(reprezentacija, Liga nacija, podaci o igračima, MMA, tenis, NBA)"} ·{" "}
+          <a href="https://www.thesportsdb.com/" rel="noopener" target="_blank">TheSportsDB</a>{" "}
+          {de ? "(SuperSport HNL, Handball-/Basketball-Termine)" : "(SuperSport HNL, rukometni/košarkaški termini)"} ·{" "}
+          <a href="https://www.eurohandball.com/" rel="noopener" target="_blank">EHF</a> ·{" "}
+          <a href="https://www.openligadb.de/" rel="noopener" target="_blank">OpenLigaDB</a> ·{" "}
+          <a href="https://en.wikipedia.org/" rel="noopener" target="_blank">Wikipedia</a>{" "}
+          {de ? "(Boxen-Abgleich, HNL-Tabellenabgleich," : "(provjera boksa i HNL tablice,"}{" "}
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener license" target="_blank">CC BY-SA 4.0</a>) ·{" "}
+          <a href="https://sport.hrt.hr/" rel="noopener" target="_blank">HRT Sport</a>{" "}
+          {de ? "und Google News (Schlagzeilen, Links zum Original)" : "i Google News (naslovi, poveznice na izvor)"} ·{" "}
+          {de ? "Videos: offizielle YouTube-Kanäle von HNS, MAXSport und UFC" : "Videozapisi: službeni YouTube kanali HNS-a, MAXSporta i UFC-a"}.
         </p>
-        <p className="disclaimer">
-          Alle Angaben ohne Gewähr. Maßgeblich sind die offiziellen Angaben von HNS, HNL und UEFA. Alle Zeiten in
-          Wiener Zeit (MEZ/MESZ). Kein offizielles Angebot eines Verbands oder Vereins.
-        </p>
-        <nav className="legal" aria-label="Rechtliches">
-          <Link href="/impressum">Impressum</Link>
-          <Link href="/datenschutz">Datenschutz</Link>
-          <Link href="/nutzung">Nutzungshinweise</Link>
+        <p className="disclaimer">{t.footer.disclaimer}</p>
+        <nav className="legal" aria-label={t.footer.legal}>
+          <Link href="/impressum">{t.footer.imprint}</Link>
+          <Link href="/datenschutz">{t.footer.privacy}</Link>
+          <Link href="/nutzung">{t.footer.terms}</Link>
         </nav>
       </div>
     </footer>
