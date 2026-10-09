@@ -35,7 +35,7 @@ export function SiteHeader({
                 {t.nav.players}
               </Link>
               <Link href={href(lang, "/#hnl")}>{t.nav.hnl}</Link>
-              <Link href={href(lang, "/#news")}>{t.nav.news}</Link>
+              <Link href={href(lang, "/#feed")}>{t.nav.news}</Link>
               <Link href={href(lang, "/sport")} aria-current={current === "sport" ? "page" : undefined}>
                 {t.nav.sport}
               </Link>

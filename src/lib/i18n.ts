@@ -22,7 +22,7 @@ export function href(lang: Lang, path: string): string {
 
 const de = {
   tagline: "Vatreni · HNL · MMA · Boxen · mehr",
-  nav: { vatreni: "Vatreni", players: "Spieler", hnl: "HNL", news: "News", sport: "Sport", sections: "Abschnitte" },
+  nav: { vatreni: "Vatreni", players: "Spieler", hnl: "HNL", news: "Feed", sport: "Sport", sections: "Abschnitte" },
   langLabel: "Sprache",
   filter: {
     label: "Sportart filtern",
@@ -166,11 +166,33 @@ const de = {
       "Testspiele von Vereinen werden nicht berücksichtigt. Alle Zeiten in Wiener Zeit.",
     ],
   },
+  feed: {
+    title: "Fußball-Feed",
+    pill: "News & Clips",
+    preview: "Vorschau",
+    result: "Ergebnis",
+    related: "Dazu in den Medien",
+    clip: "Offizielle Highlights",
+    toVatreni: "Vatreni-Ergebnisse & Tabelle →",
+    toHnl: "HNL-Tabelle →",
+    round: (n: number) => `${n}. Runde`,
+    watch: "Highlights",
+    empty: "Derzeit keine aktuellen Meldungen oder Clips.",
+    note: "Clips nur von offiziellen Kanälen (HNS, MAXSport, Vereine), sie laden erst nach Klick über youtube-nocookie.com. Clips und Schlagzeilen stehen nur dann bei einem Spiel, wenn Paarung, Ergebnis bzw. Datum mit den Spieldaten übereinstimmen. Schlagzeilen in Originalsprache (DE/HR).",
+    sources: "YouTube: HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek · HRT Sport, Google News",
+  },
+  other: {
+    title: "Weitere Sportarten",
+    pill: "MMA · Boxen · Tennis · Basketball · Handball",
+    upcoming: "Demnächst",
+    results: "Zuletzt",
+    headlines: "Schlagzeilen",
+  },
   highlights: {
     title: "Highlights",
     load: "Video laden",
     channel: "Offizieller Kanal:",
-    note: "Nur offizielle, einbettbare Clips der Rechteinhaber (HNS, MAXSport, UFC), höchstens 7 Tage alt. Das Video wird erst nach Klick von YouTube (youtube-nocookie.com) geladen.",
+    note: "Nur offizielle, einbettbare Clips der Rechteinhaber (HNS, MAXSport, Vereine, UFC), höchstens 7 Tage alt. Das Video wird erst nach Klick von YouTube (youtube-nocookie.com) geladen.",
   },
   tags: {
     derby: "Derby",
@@ -196,7 +218,7 @@ export type Dict = typeof de;
 
 const hr: Dict = {
   tagline: "Vatreni · HNL · MMA · Boks · više",
-  nav: { vatreni: "Vatreni", players: "Igrači", hnl: "HNL", news: "Vijesti", sport: "Sport", sections: "Odjeljci" },
+  nav: { vatreni: "Vatreni", players: "Igrači", hnl: "HNL", news: "Feed", sport: "Sport", sections: "Odjeljci" },
   langLabel: "Jezik",
   filter: {
     label: "Filtriraj po sportu",
@@ -340,11 +362,33 @@ const hr: Dict = {
       "Prijateljske utakmice klubova se ne uzimaju u obzir. Sva vremena po bečkom (srednjoeuropskom) vremenu.",
     ],
   },
+  feed: {
+    title: "Nogometni feed",
+    pill: "Vijesti i snimke",
+    preview: "Najava",
+    result: "Rezultat",
+    related: "Iz medija",
+    clip: "Službeni sažetak",
+    toVatreni: "Rezultati i tablica Vatrenih →",
+    toHnl: "HNL tablica →",
+    round: (n: number) => `${n}. kolo`,
+    watch: "Sažetak",
+    empty: "Trenutno nema novih vijesti ni snimki.",
+    note: "Snimke samo sa službenih kanala (HNS, MAXSport, klubovi), učitavaju se tek nakon klika preko youtube-nocookie.com. Snimke i naslovi stoje uz utakmicu samo ako se par, rezultat odnosno datum podudaraju s podacima o utakmici. Naslovi na izvornom jeziku (DE/HR).",
+    sources: "YouTube: HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek · HRT Sport, Google News",
+  },
+  other: {
+    title: "Ostali sportovi",
+    pill: "MMA · boks · tenis · košarka · rukomet",
+    upcoming: "Uskoro",
+    results: "Nedavno",
+    headlines: "Naslovi",
+  },
   highlights: {
     title: "Najbolje snimke",
     load: "Učitaj video",
     channel: "Službeni kanal:",
-    note: "Samo službeni isječci nositelja prava koji se smiju ugraditi (HNS, MAXSport, UFC), najviše 7 dana stari. Video se s YouTubea (youtube-nocookie.com) učitava tek nakon klika.",
+    note: "Samo službeni isječci nositelja prava koji se smiju ugraditi (HNS, MAXSport, klubovi, UFC), najviše 7 dana stari. Video se s YouTubea (youtube-nocookie.com) učitava tek nakon klika.",
   },
   tags: {
     derby: "Derbi",

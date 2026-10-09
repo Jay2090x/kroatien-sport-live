@@ -68,7 +68,16 @@ function NextCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
   );
 }
 
-export function VatreniSection({ data, lang = "de" }: { data: VatreniData; lang?: Lang }) {
+export function VatreniSection({
+  data,
+  lang = "de",
+  clipFor = {},
+}: {
+  data: VatreniData;
+  lang?: Lang;
+  /** Match-Key → Anker einer Feed-Story mit offiziellem Clip */
+  clipFor?: Record<string, string>;
+}) {
   const t = dict(lang);
   const OUTCOME_LABEL = { S: t.win, U: t.draw, N: t.loss } as const;
   const OUTCOME_SHORT = { S: t.winShort, U: t.drawShort, N: t.lossShort } as const;
@@ -108,6 +117,11 @@ export function VatreniSection({ data, lang = "de" }: { data: VatreniData; lang?
                         <Team name={m.away} strong={!m.croatiaIsHome} lang={lang} />
                         {m.extra && <span className="r-extra">{lang === "hr" ? m.extra.replace("n. E.", "pen.") : m.extra}</span>}
                         <span className="r-comp">{dataLabel(m.competition, lang)}</span>
+                        {clipFor[`m-nt-${m.id}`] && (
+                          <a className="r-clip" href={`#${clipFor[`m-nt-${m.id}`]}`}>
+                            🎬 {t.feed.watch}
+                          </a>
+                        )}
                       </span>
                       {o && (
                         <span className={`badge badge-${o}`} title={OUTCOME_LABEL[o]} aria-label={OUTCOME_LABEL[o]}>

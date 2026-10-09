@@ -20,7 +20,7 @@ export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
           <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener license" target="_blank">CC BY-SA 4.0</a>) ·{" "}
           <a href="https://sport.hrt.hr/" rel="noopener" target="_blank">HRT Sport</a>{" "}
           {de ? "und Google News (Schlagzeilen, Links zum Original)" : "i Google News (naslovi, poveznice na izvor)"} ·{" "}
-          {de ? "Videos: offizielle YouTube-Kanäle von HNS, MAXSport und UFC" : "Videozapisi: službeni YouTube kanali HNS-a, MAXSporta i UFC-a"}.
+          {de ? "Videos: offizielle YouTube-Kanäle von HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek und UFC" : "Videozapisi: službeni YouTube kanali HNS-a, MAXSporta, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek i UFC-a"}.
         </p>
         <p className="disclaimer">{t.footer.disclaimer}</p>
         <nav className="legal" aria-label={t.footer.legal}>

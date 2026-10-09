@@ -89,6 +89,13 @@ export function SportGate({ sport, children }: { sport: Sport; children: React.R
   );
 }
 
+/** Blendet "Weitere Sportarten" aus, wenn Fußball gewählt ist. */
+export function NotFootballGate({ children }: { children: React.ReactNode }) {
+  const [current] = useSportFilter();
+  if (current === "football") return null;
+  return <div className="gate gate-other">{children}</div>;
+}
+
 /** Inline-Skript (vor dem Rendern): ?sport= → <html data-sf>. */
 export const SPORT_FILTER_BOOT = `(function(){try{var s=new URLSearchParams(location.search).get("sport");var ok=${JSON.stringify(
   SPORTS.map((s) => SPORT_SLUG[s])
@@ -98,4 +105,4 @@ export const SPORT_FILTER_BOOT = `(function(){try{var s=new URLSearchParams(loca
 export const SPORT_FILTER_CSS = SPORTS.map((s) => {
   const v = SPORT_SLUG[s];
   return `html[data-sf="${v}"] [data-sport]:not([data-sport="${v}"]),html[data-sf="${v}"] [data-gate]:not([data-gate="${v}"]){display:none!important}html[data-sf="${v}"] .chip[data-chip="${v}"]{background:var(--blue);color:#fff;border-color:var(--blue)}html[data-sf="${v}"] .chip[data-chip="alle"]:not(.chip-on){background:var(--card);color:var(--ink);border-color:var(--line)}`;
-}).join("");
+}).join("") + 'html[data-sf="fussball"] .gate-other{display:none!important}';

@@ -496,7 +496,7 @@ h3 {
     display: none;
   }
   .fixture {
-    grid-template-columns: 58px 1fr auto 1fr;
+    grid-template-columns: 58px 1fr auto 1fr 1.3em;
     gap: 6px;
     font-size: 0.85rem;
   }
@@ -505,7 +505,7 @@ h3 {
 /* ── HNL-Spiele ─────────────────────────── */
 .fixture {
   display: grid;
-  grid-template-columns: 74px 1fr auto 1fr;
+  grid-template-columns: 74px 1fr auto 1fr 1.5em;
   align-items: center;
   gap: 8px;
   padding: 8px 0;
@@ -1262,4 +1262,128 @@ details.prev summary {
     width: 100%;
     justify-content: space-between;
   }
+}
+
+/* ---------- Fußball-Feed (Spiele + Clips + Schlagzeilen verknüpft) ---------- */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 760px) {
+  .fe-has-clip {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+}
+.fe-media {
+  margin-bottom: 8px;
+}
+@media (min-width: 760px) {
+  .fe-media {
+    margin-bottom: 0;
+  }
+}
+.fe-clip-meta {
+  margin: 0 0 4px;
+}
+.fe {
+  scroll-margin-top: 80px;
+}
+.fe-story {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--card);
+}
+.fe-story:target {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+.fe-news {
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fe-story .eyebrow {
+  margin: 0 0 4px;
+}
+.fs-match {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.fs-score {
+  font-variant-numeric: tabular-nums;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--blue);
+  color: #fff;
+}
+.fe-story .meta {
+  margin: 2px 0 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.fe-clip-meta a {
+  color: var(--ink);
+}
+.fe-rel {
+  margin-top: 8px;
+}
+.fe-rel-h {
+  margin: 0 0 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.fe-rel .news li {
+  padding: 4px 0;
+}
+.fn-link {
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.fn-link:hover {
+  text-decoration: underline;
+}
+.fn-small {
+  font-size: 0.88rem;
+}
+.r-clip {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--red);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.f-clip {
+  margin-left: 4px;
+  text-decoration: none;
+}
+.other-cols {
+  display: grid;
+  gap: 8px 24px;
+}
+@media (min-width: 760px) {
+  .other-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.fe-rel .news {
+  grid-template-columns: 1fr;
 }

@@ -4,7 +4,7 @@ import { formatDay, formatTime } from "@/lib/time";
 import { dict, type Dict, type Lang } from "@/lib/i18n";
 import { NoData, Stand } from "./stand";
 
-function Fixture({ m, lang, t }: { m: HnlMatch; lang: Lang; t: Dict }) {
+function Fixture({ m, lang, t, clip }: { m: HnlMatch; lang: Lang; t: Dict; clip?: string }) {
   const scored = m.homeScore != null && m.awayScore != null;
   return (
     <li className="fixture">
@@ -26,11 +26,24 @@ function Fixture({ m, lang, t }: { m: HnlMatch; lang: Lang; t: Dict }) {
         {m.state === "live" && <span className="sr-only"> ({t.hnl.running})</span>}
       </span>
       <span className="f-away">{m.away}</span>
+      {clip && (
+        <a className="f-clip" href={`#${clip}`} title={t.feed.watch} aria-label={`${t.feed.watch}: ${m.home} – ${m.away}`}>
+          🎬
+        </a>
+      )}
     </li>
   );
 }
 
-export function HnlSection({ hnl, lang = "de" }: { hnl: Sourced<HnlData> | null; lang?: Lang }) {
+export function HnlSection({
+  hnl,
+  lang = "de",
+  clipFor = {},
+}: {
+  hnl: Sourced<HnlData> | null;
+  lang?: Lang;
+  clipFor?: Record<string, string>;
+}) {
   const t = dict(lang);
   if (!hnl) {
     return (
@@ -113,17 +126,17 @@ export function HnlSection({ hnl, lang = "de" }: { hnl: Sourced<HnlData> | null;
           <h3>{t.hnl.round(d.currentRound)}</h3>
           <ul className="fixtures">
             {d.currentRoundMatches.map((m) => (
-              <Fixture key={m.id} m={m} lang={lang} t={t} />
+              <Fixture key={m.id} m={m} lang={lang} t={t} clip={clipFor[`m-hnl-${m.id}`]} />
             ))}
           </ul>
         </>
       )}
       {d.previousRound && d.previousRoundMatches.length > 0 && (
-        <details className="prev">
+        <details className="prev" open={d.previousRoundMatches.some((m) => clipFor[`m-hnl-${m.id}`]) || undefined}>
           <summary>{t.hnl.prevRound(d.previousRound)}</summary>
           <ul className="fixtures">
             {d.previousRoundMatches.map((m) => (
-              <Fixture key={m.id} m={m} lang={lang} t={t} />
+              <Fixture key={m.id} m={m} lang={lang} t={t} clip={clipFor[`m-hnl-${m.id}`]} />
             ))}
           </ul>
         </details>

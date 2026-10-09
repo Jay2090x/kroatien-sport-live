@@ -11,7 +11,7 @@ import { getVatreni } from "@/lib/sources/vatreni";
 import { getHnl } from "@/lib/sources/hnl";
 import { getBoxers, type BoxerStatus } from "@/lib/sources/boxing";
 import { getNews, pickNews } from "@/lib/sources/news";
-import { getVideos } from "@/lib/sources/videos";
+import { getVideos, recentVideos } from "@/lib/sources/videos";
 import { buildTimeline, tlLabels } from "@/lib/timeline";
 import { SPORT_EMOJI, type BoxFight } from "@/lib/sport-meta";
 import { dict, href, type Dict, type Lang } from "@/lib/i18n";
@@ -121,7 +121,7 @@ export async function SportView({ lang }: { lang: Lang }) {
   const newsRows = news
     ? pickNews(news.data, { lang, now, max: 16, min: 8, perSport: 5 }).map((n) => ({ ...n, when: `${formatKickoff(n.publishedAt, lang)} ${t.oclock}` }))
     : [];
-  const clips = (videos?.data ?? []).map((v) => ({ ...v, when: formatKickoff(v.publishedAt, lang) }));
+  const clips = recentVideos(videos?.data ?? []).map((v) => ({ ...v, when: formatKickoff(v.publishedAt, lang) }));
   const de = lang === "de";
 
   return (

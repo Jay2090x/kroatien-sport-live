@@ -45,7 +45,7 @@ const FOOTBALL =
 const CROATIAN =
   /hrvat|kroat|croat|vatren|modri[cć]|gvardiol|kova[cč]i[cć]|dali[cć]|bili[cć]|\bhnl\b|hajduk|dinamo|rijek|osijek|livakovi[cć]|kramari[cć]|peri[sš]i[cć]|budimir|baturina|su[cč]i[cć]|stani[sš]i[cć]|pa[sš]ali[cć]|soldi[cć]|hrgovi[cć]|planti[cć]|smaki[cćq]i/i;
 const EXCLUDE =
-  /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett/i;
+  /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett/i;
 
 const SPORT_RX: Array<[Sport, RegExp]> = [
   ["mma", /\bufc\b|\bmma\b|soldi[cć]|oktagon|\bfnc\b/i],
@@ -253,5 +253,5 @@ async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v4"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v5"], REVALIDATE.news, loadNews);
 }
