@@ -133,6 +133,16 @@ function relates(n: NewsItem, m: FeedMatch, now: number): boolean {
   const ko = Date.parse(m.kickoff);
   const inWindow = m.upcoming ? now - pub <= 3 * D : pub >= ko - 2 * D && pub <= ko + 4 * D;
   if (!inWindow) return false;
+  // nennt der Titel ein Datum, muss es der Spieltag sein (Wiener Datum)
+  const dm = n.title.match(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})?/);
+  if (dm) {
+    const parts = new Intl.DateTimeFormat("de-AT", { timeZone: "Europe/Vienna", day: "numeric", month: "numeric" }).formatToParts(
+      new Date(ko),
+    );
+    const dd = Number(parts.find((p) => p.type === "day")?.value);
+    const mm = Number(parts.find((p) => p.type === "month")?.value);
+    if (Number(dm[1]) !== dd || Number(dm[2]) !== mm) return false;
+  }
   if (m.kind === "vatreni") {
     const opp = m.croatiaIsHome ? m.away : m.home;
     return CRO.test(t) && oppRx(opp).test(t);

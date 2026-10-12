@@ -47,6 +47,18 @@ const CROATIAN =
 const EXCLUDE =
   /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett/i;
 
+/** Spam/Stream-Seiten: Sonderzeichen-Müll, "live gucken"-Köder, kyrillische Quellen */
+const SPAM =
+  /\[\[|\]\]|==|'''|\+~|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\p{Script=Cyrillic}/iu;
+
+/** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
+export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
+  const m = title.match(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/);
+  if (!m) return false;
+  const d = Date.UTC(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  return Date.parse(publishedIso) - d > (maxDays + 1) * 86400000;
+}
+
 const SPORT_RX: Array<[Sport, RegExp]> = [
   ["mma", /\bufc\b|\bmma\b|soldi[cć]|oktagon|\bfnc\b/i],
   ["boxing", /\bboks|\bbox(en|er|kampf)|hrgovi[cć]|planti[cć]|smaki[cćq]i|\bbkfc\b/i],
@@ -163,6 +175,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     if (EXCLUDE.test(title) || EXCLUDE.test(source) || looksEnglish(title)) continue;
+    if (SPAM.test(title) || SPAM.test(source) || titleDateTooOld(title, iso)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
     let sport: Sport | "other";
     if (feed.football) {
