@@ -218,11 +218,14 @@ export function buildFeed(
     const prev = linked.get(m.key);
     if (!prev || (CHANNEL_PREF[v.channel] ?? 9) < (CHANNEL_PREF[prev.clip.channel] ?? 9)) linked.set(m.key, { clip: v, match: m });
   }
-  const goals = (m: FeedMatch) => (m.homeScore ?? 0) + (m.awayScore ?? 0);
+  // Auswahl: zuerst Spiele der letzten 8 Tage (aktuelle Runde vor alten Runden),
+  // darin Vatreni zuerst, dann neueste zuerst – ein 3 Wochen altes Torfestival
+  // darf das aktuelle Derby nicht verdrängen.
+  const fresh = (m: FeedMatch) => (now - Date.parse(m.kickoff) <= 8 * D ? 0 : 1);
   const linkedList = [...linked.values()].sort(
     (a, b) =>
+      fresh(a.match) - fresh(b.match) ||
       (a.match.kind === "vatreni" ? 0 : 1) - (b.match.kind === "vatreni" ? 0 : 1) ||
-      goals(b.match) - goals(a.match) ||
       Date.parse(b.match.kickoff) - Date.parse(a.match.kickoff)
   );
   // doppelte Clips ohne Spielbezug (gleicher Titel/Paarung) entfernen
