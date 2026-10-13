@@ -41,11 +41,11 @@ const GOOGLE_FEEDS: Array<{ url: string; lang: Lang; football: boolean }> = [
 ];
 
 const FOOTBALL =
-  /nogomet|\bhnl\b|vatren|hajduk|dinamo|rijek|osijek|vara[zž]din|gorica|istra 1961|lokomotiv|slaven belupo|rude[sš]|vukovar|reprezentacij|modri[cć]|gvardiol|kova[cč]i[cć]|dali[cć]|bili[cć]|kroatien|fu(ss|ß)ball|nations league|liga nacija|liga prvaka|konferencijsk|poljud|maksimir|livakovi[cć]|kramari[cć]|peri[sš]i[cć]|budimir|baturina|su[cč]i[cć]|stani[sš]i[cć]|derbi|derby/i;
+  /nogomet|\bhnl\b|vatren|hajduk|dinamo|rijek|osijek|vara[zž]din|gorica|istra 1961|lokomotiv|slaven belupo|rude[sš]|vukovar|reprezentacij|modri[cć]|gvardiol|kova[cč]i[cć]|dali[cć]|bili[cć]|fu(ss|ß)ball|nations league|liga nacija|liga prvaka|konferencijsk|poljud|maksimir|livakovi[cć]|kramari[cć]|peri[sš]i[cć]|budimir|baturina|su[cč]i[cć]|stani[sš]i[cć]|derbi|derby/i;
 const CROATIAN =
   /hrvat|kroat|croat|vatren|modri[cć]|gvardiol|kova[cč]i[cć]|dali[cć]|bili[cć]|\bhnl\b|hajduk|dinamo|rijek|osijek|livakovi[cć]|kramari[cć]|peri[sš]i[cć]|budimir|baturina|su[cč]i[cć]|stani[sš]i[cć]|pa[sš]ali[cć]|soldi[cć]|hrgovi[cć]|planti[cć]|smaki[cćq]i/i;
 const EXCLUDE =
-  /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett/i;
+  /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett|\bfilm\b|kino\b|schauspiel|oscar|netflix|dokumentar/i;
 
 /** Spam/Stream-Seiten: Sonderzeichen-Müll, "live gucken"-Köder, kyrillische Quellen */
 const SPAM =
