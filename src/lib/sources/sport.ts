@@ -369,13 +369,26 @@ interface NbaEvent {
 const NBA_SEASON: Record<number, string> = { 1: "NBA-Vorbereitung", 2: "NBA", 3: "NBA-Playoffs", 5: "NBA Play-in" };
 
 async function loadNbaTeam(teamId: string): Promise<NbaEvent[]> {
-  const [res, fix] = await Promise.all([
-    fetchJson<{ events?: NbaEvent[] }>(`${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule`),
-    fetchJson<{ events?: NbaEvent[] }>(`${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule?fixture=true`),
-  ]);
-  if (!Array.isArray(res.events) && !Array.isArray(fix.events)) throw new Error(`ESPN NBA ${teamId}: no events`);
+  // Ohne seasontype liefert ESPN nur die laufende Saisonphase (z. B. nur Vorbereitung) –
+  // die Hauptrunde (seasontype=2) und Playoffs (3) daher ausdrücklich mitladen.
+  const urls = [
+    `${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule`,
+    `${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule?fixture=true`,
+    `${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule?seasontype=2`,
+    `${ESPN_SITE}/basketball/nba/teams/${teamId}/schedule?seasontype=3`,
+  ];
+  const parts = await Promise.all(
+    urls.map((u, i) =>
+      fetchJson<{ events?: NbaEvent[] }>(u).catch((err) => {
+        // Die ersten beiden sind Pflicht, Hauptrunde/Playoffs dürfen fehlen
+        if (i < 2) throw err;
+        return { events: [] as NbaEvent[] };
+      })
+    )
+  );
+  if (!parts.slice(0, 2).some((p) => Array.isArray(p.events))) throw new Error(`ESPN NBA ${teamId}: no events`);
   const byId = new Map<string, NbaEvent>();
-  for (const e of [...(res.events ?? []), ...(fix.events ?? [])]) byId.set(e.id, e);
+  for (const p of parts) for (const e of p.events ?? []) byId.set(e.id, e);
   return [...byId.values()].sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
 }
 
