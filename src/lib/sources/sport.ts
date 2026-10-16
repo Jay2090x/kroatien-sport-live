@@ -544,7 +544,7 @@ async function loadSport(now: number): Promise<SportData> {
       const games = await adaptive(["sport", "nba-team", a.data.teamId], () => loadNbaTeam(a.data.teamId!), (es) => es.map((e) => e.date), now);
       return { p, a, games };
     }),
-    mapLimit(TSDB_TEAMS, 1, async (t) => ({
+    mapLimit(TSDB_TEAMS, 3, async (t) => ({
       t,
       s: await cachedSource(["sport", "tsdb-next", t.id], SPORT_REVALIDATE.tsdb, () => loadTsdbNext(t)),
     })),

@@ -11,8 +11,13 @@ function sleep(ms: number) {
  */
 export async function fetchText(
   url: string,
-  { timeoutMs = 8000, retries = 1 }: { timeoutMs?: number; retries?: number } = {}
+  opts: { timeoutMs?: number; retries?: number } = {}
 ): Promise<string> {
+  // TheSportsDB Free-API ist oft langsam/522; kurze Timeouts, sonst blockiert
+  // die ISR-Revalidierung (> maxDuration) und die Seite bleibt stundenlang STALE.
+  const isTsdb = url.includes("thesportsdb.com");
+  const timeoutMs = opts.timeoutMs ?? (isTsdb ? 3000 : 8000);
+  const retries = opts.retries ?? (isTsdb ? 0 : 1);
   let lastError: unknown;
   let waitMs = 0;
   for (let attempt = 0; attempt <= retries; attempt++) {

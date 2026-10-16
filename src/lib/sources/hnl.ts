@@ -183,9 +183,9 @@ async function getNextRound(): Promise<number | null> {
 }
 
 async function loadRound(season: string, round: number): Promise<TsdbEvent[]> {
+  // Timeouts/Retries: fetchJson erkennt thesportsdb.com → 3s, 0 Retries (Fail-Fast für ISR).
   const json = await fetchJson<{ events?: TsdbEvent[] | null }>(
-    `${TSDB}/eventsround.php?id=${HNL_LEAGUE_ID}&r=${round}&s=${season}`,
-    { retries: 2 }
+    `${TSDB}/eventsround.php?id=${HNL_LEAGUE_ID}&r=${round}&s=${season}`
   );
   return json.events ?? [];
 }

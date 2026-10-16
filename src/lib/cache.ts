@@ -25,7 +25,7 @@ export async function cachedSource<T>(
       data: await loader(),
       fetchedAt: new Date().toISOString(),
     }),
-    ["ksl-v3", ...keyParts],
+    ["ksl-v4", ...keyParts], // v4: ISR-Fail-Fast bei TheSportsDB-Ausfällen (2026-10-16)
     { revalidate: revalidateSeconds, tags: [`ksl:${keyParts[0]}`] }
   );
   try {
