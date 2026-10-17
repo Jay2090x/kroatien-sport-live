@@ -1,0 +1,44 @@
+# Schnappschuss der SuperSport-HNL-Daten (TheSportsDB) auf den Branch `data`.
+# Die Seite nutzt ihn, wenn TheSportsDB aus Vercel heraus nicht erreichbar ist
+# (Rate-Limit/Timeouts). Kostenlos: öffentliches Repo, GitHub-Actions-Minuten frei.
+name: HNL-Schnappschuss
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hnl-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Daten holen
+        run: node scripts/snapshot-hnl.mjs "$RUNNER_TEMP/hnl-snapshot.json"
+      - uses: actions/checkout@v4
+        with:
+          ref: data
+          path: data-branch
+      - name: Auf Branch data ablegen
+        working-directory: data-branch
+        run: |
+          cp "$RUNNER_TEMP/hnl-snapshot.json" hnl-snapshot.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add hnl-snapshot.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: HNL-Schnappschuss $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q origin HEAD:data
