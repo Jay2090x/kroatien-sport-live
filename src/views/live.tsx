@@ -8,6 +8,8 @@ import { getLiveOverview, getTicker, type Ticker } from "@/lib/sources/live";
 import { fan } from "@/lib/fan/i18n";
 import { dataLabel, dict, href, localeOf, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
+import { Club } from "@/components/club-badge";
+import { badgeFor } from "@/lib/club-badge";
 
 function TickerBlock({ tk, lang, poll }: { tk: Ticker; lang: Lang; poll: boolean }) {
   const t = dict(lang);
@@ -17,6 +19,7 @@ function TickerBlock({ tk, lang, poll }: { tk: Ticker; lang: Lang; poll: boolean
       labels={fan(lang).live}
       locale={localeOf(lang)}
       names={{ home: dataLabel(tk.home.name, lang), away: dataLabel(tk.away.name, lang) }}
+      badges={{ home: badgeFor(tk.home.name), away: badgeFor(tk.away.name) }}
       poll={poll}
       oclock={t.oclock}
     />
@@ -71,9 +74,13 @@ export async function LiveView({ lang }: { lang: Lang }) {
                   <div className="feature">
                     <p className="eyebrow">{dataLabel(next.competition, lang)}</p>
                     <p className="match-teams">
-                      <span className={next.home.id === "477" ? "team team-cro" : "team"}>{dataLabel(next.home.name, lang)}</span>
+                      <span className={next.home.id === "477" ? "team team-cro" : "team"}>
+                        <Club name={next.home.name}>{dataLabel(next.home.name, lang)}</Club>
+                      </span>
                       <span className="vs">–</span>
-                      <span className={next.away.id === "477" ? "team team-cro" : "team"}>{dataLabel(next.away.name, lang)}</span>
+                      <span className={next.away.id === "477" ? "team team-cro" : "team"}>
+                        <Club name={next.away.name}>{dataLabel(next.away.name, lang)}</Club>
+                      </span>
                     </p>
                     <p className="meta">
                       <time dateTime={next.kickoff}>

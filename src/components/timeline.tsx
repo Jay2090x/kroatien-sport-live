@@ -4,6 +4,7 @@ import type { TlItem, TlLabels } from "@/lib/timeline";
 import { SPORT_SLUG } from "@/lib/sport-meta";
 import { useSportFilter } from "./sport-filter";
 import { Avatar } from "./avatar";
+import { BadgeView } from "./badge-view";
 import type { Lang } from "@/lib/i18n";
 
 /** Gemeinsame, chronologische Zeitleiste (Start-Teaser und /sport). */
@@ -62,7 +63,24 @@ export function TimelineList({
                       </>
                     ) : null}
                     {i.who ? <strong>{i.who}</strong> : null}
-                    {i.who ? <span className="si-vs"> · {i.title}</span> : <span>{i.title}</span>}
+                    {i.teams ? (
+                      <span className="si-vs">
+                        {i.who ? " · " : null}
+                        {i.teams.map((tm, k) => (
+                          <span key={k}>
+                            {k > 0 ? " – " : null}
+                            <span className="club">
+                              <BadgeView b={tm.badge} size={20} />
+                              <span className="club-n">{tm.name}</span>
+                            </span>
+                          </span>
+                        ))}
+                      </span>
+                    ) : i.who ? (
+                      <span className="si-vs"> · {i.title}</span>
+                    ) : (
+                      <span>{i.title}</span>
+                    )}
                   </p>
                   {i.meta ? <p className="si-meta">{i.meta}</p> : null}
                   {i.result && (

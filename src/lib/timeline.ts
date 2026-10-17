@@ -13,6 +13,7 @@ import type { HnlData } from "./sources/hnl";
 import type { NtMatch } from "./sources/types";
 import type { BoxerStatus } from "./sources/boxing";
 import type { Sourced } from "./cache";
+import { badgeFor, type BadgeSpec } from "./club-badge";
 
 /** Ein Eintrag der gemeinsamen Zeitleiste (fertig formatiert, serialisierbar). */
 export interface TlItem {
@@ -34,6 +35,8 @@ export interface TlItem {
   detail?: string;
   /** Foto-Schlüssel (lib/photos) bei Einzelathleten */
   photo?: string;
+  /** Fußball: Heim/Gast (übersetzt) mit Vereinsfarben-Kreisen */
+  teams?: Array<{ name: string; badge: BadgeSpec }>;
 }
 
 export interface Timeline {
@@ -60,6 +63,8 @@ interface Raw {
   outcome?: "W" | "L" | "D";
   detail?: string;
   photo?: string;
+  /** Fußball: Datennamen Heim/Gast */
+  teams?: [string, string];
 }
 
 /** Deutsche Ergebnis-Texte der Quellen-Module für HR übersetzen (nur feste Begriffe). */
@@ -133,6 +138,7 @@ function fromNt(m: NtMatch, lang: Lang): Raw {
     sport: "football",
     who: "Vatreni",
     title: `${m.home} – ${m.away}`,
+    teams: [m.home, m.away],
     meta: [m.competition, m.venue].filter(Boolean).join(" · "),
     start: m.kickoff,
     timeKnown: true,
@@ -194,6 +200,7 @@ function finish(r: Raw, lang: Lang, now: number): TlItem {
     outcome: r.outcome,
     detail: tr(r.detail, lang),
     photo: r.photo,
+    teams: r.teams?.map((n) => ({ name: dataLabel(n, lang), badge: badgeFor(n) })),
   };
 }
 
@@ -245,6 +252,7 @@ export function buildTimeline(
         sport: "football",
         who: "HNL",
         title: `${m.home} – ${m.away}`,
+        teams: [m.home, m.away],
         meta: round(m.round),
         start: m.kickoff,
         timeKnown: !/T00:00:00/.test(m.kickoff),

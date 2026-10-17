@@ -3,6 +3,7 @@ import type { HnlData, HnlMatch } from "@/lib/sources/hnl";
 import { formatDay, formatTime } from "@/lib/time";
 import { dict, type Dict, type Lang } from "@/lib/i18n";
 import { NoData, Stand } from "./stand";
+import { Club } from "./club-badge";
 
 function Fixture({ m, lang, t, clip }: { m: HnlMatch; lang: Lang; t: Dict; clip?: string }) {
   const scored = m.homeScore != null && m.awayScore != null;
@@ -20,12 +21,16 @@ function Fixture({ m, lang, t, clip }: { m: HnlMatch; lang: Lang; t: Dict; clip?
           t.hnl.open
         )}
       </span>
-      <span className="f-home">{m.home}</span>
+      <span className="f-home">
+        <Club name={m.home} size={20} after />
+      </span>
       <span className={`f-score${m.state === "live" ? " f-live" : ""}`}>
         {scored ? `${m.homeScore}:${m.awayScore}` : "–:–"}
         {m.state === "live" && <span className="sr-only"> ({t.hnl.running})</span>}
       </span>
-      <span className="f-away">{m.away}</span>
+      <span className="f-away">
+        <Club name={m.away} size={20} />
+      </span>
       {clip && (
         <a className="f-clip" href={`#${clip}`} title={t.feed.watch} aria-label={`${t.feed.watch}: ${m.home} – ${m.away}`}>
           🎬
@@ -88,7 +93,9 @@ export function HnlSection({
               return (
                 <tr key={r.team} className={r.rank === 1 ? "lead" : r.rank === d.table.length ? "last" : undefined}>
                   <td className="num">{r.rank}</td>
-                  <td className="left">{r.team}</td>
+                  <td className="left">
+                    <Club name={r.team} size={22} />
+                  </td>
                   <td className="num">{r.played}</td>
                   <td className="num hide-xs">{r.won}</td>
                   <td className="num hide-xs">{r.drawn}</td>

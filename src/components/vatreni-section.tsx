@@ -6,9 +6,14 @@ import { dataLabel, dict, href, type Dict, type Lang } from "@/lib/i18n";
 import { Countdown } from "./countdown";
 import { fan } from "@/lib/fan/i18n";
 import { NoData, Stand } from "./stand";
+import { Club } from "./club-badge";
 
 function Team({ name, strong, lang = "de" }: { name: string; strong: boolean; lang?: Lang }) {
-  return <span className={strong ? "team team-cro" : "team"}>{dataLabel(name, lang)}</span>;
+  return (
+    <span className={strong ? "team team-cro" : "team"}>
+      <Club name={name}>{dataLabel(name, lang)}</Club>
+    </span>
+  );
 }
 
 function outcome(m: NtMatch): "S" | "U" | "N" | null {
@@ -164,7 +169,9 @@ export function VatreniSection({
                 {data.group.rows.map((r) => (
                   <tr key={r.team} className={r.isCroatia ? "hl" : undefined}>
                     <td className="num">{r.rank}</td>
-                    <td className="left">{dataLabel(r.team, lang)}</td>
+                    <td className="left">
+                      <Club name={r.team} size={22}>{dataLabel(r.team, lang)}</Club>
+                    </td>
                     <td className="num">{r.played}</td>
                     <td className="num">
                       {r.goalsFor}:{r.goalsAgainst}

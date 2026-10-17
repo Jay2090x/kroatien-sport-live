@@ -8,6 +8,7 @@ import { EURO2028, getEuroQuali } from "@/lib/sources/euro2028";
 import { fan } from "@/lib/fan/i18n";
 import { dataLabel, dict, href, type Lang } from "@/lib/i18n";
 import { formatKickoff, viennaYmd } from "@/lib/time";
+import { Club } from "@/components/club-badge";
 
 export async function Em2028View({ lang }: { lang: Lang }) {
   const t = dict(lang);
@@ -64,7 +65,9 @@ export async function Em2028View({ lang }: { lang: Lang }) {
                   {data.group.rows.map((r) => (
                     <tr key={r.team} className={r.isCroatia ? "hl" : undefined}>
                       <td className="num">{r.rank}</td>
-                      <td className="left">{dataLabel(r.team, lang)}</td>
+                      <td className="left">
+                        <Club name={r.team} size={20}>{dataLabel(r.team, lang)}</Club>
+                      </td>
                       <td className="num">{r.played}</td>
                       <td className="num">{r.goalsFor}:{r.goalsAgainst}</td>
                       <td className="num strong">{r.points}</td>
@@ -89,9 +92,13 @@ export async function Em2028View({ lang }: { lang: Lang }) {
                     {m.venue && <span className="ag-comp">{m.venue}</span>}
                   </div>
                   <p className="ag-teams">
-                    <span className={m.croatiaIsHome ? "own" : undefined}>{dataLabel(m.home, lang)}</span>{" "}
+                    <span className={m.croatiaIsHome ? "own" : undefined}>
+                      <Club name={m.home} size={18}>{dataLabel(m.home, lang)}</Club>
+                    </span>{" "}
                     {m.homeScore != null ? `${m.homeScore}:${m.awayScore}` : "–"}{" "}
-                    <span className={!m.croatiaIsHome ? "own" : undefined}>{dataLabel(m.away, lang)}</span>
+                    <span className={!m.croatiaIsHome ? "own" : undefined}>
+                      <Club name={m.away} size={18}>{dataLabel(m.away, lang)}</Club>
+                    </span>
                   </p>
                 </li>
               ))}

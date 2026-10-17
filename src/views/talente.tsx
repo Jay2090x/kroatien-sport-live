@@ -7,6 +7,7 @@ import { fan } from "@/lib/fan/i18n";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { Avatar } from "@/components/avatar";
 import { photoKey } from "@/lib/photos";
+import { Club } from "@/components/club-badge";
 
 const COMP_HR: Record<string, string> = {
   "Champions League": "Liga prvaka",
@@ -78,7 +79,7 @@ export async function TalenteView({ lang }: { lang: Lang }) {
                         <div>
                         <strong>{r.name}</strong> <TeamTag team={r.team} />
                         <span className="tal-sub">
-                          {r.club ?? ""}
+                          {r.club ? <Club name={r.club} size={16} /> : null}
                           {r.stats?.length
                             ? ` · ${r.stats
                                 .filter((s) => s.starts || s.goals || s.assists)

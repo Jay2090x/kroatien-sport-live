@@ -1446,3 +1446,47 @@ a.av:focus-visible {
   font-weight: 800;
   display: block;
 }
+
+/* Vereinsfarben-Kreise (keine Wappen) – siehe src/data/club-colors.json */
+.cb {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--font);
+  font-weight: 800;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  vertical-align: middle;
+  user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.club {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-width: 0;
+  vertical-align: middle;
+}
+.club-n {
+  min-width: 0;
+}
+.f-home .club {
+  justify-content: flex-end;
+}
+.f-home,
+.f-away {
+  min-width: 0;
+}
+.tk-team .club {
+  flex-direction: column;
+  gap: 6px;
+}
+.tk-team .club .cb {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+}

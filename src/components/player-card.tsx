@@ -4,6 +4,7 @@ import { formatKickoff, formatShortDate } from "@/lib/time";
 import { dataLabel, dict, type Dict, type Lang } from "@/lib/i18n";
 import { Avatar } from "@/components/avatar";
 import { photoKey } from "@/lib/photos";
+import { Club } from "@/components/club-badge";
 
 function Score({ g }: { g: GameRef }) {
   if (g.homeScore == null || g.awayScore == null) return <span className="pg-vs">–</span>;
@@ -17,8 +18,13 @@ function Score({ g }: { g: GameRef }) {
 export function Teams({ g, isHome, lang }: { g: GameRef; isHome: boolean; lang: Lang }) {
   return (
     <span className="pg-teams">
-      <span className={isHome ? "own" : undefined}>{dataLabel(g.home, lang)}</span> <Score g={g} />{" "}
-      <span className={!isHome ? "own" : undefined}>{dataLabel(g.away, lang)}</span>
+      <span className={isHome ? "own" : undefined}>
+        <Club name={g.home} size={20}>{dataLabel(g.home, lang)}</Club>
+      </span>{" "}
+      <Score g={g} />{" "}
+      <span className={!isHome ? "own" : undefined}>
+        <Club name={g.away} size={20}>{dataLabel(g.away, lang)}</Club>
+      </span>
       {g.extra ? <span className="pg-extra"> {g.extra}</span> : null}
     </span>
   );
@@ -125,7 +131,7 @@ export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
           <Avatar pkey={photoKey.soccer(p.id)} name={p.name} size={44} lang={lang} />
           <h3 id={`pl-${p.id}`}>{p.name}</h3>
         </span>
-        <span className="player-club">{p.club ?? t.players.clubUnknown}</span>
+        <span className="player-club">{p.club ? <Club name={p.club} size={20} /> : t.players.clubUnknown}</span>
       </header>
       <p className="label">{t.players.next}</p>
       {p.next ? <NextLine n={p.next} lang={lang} t={t} /> : <p className="muted small">{t.players.noNext}</p>}

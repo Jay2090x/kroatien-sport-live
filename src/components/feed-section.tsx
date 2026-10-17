@@ -4,6 +4,7 @@ import { dataLabel, dict, type Lang } from "@/lib/i18n";
 import { formatDay, formatKickoff, formatTime } from "@/lib/time";
 import { ClipPlayer } from "./highlights";
 import { NoData, Stand } from "./stand";
+import { Club } from "./club-badge";
 
 function NewsLine({ n, lang, compact }: { n: NewsItem; lang: Lang; compact?: boolean }) {
   const t = dict(lang);
@@ -35,9 +36,13 @@ function MatchHead({ m, lang }: { m: FeedMatch; lang: Lang }) {
         {label} · {comp}
       </p>
       <p className="fs-match">
-        <span className={`team${cro(true)}`}>{name(m.home)}</span>
+        <span className={`team${cro(true)}`}>
+          <Club name={m.home} size={22}>{name(m.home)}</Club>
+        </span>
         <span className="fs-score">{m.upcoming || m.homeScore == null ? "–:–" : `${m.homeScore}:${m.awayScore}`}</span>
-        <span className={`team${cro(false)}`}>{name(m.away)}</span>
+        <span className={`team${cro(false)}`}>
+          <Club name={m.away} size={22}>{name(m.away)}</Club>
+        </span>
       </p>
       <p className="meta">
         <time dateTime={m.kickoff}>

@@ -5,6 +5,8 @@ import type { Ticker, TickerEvent, TickerSide } from "@/lib/sources/live";
 import type { FanDict } from "@/lib/fan/i18n";
 import { Avatar } from "@/components/avatar";
 import { photoKey } from "@/lib/photos";
+import { BadgeView } from "@/components/badge-view";
+import type { BadgeSpec } from "@/lib/club-badge";
 
 /** ESPN-Team-ID Kroatien – nur bei den Vatreni gibt es Porträts */
 const CRO_TEAM = "477";
@@ -44,14 +46,17 @@ function EventLine({ e, L, teamName }: { e: TickerEvent; L: FanDict["live"]; tea
   );
 }
 
-function Lineup({ s, name, L, hr }: { s: TickerSide; name: string; L: FanDict["live"]; hr: boolean }) {
+function Lineup({ s, name, L, hr, badge }: { s: TickerSide; name: string; L: FanDict["live"]; hr: boolean; badge?: BadgeSpec }) {
   const cro = s.id === CRO_TEAM;
   const start = s.lineup.filter((p) => p.starter);
   const bench = s.lineup.filter((p) => !p.starter);
   return (
     <div className="tk-lu">
       <h4>
-        {name}
+        <span className="club">
+          {badge ? <BadgeView b={badge} size={20} /> : null}
+          <span className="club-n">{name}</span>
+        </span>
         {s.formation ? <span className="muted"> · {s.formation}</span> : null}
       </h4>
       <p className="label">{L.starters}</p>
@@ -85,6 +90,7 @@ export function LiveTicker({
   labels: L,
   locale,
   names,
+  badges,
   poll,
   oclock,
 }: {
@@ -93,6 +99,8 @@ export function LiveTicker({
   locale: string;
   /** übersetzte Teamnamen (Heim, Gast) */
   names: { home: string; away: string };
+  /** Vereinsfarben-Kreise (serverseitig ermittelt) */
+  badges?: { home: BadgeSpec; away: BadgeSpec };
   /** true = im Live-Fenster, alle 2 min neu laden */
   poll: boolean;
   oclock: string;
@@ -139,11 +147,21 @@ export function LiveTicker({
   return (
     <div className="ticker" aria-live="polite">
       <div className={`tk-board${tk.state === "in" ? " tk-live" : ""}`}>
-        <span className="tk-team">{names.home}</span>
+        <span className="tk-team">
+          <span className="club">
+            {badges ? <BadgeView b={badges.home} size={30} /> : null}
+            <span className="club-n">{names.home}</span>
+          </span>
+        </span>
         <span className="tk-score">
           {tk.home.score ?? "–"}:{tk.away.score ?? "–"}
         </span>
-        <span className="tk-team">{names.away}</span>
+        <span className="tk-team">
+          <span className="club">
+            {badges ? <BadgeView b={badges.away} size={30} /> : null}
+            <span className="club-n">{names.away}</span>
+          </span>
+        </span>
         <span className="tk-status">
           {tk.state === "in" && <span className="live-dot" aria-hidden="true" />} {status}
         </span>
@@ -163,8 +181,8 @@ export function LiveTicker({
       <h3>{L.lineups}</h3>
       {hasLineup ? (
         <div className="tk-lineups">
-          <Lineup s={tk.home} name={names.home} L={L} hr={locale.startsWith("hr")} />
-          <Lineup s={tk.away} name={names.away} L={L} hr={locale.startsWith("hr")} />
+          <Lineup s={tk.home} name={names.home} L={L} hr={locale.startsWith("hr")} badge={badges?.home} />
+          <Lineup s={tk.away} name={names.away} L={L} hr={locale.startsWith("hr")} badge={badges?.away} />
         </div>
       ) : (
         <p className="muted small">{L.lineupPending}</p>

@@ -1,0 +1,4022 @@
+{
+ "_doc": "Vereinsfarben-Kreise statt Wappen. Farben: Wikipedia (Abschnitt Colours/Kit bzw. Infobox-Trikot, en/hr), gegengeprüft mit ESPN-Teamfarben. Keine Logos/Wappen. c=[Füllung, Ring]. Länder: Flaggenfarben + FIFA-Code (Kroatien: HRV).",
+ "clubs": [
+  {
+   "n": "Dinamo Zagreb",
+   "a": "DIN",
+   "c": [
+    "#0B4EA2",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "GNK Dinamo Zagreb",
+    "Dinamo"
+   ],
+   "src": "enwiki: royal blue (traditional), hrwiki kit 0000FE"
+  },
+  {
+   "n": "Hajduk Split",
+   "a": "HAJ",
+   "c": [
+    "#FFFFFF",
+    "#1E3A8A"
+   ],
+   "aka": [
+    "HNK Hajduk Split",
+    "Hajduk"
+   ],
+   "src": "enwiki: white shirts, blue shorts"
+  },
+  {
+   "n": "Rijeka",
+   "a": "RIJ",
+   "c": [
+    "#FFFFFF",
+    "#1D5BB8"
+   ],
+   "aka": [
+    "HNK Rijeka"
+   ],
+   "src": "enwiki: white and blue"
+  },
+  {
+   "n": "Osijek",
+   "a": "OSI",
+   "c": [
+    "#FFFFFF",
+    "#1D4FA8"
+   ],
+   "aka": [
+    "NK Osijek"
+   ],
+   "src": "enwiki: blue and white; hrwiki kit FFFFFF/0000FF"
+  },
+  {
+   "n": "Gorica",
+   "a": "GOR",
+   "c": [
+    "#D7141A",
+    "#111111"
+   ],
+   "aka": [
+    "HNK Gorica"
+   ],
+   "src": "hrwiki kit body FF0000 shorts 000000"
+  },
+  {
+   "n": "Slaven Belupo",
+   "a": "SLB",
+   "c": [
+    "#1D4FBF",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "NK Slaven Belupo",
+    "Slaven Belupo Koprivnica",
+    "Slaven Koprivnica"
+   ],
+   "src": "hrwiki kit 0000FF"
+  },
+  {
+   "n": "Lokomotiva",
+   "a": "LOK",
+   "c": [
+    "#1F3FB8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Lokomotiva Zagreb",
+    "NK Lokomotiva Zagreb",
+    "NK Lokomotiva"
+   ],
+   "src": "hrwiki kit 0000CD/FFFFFF"
+  },
+  {
+   "n": "Istra 1961",
+   "a": "IST",
+   "c": [
+    "#FFE100",
+    "#0C9E16"
+   ],
+   "aka": [
+    "NK Istra 1961",
+    "Istra"
+   ],
+   "src": "enwiki: yellow and green; hrwiki kit ffe100/0c9e16"
+  },
+  {
+   "n": "Varaždin",
+   "a": "VAR",
+   "c": [
+    "#004194",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "NK Varaždin",
+    "NK Varazdin",
+    "Varazdin"
+   ],
+   "src": "en/hrwiki kit 004194"
+  },
+  {
+   "n": "Rudeš",
+   "a": "RUD",
+   "c": [
+    "#1D4FD8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "NK Rudeš",
+    "Rudes"
+   ],
+   "src": "hrwiki kit 0000FF (Plavi)"
+  },
+  {
+   "n": "AFC Bournemouth",
+   "a": "BOU",
+   "c": [
+    "#DA291C",
+    "#111111"
+   ],
+   "aka": [
+    "Bournemouth"
+   ],
+   "src": "enwiki kit red/black; ESPN f42727"
+  },
+  {
+   "n": "Arsenal",
+   "a": "ARS",
+   "c": [
+    "#EF0107",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Arsenal FC"
+   ],
+   "src": "enwiki: red shirts with white sleeves"
+  },
+  {
+   "n": "Aston Villa",
+   "a": "AVL",
+   "c": [
+    "#670E36",
+    "#95BFE5"
+   ],
+   "aka": [
+    "Aston Villa FC"
+   ],
+   "src": "enwiki: claret and sky blue"
+  },
+  {
+   "n": "Brentford",
+   "a": "BRE",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Brentford FC"
+   ],
+   "src": "enwiki: red and white stripes"
+  },
+  {
+   "n": "Brighton",
+   "a": "BHA",
+   "c": [
+    "#0057B8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Brighton & Hove Albion",
+    "Brighton and Hove Albion"
+   ],
+   "src": "enwiki: blue and white"
+  },
+  {
+   "n": "Chelsea",
+   "a": "CHE",
+   "c": [
+    "#034694",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Chelsea FC"
+   ],
+   "src": "enwiki: blue; ESPN 144992"
+  },
+  {
+   "n": "Coventry City",
+   "a": "COV",
+   "c": [
+    "#6CABDD",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: sky blue"
+  },
+  {
+   "n": "Crystal Palace",
+   "a": "CRY",
+   "c": [
+    "#1B458F",
+    "#C4122E"
+   ],
+   "src": "enwiki: red and blue stripes"
+  },
+  {
+   "n": "Everton",
+   "a": "EVE",
+   "c": [
+    "#003399",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Everton FC"
+   ],
+   "src": "enwiki: royal blue, white"
+  },
+  {
+   "n": "Fulham",
+   "a": "FUL",
+   "c": [
+    "#FFFFFF",
+    "#111111"
+   ],
+   "aka": [
+    "Fulham FC"
+   ],
+   "src": "enwiki kit white/black; ESPN ffffff"
+  },
+  {
+   "n": "Hull City",
+   "a": "HUL",
+   "c": [
+    "#F5A12D",
+    "#111111"
+   ],
+   "src": "enwiki: black and amber"
+  },
+  {
+   "n": "Ipswich Town",
+   "a": "IPS",
+   "c": [
+    "#0044A9",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Ipswich"
+   ],
+   "src": "enwiki: blue and white"
+  },
+  {
+   "n": "Leeds United",
+   "a": "LEE",
+   "c": [
+    "#FFFFFF",
+    "#1D428A"
+   ],
+   "aka": [
+    "Leeds"
+   ],
+   "src": "enwiki: all white"
+  },
+  {
+   "n": "Liverpool",
+   "a": "LIV",
+   "c": [
+    "#C8102E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Liverpool FC"
+   ],
+   "src": "enwiki: all red"
+  },
+  {
+   "n": "Manchester City",
+   "a": "MCI",
+   "c": [
+    "#6CABDD",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Man City"
+   ],
+   "src": "enwiki: sky blue and white"
+  },
+  {
+   "n": "Manchester United",
+   "a": "MUN",
+   "c": [
+    "#DA291C",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Man United",
+    "Man Utd"
+   ],
+   "src": "enwiki: red shirts, white shorts"
+  },
+  {
+   "n": "Newcastle United",
+   "a": "NEW",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Newcastle"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "Nottingham Forest",
+   "a": "NFO",
+   "c": [
+    "#DD0000",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: red"
+  },
+  {
+   "n": "Sunderland",
+   "a": "SUN",
+   "c": [
+    "#EB172B",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Tottenham Hotspur",
+   "a": "TOT",
+   "c": [
+    "#FFFFFF",
+    "#132257"
+   ],
+   "aka": [
+    "Tottenham",
+    "Spurs"
+   ],
+   "src": "enwiki: white and navy blue"
+  },
+  {
+   "n": "Wolverhampton Wanderers",
+   "a": "WOL",
+   "c": [
+    "#FDB913",
+    "#231F20"
+   ],
+   "aka": [
+    "Wolves"
+   ],
+   "src": "enwiki kit old gold/black"
+  },
+  {
+   "n": "West Ham United",
+   "a": "WHU",
+   "c": [
+    "#7A263A",
+    "#1BB1E7"
+   ],
+   "aka": [
+    "West Ham"
+   ],
+   "src": "enwiki kit claret/sky blue"
+  },
+  {
+   "n": "Burnley",
+   "a": "BUR",
+   "c": [
+    "#6C1D45",
+    "#99D6EA"
+   ],
+   "src": "enwiki kit claret/blue"
+  },
+  {
+   "n": "Southampton",
+   "a": "SOU",
+   "c": [
+    "#D71920",
+    "#FFFFFF"
+   ],
+   "src": "enwiki kit red/white stripes"
+  },
+  {
+   "n": "Leicester City",
+   "a": "LEI",
+   "c": [
+    "#003090",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Leicester"
+   ],
+   "src": "enwiki kit blue"
+  },
+  {
+   "n": "Alavés",
+   "a": "ALA",
+   "c": [
+    "#0057B8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Deportivo Alavés",
+    "Alaves"
+   ],
+   "src": "enwiki kit blue/white stripes; ESPN 0000ff"
+  },
+  {
+   "n": "Athletic Club",
+   "a": "ATH",
+   "c": [
+    "#EE2523",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Athletic Bilbao"
+   ],
+   "src": "enwiki: red and white stripes"
+  },
+  {
+   "n": "Atlético Madrid",
+   "a": "ATM",
+   "c": [
+    "#CB3524",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Atletico Madrid",
+    "Atlético de Madrid"
+   ],
+   "src": "enwiki: red and white stripes"
+  },
+  {
+   "n": "Barcelona",
+   "a": "BAR",
+   "c": [
+    "#A50044",
+    "#004D98"
+   ],
+   "aka": [
+    "FC Barcelona"
+   ],
+   "src": "enwiki: blue and garnet"
+  },
+  {
+   "n": "Celta Vigo",
+   "a": "CEL",
+   "c": [
+    "#8AC3EE",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Celta"
+   ],
+   "src": "enwiki: sky blue and white"
+  },
+  {
+   "n": "Deportivo",
+   "a": "DEP",
+   "c": [
+    "#0067B1",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Deportivo La Coruña",
+    "Deportivo de La Coruña"
+   ],
+   "src": "enwiki: blue and white stripes"
+  },
+  {
+   "n": "Elche",
+   "a": "ELC",
+   "c": [
+    "#FFFFFF",
+    "#05642C"
+   ],
+   "aka": [
+    "Elche CF"
+   ],
+   "src": "enwiki kit white with green band; ESPN 288A00"
+  },
+  {
+   "n": "Espanyol",
+   "a": "ESP",
+   "c": [
+    "#007FC8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "RCD Espanyol"
+   ],
+   "src": "enwiki: blue and white stripes"
+  },
+  {
+   "n": "Getafe",
+   "a": "GET",
+   "c": [
+    "#005999",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Getafe CF"
+   ],
+   "src": "enwiki kit blue; ESPN 0000ff"
+  },
+  {
+   "n": "Girona",
+   "a": "GIR",
+   "c": [
+    "#CD2534",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Girona FC"
+   ],
+   "src": "enwiki kit red/white stripes"
+  },
+  {
+   "n": "Levante",
+   "a": "LEV",
+   "c": [
+    "#B4053F",
+    "#004F9F"
+   ],
+   "aka": [
+    "Levante UD"
+   ],
+   "src": "enwiki: blue-garnet"
+  },
+  {
+   "n": "Mallorca",
+   "a": "MLL",
+   "c": [
+    "#E20613",
+    "#111111"
+   ],
+   "aka": [
+    "RCD Mallorca"
+   ],
+   "src": "enwiki kit red/black"
+  },
+  {
+   "n": "Málaga",
+   "a": "MAL",
+   "c": [
+    "#5FB2E3",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Malaga",
+    "Málaga CF"
+   ],
+   "src": "enwiki kit sky blue/white stripes; ESPN b9e8f0"
+  },
+  {
+   "n": "Osasuna",
+   "a": "OSA",
+   "c": [
+    "#D91A21",
+    "#0A346F"
+   ],
+   "aka": [
+    "CA Osasuna"
+   ],
+   "src": "enwiki: red and navy blue"
+  },
+  {
+   "n": "Racing Santander",
+   "a": "RAC",
+   "c": [
+    "#FFFFFF",
+    "#00843D"
+   ],
+   "aka": [
+    "Racing de Santander"
+   ],
+   "src": "enwiki kit white/green; ESPN ffffff/3B6C1A"
+  },
+  {
+   "n": "Rayo Vallecano",
+   "a": "RAY",
+   "c": [
+    "#FFFFFF",
+    "#E53027"
+   ],
+   "src": "enwiki kit white with red sash"
+  },
+  {
+   "n": "Real Betis",
+   "a": "BET",
+   "c": [
+    "#0BB363",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Betis"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "Real Madrid",
+   "a": "RMA",
+   "c": [
+    "#FFFFFF",
+    "#FEBE10"
+   ],
+   "aka": [
+    "Real Madrid CF"
+   ],
+   "src": "enwiki: white"
+  },
+  {
+   "n": "Real Oviedo",
+   "a": "OVI",
+   "c": [
+    "#0047AB",
+    "#FFFFFF"
+   ],
+   "src": "enwiki kit blue"
+  },
+  {
+   "n": "Real Sociedad",
+   "a": "RSO",
+   "c": [
+    "#0067B1",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: white-blue (txuri-urdin)"
+  },
+  {
+   "n": "Sevilla",
+   "a": "SEV",
+   "c": [
+    "#FFFFFF",
+    "#D81022"
+   ],
+   "aka": [
+    "Sevilla FC"
+   ],
+   "src": "enwiki kit white/red; ESPN ffffff/d81022"
+  },
+  {
+   "n": "Valencia",
+   "a": "VAL",
+   "c": [
+    "#FFFFFF",
+    "#111111"
+   ],
+   "aka": [
+    "Valencia CF"
+   ],
+   "src": "enwiki: white and black"
+  },
+  {
+   "n": "Villarreal",
+   "a": "VIL",
+   "c": [
+    "#FFE667",
+    "#005187"
+   ],
+   "aka": [
+    "Villarreal CF"
+   ],
+   "src": "enwiki: yellow"
+  },
+  {
+   "n": "AC Mailand",
+   "a": "MIL",
+   "c": [
+    "#FB090B",
+    "#111111"
+   ],
+   "aka": [
+    "AC Milan",
+    "Milan"
+   ],
+   "src": "enwiki: red and black"
+  },
+  {
+   "n": "AS Roma",
+   "a": "ROM",
+   "c": [
+    "#8E1F2F",
+    "#F0BC42"
+   ],
+   "aka": [
+    "Roma"
+   ],
+   "src": "enwiki: carmine red and golden yellow"
+  },
+  {
+   "n": "Atalanta",
+   "a": "ATA",
+   "c": [
+    "#1E71B8",
+    "#111111"
+   ],
+   "aka": [
+    "Atalanta BC"
+   ],
+   "src": "enwiki: black and blue"
+  },
+  {
+   "n": "Bologna",
+   "a": "BOL",
+   "c": [
+    "#1A2F48",
+    "#A21C26"
+   ],
+   "aka": [
+    "Bologna FC"
+   ],
+   "src": "enwiki kit red/blue; ESPN 04043d"
+  },
+  {
+   "n": "Cagliari",
+   "a": "CAG",
+   "c": [
+    "#A11D2C",
+    "#002350"
+   ],
+   "src": "enwiki: blue and red"
+  },
+  {
+   "n": "Como",
+   "a": "COM",
+   "c": [
+    "#2B6CB0",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Como 1907"
+   ],
+   "src": "enwiki: light blue and white"
+  },
+  {
+   "n": "Cremonese",
+   "a": "CRE",
+   "c": [
+    "#E30613",
+    "#808080"
+   ],
+   "src": "enwiki kit grey/red"
+  },
+  {
+   "n": "Fiorentina",
+   "a": "FIO",
+   "c": [
+    "#482E92",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "ACF Fiorentina"
+   ],
+   "src": "enwiki: purple (viola)"
+  },
+  {
+   "n": "Frosinone",
+   "a": "FRO",
+   "c": [
+    "#FFD600",
+    "#0047AB"
+   ],
+   "src": "enwiki: yellow and blue"
+  },
+  {
+   "n": "Genoa",
+   "a": "GEN",
+   "c": [
+    "#A31A2C",
+    "#002D62"
+   ],
+   "aka": [
+    "Genoa CFC"
+   ],
+   "src": "enwiki kit red/blue halves; ESPN 08305d"
+  },
+  {
+   "n": "Inter Mailand",
+   "a": "INT",
+   "c": [
+    "#0068A8",
+    "#111111"
+   ],
+   "aka": [
+    "Internazionale",
+    "Inter Milan",
+    "Inter"
+   ],
+   "src": "enwiki: blue and black (nerazzurri)"
+  },
+  {
+   "n": "Juventus",
+   "a": "JUV",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Juventus FC"
+   ],
+   "src": "enwiki: black and white stripes"
+  },
+  {
+   "n": "Lazio",
+   "a": "LAZ",
+   "c": [
+    "#87D8F7",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SS Lazio"
+   ],
+   "src": "enwiki: sky blue and white"
+  },
+  {
+   "n": "Lecce",
+   "a": "LEC",
+   "c": [
+    "#FFD200",
+    "#D71920"
+   ],
+   "aka": [
+    "US Lecce"
+   ],
+   "src": "enwiki: red and yellow"
+  },
+  {
+   "n": "Monza",
+   "a": "MON",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "AC Monza"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Napoli",
+   "a": "NAP",
+   "c": [
+    "#12A0D7",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SSC Napoli"
+   ],
+   "src": "enwiki: blue"
+  },
+  {
+   "n": "Parma",
+   "a": "PAR",
+   "c": [
+    "#FFD200",
+    "#1B3D7D"
+   ],
+   "aka": [
+    "Parma Calcio"
+   ],
+   "src": "enwiki: yellow and blue"
+  },
+  {
+   "n": "Pisa",
+   "a": "PIS",
+   "c": [
+    "#111111",
+    "#004B9F"
+   ],
+   "aka": [
+    "Pisa SC"
+   ],
+   "src": "enwiki kit black/blue stripes"
+  },
+  {
+   "n": "Sassuolo",
+   "a": "SAS",
+   "c": [
+    "#00A752",
+    "#111111"
+   ],
+   "aka": [
+    "US Sassuolo"
+   ],
+   "src": "enwiki: black and green"
+  },
+  {
+   "n": "Torino",
+   "a": "TOR",
+   "c": [
+    "#8A1E03",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Torino FC"
+   ],
+   "src": "enwiki: maroon"
+  },
+  {
+   "n": "Udinese",
+   "a": "UDI",
+   "c": [
+    "#FFFFFF",
+    "#111111"
+   ],
+   "src": "enwiki: white and black"
+  },
+  {
+   "n": "Venezia",
+   "a": "VEN",
+   "c": [
+    "#111111",
+    "#F26522"
+   ],
+   "aka": [
+    "Venezia FC"
+   ],
+   "src": "enwiki kit black/orange-green"
+  },
+  {
+   "n": "Verona",
+   "a": "VER",
+   "c": [
+    "#FFD200",
+    "#003C82"
+   ],
+   "aka": [
+    "Hellas Verona"
+   ],
+   "src": "enwiki kit yellow/blue"
+  },
+  {
+   "n": "Union Berlin",
+   "a": "FCU",
+   "c": [
+    "#D4011D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "1. FC Union Berlin"
+   ],
+   "src": "enwiki kit red; ESPN DA0308"
+  },
+  {
+   "n": "Bayer Leverkusen",
+   "a": "B04",
+   "c": [
+    "#E32221",
+    "#111111"
+   ],
+   "aka": [
+    "Bayer 04 Leverkusen",
+    "Leverkusen"
+   ],
+   "src": "enwiki: red and black"
+  },
+  {
+   "n": "Bayern München",
+   "a": "FCB",
+   "c": [
+    "#DC052D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Bayern Munich",
+    "FC Bayern",
+    "FC Bayern München"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Borussia Dortmund",
+   "a": "BVB",
+   "c": [
+    "#FDE100",
+    "#111111"
+   ],
+   "aka": [
+    "Dortmund"
+   ],
+   "src": "enwiki: black and yellow"
+  },
+  {
+   "n": "Borussia Mönchengladbach",
+   "a": "BMG",
+   "c": [
+    "#FFFFFF",
+    "#111111"
+   ],
+   "aka": [
+    "Mönchengladbach",
+    "Gladbach"
+   ],
+   "src": "enwiki kit white/black/green; ESPN ffffff/03915c"
+  },
+  {
+   "n": "Eintracht Frankfurt",
+   "a": "SGE",
+   "c": [
+    "#E1000F",
+    "#111111"
+   ],
+   "aka": [
+    "Frankfurt"
+   ],
+   "src": "enwiki: red, black and white"
+  },
+  {
+   "n": "FC Augsburg",
+   "a": "FCA",
+   "c": [
+    "#BA3733",
+    "#46714D"
+   ],
+   "aka": [
+    "Augsburg"
+   ],
+   "src": "enwiki: red, green and white"
+  },
+  {
+   "n": "1. FC Köln",
+   "a": "KOE",
+   "c": [
+    "#FFFFFF",
+    "#ED1C24"
+   ],
+   "aka": [
+    "FC Cologne",
+    "FC Köln",
+    "Köln"
+   ],
+   "src": "enwiki: white and red"
+  },
+  {
+   "n": "Hamburger SV",
+   "a": "HSV",
+   "c": [
+    "#FFFFFF",
+    "#0A3F86"
+   ],
+   "aka": [
+    "Hamburg SV",
+    "HSV"
+   ],
+   "src": "enwiki: blue, white and black; home white"
+  },
+  {
+   "n": "Heidenheim",
+   "a": "FCH",
+   "c": [
+    "#E2001A",
+    "#003B79"
+   ],
+   "aka": [
+    "1. FC Heidenheim",
+    "1. FC Heidenheim 1846"
+   ],
+   "src": "enwiki kit red/blue"
+  },
+  {
+   "n": "Mainz",
+   "a": "M05",
+   "c": [
+    "#C3141E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "1. FSV Mainz 05",
+    "Mainz 05"
+   ],
+   "src": "enwiki kit red/white; ESPN DA0308"
+  },
+  {
+   "n": "RB Leipzig",
+   "a": "RBL",
+   "c": [
+    "#FFFFFF",
+    "#DD0741"
+   ],
+   "aka": [
+    "Leipzig"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "SC Freiburg",
+   "a": "SCF",
+   "c": [
+    "#E2001A",
+    "#111111"
+   ],
+   "aka": [
+    "Freiburg"
+   ],
+   "src": "enwiki kit red/black; ESPN DA0308"
+  },
+  {
+   "n": "SC Paderborn 07",
+   "a": "SCP",
+   "c": [
+    "#005CA9",
+    "#111111"
+   ],
+   "aka": [
+    "Paderborn"
+   ],
+   "src": "enwiki kit blue/black; ESPN 0000dd"
+  },
+  {
+   "n": "St. Pauli",
+   "a": "STP",
+   "c": [
+    "#5B3A29",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "FC St. Pauli"
+   ],
+   "src": "enwiki kit brown/white"
+  },
+  {
+   "n": "SV Elversberg",
+   "a": "SVE",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Elversberg"
+   ],
+   "src": "enwiki kit black/white; ESPN 000000"
+  },
+  {
+   "n": "Schalke 04",
+   "a": "S04",
+   "c": [
+    "#004D9D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "FC Schalke 04",
+    "Schalke"
+   ],
+   "src": "enwiki kit royal blue/white; ESPN 0000dd"
+  },
+  {
+   "n": "TSG Hoffenheim",
+   "a": "TSG",
+   "c": [
+    "#1961B5",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Hoffenheim",
+    "TSG 1899 Hoffenheim"
+   ],
+   "src": "enwiki kit blue/white; ESPN 003399"
+  },
+  {
+   "n": "VfB Stuttgart",
+   "a": "VFB",
+   "c": [
+    "#FFFFFF",
+    "#E32219"
+   ],
+   "aka": [
+    "Stuttgart"
+   ],
+   "src": "enwiki kit white with red band; ESPN ffffff/DA0308"
+  },
+  {
+   "n": "VfL Wolfsburg",
+   "a": "WOB",
+   "c": [
+    "#65B32E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Wolfsburg"
+   ],
+   "src": "enwiki kit green/white"
+  },
+  {
+   "n": "Werder Bremen",
+   "a": "SVW",
+   "c": [
+    "#1D9053",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SV Werder Bremen",
+    "Bremen"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "AJ Auxerre",
+   "a": "AJA",
+   "c": [
+    "#FFFFFF",
+    "#0B4EA2"
+   ],
+   "aka": [
+    "Auxerre"
+   ],
+   "src": "enwiki kit white/blue; ESPN ffffff"
+  },
+  {
+   "n": "AS Monaco",
+   "a": "ASM",
+   "c": [
+    "#E51B22",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Monaco"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Angers",
+   "a": "ANG",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Angers SCO"
+   ],
+   "src": "enwiki kit black/white stripes; ESPN 1a1a1a"
+  },
+  {
+   "n": "Brest",
+   "a": "B29",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Stade Brestois",
+    "Stade Brestois 29"
+   ],
+   "src": "enwiki kit red/white; ESPN ef2f24"
+  },
+  {
+   "n": "Le Havre AC",
+   "a": "HAC",
+   "c": [
+    "#7DB6E3",
+    "#0A2A5E"
+   ],
+   "aka": [
+    "Le Havre"
+   ],
+   "src": "enwiki: sky blue and navy (ciel et marine)"
+  },
+  {
+   "n": "Le Mans",
+   "a": "LMF",
+   "c": [
+    "#D62B11",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Le Mans FC"
+   ],
+   "src": "enwiki kit red; ESPN d62b11"
+  },
+  {
+   "n": "Lens",
+   "a": "RCL",
+   "c": [
+    "#E51B22",
+    "#FCD116"
+   ],
+   "aka": [
+    "RC Lens"
+   ],
+   "src": "enwiki: red and gold (Sang et Or)"
+  },
+  {
+   "n": "Lille",
+   "a": "LIL",
+   "c": [
+    "#E01E13",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Lille OSC"
+   ],
+   "src": "enwiki: white and red"
+  },
+  {
+   "n": "Lorient",
+   "a": "LOR",
+   "c": [
+    "#F46100",
+    "#111111"
+   ],
+   "aka": [
+    "FC Lorient"
+   ],
+   "src": "enwiki kit orange/black; ESPN f46100"
+  },
+  {
+   "n": "Lyon",
+   "a": "OL",
+   "c": [
+    "#FFFFFF",
+    "#DA0812"
+   ],
+   "aka": [
+    "Olympique Lyonnais"
+   ],
+   "src": "enwiki: white, red and blue"
+  },
+  {
+   "n": "Marseille",
+   "a": "OM",
+   "c": [
+    "#FFFFFF",
+    "#2FAEE0"
+   ],
+   "aka": [
+    "Olympique de Marseille",
+    "OM"
+   ],
+   "src": "enwiki: white shirts, blue"
+  },
+  {
+   "n": "Metz",
+   "a": "MET",
+   "c": [
+    "#7A1A33",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "FC Metz"
+   ],
+   "src": "enwiki kit maroon"
+  },
+  {
+   "n": "Nantes",
+   "a": "NAN",
+   "c": [
+    "#FCD405",
+    "#00824A"
+   ],
+   "aka": [
+    "FC Nantes"
+   ],
+   "src": "enwiki kit yellow/green"
+  },
+  {
+   "n": "Nice",
+   "a": "NIC",
+   "c": [
+    "#C8102E",
+    "#111111"
+   ],
+   "aka": [
+    "OGC Nice"
+   ],
+   "src": "enwiki: red and black"
+  },
+  {
+   "n": "Paris FC",
+   "a": "PFC",
+   "c": [
+    "#0A2A5E",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: Les Bleus"
+  },
+  {
+   "n": "Paris Saint-Germain",
+   "a": "PSG",
+   "c": [
+    "#004170",
+    "#DA291C"
+   ],
+   "aka": [
+    "PSG",
+    "Paris SG"
+   ],
+   "src": "enwiki: red, blue and white"
+  },
+  {
+   "n": "Stade Rennais",
+   "a": "REN",
+   "c": [
+    "#E13327",
+    "#111111"
+   ],
+   "aka": [
+    "Rennes"
+   ],
+   "src": "enwiki: red, black and white"
+  },
+  {
+   "n": "Strasbourg",
+   "a": "RCS",
+   "c": [
+    "#009FE3",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "RC Strasbourg"
+   ],
+   "src": "enwiki: blue and white"
+  },
+  {
+   "n": "Toulouse",
+   "a": "TFC",
+   "c": [
+    "#5B2C86",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Toulouse FC"
+   ],
+   "src": "enwiki: violet"
+  },
+  {
+   "n": "Troyes",
+   "a": "EST",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "ES Troyes AC"
+   ],
+   "src": "enwiki kit blue/white; ESPN 0000bf"
+  },
+  {
+   "n": "ADO Den Haag",
+   "a": "ADO",
+   "c": [
+    "#FFE500",
+    "#00843D"
+   ],
+   "aka": [
+    "ADO"
+   ],
+   "src": "enwiki: yellow and green"
+  },
+  {
+   "n": "AZ Alkmaar",
+   "a": "AZ",
+   "c": [
+    "#DB0021",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "AZ"
+   ],
+   "src": "enwiki kit red/white; ESPN ef2f24"
+  },
+  {
+   "n": "Ajax Amsterdam",
+   "a": "AJA",
+   "c": [
+    "#FFFFFF",
+    "#D2122E"
+   ],
+   "aka": [
+    "Ajax",
+    "AFC Ajax"
+   ],
+   "src": "enwiki: red/white shirt"
+  },
+  {
+   "n": "Excelsior",
+   "a": "EXC",
+   "c": [
+    "#E30613",
+    "#111111"
+   ],
+   "aka": [
+    "Excelsior Rotterdam"
+   ],
+   "src": "enwiki kit red/black; ESPN 000000/b41226"
+  },
+  {
+   "n": "FC Groningen",
+   "a": "GRO",
+   "c": [
+    "#00A651",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Groningen"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "FC Twente",
+   "a": "TWE",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Twente"
+   ],
+   "src": "enwiki kit red; ESPN F31522"
+  },
+  {
+   "n": "FC Utrecht",
+   "a": "UTR",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Utrecht"
+   ],
+   "src": "enwiki kit red/white; ESPN F31522"
+  },
+  {
+   "n": "Feyenoord Rotterdam",
+   "a": "FEY",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Feyenoord"
+   ],
+   "src": "enwiki: red and white halves"
+  },
+  {
+   "n": "Fortuna Sittard",
+   "a": "FOR",
+   "c": [
+    "#FFE500",
+    "#00843D"
+   ],
+   "aka": [
+    "Fortuna"
+   ],
+   "src": "enwiki kit yellow/green; ESPN FCEE33"
+  },
+  {
+   "n": "Go Ahead Eagles",
+   "a": "GAE",
+   "c": [
+    "#E30613",
+    "#FFE500"
+   ],
+   "src": "enwiki kit red/yellow; ESPN F80017"
+  },
+  {
+   "n": "Heerenveen",
+   "a": "HEE",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SC Heerenveen"
+   ],
+   "src": "enwiki kit blue/white; ESPN 003eff"
+  },
+  {
+   "n": "NEC Nijmegen",
+   "a": "NEC",
+   "c": [
+    "#E30613",
+    "#00843D"
+   ],
+   "aka": [
+    "NEC"
+   ],
+   "src": "enwiki: red, green and black"
+  },
+  {
+   "n": "PEC Zwolle",
+   "a": "PEC",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Zwolle"
+   ],
+   "src": "enwiki: blue-white shirts"
+  },
+  {
+   "n": "PSV",
+   "a": "PSV",
+   "c": [
+    "#ED1C24",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "PSV Eindhoven"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "SC Cambuur",
+   "a": "CAM",
+   "c": [
+    "#FFE500",
+    "#0055A4"
+   ],
+   "aka": [
+    "Cambuur"
+   ],
+   "src": "enwiki: yellow shirts, blue shorts"
+  },
+  {
+   "n": "Sparta Rotterdam",
+   "a": "SPA",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Sparta"
+   ],
+   "src": "enwiki: red-white stripes"
+  },
+  {
+   "n": "Telstar",
+   "a": "TEL",
+   "c": [
+    "#FFFFFF",
+    "#E30613"
+   ],
+   "aka": [
+    "VVK Telstar"
+   ],
+   "src": "enwiki kit white; ESPN C60000"
+  },
+  {
+   "n": "Willem II",
+   "a": "WIL",
+   "c": [
+    "#C8102E",
+    "#1D3E8E"
+   ],
+   "aka": [
+    "Willem II Tilburg"
+   ],
+   "src": "enwiki: red-white-blue stripes"
+  },
+  {
+   "n": "NAC Breda",
+   "a": "NAC",
+   "c": [
+    "#FFE500",
+    "#111111"
+   ],
+   "aka": [
+    "NAC"
+   ],
+   "src": "enwiki kit yellow/black"
+  },
+  {
+   "n": "Aberdeen",
+   "a": "ABE",
+   "c": [
+    "#C8102E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Aberdeen FC"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Celtic",
+   "a": "CEL",
+   "c": [
+    "#018749",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Celtic FC"
+   ],
+   "src": "enwiki: green and white hoops"
+  },
+  {
+   "n": "Dundee",
+   "a": "DUN",
+   "c": [
+    "#0A2240",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Dundee FC"
+   ],
+   "src": "enwiki kit dark blue/white; ESPN 000040"
+  },
+  {
+   "n": "Dundee United",
+   "a": "DUU",
+   "c": [
+    "#F58025",
+    "#111111"
+   ],
+   "src": "enwiki: tangerine and black"
+  },
+  {
+   "n": "Falkirk",
+   "a": "FAL",
+   "c": [
+    "#0A2240",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: navy blue and white"
+  },
+  {
+   "n": "Heart of Midlothian",
+   "a": "HEA",
+   "c": [
+    "#8E003B",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Hearts"
+   ],
+   "src": "enwiki: maroon and white"
+  },
+  {
+   "n": "Hibernian",
+   "a": "HIB",
+   "c": [
+    "#00843D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Hibs"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "Kilmarnock",
+   "a": "KIL",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: blue and white"
+  },
+  {
+   "n": "Livingston",
+   "a": "LVG",
+   "c": [
+    "#FFD100",
+    "#111111"
+   ],
+   "src": "enwiki kit gold/black"
+  },
+  {
+   "n": "Motherwell",
+   "a": "MOT",
+   "c": [
+    "#F7AA25",
+    "#7A1F3D"
+   ],
+   "src": "enwiki: claret and amber"
+  },
+  {
+   "n": "Rangers",
+   "a": "RAN",
+   "c": [
+    "#1B458F",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Rangers FC"
+   ],
+   "src": "enwiki: royal blue, white and red"
+  },
+  {
+   "n": "St Johnstone",
+   "a": "STJ",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "src": "enwiki kit blue/white; ESPN 0046ff"
+  },
+  {
+   "n": "St Mirren",
+   "a": "STM",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: black and white stripes"
+  },
+  {
+   "n": "AEK Athen",
+   "a": "AEK",
+   "c": [
+    "#FFDD00",
+    "#111111"
+   ],
+   "aka": [
+    "AEK Athens",
+    "AEK"
+   ],
+   "src": "enwiki: yellow and black"
+  },
+  {
+   "n": "Aris",
+   "a": "ARI",
+   "c": [
+    "#FFD200",
+    "#111111"
+   ],
+   "aka": [
+    "Aris Thessaloniki"
+   ],
+   "src": "enwiki: golden/yellow and black"
+  },
+  {
+   "n": "Asteras Tripoli",
+   "a": "AST",
+   "c": [
+    "#FFD200",
+    "#0055A4"
+   ],
+   "aka": [
+    "Asteras Tripolis"
+   ],
+   "src": "enwiki: blue, yellow and white"
+  },
+  {
+   "n": "Atromitos",
+   "a": "ATR",
+   "c": [
+    "#0071BC",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Atromitos Athens"
+   ],
+   "src": "enwiki kit white/blue"
+  },
+  {
+   "n": "Iraklis",
+   "a": "IRA",
+   "c": [
+    "#1A2A6C",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Iraklis Thessaloniki"
+   ],
+   "src": "enwiki: blue and white; kit 000066"
+  },
+  {
+   "n": "Kalamata",
+   "a": "KAL",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "Kifisia",
+   "a": "KIF",
+   "c": [
+    "#002147",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "AE Kifisia"
+   ],
+   "src": "enwiki kit 002147"
+  },
+  {
+   "n": "Levadiakos",
+   "a": "LEV",
+   "c": [
+    "#00843D",
+    "#0055A4"
+   ],
+   "src": "enwiki: blue and green"
+  },
+  {
+   "n": "OFI Crete",
+   "a": "OFI",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "OFI"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "Olympiacos",
+   "a": "OLY",
+   "c": [
+    "#D01729",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Olympiakos"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "PAOK",
+   "a": "PAOK",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "PAOK Thessaloniki"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "Panathinaikos",
+   "a": "PAO",
+   "c": [
+    "#007841",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "Panetolikos",
+   "a": "PAN",
+   "c": [
+    "#FFD200",
+    "#0055A4"
+   ],
+   "src": "enwiki: yellow and blue"
+  },
+  {
+   "n": "Volos NFC",
+   "a": "VOL",
+   "c": [
+    "#D7141A",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Volos"
+   ],
+   "src": "enwiki kit ff0000"
+  },
+  {
+   "n": "Atlanta United FC",
+   "a": "ATL",
+   "c": [
+    "#80000A",
+    "#111111"
+   ],
+   "aka": [
+    "Atlanta United"
+   ],
+   "src": "enwiki: red, black and gold"
+  },
+  {
+   "n": "Austin FC",
+   "a": "ATX",
+   "c": [
+    "#00B140",
+    "#111111"
+   ],
+   "src": "enwiki: verde and black"
+  },
+  {
+   "n": "CF Montréal",
+   "a": "MTL",
+   "c": [
+    "#003DA6",
+    "#111111"
+   ],
+   "aka": [
+    "CF Montreal"
+   ],
+   "src": "enwiki: blue, black, grey"
+  },
+  {
+   "n": "Charlotte FC",
+   "a": "CLT",
+   "c": [
+    "#1A85C8",
+    "#111111"
+   ],
+   "src": "enwiki kit blue/black; ESPN 0085ca"
+  },
+  {
+   "n": "Chicago Fire FC",
+   "a": "CHI",
+   "c": [
+    "#AF2626",
+    "#0A174A"
+   ],
+   "aka": [
+    "Chicago Fire"
+   ],
+   "src": "enwiki: red, blue, white"
+  },
+  {
+   "n": "Colorado Rapids",
+   "a": "COL",
+   "c": [
+    "#862633",
+    "#8BB8E8"
+   ],
+   "src": "enwiki kit burgundy/blue; ESPN 8a2432"
+  },
+  {
+   "n": "Columbus Crew",
+   "a": "CLB",
+   "c": [
+    "#FEDD00",
+    "#111111"
+   ],
+   "src": "enwiki: black and gold"
+  },
+  {
+   "n": "D.C. United",
+   "a": "DC",
+   "c": [
+    "#111111",
+    "#EF3E42"
+   ],
+   "aka": [
+    "DC United"
+   ],
+   "src": "enwiki: black and red"
+  },
+  {
+   "n": "FC Cincinnati",
+   "a": "CIN",
+   "c": [
+    "#003087",
+    "#FE5000"
+   ],
+   "aka": [
+    "Cincinnati"
+   ],
+   "src": "enwiki: orange and blue"
+  },
+  {
+   "n": "FC Dallas",
+   "a": "DAL",
+   "c": [
+    "#BF0D3E",
+    "#002D72"
+   ],
+   "src": "enwiki kit red/blue hoops; ESPN c6093b"
+  },
+  {
+   "n": "Houston Dynamo FC",
+   "a": "HOU",
+   "c": [
+    "#FF6B00",
+    "#101820"
+   ],
+   "aka": [
+    "Houston Dynamo"
+   ],
+   "src": "enwiki: orange, white, blue"
+  },
+  {
+   "n": "Inter Miami CF",
+   "a": "MIA",
+   "c": [
+    "#F7B5CD",
+    "#231F20"
+   ],
+   "aka": [
+    "Inter Miami"
+   ],
+   "src": "enwiki: pink, white, black"
+  },
+  {
+   "n": "LA Galaxy",
+   "a": "LA",
+   "c": [
+    "#00245D",
+    "#FFD200"
+   ],
+   "src": "enwiki: navy blue, gold, white"
+  },
+  {
+   "n": "LAFC",
+   "a": "LAFC",
+   "c": [
+    "#111111",
+    "#C39E6D"
+   ],
+   "aka": [
+    "Los Angeles FC"
+   ],
+   "src": "enwiki: black and gold"
+  },
+  {
+   "n": "Minnesota United FC",
+   "a": "MIN",
+   "c": [
+    "#8CD2F4",
+    "#231F20"
+   ],
+   "aka": [
+    "Minnesota United"
+   ],
+   "src": "enwiki: grey, sky blue, black"
+  },
+  {
+   "n": "Nashville SC",
+   "a": "NSH",
+   "c": [
+    "#ECE83A",
+    "#1F1646"
+   ],
+   "src": "enwiki: electric gold and acoustic blue"
+  },
+  {
+   "n": "New England Revolution",
+   "a": "NE",
+   "c": [
+    "#0A2240",
+    "#CE0E2D"
+   ],
+   "src": "enwiki kit navy/red; ESPN 022166"
+  },
+  {
+   "n": "New York City FC",
+   "a": "NYC",
+   "c": [
+    "#6CACE4",
+    "#041E42"
+   ],
+   "aka": [
+    "NYCFC"
+   ],
+   "src": "enwiki: navy, sky blue, orange"
+  },
+  {
+   "n": "Orlando City",
+   "a": "ORL",
+   "c": [
+    "#633492",
+    "#FDE192"
+   ],
+   "aka": [
+    "Orlando City SC"
+   ],
+   "src": "enwiki: purple and gold"
+  },
+  {
+   "n": "Philadelphia Union",
+   "a": "PHI",
+   "c": [
+    "#071B2C",
+    "#B19B69"
+   ],
+   "src": "enwiki: navy blue and gold"
+  },
+  {
+   "n": "Portland Timbers",
+   "a": "POR",
+   "c": [
+    "#004812",
+    "#EBE72B"
+   ],
+   "src": "enwiki: green"
+  },
+  {
+   "n": "Real Salt Lake",
+   "a": "RSL",
+   "c": [
+    "#B30838",
+    "#013A81"
+   ],
+   "src": "enwiki: claret red, cobalt blue, gold"
+  },
+  {
+   "n": "Red Bull New York",
+   "a": "RBN",
+   "c": [
+    "#ED1E36",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "New York Red Bulls"
+   ],
+   "src": "enwiki kit red/white; ESPN ba0c2f"
+  },
+  {
+   "n": "San Diego FC",
+   "a": "SD",
+   "c": [
+    "#002F65",
+    "#697A7C"
+   ],
+   "src": "enwiki: chrome and azul"
+  },
+  {
+   "n": "San Jose Earthquakes",
+   "a": "SJ",
+   "c": [
+    "#0067B1",
+    "#111111"
+   ],
+   "src": "enwiki kit blue/black; ESPN 003da6"
+  },
+  {
+   "n": "Seattle Sounders FC",
+   "a": "SEA",
+   "c": [
+    "#5D9741",
+    "#005595"
+   ],
+   "aka": [
+    "Seattle Sounders"
+   ],
+   "src": "enwiki: Sounder Blue, Rave Green"
+  },
+  {
+   "n": "Sporting Kansas City",
+   "a": "SKC",
+   "c": [
+    "#A7C6ED",
+    "#0C2340"
+   ],
+   "src": "enwiki: sporting blue, dark indigo"
+  },
+  {
+   "n": "St. Louis CITY SC",
+   "a": "STL",
+   "c": [
+    "#DD004A",
+    "#0A1E2C"
+   ],
+   "aka": [
+    "St. Louis City SC"
+   ],
+   "src": "enwiki: CITY red"
+  },
+  {
+   "n": "Toronto FC",
+   "a": "TOR",
+   "c": [
+    "#B81137",
+    "#FFFFFF"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Vancouver Whitecaps",
+   "a": "VAN",
+   "c": [
+    "#FFFFFF",
+    "#00245E"
+   ],
+   "aka": [
+    "Vancouver Whitecaps FC"
+   ],
+   "src": "enwiki: navy, white, light blue"
+  },
+  {
+   "n": "AGF",
+   "a": "AGF",
+   "c": [
+    "#FFFFFF",
+    "#191C51"
+   ],
+   "aka": [
+    "Aarhus"
+   ],
+   "src": "enwiki kit white/navy"
+  },
+  {
+   "n": "F.C. København",
+   "a": "FCK",
+   "c": [
+    "#FFFFFF",
+    "#001E96"
+   ],
+   "aka": [
+    "FC Copenhagen",
+    "FC København"
+   ],
+   "src": "enwiki kit white/blue; ESPN ffffff"
+  },
+  {
+   "n": "FC Midtjylland",
+   "a": "FCM",
+   "c": [
+    "#111111",
+    "#E30613"
+   ],
+   "aka": [
+    "Midtjylland"
+   ],
+   "src": "enwiki kit black/red; ESPN 000000/ff0900"
+  },
+  {
+   "n": "FC Nordsjælland",
+   "a": "FCN",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Nordsjælland"
+   ],
+   "src": "enwiki: red, white, yellow, blue"
+  },
+  {
+   "n": "Brøndby IF",
+   "a": "BIF",
+   "c": [
+    "#FFE500",
+    "#003DA5"
+   ],
+   "aka": [
+    "Brøndby"
+   ],
+   "src": "enwiki kit yellow/blue"
+  },
+  {
+   "n": "Benfica",
+   "a": "SLB",
+   "c": [
+    "#E83030",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SL Benfica"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Braga",
+   "a": "SCB",
+   "c": [
+    "#DE1F26",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SC Braga"
+   ],
+   "src": "enwiki kit red/white; ESPN de1f26"
+  },
+  {
+   "n": "FC Porto",
+   "a": "FCP",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Porto"
+   ],
+   "src": "enwiki: blue-and-white stripes"
+  },
+  {
+   "n": "Sporting CP",
+   "a": "SCP",
+   "c": [
+    "#008057",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Sporting Lissabon",
+    "Sporting"
+   ],
+   "src": "enwiki: green and white hoops"
+  },
+  {
+   "n": "Besiktas",
+   "a": "BJK",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Beşiktaş"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "Fenerbahce",
+   "a": "FB",
+   "c": [
+    "#FFED00",
+    "#0A2463"
+   ],
+   "aka": [
+    "Fenerbahçe"
+   ],
+   "src": "enwiki: yellow-navy blue"
+  },
+  {
+   "n": "Galatasaray",
+   "a": "GS",
+   "c": [
+    "#A90432",
+    "#FDB912"
+   ],
+   "src": "enwiki: red and yellow halves"
+  },
+  {
+   "n": "Trabzonspor",
+   "a": "TS",
+   "c": [
+    "#8E003B",
+    "#5699EB"
+   ],
+   "src": "enwiki: claret and sky blue"
+  },
+  {
+   "n": "Anderlecht",
+   "a": "AND",
+   "c": [
+    "#4F2D7F",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "RSC Anderlecht"
+   ],
+   "src": "enwiki: purple and white"
+  },
+  {
+   "n": "Club Brugge",
+   "a": "BRU",
+   "c": [
+    "#0078C8",
+    "#111111"
+   ],
+   "aka": [
+    "Brügge"
+   ],
+   "src": "enwiki: blue and black"
+  },
+  {
+   "n": "KAA Gent",
+   "a": "GNT",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Gent"
+   ],
+   "src": "enwiki: blue and white"
+  },
+  {
+   "n": "Racing Genk",
+   "a": "GNK",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "KRC Genk",
+    "Genk"
+   ],
+   "src": "enwiki kit blue/white; ESPN 0000ff"
+  },
+  {
+   "n": "Sint-Truidense",
+   "a": "STV",
+   "c": [
+    "#FFE500",
+    "#0055A4"
+   ],
+   "aka": [
+    "Sint-Truiden",
+    "STVV"
+   ],
+   "src": "enwiki: yellow and blue"
+  },
+  {
+   "n": "Union St.-Gilloise",
+   "a": "USG",
+   "c": [
+    "#FFD200",
+    "#0055A4"
+   ],
+   "aka": [
+    "Union Saint-Gilloise",
+    "Union SG"
+   ],
+   "src": "enwiki: blue and yellow"
+  },
+  {
+   "n": "LASK Linz",
+   "a": "LASK",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "LASK"
+   ],
+   "src": "enwiki: black and white"
+  },
+  {
+   "n": "RB Salzburg",
+   "a": "SAL",
+   "c": [
+    "#FFFFFF",
+    "#D82C3A"
+   ],
+   "aka": [
+    "FC Red Bull Salzburg",
+    "Red Bull Salzburg",
+    "Salzburg"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "SK Sturm Graz",
+   "a": "STU",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Sturm Graz"
+   ],
+   "src": "enwiki kit black/white; ESPN ffffff/000000"
+  },
+  {
+   "n": "Rapid Wien",
+   "a": "RAP",
+   "c": [
+    "#00843D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SK Rapid Wien",
+    "Rapid Vienna"
+   ],
+   "src": "enwiki kit green/white"
+  },
+  {
+   "n": "Austria Wien",
+   "a": "FAK",
+   "c": [
+    "#5B2C86",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "FK Austria Wien",
+    "Austria Vienna"
+   ],
+   "src": "enwiki kit violet/white"
+  },
+  {
+   "n": "Bodo/Glimt",
+   "a": "BOD",
+   "c": [
+    "#FFE500",
+    "#111111"
+   ],
+   "aka": [
+    "Bodø/Glimt",
+    "FK Bodø/Glimt"
+   ],
+   "src": "enwiki kit yellow; ESPN FCEE33"
+  },
+  {
+   "n": "Sabah FK",
+   "a": "SAB",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Sabah"
+   ],
+   "src": "enwiki kit black/white; ESPN 000000"
+  },
+  {
+   "n": "Shakhtar Donetsk",
+   "a": "SHA",
+   "c": [
+    "#F26522",
+    "#111111"
+   ],
+   "aka": [
+    "Shakhtar"
+   ],
+   "src": "enwiki kit orange/black; ESPN ff5900"
+  },
+  {
+   "n": "Slavia Prague",
+   "a": "SLA",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Slavia Prag",
+    "SK Slavia Prag"
+   ],
+   "src": "enwiki kit red/white halves; ESPN dc1f26"
+  },
+  {
+   "n": "Slovan Bratislava",
+   "a": "SLO",
+   "c": [
+    "#6CB4EE",
+    "#FFFFFF"
+   ],
+   "src": "enwiki kit sky blue; ESPN 81c0ff"
+  },
+  {
+   "n": "Viking FK",
+   "a": "VIK",
+   "c": [
+    "#002D72",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "VIKING FK",
+    "Viking"
+   ],
+   "src": "enwiki kit navy/white; ESPN 000080"
+  },
+  {
+   "n": "Ararat-Armenia",
+   "a": "ARA",
+   "c": [
+    "#FFFFFF",
+    "#E30613"
+   ],
+   "aka": [
+    "Ararat Armenia"
+   ],
+   "src": "enwiki kit white/red"
+  },
+  {
+   "n": "Ferencvaros",
+   "a": "FTC",
+   "c": [
+    "#00843D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Ferencváros",
+    "Ferencvárosi TC"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "Hapoel Be'er",
+   "a": "HBS",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Hapoel Beer Sheva",
+    "Hapoel Be'er Sheva"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Jagiellonia Bialystok",
+   "a": "JAG",
+   "c": [
+    "#FFE500",
+    "#D81921"
+   ],
+   "aka": [
+    "Jagiellonia",
+    "Jagiellonia Białystok"
+   ],
+   "src": "enwiki: red and yellow"
+  },
+  {
+   "n": "Lech Poznan",
+   "a": "LPO",
+   "c": [
+    "#004B92",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Lech Poznań",
+    "Lech"
+   ],
+   "src": "enwiki kit blue/white; ESPN 004B92"
+  },
+  {
+   "n": "Legia Warschau",
+   "a": "LEG",
+   "c": [
+    "#FFFFFF",
+    "#00843D"
+   ],
+   "aka": [
+    "Legia Warsaw",
+    "Legia Warszawa"
+   ],
+   "src": "enwiki kit white/green/red"
+  },
+  {
+   "n": "Levski Sofia",
+   "a": "LEV",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Levski"
+   ],
+   "src": "enwiki: all-blue"
+  },
+  {
+   "n": "Lillestrom",
+   "a": "LSK",
+   "c": [
+    "#FFE500",
+    "#111111"
+   ],
+   "aka": [
+    "Lillestrøm",
+    "Lillestrøm SK"
+   ],
+   "src": "enwiki kit yellow/black"
+  },
+  {
+   "n": "NK Celje",
+   "a": "CEL",
+   "c": [
+    "#FFD200",
+    "#0055A4"
+   ],
+   "aka": [
+    "Celje"
+   ],
+   "src": "enwiki: yellow and blue"
+  },
+  {
+   "n": "Olimpija Ljubljana",
+   "a": "OLI",
+   "c": [
+    "#00843D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "NK Olimpija Ljubljana"
+   ],
+   "src": "enwiki kit green/white"
+  },
+  {
+   "n": "Maribor",
+   "a": "MAR",
+   "c": [
+    "#3B3F8C",
+    "#FFD200"
+   ],
+   "aka": [
+    "NK Maribor"
+   ],
+   "src": "enwiki kit 373C7D, secondary yellow and white"
+  },
+  {
+   "n": "Omonia Nicosia",
+   "a": "OMO",
+   "c": [
+    "#00843D",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Omonia",
+    "AC Omonia"
+   ],
+   "src": "enwiki: green and white"
+  },
+  {
+   "n": "Sparta Prague",
+   "a": "SPP",
+   "c": [
+    "#8B1A2E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Sparta Prag",
+    "AC Sparta Prag"
+   ],
+   "src": "enwiki kit claret; ESPN 791b29"
+  },
+  {
+   "n": "Torreense",
+   "a": "TOR",
+   "c": [
+    "#950025",
+    "#FFFFFF"
+   ],
+   "src": "enwiki kit claret; ESPN 950025"
+  },
+  {
+   "n": "Viktoria Plzen",
+   "a": "PLZ",
+   "c": [
+    "#0055A4",
+    "#E30613"
+   ],
+   "aka": [
+    "Viktoria Plzeň",
+    "Viktoria Pilsen"
+   ],
+   "src": "enwiki kit red-blue halves"
+  },
+  {
+   "n": "Borac Banja Luka",
+   "a": "BOR",
+   "c": [
+    "#E30613",
+    "#0055A4"
+   ],
+   "aka": [
+    "Borac"
+   ],
+   "src": "enwiki: red and blue"
+  },
+  {
+   "n": "CSKA Sofia",
+   "a": "CSK",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "CSKA"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "CSU Craiova",
+   "a": "CRA",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Universitatea Craiova"
+   ],
+   "src": "enwiki kit blue/white"
+  },
+  {
+   "n": "FCSB",
+   "a": "FCSB",
+   "c": [
+    "#E30613",
+    "#0055A4"
+   ],
+   "aka": [
+    "Steaua Bukarest"
+   ],
+   "src": "enwiki kit red/blue"
+  },
+  {
+   "n": "Egnatia",
+   "a": "EGN",
+   "c": [
+    "#00792B",
+    "#111111"
+   ],
+   "aka": [
+    "KF Egnatia"
+   ],
+   "src": "enwiki kit green/black"
+  },
+  {
+   "n": "FC Lugano",
+   "a": "LUG",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Lugano"
+   ],
+   "src": "enwiki kit black/white; ESPN 000000"
+  },
+  {
+   "n": "FC Thun",
+   "a": "THU",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Thun"
+   ],
+   "src": "enwiki: red and white"
+  },
+  {
+   "n": "Young Boys",
+   "a": "YB",
+   "c": [
+    "#FFE500",
+    "#111111"
+   ],
+   "aka": [
+    "BSC Young Boys",
+    "YB"
+   ],
+   "src": "enwiki kit yellow/black"
+  },
+  {
+   "n": "FC Basel",
+   "a": "BAS",
+   "c": [
+    "#E30613",
+    "#0055A4"
+   ],
+   "aka": [
+    "Basel"
+   ],
+   "src": "enwiki kit red/blue halves"
+  },
+  {
+   "n": "FC Zürich",
+   "a": "FCZ",
+   "c": [
+    "#FFFFFF",
+    "#0055A4"
+   ],
+   "aka": [
+    "Zürich",
+    "FC Zurich"
+   ],
+   "src": "enwiki kit white/blue"
+  },
+  {
+   "n": "Iberia 1999",
+   "a": "IBE",
+   "c": [
+    "#FFFFFF",
+    "#E30613"
+   ],
+   "src": "enwiki kit white"
+  },
+  {
+   "n": "Inter D'Escaldes",
+   "a": "IDE",
+   "c": [
+    "#0055A4",
+    "#111111"
+   ],
+   "aka": [
+    "Inter Escaldes",
+    "Inter Club d'Escaldes"
+   ],
+   "src": "enwiki: blue and black"
+  },
+  {
+   "n": "Jablonec",
+   "a": "JAB",
+   "c": [
+    "#00843D",
+    "#111111"
+   ],
+   "aka": [
+    "FK Jablonec"
+   ],
+   "src": "enwiki kit green/black; ESPN 025719"
+  },
+  {
+   "n": "Kairat Almaty",
+   "a": "KAI",
+   "c": [
+    "#FFE500",
+    "#111111"
+   ],
+   "aka": [
+    "Kairat"
+   ],
+   "src": "enwiki: yellow and black stripes"
+  },
+  {
+   "n": "Kauno Zalgiris",
+   "a": "KZA",
+   "c": [
+    "#00924F",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Kauno Žalgiris"
+   ],
+   "src": "enwiki kit green/white"
+  },
+  {
+   "n": "KuPS Kuopio",
+   "a": "KUP",
+   "c": [
+    "#FFD200",
+    "#111111"
+   ],
+   "aka": [
+    "KuPS"
+   ],
+   "src": "enwiki: yellow shirt, black shorts"
+  },
+  {
+   "n": "Lincoln Red Imps",
+   "a": "LRI",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Lincoln"
+   ],
+   "src": "enwiki kit red/white; ESPN C60000"
+  },
+  {
+   "n": "Mjällby AIF",
+   "a": "MJA",
+   "c": [
+    "#FFD400",
+    "#111111"
+   ],
+   "aka": [
+    "Mjällby"
+   ],
+   "src": "enwiki: yellow and black"
+  },
+  {
+   "n": "Malmö FF",
+   "a": "MFF",
+   "c": [
+    "#87CEEB",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Malmö",
+    "Malmo FF"
+   ],
+   "src": "enwiki kit sky blue/white"
+  },
+  {
+   "n": "Pafos",
+   "a": "PAF",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Pafos FC"
+   ],
+   "src": "enwiki: blue, white, gold"
+  },
+  {
+   "n": "Red Star Belgrade",
+   "a": "CZV",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Roter Stern Belgrad",
+    "Crvena zvezda",
+    "Crvena Zvezda"
+   ],
+   "src": "enwiki/wikidata: red and white"
+  },
+  {
+   "n": "Partizan",
+   "a": "PAR",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "FK Partizan",
+    "Partizan Belgrad"
+   ],
+   "src": "enwiki kit black/white"
+  },
+  {
+   "n": "Riga FC",
+   "a": "RIG",
+   "c": [
+    "#00AAE4",
+    "#111111"
+   ],
+   "aka": [
+    "Riga"
+   ],
+   "src": "enwiki kit sky blue; ESPN 00aae4"
+  },
+  {
+   "n": "SK Brann",
+   "a": "BRA",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Brann"
+   ],
+   "src": "enwiki kit red/white"
+  },
+  {
+   "n": "Zrinjski Mostar",
+   "a": "ZRI",
+   "c": [
+    "#E30613",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "HŠK Zrinjski",
+    "Zrinjski"
+   ],
+   "src": "enwiki kit red/white"
+  },
+  {
+   "n": "Molde",
+   "a": "MOL",
+   "c": [
+    "#0055A4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Molde FK"
+   ],
+   "src": "enwiki kit blue/white"
+  },
+  {
+   "n": "Rosenborg",
+   "a": "RBK",
+   "c": [
+    "#FFFFFF",
+    "#111111"
+   ],
+   "aka": [
+    "Rosenborg BK"
+   ],
+   "src": "enwiki kit white/black"
+  },
+  {
+   "n": "Austria Lustenau",
+   "a": "LUS",
+   "c": [
+    "#008000",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "SC Austria Lustenau"
+   ],
+   "src": "enwiki kit 008000 (green), white"
+  },
+  {
+   "n": "Estrela",
+   "a": "EST",
+   "c": [
+    "#D7141A",
+    "#2E7D32"
+   ],
+   "aka": [
+    "Estrela da Amadora",
+    "CF Estrela da Amadora"
+   ],
+   "src": "enwiki: red, green, white; ESPN 3B8132/DE0A26"
+  },
+  {
+   "n": "Portsmouth",
+   "a": "POR",
+   "c": [
+    "#001489",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Portsmouth FC"
+   ],
+   "src": "enwiki: royal blue shirts, white shorts"
+  },
+  {
+   "n": "Qarabag",
+   "a": "QAR",
+   "c": [
+    "#111111",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Qarabağ",
+    "Qarabağ FK"
+   ],
+   "src": "enwiki kit black/white"
+  }
+ ],
+ "nations": [
+  {
+   "n": "Kroatien",
+   "a": "HRV",
+   "c": [
+    "#D7141A",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Croatia",
+    "Hrvatska"
+   ],
+   "split": true
+  },
+  {
+   "n": "England",
+   "a": "ENG",
+   "c": [
+    "#FFFFFF",
+    "#CE1124"
+   ]
+  },
+  {
+   "n": "Spanien",
+   "a": "ESP",
+   "c": [
+    "#C60B1E",
+    "#FFC400"
+   ],
+   "aka": [
+    "Spain",
+    "Španjolska"
+   ]
+  },
+  {
+   "n": "Tschechien",
+   "a": "CZE",
+   "c": [
+    "#11457E",
+    "#D7141A"
+   ],
+   "aka": [
+    "Czechia",
+    "Czech Republic",
+    "Češka"
+   ]
+  },
+  {
+   "n": "Deutschland",
+   "a": "GER",
+   "c": [
+    "#111111",
+    "#DD0000"
+   ],
+   "aka": [
+    "Germany",
+    "Njemačka"
+   ]
+  },
+  {
+   "n": "Österreich",
+   "a": "AUT",
+   "c": [
+    "#ED2939",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Austria",
+    "Austrija"
+   ]
+  },
+  {
+   "n": "Schweiz",
+   "a": "SUI",
+   "c": [
+    "#DA291C",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Switzerland",
+    "Švicarska"
+   ]
+  },
+  {
+   "n": "Frankreich",
+   "a": "FRA",
+   "c": [
+    "#0055A4",
+    "#EF4135"
+   ],
+   "aka": [
+    "France",
+    "Francuska"
+   ]
+  },
+  {
+   "n": "Italien",
+   "a": "ITA",
+   "c": [
+    "#008C45",
+    "#CD212A"
+   ],
+   "aka": [
+    "Italy",
+    "Italija"
+   ]
+  },
+  {
+   "n": "Portugal",
+   "a": "POR",
+   "c": [
+    "#006600",
+    "#FF0000"
+   ],
+   "aka": [
+    "Portugal",
+    "Portugal"
+   ]
+  },
+  {
+   "n": "Niederlande",
+   "a": "NED",
+   "c": [
+    "#F36C21",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Netherlands",
+    "Nizozemska"
+   ]
+  },
+  {
+   "n": "Belgien",
+   "a": "BEL",
+   "c": [
+    "#EF3340",
+    "#FDDA24"
+   ],
+   "aka": [
+    "Belgium",
+    "Belgija"
+   ]
+  },
+  {
+   "n": "Dänemark",
+   "a": "DEN",
+   "c": [
+    "#C8102E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Denmark",
+    "Danska"
+   ]
+  },
+  {
+   "n": "Polen",
+   "a": "POL",
+   "c": [
+    "#DC143C",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Poland",
+    "Poljska"
+   ]
+  },
+  {
+   "n": "Schottland",
+   "a": "SCO",
+   "c": [
+    "#005EB8",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Scotland",
+    "Škotska"
+   ]
+  },
+  {
+   "n": "Wales",
+   "a": "WAL",
+   "c": [
+    "#C8102E",
+    "#00B140"
+   ],
+   "aka": [
+    "Wales"
+   ]
+  },
+  {
+   "n": "Nordirland",
+   "a": "NIR",
+   "c": [
+    "#FFFFFF",
+    "#00843D"
+   ],
+   "aka": [
+    "Northern Ireland",
+    "Sjeverna Irska"
+   ]
+  },
+  {
+   "n": "Irland",
+   "a": "IRL",
+   "c": [
+    "#169B62",
+    "#FF883E"
+   ],
+   "aka": [
+    "Ireland",
+    "Republic of Ireland",
+    "Irska"
+   ]
+  },
+  {
+   "n": "Serbien",
+   "a": "SRB",
+   "c": [
+    "#C6363C",
+    "#0C4076"
+   ],
+   "aka": [
+    "Serbia",
+    "Srbija"
+   ]
+  },
+  {
+   "n": "Slowenien",
+   "a": "SVN",
+   "c": [
+    "#005DA4",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Slovenia",
+    "Slovenija"
+   ]
+  },
+  {
+   "n": "Slowakei",
+   "a": "SVK",
+   "c": [
+    "#0B4EA2",
+    "#EE1C25"
+   ],
+   "aka": [
+    "Slovakia",
+    "Slovačka"
+   ]
+  },
+  {
+   "n": "Ungarn",
+   "a": "HUN",
+   "c": [
+    "#CE2939",
+    "#477050"
+   ],
+   "aka": [
+    "Hungary",
+    "Mađarska"
+   ]
+  },
+  {
+   "n": "Rumänien",
+   "a": "ROU",
+   "c": [
+    "#FCD116",
+    "#002B7F"
+   ],
+   "aka": [
+    "Romania",
+    "Rumunjska"
+   ]
+  },
+  {
+   "n": "Bulgarien",
+   "a": "BUL",
+   "c": [
+    "#00966E",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Bulgaria",
+    "Bugarska"
+   ]
+  },
+  {
+   "n": "Griechenland",
+   "a": "GRE",
+   "c": [
+    "#0D5EAF",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Greece",
+    "Grčka"
+   ]
+  },
+  {
+   "n": "Türkei",
+   "a": "TUR",
+   "c": [
+    "#E30A17",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Turkey",
+    "Türkiye",
+    "Turska"
+   ]
+  },
+  {
+   "n": "Bosnien und Herzegowina",
+   "a": "BIH",
+   "c": [
+    "#002395",
+    "#FECB00"
+   ],
+   "aka": [
+    "Bosnia and Herzegovina",
+    "Bosnia-Herzegovina",
+    "Bosna i Hercegovina"
+   ]
+  },
+  {
+   "n": "Montenegro",
+   "a": "MNE",
+   "c": [
+    "#C40308",
+    "#D3AE3B"
+   ],
+   "aka": [
+    "Crna Gora"
+   ]
+  },
+  {
+   "n": "Nordmazedonien",
+   "a": "MKD",
+   "c": [
+    "#D20000",
+    "#FFE600"
+   ],
+   "aka": [
+    "North Macedonia",
+    "Sjeverna Makedonija"
+   ]
+  },
+  {
+   "n": "Albanien",
+   "a": "ALB",
+   "c": [
+    "#E41E20",
+    "#111111"
+   ],
+   "aka": [
+    "Albania",
+    "Albanija"
+   ]
+  },
+  {
+   "n": "Kosovo",
+   "a": "KVX",
+   "c": [
+    "#244AA5",
+    "#D0A650"
+   ],
+   "aka": [
+    "Kosovo"
+   ]
+  },
+  {
+   "n": "Norwegen",
+   "a": "NOR",
+   "c": [
+    "#BA0C2F",
+    "#00205B"
+   ],
+   "aka": [
+    "Norway",
+    "Norveška"
+   ]
+  },
+  {
+   "n": "Schweden",
+   "a": "SWE",
+   "c": [
+    "#006AA7",
+    "#FECC00"
+   ],
+   "aka": [
+    "Sweden",
+    "Švedska"
+   ]
+  },
+  {
+   "n": "Finnland",
+   "a": "FIN",
+   "c": [
+    "#FFFFFF",
+    "#002F6C"
+   ],
+   "aka": [
+    "Finland",
+    "Finska"
+   ]
+  },
+  {
+   "n": "Island",
+   "a": "ISL",
+   "c": [
+    "#02529C",
+    "#DC1E35"
+   ],
+   "aka": [
+    "Iceland"
+   ]
+  },
+  {
+   "n": "Ukraine",
+   "a": "UKR",
+   "c": [
+    "#0057B7",
+    "#FFD700"
+   ],
+   "aka": [
+    "Ukrajina"
+   ]
+  },
+  {
+   "n": "Georgien",
+   "a": "GEO",
+   "c": [
+    "#FFFFFF",
+    "#E8112D"
+   ],
+   "aka": [
+    "Georgia",
+    "Gruzija"
+   ]
+  },
+  {
+   "n": "Armenien",
+   "a": "ARM",
+   "c": [
+    "#D90012",
+    "#0033A0"
+   ],
+   "aka": [
+    "Armenia",
+    "Armenija"
+   ]
+  },
+  {
+   "n": "Aserbaidschan",
+   "a": "AZE",
+   "c": [
+    "#0092BC",
+    "#E4002B"
+   ],
+   "aka": [
+    "Azerbaijan",
+    "Azerbajdžan"
+   ]
+  },
+  {
+   "n": "Kasachstan",
+   "a": "KAZ",
+   "c": [
+    "#00AFCA",
+    "#FEC50C"
+   ],
+   "aka": [
+    "Kazakhstan",
+    "Kazahstan"
+   ]
+  },
+  {
+   "n": "Israel",
+   "a": "ISR",
+   "c": [
+    "#FFFFFF",
+    "#0038B8"
+   ],
+   "aka": [
+    "Izrael"
+   ]
+  },
+  {
+   "n": "Zypern",
+   "a": "CYP",
+   "c": [
+    "#FFFFFF",
+    "#D57800"
+   ],
+   "aka": [
+    "Cyprus",
+    "Cipar"
+   ]
+  },
+  {
+   "n": "Malta",
+   "a": "MLT",
+   "c": [
+    "#CF142B",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Malta"
+   ]
+  },
+  {
+   "n": "Luxemburg",
+   "a": "LUX",
+   "c": [
+    "#00A1DE",
+    "#EF3340"
+   ],
+   "aka": [
+    "Luxembourg",
+    "Luksemburg"
+   ]
+  },
+  {
+   "n": "Liechtenstein",
+   "a": "LIE",
+   "c": [
+    "#002B7F",
+    "#CE1126"
+   ],
+   "aka": [
+    "Lihtenštajn"
+   ]
+  },
+  {
+   "n": "Andorra",
+   "a": "AND",
+   "c": [
+    "#10069F",
+    "#FEDF00"
+   ],
+   "aka": [
+    "Andora"
+   ]
+  },
+  {
+   "n": "San Marino",
+   "a": "SMR",
+   "c": [
+    "#5EB6E4",
+    "#FFFFFF"
+   ]
+  },
+  {
+   "n": "Gibraltar",
+   "a": "GIB",
+   "c": [
+    "#FFFFFF",
+    "#DA000C"
+   ]
+  },
+  {
+   "n": "Färöer",
+   "a": "FRO",
+   "c": [
+    "#FFFFFF",
+    "#0065BD"
+   ],
+   "aka": [
+    "Faroe Islands",
+    "Farski Otoci"
+   ]
+  },
+  {
+   "n": "Lettland",
+   "a": "LVA",
+   "c": [
+    "#9E3039",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Latvia",
+    "Latvija"
+   ]
+  },
+  {
+   "n": "Litauen",
+   "a": "LTU",
+   "c": [
+    "#006A44",
+    "#FDB913"
+   ],
+   "aka": [
+    "Lithuania",
+    "Litva"
+   ]
+  },
+  {
+   "n": "Estland",
+   "a": "EST",
+   "c": [
+    "#0072CE",
+    "#111111"
+   ],
+   "aka": [
+    "Estonia"
+   ]
+  },
+  {
+   "n": "Moldau",
+   "a": "MDA",
+   "c": [
+    "#0046AE",
+    "#FFD200"
+   ],
+   "aka": [
+    "Moldova"
+   ]
+  },
+  {
+   "n": "Belarus",
+   "a": "BLR",
+   "c": [
+    "#C8313E",
+    "#4AA657"
+   ],
+   "aka": [
+    "Bjelorusija"
+   ]
+  },
+  {
+   "n": "Brasilien",
+   "a": "BRA",
+   "c": [
+    "#FFDF00",
+    "#009C3B"
+   ],
+   "aka": [
+    "Brazil",
+    "Brazil"
+   ]
+  },
+  {
+   "n": "Argentinien",
+   "a": "ARG",
+   "c": [
+    "#74ACDF",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Argentina"
+   ]
+  },
+  {
+   "n": "Kolumbien",
+   "a": "COL",
+   "c": [
+    "#FCD116",
+    "#003893"
+   ],
+   "aka": [
+    "Colombia",
+    "Kolumbija"
+   ]
+  },
+  {
+   "n": "Uruguay",
+   "a": "URU",
+   "c": [
+    "#7AB2E1",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Urugvaj"
+   ]
+  },
+  {
+   "n": "Mexiko",
+   "a": "MEX",
+   "c": [
+    "#006847",
+    "#CE1126"
+   ],
+   "aka": [
+    "Mexico",
+    "Meksiko"
+   ]
+  },
+  {
+   "n": "USA",
+   "a": "USA",
+   "c": [
+    "#0A3161",
+    "#B31942"
+   ],
+   "aka": [
+    "United States",
+    "SAD"
+   ]
+  },
+  {
+   "n": "Kanada",
+   "a": "CAN",
+   "c": [
+    "#D80621",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Canada"
+   ]
+  },
+  {
+   "n": "Panama",
+   "a": "PAN",
+   "c": [
+    "#DA121A",
+    "#005293"
+   ]
+  },
+  {
+   "n": "Ghana",
+   "a": "GHA",
+   "c": [
+    "#CE1126",
+    "#006B3F"
+   ],
+   "aka": [
+    "Gana"
+   ]
+  },
+  {
+   "n": "Marokko",
+   "a": "MAR",
+   "c": [
+    "#C1272D",
+    "#006233"
+   ],
+   "aka": [
+    "Morocco",
+    "Maroko"
+   ]
+  },
+  {
+   "n": "Ägypten",
+   "a": "EGY",
+   "c": [
+    "#CE1126",
+    "#111111"
+   ],
+   "aka": [
+    "Egypt",
+    "Egipat"
+   ]
+  },
+  {
+   "n": "Japan",
+   "a": "JPN",
+   "c": [
+    "#FFFFFF",
+    "#BC002D"
+   ],
+   "aka": [
+    "Japan"
+   ]
+  },
+  {
+   "n": "Südkorea",
+   "a": "KOR",
+   "c": [
+    "#FFFFFF",
+    "#CD2E3A"
+   ],
+   "aka": [
+    "South Korea",
+    "Južna Koreja"
+   ]
+  },
+  {
+   "n": "Australien",
+   "a": "AUS",
+   "c": [
+    "#00843D",
+    "#FFCD00"
+   ],
+   "aka": [
+    "Australia",
+    "Australija"
+   ]
+  },
+  {
+   "n": "Saudi-Arabien",
+   "a": "KSA",
+   "c": [
+    "#006C35",
+    "#FFFFFF"
+   ],
+   "aka": [
+    "Saudi Arabia",
+    "Saudijska Arabija"
+   ]
+  }
+ ]
+}
