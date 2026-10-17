@@ -11,10 +11,16 @@ const TSDB = "https://www.thesportsdb.com/api/v1/json/123";
 const LEAGUE = "4629";
 const UA = { "User-Agent": "KroatienSportLive-verify/1.0 (+https://kroatien-sport-live.vercel.app)" };
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// TheSportsDB-Free-Key: Rate-Limit (Stand 10/2026 ca. 10 Abrufe/Min.) → takten, bei 429 warten.
 const getJson = async (url) => {
-  const res = await fetch(url, { headers: UA });
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
-  return res.json();
+  if (url.includes("thesportsdb.com")) await sleep(6500);
+  for (let i = 0; ; i++) {
+    const res = await fetch(url, { headers: UA });
+    if (res.ok) return res.json();
+    if (res.status !== 429 || i >= 4) throw new Error(`HTTP ${res.status} ${url}`);
+    await sleep(20000 * (i + 1));
+  }
 };
 
 const season = (await getJson(`${TSDB}/lookupleague.php?id=${LEAGUE}`)).leagues[0].strCurrentSeason;

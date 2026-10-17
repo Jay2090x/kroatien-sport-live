@@ -218,12 +218,18 @@ export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
   const missing = roundNumbers.filter((_, k) => rounds[k] === null);
   if (missing.length) throw new Error(`TSDB: rounds missing (${missing.join(",")})`);
 
-  const all = rounds.flatMap((r) => (r?.data ?? []).map((e) => mapTsdbEvent(e, now)));
   // "Stand" = ältester Abruf der laufenden (stündlich aktualisierten) Runden
   const fetchedAt = rounds
     .filter((_, k) => roundNumbers[k] >= current - 3)
     .map((r) => r?.fetchedAt ?? new Date(now).toISOString())
     .sort()[0];
+  const events = rounds.flatMap((r) => r?.data ?? []);
+  return { data: buildHnl(season, current, events, now), fetchedAt };
+}
+
+/** Tabelle, aktuelle/letzte Runde und Nachholspiele aus den Rohdaten berechnen. */
+function buildHnl(season: string, current: number, events: TsdbEvent[], now: number): HnlData {
+  const all = events.map((e) => mapTsdbEvent(e, now));
   if (all.length < 5) throw new Error("TSDB: too few events");
 
   const teams = [...new Set(all.flatMap((m) => [m.home, m.away]))];
@@ -240,26 +246,80 @@ export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
   const postponed = all.filter((m) => m.state === "postponed").sort((a, b) => a.round - b.round);
 
   return {
-    data: {
-      season,
-      table,
-      currentRound: current,
-      currentRoundMatches,
-      previousRound,
-      previousRoundMatches,
-      postponed,
-      matches: all,
-    },
-    fetchedAt,
+    season,
+    table,
+    currentRound: current,
+    currentRoundMatches,
+    previousRound,
+    previousRoundMatches,
+    postponed,
+    matches: all,
   };
 }
 
+/**
+ * Schnappschuss vom Branch `data` (GitHub Action holt TheSportsDB alle 30 Min.
+ * mit Geduld bei Rate-Limits ab, siehe scripts/snapshot-hnl.mjs).
+ * Aus Vercel heraus liefert TheSportsDB oft 429/Timeouts – dann fehlte die HNL ganz.
+ */
+const SNAPSHOT_URL =
+  "https://raw.githubusercontent.com/Jay2090x/kroatien-sport-live/data/hnl-snapshot.json";
+/** Jünger als das → direkt verwenden, ohne TheSportsDB aus Vercel zu fragen. */
+const SNAPSHOT_FRESH_MS = 2 * 3600_000;
+/** Älter als das → gar nicht mehr anzeigen (lieber "keine Daten" als alte Tabelle). */
+const SNAPSHOT_MAX_AGE_MS = 3 * 24 * 3600_000;
+
+interface HnlSnapshot {
+  league: string;
+  season: string;
+  nextRound: number;
+  fetchedAt: string;
+  events: TsdbEvent[];
+}
+
+async function getSnapshot(): Promise<HnlSnapshot | null> {
+  const res = await cachedSource(["hnl", "snapshot"], 600, async () => {
+    const snap = await fetchJson<HnlSnapshot>(SNAPSHOT_URL);
+    if (
+      snap?.league !== HNL_LEAGUE_ID ||
+      !/^\d{4}-\d{4}$/.test(snap.season ?? "") ||
+      !Number.isFinite(Date.parse(snap.fetchedAt)) ||
+      !Array.isArray(snap.events) ||
+      snap.events.length < 5
+    ) {
+      throw new Error("HNL snapshot: invalid");
+    }
+    return snap;
+  });
+  return res ? res.data : null;
+}
+
+function fromSnapshot(snap: HnlSnapshot): Sourced<HnlData> {
+  const current = snap.nextRound > 0 ? Math.min(ROUNDS_PER_SEASON, snap.nextRound) : ROUNDS_PER_SEASON;
+  // Spielstatus zum Abrufzeitpunkt bewerten – sonst würden seither beendete Spiele
+  // ohne Ergebnis fälschlich als "verschoben" erscheinen. "Stand" zeigt diesen Zeitpunkt.
+  const at = Date.parse(snap.fetchedAt);
+  return { data: buildHnl(snap.season, current, snap.events, at), fetchedAt: snap.fetchedAt };
+}
+
 /** HNL-Daten für die Seite; `null` = derzeit keine Daten. */
-export async function getHnl(): Promise<Sourced<HnlData> | null> {
+export async function getHnl(now = Date.now()): Promise<Sourced<HnlData> | null> {
+  const snap = await getSnapshot();
+  const age = snap ? now - Date.parse(snap.fetchedAt) : Infinity;
   try {
-    return await loadHnl();
+    if (snap && age <= SNAPSHOT_FRESH_MS) return fromSnapshot(snap);
+  } catch (err) {
+    console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
+  }
+  try {
+    return await loadHnl(now);
   } catch (err) {
     console.error("[data] hnl failed:", err instanceof Error ? err.message : err);
-    return null;
   }
+  try {
+    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return fromSnapshot(snap);
+  } catch (err) {
+    console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
+  }
+  return null;
 }
