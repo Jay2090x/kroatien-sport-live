@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 10,
- "fetchedAt": "2026-10-17T17:32:39.286Z",
+ "fetchedAt": "2026-10-17T19:40:01.724Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -608,12 +608,12 @@
    "strHomeTeam": "Osijek",
    "strAwayTeam": "HNK Gorica",
    "intHomeScore": "1",
-   "intAwayScore": "2",
+   "intAwayScore": "1",
    "intRound": "10",
    "strTimestamp": "2026-10-17T16:00:00",
    "dateEvent": "2026-10-17",
    "strTime": "16:00",
-   "strStatus": "2H",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
