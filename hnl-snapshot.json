@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 10,
- "fetchedAt": "2026-10-17T07:20:27.689Z",
+ "fetchedAt": "2026-10-17T14:10:35.153Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -620,13 +620,13 @@
    "idEvent": "2482567",
    "strHomeTeam": "Lokomotiva Zagreb",
    "strAwayTeam": "Istra 1961",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "0",
    "intRound": "10",
    "strTimestamp": "2026-10-17T13:00:00",
    "dateEvent": "2026-10-17",
-   "strTime": "13:00:00",
-   "strStatus": "NS",
+   "strTime": "13:00",
+   "strStatus": "HT",
    "strPostponed": "no"
   },
   {
