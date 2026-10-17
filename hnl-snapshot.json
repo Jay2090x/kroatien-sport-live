@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 10,
- "fetchedAt": "2026-10-17T19:40:01.724Z",
+ "fetchedAt": "2026-10-17T22:13:36.603Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -612,7 +612,7 @@
    "intRound": "10",
    "strTimestamp": "2026-10-17T16:00:00",
    "dateEvent": "2026-10-17",
-   "strTime": "16:00",
+   "strTime": "16:00:00",
    "strStatus": "FT",
    "strPostponed": "no"
   },
@@ -625,7 +625,7 @@
    "intRound": "10",
    "strTimestamp": "2026-10-17T13:00:00",
    "dateEvent": "2026-10-17",
-   "strTime": "13:00",
+   "strTime": "13:00:00",
    "strStatus": "FT",
    "strPostponed": "no"
   },
