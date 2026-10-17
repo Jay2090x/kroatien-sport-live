@@ -72,6 +72,8 @@ export interface GameRef {
   state: MatchState;
   competition: string;
   isNationalTeam: boolean;
+  /** ESPN-Saisonphase, z. B. "League Phase" (für Europacup-Spieltage) */
+  phase?: string;
 }
 
 export interface PlayerGame {
@@ -127,7 +129,7 @@ function near(kickoffs: string[], now: number): boolean {
 }
 
 /** 30-min-Cache, der rund um einen Anpfiff auf 5 min umschaltet. */
-async function adaptive<T>(
+export async function adaptive<T>(
   key: string[],
   loader: () => Promise<T>,
   kickoffs: (t: T) => string[],
@@ -144,7 +146,7 @@ function clubCompetition(slug: string | undefined, name: string | undefined): st
   return (slug && (CLUB_COMPETITION_DE[slug] || COMPETITION_DE[slug])) || name || "Pflichtspiel";
 }
 
-function mapClubEvent(e: EspnEvent): GameRef | null {
+export function mapClubEvent(e: EspnEvent): GameRef | null {
   const slug = leagueSlugOf(e);
   if (!slug || slug.endsWith(".friendly")) return null; // Testspiele ausblenden
   const c = e.competitions?.[0];
@@ -173,10 +175,11 @@ function mapClubEvent(e: EspnEvent): GameRef | null {
     state,
     competition: clubCompetition(slug, e.league?.name),
     isNationalTeam: false,
+    phase: e.seasonType?.name,
   };
 }
 
-async function loadClubGames(teamId: string): Promise<GameRef[]> {
+export async function loadClubGames(teamId: string): Promise<GameRef[]> {
   const [results, fixtures] = await Promise.all([
     loadEvents(`${SITE_API}/all/teams/${teamId}/schedule`),
     loadEvents(`${SITE_API}/all/teams/${teamId}/schedule?fixture=true`),
@@ -189,7 +192,7 @@ async function loadClubGames(teamId: string): Promise<GameRef[]> {
   return [...byId.values()].sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
 }
 
-interface Athlete {
+export interface Athlete {
   id: string;
   name: string;
   position: string | null;
@@ -248,7 +251,33 @@ export async function getPlayers(now = Date.now()): Promise<PlayersData | null> 
   }
 }
 
-async function loadPlayers(now: number): Promise<PlayersData> {
+export type SummaryFn = (
+  slug: string,
+  eventId: string,
+  kickoff: string,
+  finished: boolean
+) => Promise<Sourced<MatchSummary> | null>;
+
+/** Gemeinsame Basis für Spielerseite, Legionäre und Europacup (alle Quellen gecacht). */
+export interface SquadBase {
+  ntGames: GameRef[];
+  finishedNt: GameRef[];
+  windowGames: GameRef[];
+  windowStart: number;
+  windowEnd: number;
+  /** ESPN-Athleten-ID → ESPN-Name (Spieltagskader der letzten Länderspielphase) */
+  squad: Map<string, string>;
+  ids: string[];
+  athleteById: Map<string, Athlete>;
+  teamIds: string[];
+  clubGames: Map<string, GameRef[]>;
+  hnlMatches: HnlMatch[] | null;
+  summary: SummaryFn;
+  fetchedAts: string[];
+  gaps: string[];
+}
+
+export async function loadSquadBase(now: number, opts: { withHnl?: boolean } = {}): Promise<SquadBase> {
   const fetchedAts: string[] = [];
   const gaps: string[] = [];
   const summaryMemo = new Map<string, Promise<Sourced<MatchSummary> | null>>();
@@ -344,13 +373,49 @@ async function loadPlayers(now: number): Promise<PlayersData> {
 
   // HNL-Ligaspiele (nicht bei ESPN) über TheSportsDB
   let hnlMatches: HnlMatch[] | null = null;
-  if (teamIds.some((t) => ESPN_TEAM_TO_HNL[t])) {
+  if (opts.withHnl !== false && teamIds.some((t) => ESPN_TEAM_TO_HNL[t])) {
     const hnl = await getHnl();
     if (hnl) {
       hnlMatches = hnl.data.matches;
       fetchedAts.push(hnl.fetchedAt);
     } else gaps.push("HNL-Spielplan (TheSportsDB) derzeit nicht abrufbar.");
   }
+
+  return {
+    ntGames,
+    finishedNt,
+    windowGames,
+    windowStart,
+    windowEnd,
+    squad,
+    ids,
+    athleteById,
+    teamIds,
+    clubGames,
+    hnlMatches,
+    summary,
+    fetchedAts,
+    gaps,
+  };
+}
+
+async function loadPlayers(now: number): Promise<PlayersData> {
+  const {
+    ntGames,
+    finishedNt,
+    windowGames,
+    windowStart,
+    windowEnd,
+    squad,
+    ids,
+    athleteById,
+    teamIds,
+    clubGames,
+    hnlMatches,
+    summary,
+    fetchedAts,
+    gaps,
+  } = await loadSquadBase(now, { withHnl: true });
 
   // 5) Pro Spieler
   const players = await mapLimit(ids, 4, async (id): Promise<PlayerRow> => {

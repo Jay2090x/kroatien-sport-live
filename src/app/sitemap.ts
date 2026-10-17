@@ -10,6 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/hr`, lastModified: now, changeFrequency: "hourly", priority: 0.9 },
     { url: `${SITE.url}/hr/spieler`, lastModified: now, changeFrequency: "hourly", priority: 0.7 },
     { url: `${SITE.url}/hr/sport`, lastModified: now, changeFrequency: "hourly", priority: 0.6 },
+    ...["/legionaere", "/live", "/em-2028", "/talente", "/kalender"].flatMap((p) => [
+      { url: `${SITE.url}${p}`, lastModified: now, changeFrequency: "daily" as const, priority: 0.6 },
+      { url: `${SITE.url}/hr${p}`, lastModified: now, changeFrequency: "daily" as const, priority: 0.5 },
+    ]),
     { url: `${SITE.url}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE.url}/datenschutz`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE.url}/nutzung`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },

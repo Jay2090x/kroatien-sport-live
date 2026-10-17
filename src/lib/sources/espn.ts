@@ -37,6 +37,7 @@ export interface EspnEvent {
   date: string;
   league?: { slug?: string; name?: string };
   season?: { displayName?: string };
+  seasonType?: { name?: string };
   links?: Array<{ href?: string }>;
   competitions?: Array<{
     id?: string;

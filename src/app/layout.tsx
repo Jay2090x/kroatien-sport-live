@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SITE } from "@/lib/site";
 import { SPORT_FILTER_BOOT, SPORT_FILTER_CSS } from "@/components/sport-filter";
 import "./globals.css";
+import "./fan.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

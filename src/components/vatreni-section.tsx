@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatKickoff, formatShortDate } from "@/lib/time";
 import { dataLabel, dict, href, type Dict, type Lang } from "@/lib/i18n";
 import { Countdown } from "./countdown";
+import { fan } from "@/lib/fan/i18n";
 import { NoData, Stand } from "./stand";
 
 function Team({ name, strong, lang = "de" }: { name: string; strong: boolean; lang?: Lang }) {
@@ -139,6 +140,10 @@ export function VatreniSection({
       <Stand fetchedAt={data.fetchedAt} source={data.source} lang={lang} />
       <p className="more-link">
         <Link href={href(lang, "/spieler")}>{t.vatreni.players}</Link>
+      </p>
+      <p className="more-link more-link-row">
+        <Link href={href(lang, "/live")}>{fan(lang).extras.links.live}</Link>
+        <Link href={href(lang, "/kalender")}>{fan(lang).extras.links.calendar}</Link>
       </p>
 
       {data.group && (

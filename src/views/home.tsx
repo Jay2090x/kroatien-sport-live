@@ -8,6 +8,7 @@ import { NotFootballGate, SportFilterBar, SportGate } from "@/components/sport-f
 import { TimelineList } from "@/components/timeline";
 import { NewsList } from "@/components/news-list";
 import { Highlights } from "@/components/highlights";
+import { ExtrasCard } from "@/components/fan/extras-card";
 import { NoData, Stand } from "@/components/stand";
 import { getVatreni } from "@/lib/sources/vatreni";
 import { getHnl } from "@/lib/sources/hnl";
@@ -72,6 +73,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <VatreniSection data={vatreni} lang={lang} clipFor={feed?.clipFor} />
           <HnlSection hnl={hnl} lang={lang} clipFor={feed?.clipFor} />
           <FeedSection feed={feed} lang={lang} fetchedAt={feedFetchedAt} />
+          <ExtrasCard lang={lang} />
         </SportGate>
 
         <NotFootballGate>

@@ -12,7 +12,7 @@ function Score({ g }: { g: GameRef }) {
   );
 }
 
-function Teams({ g, isHome, lang }: { g: GameRef; isHome: boolean; lang: Lang }) {
+export function Teams({ g, isHome, lang }: { g: GameRef; isHome: boolean; lang: Lang }) {
   return (
     <span className="pg-teams">
       <span className={isHome ? "own" : undefined}>{dataLabel(g.home, lang)}</span> <Score g={g} />{" "}
@@ -33,7 +33,7 @@ function Card({ color, minute, t }: { color: "y" | "r"; minute: string; t: Dict 
   );
 }
 
-function PerfLine({ p, t }: { p: Performance; t: Dict }) {
+export function PerfLine({ p, t }: { p: Performance; t: Dict }) {
   const T = t.players;
   if (!p.inSquad) return <span className="perf perf-out">{T.notInSquad}</span>;
   if (!p.played) return <span className="perf perf-bench">{T.benchUnused}</span>;

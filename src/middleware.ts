@@ -2,9 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Sprachwahl: ?lang=hr|de oder Cookie "lang" (gesetzt beim Umschalten).
- * Nur für die drei Inhaltsseiten; alles andere bleibt unberührt.
+ * Nur für die Inhaltsseiten; alles andere (API, Kalenderdateien) bleibt unberührt.
  */
-const DE_PATHS = new Set(["/", "/sport", "/spieler"]);
+const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender"]);
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -29,5 +29,22 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/sport", "/spieler", "/hr", "/hr/sport", "/hr/spieler"],
+  matcher: [
+    "/",
+    "/sport",
+    "/spieler",
+    "/legionaere",
+    "/live",
+    "/em-2028",
+    "/talente",
+    "/kalender",
+    "/hr",
+    "/hr/sport",
+    "/hr/spieler",
+    "/hr/legionaere",
+    "/hr/live",
+    "/hr/em-2028",
+    "/hr/talente",
+    "/hr/kalender",
+  ],
 };

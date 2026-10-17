@@ -1,0 +1,386 @@
+/* ── Fan-Extras (Legionäre, Europacup, Live-Ticker, EM 2028, Talente, Kalender) ── */
+.nav {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+.page-fan {
+  display: grid;
+  gap: 16px;
+  padding-top: 16px;
+  padding-bottom: 24px;
+}
+
+.page-fan .card > p:not(.stand):not(.footnote):not(.small) {
+  margin: 0 0 8px;
+}
+
+/* Spiele mit kroatischer Beteiligung */
+.ags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 760px) {
+  .ags {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.ag {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.ag-cro {
+  border-color: #f3b5b7;
+  background: linear-gradient(180deg, var(--red-soft), #fff 60%);
+}
+
+.ag-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.ag-comp {
+  font-weight: 600;
+}
+
+.ag-teams {
+  margin: 4px 0 6px !important;
+  font-size: 0.95rem;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ag-teams .own {
+  font-weight: 700;
+}
+
+.ag-players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+.ag-player {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+  border-top: 1px dashed var(--line);
+  padding-top: 4px;
+}
+
+.ag-name {
+  font-weight: 700;
+  min-width: 8.5em;
+}
+
+.idle {
+  margin-top: 10px !important;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  vertical-align: middle;
+}
+
+.tag-cro,
+.tag-a {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+/* Startseite: Fan-Extras */
+.extras-cols {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 760px) {
+  .extras-cols {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
+
+.extras-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.extras-links a {
+  display: block;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.extras-links a:hover,
+.extras-links a:focus-visible {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.otd-item {
+  border-left: 4px solid var(--red);
+  padding: 2px 0 2px 12px;
+}
+
+.otd-item + .otd-item {
+  margin-top: 12px;
+}
+
+.otd-item .eyebrow {
+  color: var(--red);
+  opacity: 1;
+}
+
+.otd-title {
+  font-size: 1.05rem !important;
+  font-weight: 800;
+  color: var(--ink) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  margin: 0 0 2px !important;
+}
+
+.otd-score {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.otd-text {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.otd-links {
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.otd-clip {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.more-link-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Countdown in Tagen */
+.countdowns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.daysuntil {
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue) 0%, #2b2bb0 100%);
+  color: #fff;
+  display: grid;
+}
+
+.daysuntil:empty {
+  display: none;
+}
+
+.daysuntil strong {
+  font-size: 1.15rem;
+}
+
+.daysuntil small {
+  opacity: 0.85;
+}
+
+/* Live-Ticker */
+.tk-board {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue) 0%, #2b2bb0 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.tk-board.tk-live {
+  background: linear-gradient(135deg, #b30f14 0%, var(--red) 100%);
+}
+
+.tk-team {
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.tk-score {
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tk-status {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.tk-events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.tk-ev {
+  display: grid;
+  grid-template-columns: 3.4em 1.6em 1fr;
+  align-items: baseline;
+  font-size: 0.875rem;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.tk-big {
+  background: var(--red-soft);
+  border-radius: 6px;
+}
+
+.tk-min {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  padding-left: 4px;
+}
+
+.tk-lineups {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .tk-lineups {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tk-lu h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tk-players {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  columns: 2;
+}
+
+.tk-no {
+  display: inline-block;
+  min-width: 1.6em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Talente */
+.criterion {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--blue-soft);
+  font-size: 0.85rem;
+  margin-top: 10px !important;
+}
+
+.tal-sub {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.table.talents td.left {
+  white-space: normal;
+}
+
+.tal-others {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 0.875rem;
+}
+
+/* Kalender */
+.cal-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cal-buttons .btn {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-ghost {
+  background: var(--card) !important;
+  color: var(--blue) !important;
+  border: 1px solid var(--blue) !important;
+}
+
+.cal-url {
+  word-break: break-all;
+  font-size: 0.78rem;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.cal-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.875rem;
+}

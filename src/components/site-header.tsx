@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { LangSwitch } from "./lang-switch";
+import { fan } from "@/lib/fan/i18n";
 
 export function SiteHeader({
   withNav = true,
@@ -10,7 +11,7 @@ export function SiteHeader({
   path = "/",
 }: {
   withNav?: boolean;
-  current?: "spieler" | "sport";
+  current?: "spieler" | "sport" | "legionaere";
   lang?: Lang;
   /** aktuelle Seite ohne Sprachpräfix, z. B. "/sport" – für den Sprachwechsel */
   path?: string;
@@ -34,11 +35,15 @@ export function SiteHeader({
               <Link href={href(lang, "/spieler")} aria-current={current === "spieler" ? "page" : undefined}>
                 {t.nav.players}
               </Link>
+              <Link href={href(lang, "/legionaere")} aria-current={current === "legionaere" ? "page" : undefined}>
+                {fan(lang).nav.abroad}
+              </Link>
               <Link href={href(lang, "/#hnl")}>{t.nav.hnl}</Link>
               <Link href={href(lang, "/#feed")}>{t.nav.news}</Link>
               <Link href={href(lang, "/sport")} aria-current={current === "sport" ? "page" : undefined}>
                 {t.nav.sport}
               </Link>
+              <Link href={href(lang, "/#extras")}>{fan(lang).nav.extras}</Link>
             </nav>
           )}
           <LangSwitch lang={lang} paths={{ de: href("de", path), hr: href("hr", path) }} label={t.langLabel} />

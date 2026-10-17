@@ -56,6 +56,8 @@ export const CLUB_DE: Record<string, string> = {
   "PSV Eindhoven": "PSV",
   "Orlando City SC": "Orlando City",
   "AEK Athens": "AEK Athen",
+  "NK Varazdin": "NK Varaždin",
+  "FC PORTO II": "FC Porto II",
 };
 
 export function clubDe(name: string): string {

@@ -43,3 +43,37 @@ export function viennaYmd(iso: string): string {
   if (Number.isNaN(d.getTime())) return "9999-12-31";
   return new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 }
+
+/** Offset von Wien zu UTC in Minuten zum Zeitpunkt `ms` (z. B. 120 im Sommer). */
+export function viennaOffsetMin(ms: number): number {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: TIME_ZONE, timeZoneName: "shortOffset" }).formatToParts(
+    new Date(ms)
+  );
+  const tz = parts.find((p) => p.type === "timeZoneName")?.value ?? "GMT";
+  const m = tz.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+  if (!m) return 0;
+  const v = Number(m[2]) * 60 + Number(m[3] ?? 0);
+  return m[1] === "-" ? -v : v;
+}
+
+/** UTC-Millisekunden für 00:00 Uhr Wiener Zeit am Kalendertag "YYYY-MM-DD". */
+export function viennaMidnight(ymd: string): number {
+  const [y, mo, d] = ymd.split("-").map(Number);
+  const guess = Date.UTC(y, mo - 1, d);
+  let t = guess - viennaOffsetMin(guess) * 60_000;
+  t = guess - viennaOffsetMin(t) * 60_000; // DST-Grenze nachjustieren
+  return t;
+}
+
+/** Wochentag in Wien (0 = Sonntag … 6 = Samstag). */
+export function viennaWeekday(ms: number): number {
+  const ymd = viennaYmd(new Date(ms).toISOString());
+  const [y, mo, d] = ymd.split("-").map(Number);
+  return new Date(Date.UTC(y, mo - 1, d)).getUTCDay();
+}
+
+/** "YYYY-MM-DD" + n Tage */
+export function addDaysYmd(ymd: string, n: number): string {
+  const [y, mo, d] = ymd.split("-").map(Number);
+  return new Date(Date.UTC(y, mo - 1, d + n)).toISOString().slice(0, 10);
+}
