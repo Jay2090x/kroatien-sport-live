@@ -1,0 +1,31 @@
+{
+  "_doc": "Ergebnis der manuellen Sichtprüfung (17.10.2026). skip: Commons-Datei wird nicht verwendet (Grund). focus: Bildausschnitt für das runde Porträt (x/y = Gesichtsmitte relativ zur Bildbreite/-höhe, zoom = Vergrößerung).",
+  "skip": {
+    "Petar Sučić.png": "Quelle ist die Fotoagentur PIXSELL (Standbild aus deren YouTube-Video) – Agenturbilder werden grundsätzlich nicht verwendet",
+    "Lovro-Majer.png": "Quelle ist die Fotoagentur PIXSELL (Standbild aus deren YouTube-Video) – Agenturbilder werden grundsätzlich nicht verwendet",
+    "Roberto Soldić.png": "Quelle ist die Fotoagentur PIXSELL (Standbild aus deren YouTube-Video) – Agenturbilder werden grundsätzlich nicht verwendet",
+    "FC Salzburg gegen GNK Dinamo Zagreb (2024-10-23 Championsleague Dritte Runde) 69.jpg": "Spielszene mit mehreren Spielern, Gesicht teilweise verdeckt – als kleines Porträt nicht eindeutig erkennbar"
+  },
+  "focus": {
+    "Ivica Zubac (cropped).jpg": {
+      "x": 0.47,
+      "y": 0.085,
+      "zoom": 4.2
+    },
+    "Adriano Jagušić NKSlavenBelupo 10.jpg": {
+      "x": 0.395,
+      "y": 0.08,
+      "zoom": 4
+    },
+    "Filip Hrgovic rio 2016.jpg": {
+      "x": 0.47,
+      "y": 0.22,
+      "zoom": 1.4
+    },
+    "Mario Hezonja 11 Real Madrid Baloncesto Euroleague 20260409 (4) (cropped).jpg": {
+      "x": 0.5,
+      "y": 0.32,
+      "zoom": 1.5
+    }
+  }
+}

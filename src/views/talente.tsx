@@ -5,6 +5,8 @@ import { NoData, Stand } from "@/components/stand";
 import { TALENT_RULES, getTalents, type Talent } from "@/lib/sources/talents";
 import { fan } from "@/lib/fan/i18n";
 import { dict, href, type Lang } from "@/lib/i18n";
+import { Avatar } from "@/components/avatar";
+import { photoKey } from "@/lib/photos";
 
 const COMP_HR: Record<string, string> = {
   "Champions League": "Liga prvaka",
@@ -71,6 +73,9 @@ export async function TalenteView({ lang }: { lang: Lang }) {
                   {data.radar.map((r) => (
                     <tr key={r.id}>
                       <td className="left">
+                        <div className="tal-cell">
+                        <Avatar pkey={photoKey.soccer(r.id)} name={r.name} size={36} lang={lang} />
+                        <div>
                         <strong>{r.name}</strong> <TeamTag team={r.team} />
                         <span className="tal-sub">
                           {r.club ?? ""}
@@ -81,6 +86,8 @@ export async function TalenteView({ lang }: { lang: Lang }) {
                                 .join(" · ")}`
                             : ""}
                         </span>
+                        </div>
+                        </div>
                       </td>
                       <td className="num">{r.age ?? "?"}</td>
                       <td className="num">{r.starts}</td>
@@ -107,6 +114,7 @@ export async function TalenteView({ lang }: { lang: Lang }) {
             <ul className="tal-others">
               {data.others.map((r) => (
                 <li key={r.id}>
+                  <Avatar pkey={photoKey.soccer(r.id)} name={r.name} size={24} lang={lang} />{" "}
                   <strong>{r.name}</strong> <TeamTag team={r.team} />{" "}
                   <span className="muted small">
                     {[

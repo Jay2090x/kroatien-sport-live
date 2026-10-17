@@ -3,6 +3,8 @@ import { PerfLine, Teams } from "@/components/player-card";
 import { fan } from "@/lib/fan/i18n";
 import { dataLabel, dict, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
+import { Avatar } from "@/components/avatar";
+import { photoKey } from "@/lib/photos";
 
 const LU_CLS: Record<string, string> = {
   pending: "lu-pending",
@@ -24,7 +26,10 @@ function PlayerLine({ p, g, lang }: { p: CroInGame; g: AbroadGame; lang: Lang })
   else if (p.lineup) status = <span className={`lu ${LU_CLS[p.lineup]}`}>{t.players.lineup[p.lineup]}</span>;
   return (
     <li className="ag-player">
-      <span className="ag-name">{p.name}</span>
+      <span className="ag-name with-av">
+        <Avatar pkey={photoKey.soccer(p.id)} name={p.name} size={28} lang={lang} />
+        {p.name}
+      </span>
       {status}
     </li>
   );

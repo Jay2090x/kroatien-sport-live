@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import type { Ticker, TickerEvent, TickerSide } from "@/lib/sources/live";
 import type { FanDict } from "@/lib/fan/i18n";
+import { Avatar } from "@/components/avatar";
+import { photoKey } from "@/lib/photos";
+
+/** ESPN-Team-ID Kroatien – nur bei den Vatreni gibt es Porträts */
+const CRO_TEAM = "477";
 
 const POLL_MS = 120_000;
 const TZ = "Europe/Vienna";
@@ -39,7 +44,8 @@ function EventLine({ e, L, teamName }: { e: TickerEvent; L: FanDict["live"]; tea
   );
 }
 
-function Lineup({ s, name, L }: { s: TickerSide; name: string; L: FanDict["live"] }) {
+function Lineup({ s, name, L, hr }: { s: TickerSide; name: string; L: FanDict["live"]; hr: boolean }) {
+  const cro = s.id === CRO_TEAM;
   const start = s.lineup.filter((p) => p.starter);
   const bench = s.lineup.filter((p) => !p.starter);
   return (
@@ -52,7 +58,15 @@ function Lineup({ s, name, L }: { s: TickerSide; name: string; L: FanDict["live"
       <ol className="tk-players">
         {start.map((p) => (
           <li key={p.id}>
-            <span className="tk-no">{p.jersey ?? ""}</span> {p.name}
+            <span className="tk-no">{p.jersey ?? ""}</span>{" "}
+            {cro ? (
+              <span className="tk-av">
+                <Avatar pkey={photoKey.soccer(p.id)} name={p.name} size={22} lang={hr ? "hr" : "de"} />
+                {p.name}
+              </span>
+            ) : (
+              p.name
+            )}
           </li>
         ))}
       </ol>
@@ -149,8 +163,8 @@ export function LiveTicker({
       <h3>{L.lineups}</h3>
       {hasLineup ? (
         <div className="tk-lineups">
-          <Lineup s={tk.home} name={names.home} L={L} />
-          <Lineup s={tk.away} name={names.away} L={L} />
+          <Lineup s={tk.home} name={names.home} L={L} hr={locale.startsWith("hr")} />
+          <Lineup s={tk.away} name={names.away} L={L} hr={locale.startsWith("hr")} />
         </div>
       ) : (
         <p className="muted small">{L.lineupPending}</p>

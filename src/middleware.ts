@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Sprachwahl: ?lang=hr|de oder Cookie "lang" (gesetzt beim Umschalten).
  * Nur für die Inhaltsseiten; alles andere (API, Kalenderdateien) bleibt unberührt.
  */
-const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender"]);
+const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/bildnachweise"]);
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -38,6 +38,7 @@ export const config = {
     "/em-2028",
     "/talente",
     "/kalender",
+    "/bildnachweise",
     "/hr",
     "/hr/sport",
     "/hr/spieler",
@@ -46,5 +47,6 @@ export const config = {
     "/hr/em-2028",
     "/hr/talente",
     "/hr/kalender",
+    "/hr/bildnachweise",
   ],
 };

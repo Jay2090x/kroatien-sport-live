@@ -88,9 +88,9 @@ export async function HomeView({ lang }: { lang: Lang }) {
               <div className="other-cols">
                 <div>
                   <h3>{t.other.upcoming}</h3>
-                  <TimelineList items={notFootball(tl.upcoming)} t={tlLabels(t)} limit={5} empty={t.timeline.noneUpcoming} />
+                  <TimelineList items={notFootball(tl.upcoming)} t={tlLabels(t)} limit={5} empty={t.timeline.noneUpcoming} lang={lang} />
                   <h3>{t.other.results}</h3>
-                  <TimelineList items={notFootball(tl.results)} t={tlLabels(t)} limit={4} empty={t.timeline.noneResults} />
+                  <TimelineList items={notFootball(tl.results)} t={tlLabels(t)} limit={4} empty={t.timeline.noneResults} lang={lang} />
                 </div>
                 <div>
                   <h3>{t.other.headlines}</h3>

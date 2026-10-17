@@ -3,6 +3,8 @@
 import type { TlItem, TlLabels } from "@/lib/timeline";
 import { SPORT_SLUG } from "@/lib/sport-meta";
 import { useSportFilter } from "./sport-filter";
+import { Avatar } from "./avatar";
+import type { Lang } from "@/lib/i18n";
 
 /** Gemeinsame, chronologische Zeitleiste (Start-Teaser und /sport). */
 export function TimelineList({
@@ -10,11 +12,13 @@ export function TimelineList({
   t,
   limit,
   empty,
+  lang = "de",
 }: {
   items: TlItem[];
   t: TlLabels;
   limit?: number;
   empty: string;
+  lang?: Lang;
 }) {
   const [sport] = useSportFilter();
   const shown = items.filter((i) => !sport || i.sport === sport).slice(0, limit ?? items.length);
@@ -52,6 +56,11 @@ export function TimelineList({
                 </span>
                 <div className="si-body">
                   <p className="si-title">
+                    {i.photo ? (
+                      <>
+                        <Avatar pkey={i.photo} name={i.who} size={24} lang={lang} />{" "}
+                      </>
+                    ) : null}
                     {i.who ? <strong>{i.who}</strong> : null}
                     {i.who ? <span className="si-vs"> · {i.title}</span> : <span>{i.title}</span>}
                   </p>

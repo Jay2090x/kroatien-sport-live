@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { dict, type Lang } from "@/lib/i18n";
+import { dict, href, type Lang } from "@/lib/i18n";
 
 export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
   const t = dict(lang);
@@ -20,13 +20,18 @@ export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
           <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener license" target="_blank">CC BY-SA 4.0</a>) ·{" "}
           <a href="https://sport.hrt.hr/" rel="noopener" target="_blank">HRT Sport</a>{" "}
           {de ? "und Google News (Schlagzeilen, Links zum Original)" : "i Google News (naslovi, poveznice na izvor)"} ·{" "}
-          {de ? "Videos: offizielle YouTube-Kanäle von HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek und UFC" : "Videozapisi: službeni YouTube kanali HNS-a, MAXSporta, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek i UFC-a"}.
+          {de ? "Videos: offizielle YouTube-Kanäle von HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek und UFC" : "Videozapisi: službeni YouTube kanali HNS-a, MAXSporta, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek i UFC-a"} ·{" "}
+          {de ? "Spielerfotos: " : "Fotografije igrača: "}
+          <a href="https://commons.wikimedia.org/" rel="noopener" target="_blank">Wikimedia Commons</a>{" "}
+          {de ? "(freie Lizenzen, " : "(slobodne licence, "}
+          <Link href={href(lang, "/bildnachweise")}>{de ? "Bildnachweise" : "izvori fotografija"}</Link>).
         </p>
         <p className="disclaimer">{t.footer.disclaimer}</p>
         <nav className="legal" aria-label={t.footer.legal}>
           <Link href="/impressum">{t.footer.imprint}</Link>
           <Link href="/datenschutz">{t.footer.privacy}</Link>
           <Link href="/nutzung">{t.footer.terms}</Link>
+          <Link href={href(lang, "/bildnachweise")}>{de ? "Bildnachweise" : "Izvori fotografija"}</Link>
         </nav>
       </div>
     </footer>

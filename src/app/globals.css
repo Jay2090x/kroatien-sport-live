@@ -1387,3 +1387,62 @@ details.prev summary {
 .fe-rel .news {
   grid-template-columns: 1fr;
 }
+
+/* Spielerfotos (Wikimedia Commons, siehe /bildnachweise) */
+.av {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  box-shadow: 0 0 0 1px var(--line);
+  vertical-align: middle;
+}
+.av img {
+  position: absolute;
+  max-width: none;
+}
+a.av:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.av-ph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: repeating-conic-gradient(var(--blue-soft) 0 25%, #f6f7fd 0 50%) 0 0 / 50% 50%;
+  user-select: none;
+}
+.with-av {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.player-head .with-av {
+  align-self: center;
+}
+.photo-credits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.photo-credits li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  overflow-wrap: anywhere;
+}
+.photo-credits .pc-name {
+  font-weight: 800;
+  display: block;
+}

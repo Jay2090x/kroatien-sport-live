@@ -16,6 +16,7 @@ import { buildTimeline, tlLabels } from "@/lib/timeline";
 import { SPORT_EMOJI, type BoxFight } from "@/lib/sport-meta";
 import { dict, href, type Dict, type Lang } from "@/lib/i18n";
 import { formatDay, formatKickoff } from "@/lib/time";
+import { Avatar } from "@/components/avatar";
 
 function Outcome({ o, t }: { o?: "W" | "L" | "D"; t: Dict }) {
   if (!o) return null;
@@ -92,8 +93,11 @@ function BoxerCard({ b, t, lang }: { b: BoxerStatus; t: Dict; lang: Lang }) {
   return (
     <section className="card" aria-labelledby={`b-${b.id}`} data-sport="boxen">
       <div className="card-head">
-        <h2 id={`b-${b.id}`}>
-          {SPORT_EMOJI.boxing} {b.name}
+        <h2 id={`b-${b.id}`} className="with-av">
+          <Avatar pkey={`box:${b.id}`} name={b.name} size={40} lang={lang} />
+          <span>
+            {SPORT_EMOJI.boxing} {b.name}
+          </span>
         </h2>
         <span className="pill">{b.division[lang]}</span>
       </div>
@@ -143,7 +147,7 @@ export async function SportView({ lang }: { lang: Lang }) {
             <div className="card-head">
               <h2 id="up-h">📅 {t.sport.upcoming}</h2>
             </div>
-            <TimelineList items={tl.upcoming} t={tlLabels(t)} limit={40} empty={t.timeline.noneUpcoming} />
+            <TimelineList items={tl.upcoming} t={tlLabels(t)} limit={40} empty={t.timeline.noneUpcoming} lang={lang} />
           </section>
 
           <section className="card" aria-labelledby="res-h">
@@ -151,14 +155,17 @@ export async function SportView({ lang }: { lang: Lang }) {
               <h2 id="res-h">✅ {t.sport.results}</h2>
               <span className="pill">{t.sport.resultsPill}</span>
             </div>
-            <TimelineList items={tl.results} t={tlLabels(t)} limit={20} empty={t.timeline.noneResults} />
+            <TimelineList items={tl.results} t={tlLabels(t)} limit={20} empty={t.timeline.noneResults} lang={lang} />
           </section>
 
           {data?.fighters.map((f) => (
             <SportGate key={f.name} sport="mma">
               <section className="card" aria-labelledby={`f-${f.name}`}>
                 <div className="card-head">
-                  <h2 id={`f-${f.name}`}>{SPORT_EMOJI.mma} {f.name}</h2>
+                  <h2 id={`f-${f.name}`} className="with-av">
+                    <Avatar pkey={f.photo} name={f.name} size={40} lang={lang} />
+                    <span>{SPORT_EMOJI.mma} {f.name}</span>
+                  </h2>
                   <span className="pill">{f.org}</span>
                 </div>
                 <h3>{t.sport.nextFight}</h3>

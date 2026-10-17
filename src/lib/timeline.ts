@@ -32,6 +32,8 @@ export interface TlItem {
   result?: string;
   outcome?: "W" | "L" | "D";
   detail?: string;
+  /** Foto-Schlüssel (lib/photos) bei Einzelathleten */
+  photo?: string;
 }
 
 export interface Timeline {
@@ -57,6 +59,7 @@ interface Raw {
   result?: string;
   outcome?: "W" | "L" | "D";
   detail?: string;
+  photo?: string;
 }
 
 /** Deutsche Ergebnis-Texte der Quellen-Module für HR übersetzen (nur feste Begriffe). */
@@ -108,6 +111,7 @@ function fromSportItem(i: SportItem, who?: string): Raw | null {
     result: i.result,
     outcome: i.outcome,
     detail: i.detail,
+    photo: i.photo,
   };
 }
 
@@ -162,6 +166,7 @@ function fromBox(b: BoxerStatus, f: BoxFight, lang: Lang, kind: "next" | "last")
     result: res,
     outcome: kind === "last" ? f.outcome : undefined,
     detail: kind === "last" && f.note ? f.note[lang] : undefined,
+    photo: `box:${b.id}`,
   };
 }
 
@@ -188,6 +193,7 @@ function finish(r: Raw, lang: Lang, now: number): TlItem {
     result: tr(r.result, lang),
     outcome: r.outcome,
     detail: tr(r.detail, lang),
+    photo: r.photo,
   };
 }
 

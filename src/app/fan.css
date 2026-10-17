@@ -384,3 +384,22 @@
   padding-left: 18px;
   font-size: 0.875rem;
 }
+
+.tal-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.tal-others {
+  list-style: none;
+  padding-left: 0;
+}
+.tk-av {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tk-players li {
+  break-inside: avoid;
+  margin: 2px 0;
+}

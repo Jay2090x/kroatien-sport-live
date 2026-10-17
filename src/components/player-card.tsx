@@ -2,6 +2,8 @@ import type { GameRef, NextLineup, PlayerGame, PlayerNext, PlayerRow } from "@/l
 import type { Performance } from "@/lib/sources/espn-summary";
 import { formatKickoff, formatShortDate } from "@/lib/time";
 import { dataLabel, dict, type Dict, type Lang } from "@/lib/i18n";
+import { Avatar } from "@/components/avatar";
+import { photoKey } from "@/lib/photos";
 
 function Score({ g }: { g: GameRef }) {
   if (g.homeScore == null || g.awayScore == null) return <span className="pg-vs">–</span>;
@@ -119,7 +121,10 @@ export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
   return (
     <article className="player" aria-labelledby={`pl-${p.id}`}>
       <header className="player-head">
-        <h3 id={`pl-${p.id}`}>{p.name}</h3>
+        <span className="with-av">
+          <Avatar pkey={photoKey.soccer(p.id)} name={p.name} size={44} lang={lang} />
+          <h3 id={`pl-${p.id}`}>{p.name}</h3>
+        </span>
         <span className="player-club">{p.club ?? t.players.clubUnknown}</span>
       </header>
       <p className="label">{t.players.next}</p>

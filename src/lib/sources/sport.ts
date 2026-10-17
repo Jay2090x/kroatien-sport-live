@@ -53,9 +53,13 @@ export interface SportItem {
   outcome?: "W" | "L" | "D";
   detail?: string;
   source: string;
+  /** Foto-Schlüssel (siehe lib/photos), nur bei Einzelathleten */
+  photo?: string;
 }
 
 export interface FighterStatus {
+  /** Foto-Schlüssel (siehe lib/photos) */
+  photo: string;
   name: string;
   org: string;
   next: SportItem | null;
@@ -420,7 +424,7 @@ async function loadNbaLine(eventId: string, athleteId: string): Promise<string |
   return "nicht im Spielberichtsbogen";
 }
 
-function nbaItem(e: NbaEvent, teamId: string, who: string): SportItem {
+function nbaItem(e: NbaEvent, teamId: string, who: string, photo?: string): SportItem {
   const c = e.competitions?.[0];
   const home = c?.competitors?.find((x) => x.homeAway === "home");
   const away = c?.competitors?.find((x) => x.homeAway === "away");
@@ -433,6 +437,7 @@ function nbaItem(e: NbaEvent, teamId: string, who: string): SportItem {
     key: `nba-${e.id}-${who}`,
     sport: "basketball",
     who,
+    photo,
     vs: `${home?.team?.displayName ?? "?"} – ${away?.team?.displayName ?? "?"}`,
     competition: NBA_SEASON[e.seasonType?.type ?? 2] ?? "NBA",
     start: new Date(e.date).toISOString(),
@@ -555,8 +560,9 @@ async function loadSport(now: number): Promise<SportData> {
   for (const { f, s } of fightersRaw) {
     const d = track(s, `MMA-Daten für ${f.name} derzeit nicht abrufbar.`);
     if (!d || !s) continue;
-    const label = (x: SportItem | null) => (x ? { ...x, who: f.name } : null);
-    fighters.push({ name: f.name, org: f.org, next: label(d.next), last: label(d.last), fetchedAt: s.fetchedAt });
+    const photo = `mma:${f.espnId}`;
+    const label = (x: SportItem | null) => (x ? { ...x, who: f.name, photo } : null);
+    fighters.push({ photo, name: f.name, org: f.org, next: label(d.next), last: label(d.last), fetchedAt: s.fetchedAt });
   }
 
   const upcoming: SportItem[] = [];
@@ -587,12 +593,12 @@ async function loadSport(now: number): Promise<SportData> {
     const who = `${p.name} (${a.data.team})`;
     const next = gs.find((e) => nbaItem(e, a.data.teamId!, who).state !== "post" && Date.parse(e.date) >= now - 4 * H);
     if (next) {
-      const it = nbaItem(next, a.data.teamId!, who);
+      const it = nbaItem(next, a.data.teamId!, who, `nba:${p.espnId}`);
       if (it.state === "in" || inWindow(it, 14 * D)) upcoming.push(it);
     }
     const last = [...gs].reverse().find((e) => nbaItem(e, a.data.teamId!, who).state === "post");
     if (last) {
-      const it = nbaItem(last, a.data.teamId!, who);
+      const it = nbaItem(last, a.data.teamId!, who, `nba:${p.espnId}`);
       if (recent(it, 4 * D)) {
         const line = await cachedSource(["sport", "nba-line", last.id, p.espnId], SPORT_REVALIDATE.final, () =>
           loadNbaLine(last.id, p.espnId)
