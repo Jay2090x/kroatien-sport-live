@@ -13,6 +13,8 @@ export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
           {de ? "(Länderspiele, Nations-League-Tabelle, Spielerdaten, MMA, Tennis, NBA)" : "(reprezentacija, Liga nacija, podaci o igračima, MMA, tenis, NBA)"} ·{" "}
           <a href="https://www.thesportsdb.com/" rel="noopener" target="_blank">TheSportsDB</a>{" "}
           {de ? "(SuperSport HNL, Handball-/Basketball-Termine)" : "(SuperSport HNL, rukometni/košarkaški termini)"} ·{" "}
+          <a href="https://www.hnl.hr/supersport-hnl/raspored-i-rezultati/" rel="noopener" target="_blank">HNL.hr</a>{" "}
+          {de ? "(offizielle HNL-Anstoßzeiten)" : "(službeni termini HNL-a)"} ·{" "}
           <a href="https://www.eurohandball.com/" rel="noopener" target="_blank">EHF</a> ·{" "}
           <a href="https://www.openligadb.de/" rel="noopener" target="_blank">OpenLigaDB</a> ·{" "}
           <a href="https://en.wikipedia.org/" rel="noopener" target="_blank">Wikipedia</a>{" "}

@@ -126,6 +126,10 @@ export function HnlSection({
             {behind.length > 0 && <> – {t.hnl.fewerGames(behind.map((r) => r.team).join(t.hnl.and))}</>}
           </>
         )}
+        {/* Nachholspiele mit neuem Termin (nicht mehr "verschoben"): Hinweis auf weniger Spiele trotzdem zeigen */}
+        {d.postponed.length === 0 && behind.length > 0 && (
+          <> {t.hnl.fewerGames(behind.map((r) => r.team).join(t.hnl.and))}</>
+        )}
       </p>
 
       {d.currentRoundMatches.length > 0 && (
@@ -148,7 +152,7 @@ export function HnlSection({
           </ul>
         </details>
       )}
-      <Stand fetchedAt={hnl.fetchedAt} source="TheSportsDB" lang={lang} />
+      <Stand fetchedAt={hnl.fetchedAt} source={d.officialSchedule ? "TheSportsDB, HNL.hr" : "TheSportsDB"} lang={lang} />
     </section>
   );
 }

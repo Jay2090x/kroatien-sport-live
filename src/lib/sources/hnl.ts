@@ -2,6 +2,7 @@ import { cachedSource, REVALIDATE, type Sourced } from "../cache";
 import { fetchJson } from "../http";
 import { hnlTeam } from "../names";
 import { mapLimit } from "../async";
+import { clubKey, getOfficialSchedule, type OfficialHnlMatch } from "./hnl-official";
 
 /**
  * SuperSport HNL über TheSportsDB (Free-Key "123", kein Konto nötig).
@@ -61,6 +62,8 @@ export interface HnlData {
   postponed: HnlMatch[];
   /** alle Saisonspiele (für die Spielerseite) */
   matches: HnlMatch[];
+  /** true = Anstoßzeiten/Verlegungen mit dem offiziellen Spielplan (hnl.hr) abgeglichen */
+  officialSchedule: boolean;
 }
 
 const FINISHED = new Set(["FT", "AET", "PEN", "MATCH FINISHED", "AFTER EXTRA TIME", "AFTER PENALTIES"]);
@@ -77,6 +80,30 @@ function num(v: string | null): number | null {
   if (v == null || v === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Anstoßzeiten und Verlegungen aus dem offiziellen HNL-Spielplan übernehmen.
+ * TheSportsDB hat oft Platzhalter-Zeiten bzw. "PST" für Spiele, die die HNL nur
+ * verlegt (neu angesetzt) hat. Ergebnisse bleiben unverändert von TheSportsDB.
+ */
+export function applyOfficialSchedule(events: TsdbEvent[], official: OfficialHnlMatch[] | null): TsdbEvent[] {
+  if (!official?.length) return events;
+  const byKey = new Map(official.map((o) => [`${o.round}|${clubKey(o.home)}|${clubKey(o.away)}`, o]));
+  return events.map((e) => {
+    const o = byKey.get(`${Number(e.intRound) || 0}|${clubKey(e.strHomeTeam)}|${clubKey(e.strAwayTeam)}`);
+    if (!o?.kickoff) return e;
+    const iso = o.kickoff.replace(/\.\d{3}Z$/, "");
+    const fixed: TsdbEvent = { ...e, strTimestamp: iso, dateEvent: iso.slice(0, 10), strTime: iso.slice(11) };
+    const status = (e.strStatus ?? "").toUpperCase().trim();
+    const noScore = num(e.intHomeScore) == null && num(e.intAwayScore) == null && o.homeScore == null && o.awayScore == null;
+    // Von der HNL neu angesetzt (Datum + Uhrzeit, noch kein Ergebnis) → nicht mehr "verschoben"
+    if ((POSTPONED.has(status) || e.strPostponed === "yes") && noScore && !/^(CANC|CANCELLED|ABD|ABANDONED)$/.test(status)) {
+      fixed.strStatus = "NS";
+      fixed.strPostponed = "no";
+    }
+    return fixed;
+  });
 }
 
 export function mapTsdbEvent(e: TsdbEvent, now = Date.now()): HnlMatch {
@@ -199,7 +226,7 @@ function getRound(season: string, round: number, old: boolean) {
   );
 }
 
-export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
+export async function loadHnl(now = Date.now(), official: OfficialHnlMatch[] | null = null): Promise<Sourced<HnlData>> {
   const season = await getSeason();
   const nextRound = await getNextRound();
   if (nextRound === null) throw new Error("TSDB: next round unknown");
@@ -224,12 +251,18 @@ export async function loadHnl(now = Date.now()): Promise<Sourced<HnlData>> {
     .map((r) => r?.fetchedAt ?? new Date(now).toISOString())
     .sort()[0];
   const events = rounds.flatMap((r) => r?.data ?? []);
-  return { data: buildHnl(season, current, events, now), fetchedAt };
+  return { data: buildHnl(season, current, events, now, official), fetchedAt };
 }
 
 /** Tabelle, aktuelle/letzte Runde und Nachholspiele aus den Rohdaten berechnen. */
-function buildHnl(season: string, current: number, events: TsdbEvent[], now: number): HnlData {
-  const all = events.map((e) => mapTsdbEvent(e, now));
+function buildHnl(
+  season: string,
+  current: number,
+  events: TsdbEvent[],
+  now: number,
+  official: OfficialHnlMatch[] | null = null
+): HnlData {
+  const all = applyOfficialSchedule(events, official).map((e) => mapTsdbEvent(e, now));
   if (all.length < 5) throw new Error("TSDB: too few events");
 
   const teams = [...new Set(all.flatMap((m) => [m.home, m.away]))];
@@ -254,6 +287,7 @@ function buildHnl(season: string, current: number, events: TsdbEvent[], now: num
     previousRoundMatches,
     postponed,
     matches: all,
+    officialSchedule: !!official?.length,
   };
 }
 
@@ -294,30 +328,30 @@ async function getSnapshot(): Promise<HnlSnapshot | null> {
   return res ? res.data : null;
 }
 
-function fromSnapshot(snap: HnlSnapshot): Sourced<HnlData> {
+function fromSnapshot(snap: HnlSnapshot, official: OfficialHnlMatch[] | null): Sourced<HnlData> {
   const current = snap.nextRound > 0 ? Math.min(ROUNDS_PER_SEASON, snap.nextRound) : ROUNDS_PER_SEASON;
   // Spielstatus zum Abrufzeitpunkt bewerten – sonst würden seither beendete Spiele
   // ohne Ergebnis fälschlich als "verschoben" erscheinen. "Stand" zeigt diesen Zeitpunkt.
   const at = Date.parse(snap.fetchedAt);
-  return { data: buildHnl(snap.season, current, snap.events, at), fetchedAt: snap.fetchedAt };
+  return { data: buildHnl(snap.season, current, snap.events, at, official), fetchedAt: snap.fetchedAt };
 }
 
 /** HNL-Daten für die Seite; `null` = derzeit keine Daten. */
 export async function getHnl(now = Date.now()): Promise<Sourced<HnlData> | null> {
-  const snap = await getSnapshot();
+  const [snap, official] = await Promise.all([getSnapshot(), getOfficialSchedule()]);
   const age = snap ? now - Date.parse(snap.fetchedAt) : Infinity;
   try {
-    if (snap && age <= SNAPSHOT_FRESH_MS) return fromSnapshot(snap);
+    if (snap && age <= SNAPSHOT_FRESH_MS) return fromSnapshot(snap, official);
   } catch (err) {
     console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
   }
   try {
-    return await loadHnl(now);
+    return await loadHnl(now, official);
   } catch (err) {
     console.error("[data] hnl failed:", err instanceof Error ? err.message : err);
   }
   try {
-    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return fromSnapshot(snap);
+    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return fromSnapshot(snap, official);
   } catch (err) {
     console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
   }

@@ -47,9 +47,12 @@ const CROATIAN =
 const EXCLUDE =
   /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett|\bfilm\b|kino\b|schauspiel|oscar|netflix|dokumentar/i;
 
-/** Spam/Stream-Seiten: Sonderzeichen-Müll, "live gucken"-Köder, kyrillische Quellen */
+/**
+ * Spam/Stream-Seiten: Sonderzeichen-Müll (z. B. "^@+$^~![MAXSPORT!]HRT 2] … Nogomet Uživo Fudbal"),
+ * "live gucken"-Köder, kyrillische Quellen
+ */
 const SPAM =
-  /\[\[|\]\]|==|'''|\+~|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\p{Script=Cyrillic}/iu;
+  /\[\[|\]\]|==|'''|\+~|[\^~@$][\^~@$+!\[\]]{2,}|[\^~@$+!\[\]]{2,}[\^~@$]|\[[^\]]*!\]|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\bfudbal\b.*\bu[zž]ivo\b|\bu[zž]ivo\b.*\bfudbal\b|\p{Script=Cyrillic}/iu;
 
 /**
  * Video-Reuploads fremder Kanäle (z. B. "A - B | Highlights 3. Liga | MAGENTA SPORT Kovacic (9nvLDcUBHQ)"):

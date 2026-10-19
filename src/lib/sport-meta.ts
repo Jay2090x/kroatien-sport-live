@@ -147,12 +147,12 @@ export const BOXERS: Array<{
       round: "7",
       source: "BoxingScene, box.live",
     },
-    next: {
-      date: "2026-10-17",
-      opponent: "István Bernáth",
-      event: "BKFC Belgrade (Bare-Knuckle)",
-      place: "Beogradska Arena, Belgrad",
-      source: "BKFC, CroRing, Combat Press",
+    // BKFC Belgrade (17.10.2026, vs. István Bernáth) wurde am 08.10.2026 vom Veranstalter
+    // verschoben, neuer Termin offen (Tanjug, Novosti, ArenaFight, UFCalendar; geprüft 19.10.2026).
+    next: null,
+    info: {
+      de: "Der geplante Bare-Knuckle-Kampf gegen István Bernáth (BKFC Belgrade, 17.10.) wurde vom Veranstalter verschoben – neuer Termin noch offen.",
+      hr: "Planirana borba golim šakama protiv Istvána Bernátha (BKFC Beograd, 17. 10.) odgođena je – novi datum još nije poznat.",
     },
   },
 ];
@@ -289,7 +289,15 @@ function fold(s: string): string {
     .replace(/đ/g, "d");
 }
 
+/**
+ * Stichwörter, die zugleich gewöhnliche (englische/deutsche) Wörter sind ("UFC split with …"):
+ * zählen nur großgeschrieben als Ortsname, z. B. "u Splitu", "in Split".
+ */
+const CITY_ONLY_CAPITALIZED: Record<string, RegExp> = { split: /(^|[^\p{L}])S(plit|PLIT)/u };
+
 export function isCroatianHeadline(title: string): boolean {
   const t = ` ${fold(title).replace(/[^a-z0-9]+/g, " ")} `;
-  return CROATIAN_HEADLINE_KEYWORDS.some((k) => t.includes(` ${k}`));
+  return CROATIAN_HEADLINE_KEYWORDS.some(
+    (k) => t.includes(` ${k}`) && (!CITY_ONLY_CAPITALIZED[k] || CITY_ONLY_CAPITALIZED[k].test(title))
+  );
 }
