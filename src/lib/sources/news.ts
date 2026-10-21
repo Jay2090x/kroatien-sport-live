@@ -61,6 +61,13 @@ const SPAM =
  */
 const REUPLOAD = /\s\|\s[^|]*\s\|\s|\((?=[A-Za-z0-9_-]*\d)(?=[A-Za-z0-9_-]*[A-Za-z])[A-Za-z0-9_-]{9,12}\)\s*$/;
 
+/**
+ * Liveticker-Seiten (z. B. BILD "Kroatien gegen Spanien Liveticker - Nations League …") sind keine
+ * Meldungen: Google News indexiert sie oft Tage nach dem Spiel neu (21.10. für das Spiel vom 06.10.).
+ * Die Seite hat einen eigenen Live-Ticker.
+ */
+export const LIVETICKER = /live-?ticker/i;
+
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
   const m = title.match(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/);
@@ -185,7 +192,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     if (EXCLUDE.test(title) || EXCLUDE.test(source) || looksEnglish(title)) continue;
-    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || titleDateTooOld(title, iso)) continue;
+    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || titleDateTooOld(title, iso)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
     let sport: Sport | "other";
     if (feed.football) {

@@ -51,6 +51,9 @@ const CHANNELS: Array<{ id: string; name: string; maxDays: number; accept: Accep
       // Match-Zusammenfassungen tragen das Ergebnis "A vs B 2:1 (...)"; keine Livestreams
       if (/u[zž]ivo|\blive\b/i.test(t) || !/\bvs\b.*\d+:\d+/i.test(t)) return null;
       if (NOT_FIRST_TEAM.test(t)) return null;
+      // Volleyball (z. B. "PAFIAKOS vs HAOK MLADOST 1:3 (Kvalifikacije, CEV Champions League Volley …)")
+      // ist keine eigene Sportart der Seite und darf nicht über "kvalifikacij" als Fußball durchrutschen
+      if (/volley|odbojk|\bcev\b/i.test(t)) return null;
       if (/fiba|aba liga|ko[sš]ark|premijer liga.*ko[sš]/i.test(t)) return "basketball";
       if (/ehf|seha|rukomet/i.test(t)) return "handball";
       if (/supersport ?hnl|\bhnk\b|kup|liga prvaka|europa|konferencijsk|kvalifikacij|prijateljsk/i.test(t)) return "football";

@@ -295,9 +295,19 @@ function fold(s: string): string {
  */
 const CITY_ONLY_CAPITALIZED: Record<string, RegExp> = { split: /(^|[^\p{L}])S(plit|PLIT)/u };
 
+/**
+ * Kurze Nachnamen, die sonst als Wortanfang fremder Namen treffen (z. B. "lucin" in
+ * "Iasmin Lucindo", UFC-Kämpferin aus Brasilien): nur das Wort selbst oder mit
+ * kroatischer Fallendung zählt (Lučin, Lučina, Lučinu, Lučinom …).
+ */
+const WORD_WITH_CASE_ENDING: Record<string, RegExp> = { lucin: / lucin(a|u|om|e)? / };
+
 export function isCroatianHeadline(title: string): boolean {
   const t = ` ${fold(title).replace(/[^a-z0-9]+/g, " ")} `;
   return CROATIAN_HEADLINE_KEYWORDS.some(
-    (k) => t.includes(` ${k}`) && (!CITY_ONLY_CAPITALIZED[k] || CITY_ONLY_CAPITALIZED[k].test(title))
+    (k) =>
+      t.includes(` ${k}`) &&
+      (!CITY_ONLY_CAPITALIZED[k] || CITY_ONLY_CAPITALIZED[k].test(title)) &&
+      (!WORD_WITH_CASE_ENDING[k] || WORD_WITH_CASE_ENDING[k].test(t))
   );
 }
