@@ -283,5 +283,5 @@ async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v5"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v6"], REVALIDATE.news, loadNews);
 }

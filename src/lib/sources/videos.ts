@@ -202,7 +202,7 @@ async function loadVideos(): Promise<Video[]> {
 
 /** Pool (bis 21 Tage, Feed verknüpft mit Spielen); für reine Listen `recentVideos` nutzen. */
 export async function getVideos(): Promise<Sourced<Video[]> | null> {
-  return cachedSource(["videos-v2"], 1800, loadVideos);
+  return cachedSource(["videos-v3"], 1800, loadVideos);
 }
 
 /** nur Clips der letzten `days` Tage (für Listen ohne Spielbezug) */
