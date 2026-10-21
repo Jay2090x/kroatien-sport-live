@@ -166,7 +166,7 @@ async function loadChannel(ch: (typeof CHANNELS)[number], now: number): Promise<
 }
 
 /** nur einbettbare Videos (oEmbed liefert 401/404, wenn Einbetten deaktiviert ist) */
-async function embeddable(id: string): Promise<boolean> {
+export async function embeddable(id: string): Promise<boolean> {
   try {
     await fetchJson(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`, { retries: 0 });
     return true;

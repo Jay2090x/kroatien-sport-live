@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { clipTitle } from "@/lib/clip-title";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SportFilterBar, SportGate } from "@/components/sport-filter";
@@ -125,7 +126,7 @@ export async function SportView({ lang }: { lang: Lang }) {
   const newsRows = news
     ? pickNews(news.data, { lang, now, max: 16, min: 8, perSport: 5 }).map((n) => ({ ...n, when: `${formatKickoff(n.publishedAt, lang)} ${t.oclock}` }))
     : [];
-  const clips = recentVideos(videos?.data ?? []).map((v) => ({ ...v, when: formatKickoff(v.publishedAt, lang) }));
+  const clips = recentVideos(videos?.data ?? []).map((v) => ({ ...v, title: clipTitle(v, lang), when: formatKickoff(v.publishedAt, lang) }));
   const de = lang === "de";
 
   return (

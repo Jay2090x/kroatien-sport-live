@@ -454,3 +454,8 @@
 .form-x { font-size: 10px; fill: #b91c1c; font-weight: 700; }
 .form-special { list-style: none; padding: 0; margin: 0.2rem 0; }
 .form-special li { padding: 0.05rem 0; }
+
+/* Spieler-Clips */
+.pclips { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.8rem; list-style: none; padding: 0; margin: 0.4rem 0; }
+.pclips-card { grid-template-columns: 1fr; }
+.pclip .clip-title { margin: 0.35rem 0 0.1rem; font-size: 0.92rem; }

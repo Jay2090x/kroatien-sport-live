@@ -1,7 +1,7 @@
 /**
  * Zweisprachige Oberfläche (DE | HR).
  * - Deutsch unter /, /sport, /spieler; Kroatisch unter /hr, /hr/sport, /hr/spieler.
- * - Übersetzt wird nur die Oberfläche. Schlagzeilen bleiben in ihrer Originalsprache.
+ * - Übersetzt wird nur die Oberfläche. Schlagzeilen werden nicht übersetzt, sondern nach Sprache gefiltert (DE-Seiten nur deutsche, HR-Seiten nur kroatische).
  * - Wahl wird im Cookie "lang" gespeichert (siehe middleware.ts).
  */
 export type Lang = "de" | "hr";
@@ -95,7 +95,7 @@ const de = {
     pill: "Links zum Original",
     what: "News",
     sources: "HRT Sport, Google News",
-    note: "Schlagzeilen in Originalsprache (DE/HR), höchstens 36 Stunden alt.",
+    note: "Nur deutschsprachige Schlagzeilen, höchstens 36 Stunden alt.",
   },
   sport: {
     metaTitle: "Alle Sportarten – Termine & Ergebnisse",
@@ -178,7 +178,7 @@ const de = {
     round: (n: number) => `${n}. Runde`,
     watch: "Highlights",
     empty: "Derzeit keine aktuellen Meldungen oder Clips.",
-    note: "Clips nur von offiziellen Kanälen (HNS, MAXSport, Vereine), sie laden erst nach Klick über youtube-nocookie.com. Clips und Schlagzeilen stehen nur dann bei einem Spiel, wenn Paarung, Ergebnis bzw. Datum mit den Spieldaten übereinstimmen. Schlagzeilen in Originalsprache (DE/HR).",
+    note: "Clips nur von offiziellen Kanälen (HNS, MAXSport, Vereine), sie laden erst nach Klick über youtube-nocookie.com. Clips und Schlagzeilen stehen nur dann bei einem Spiel, wenn Paarung, Ergebnis bzw. Datum mit den Spieldaten übereinstimmen. Nur deutschsprachige Schlagzeilen; Clip-Titel in anderer Sprache werden durch eine eigene Beschreibung ersetzt.",
     sources: "YouTube: HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek · HRT Sport, Google News",
   },
   other: {
@@ -291,7 +291,7 @@ const hr: Dict = {
     pill: "Poveznice na izvor",
     what: "Vijesti",
     sources: "HRT Sport, Google News",
-    note: "Naslovi na izvornom jeziku (HR/DE), najviše 36 sati stari.",
+    note: "Samo naslovi na hrvatskom, najviše 36 sati stari.",
   },
   sport: {
     metaTitle: "Svi sportovi – raspored i rezultati",
@@ -374,7 +374,7 @@ const hr: Dict = {
     round: (n: number) => `${n}. kolo`,
     watch: "Sažetak",
     empty: "Trenutno nema novih vijesti ni snimki.",
-    note: "Snimke samo sa službenih kanala (HNS, MAXSport, klubovi), učitavaju se tek nakon klika preko youtube-nocookie.com. Snimke i naslovi stoje uz utakmicu samo ako se par, rezultat odnosno datum podudaraju s podacima o utakmici. Naslovi na izvornom jeziku (DE/HR).",
+    note: "Snimke samo sa službenih kanala (HNS, MAXSport, klubovi), učitavaju se tek nakon klika preko youtube-nocookie.com. Snimke i naslovi stoje uz utakmicu samo ako se par, rezultat odnosno datum podudaraju s podacima o utakmici. Samo naslovi na hrvatskom; naslovi snimki na drugom jeziku zamijenjeni su vlastitim opisom.",
     sources: "YouTube: HNS, MAXSport, GNK Dinamo, HNK Hajduk, HNK Rijeka, NK Osijek · HRT Sport, Google News",
   },
   other: {
@@ -486,6 +486,20 @@ const DATA_HR: Record<string, string> = {
   "Nations League": "Liga nacija",
   "UEFA Nations League": "UEFA Liga nacija",
   "WM-Qualifikation": "Kvalifikacije za SP",
+  "FIFA-Weltmeisterschaft": "Svjetsko prvenstvo FIFA",
+  "Inter Mailand": "Inter",
+  "AC Mailand": "AC Milan",
+  "AEK Athen": "AEK Atena",
+  "ESPN hat für dieses Spiel keine Aufstellung": "ESPN za ovu utakmicu nema sastav",
+  "Spielbericht derzeit nicht abrufbar": "Izvještaj s utakmice trenutačno nije dostupan",
+  "Für die HNL gibt es keine freie Quelle mit Spielerdaten": "Za HNL ne postoji slobodan izvor podataka o igračima",
+  "Frauen-WM-Qualifikation": "Kvalifikacije za Žensko SP",
+  "Frauen-WM": "Žensko SP",
+  "Frauen-EM": "Žensko EP",
+  "Frauen-EM-Qualifikation": "Kvalifikacije za Žensko EP",
+  "U21-EM-Qualifikation": "Kvalifikacije za EP do 21",
+  "U21-EM": "EP do 21",
+  "Frauen-Nations-League": "Ženska Liga nacija",
   "EM-Qualifikation": "Kvalifikacije za EP",
   Testspiel: "Prijateljska utakmica",
   Freundschaftsspiel: "Prijateljska utakmica",

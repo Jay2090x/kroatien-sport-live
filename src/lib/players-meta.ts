@@ -98,9 +98,10 @@ export const CLUB_COMPETITION_DE: Record<string, string> = {
  * Kader-Hinweise je Länderspielphase (Ende = letztes Spiel, YYYY-MM-DD).
  * Wird nur angezeigt, solange genau diese Phase die aktuelle ist.
  */
-export const SQUAD_NOTES: Record<string, { text: string; source: string; url: string }> = {
+export const SQUAD_NOTES: Record<string, { text: string; textHr: string; source: string; url: string }> = {
   "2026-10-06": {
     text: "Wegen Verletzungen abgesagt: Josip Juranović (Union Berlin) und Martin Erlić (Midtjylland). Nachnominiert: Marin Pongračić, Kristijan Jakić, Lovro Majer.",
+    textHr: "Zbog ozljeda otkazali: Josip Juranović (Union Berlin) i Martin Erlić (Midtjylland). Naknadno pozvani: Marin Pongračić, Kristijan Jakić, Lovro Majer.",
     source: "HNS, 21.09.2026",
     url: "https://hns.team/vijesti/31751/slaven-bilic-aktivirao-pretpozive-marinu-pongracicu-kristijanu-jakicu-i-lovri-majeru/",
   },

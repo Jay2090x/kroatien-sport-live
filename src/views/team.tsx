@@ -35,6 +35,21 @@ function Events({ m, lang }: { m: TeamMatch; lang: Lang }) {
   );
 }
 
+/** ESPN-Wettbewerbsnamen (englisch) auf deutsche Bezeichnung abbilden; HR über dataLabel. Unbekanntes bleibt neutral. */
+function compDe(c: string): string {
+  const s = c.toLowerCase();
+  const women = /women/.test(s);
+  const u21 = /under-?21|u-?21/.test(s);
+  const pre = women ? "Frauen-" : u21 ? "U21-" : "";
+  if (/world cup qualifying/.test(s)) return `${pre}WM-Qualifikation`;
+  if (/world cup/.test(s)) return `${pre}WM`;
+  if (/(euro|european).*(qualifying)/.test(s)) return `${pre}EM-Qualifikation`;
+  if (/euro|european championship/.test(s)) return `${pre}EM`;
+  if (/nations league/.test(s)) return women ? "Frauen-Nations-League" : "UEFA Nations League";
+  if (/friendl/.test(s)) return "Freundschaftsspiel";
+  return /\b(the|of|and|qualifying|women)\b/i.test(c) ? "" : c;
+}
+
 /** Nur feste Begriffe übersetzen (Hin-/Rückspiel), Rest der ESPN-Notiz weglassen. */
 function roundLabel(r: string | null, lang: Lang): string {
   if (!r) return "";
@@ -61,7 +76,7 @@ function Row({ m, lang }: { m: TeamMatch; lang: Lang }) {
         </span>
       </span>
       <span className="r-comp small muted">
-        {m.competition}
+        {dataLabel(compDe(m.competition), lang)}
         {roundLabel(m.round, lang)}
         {!scored ? ` · ${formatKickoff(m.kickoff, lang)}` : ""}
         {m.venue ? ` · ${m.venue}` : ""}
@@ -172,12 +187,11 @@ export async function TeamView({ team, lang }: { team: TeamKey; lang: Lang }) {
           <h2 id="ts-h">{X.squad}</h2>
           {data?.squad ? (
             <>
-              {data.squad.note && (
-                <p className="small muted">
-                  {lang === "hr" ? "Zadnja nominacija upisana na Wikipediji (izvorni engleski tekst): " : "Letzte auf Wikipedia eingetragene Nominierung (englischer Originaltext): "}
-                  <q lang="en">{data.squad.note}</q>
-                </p>
-              )}
+              <p className="small muted">
+                {lang === "hr"
+                  ? "Zadnja nominacija kako je upisana na Wikipediji (bez jamstva potpunosti)."
+                  : "Letzte Nominierung, wie sie auf Wikipedia eingetragen ist (ohne Gewähr auf Vollständigkeit)."}
+              </p>
               {[...byPos.entries()].map(([pos, ps]) => (
                 <div key={pos}>
                   <p className="label">{pos}</p>

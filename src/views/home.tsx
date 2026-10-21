@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { clipTitle } from "@/lib/clip-title";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VatreniSection } from "@/components/vatreni-section";
@@ -9,6 +10,9 @@ import { TimelineList } from "@/components/timeline";
 import { NewsList } from "@/components/news-list";
 import { Highlights } from "@/components/highlights";
 import { ExtrasCard } from "@/components/fan/extras-card";
+import { PlayerClipsSection } from "@/components/fan/player-clips";
+import { getPlayers } from "@/lib/sources/players";
+import { getPlayerClips } from "@/lib/sources/player-clips";
 import { NoData, Stand } from "@/components/stand";
 import { getVatreni } from "@/lib/sources/vatreni";
 import { getHnl } from "@/lib/sources/hnl";
@@ -28,14 +32,16 @@ import { formatKickoff } from "@/lib/time";
 export async function HomeView({ lang }: { lang: Lang }) {
   const t = dict(lang);
   const now = Date.now();
-  const [vatreni, hnl, news, sport, boxers, videos] = await Promise.all([
+  const [vatreni, hnl, news, sport, boxers, videos, players] = await Promise.all([
     getVatreni(),
     getHnl(),
     getNews(),
     getSport(),
     getBoxers(),
     getVideos(),
+    getPlayers(),
   ]);
+  const pclips = players ? (await getPlayerClips(players.players.map((p) => ({ name: p.name, club: p.club }))))?.data ?? [] : [];
 
   const MAX_CLIPS = 6;
   const feed =
@@ -59,7 +65,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
     : [];
   const otherClips = notFootball(recentVideos(videos?.data ?? [], now))
     .slice(0, Math.max(1, MAX_CLIPS - footballClips))
-    .map((v) => ({ ...v, when: formatKickoff(v.publishedAt, lang) }));
+    .map((v) => ({ ...v, title: clipTitle(v, lang), when: formatKickoff(v.publishedAt, lang) }));
 
   return (
     <>
@@ -73,6 +79,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <VatreniSection data={vatreni} lang={lang} clipFor={feed?.clipFor} />
           <HnlSection hnl={hnl} lang={lang} clipFor={feed?.clipFor} />
           <FeedSection feed={feed} lang={lang} fetchedAt={feedFetchedAt} />
+          <PlayerClipsSection clips={pclips} lang={lang} />
           <ExtrasCard lang={lang} />
         </SportGate>
 

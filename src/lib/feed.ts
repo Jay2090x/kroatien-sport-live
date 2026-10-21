@@ -10,6 +10,7 @@
  *  - Bevorstehende Spiele erscheinen nur, wenn es dazu Schlagzeilen gibt (z. B. Derby).
  *  - Reihenfolge: neueste zuerst.
  */
+import { clipTitle } from "./clip-title";
 import type { NewsItem } from "./sources/news";
 import { pickNews } from "./sources/news";
 import type { Video } from "./sources/videos";
@@ -195,7 +196,7 @@ export function buildFeed(
   }: { vatreni: VatreniData; hnl: HnlData | null; news: NewsItem[]; videos: Video[] },
   { lang, now = Date.now(), maxClips = 5, maxNews = 8 }: { lang: Lang; now?: number; maxClips?: number; maxNews?: number }
 ): Feed {
-  const footballNews = news.filter((n) => n.sport === "football");
+  const footballNews = news.filter((n) => n.sport === "football" && n.lang === lang);
   const used = new Set<string>();
   const takeRelated = (m: FeedMatch, max = 2): NewsItem[] => {
     const rel = footballNews
@@ -245,7 +246,7 @@ export function buildFeed(
     const rel = takeRelated(match);
     const at = [clip.publishedAt, ...rel.map((n) => n.publishedAt)].sort().at(-1)!;
     const id = `story-${match.key}`;
-    entries.push({ type: "story", id, at, match, clip, news: rel });
+    entries.push({ type: "story", id, at, match, clip: { ...clip, title: clipTitle(clip, lang) }, news: rel });
     clipFor[match.key] = id;
     clips++;
   }

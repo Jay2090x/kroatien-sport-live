@@ -131,7 +131,7 @@ export interface PlayerRow {
 export interface PlayersData {
   players: PlayerRow[];
   window: { from: string; to: string; matches: number };
-  squadNote?: { text: string; source: string; url: string };
+  squadNote?: { text: string; textHr: string; source: string; url: string };
   fetchedAt: string;
   gaps: string[];
 }

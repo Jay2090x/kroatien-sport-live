@@ -3,6 +3,7 @@ import { fetchText } from "../http";
 import { HRT_SPORT_CATEGORIES, isCroatianHeadline, type Sport } from "../sport-meta";
 import type { Lang } from "../i18n";
 import { parseRss } from "./rss";
+import { detectLang } from "../lang-detect";
 
 /**
  * Schlagzeilen (nur Titel + Quelle + Zeit + Link zum Original, Originalsprache).
@@ -202,7 +203,11 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
       sport = sportOf(title, "other");
       if (sport === "other") continue;
     }
-    out.push(make(title, it.link, source, iso, feed.lang, sport));
+    // Sprache des Titels prüfen: Google liefert in hl=de auch kroatische/englische Titel und umgekehrt
+    const det = detectLang(title);
+    if (det === "en") continue;
+    const lang = det ?? feed.lang;
+    out.push(make(title, it.link, source, iso, lang, sport));
   }
   return out;
 }
@@ -237,7 +242,7 @@ function recency(n: NewsItem, now: number): number {
  * Auswahl für die Anzeige:
  *  - frisch = höchstens 36 h alt; reicht das nicht für `min` Einträge, werden die
  *    jüngsten älteren (bis 7 Tage) ergänzt.
- *  - Sprache: zuerst Meldungen in der UI-Sprache, dann die andere (DE/HR).
+ *  - Sprache: ausschließlich Meldungen in der Seitensprache (DE bzw. HR).
  *  - Reihenfolge: Interesse + Aktualität, bei Gleichstand neuere zuerst.
  */
 export function pickNews(
@@ -251,8 +256,9 @@ export function pickNews(
   const fresh = valid.filter((n) => now - Date.parse(n.publishedAt) <= 36 * H);
   const rank = (a: NewsItem, b: NewsItem) =>
     b.interest + recency(b, now) - (a.interest + recency(a, now)) || Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
+  // nur Meldungen in der Seitensprache – lieber weglassen als falsche Sprache zeigen
   const own = fresh.filter((n) => n.lang === lang).sort(rank);
-  const other = fresh.filter((n) => n.lang !== lang).sort(rank);
+  const other: NewsItem[] = [];
   let chosen = [...own, ...other].slice(0, max);
   if (perSport) {
     // pro Sportart höchstens `perSport`, damit der Filter überall etwas findet
@@ -265,7 +271,7 @@ export function pickNews(
   }
   if (chosen.length < min) {
     const older = valid
-      .filter((n) => !chosen.includes(n))
+      .filter((n) => n.lang === lang && !chosen.includes(n))
       .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
     chosen = [...chosen, ...older.slice(0, min - chosen.length)];
   }
@@ -283,5 +289,5 @@ async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v6"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v7"], REVALIDATE.news, loadNews);
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { clipTitle } from "@/lib/clip-title";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -89,7 +90,8 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
   const tk = await loadMatch(id);
   if (!tk) notFound();
   const croHome = tk.home.id === CRO;
-  const clip = tk.state === "post" ? await clipForMatch(tk.kickoff, croHome) : null;
+  const clipRaw = tk.state === "post" ? await clipForMatch(tk.kickoff, croHome) : null;
+  const clip = clipRaw ? { ...clipRaw, title: clipTitle(clipRaw, lang) } : null;
   const k = Date.parse(tk.kickoff);
   const now = Date.now();
   const live = now >= k - LIVE_WINDOW.before && now <= k + LIVE_WINDOW.after;

@@ -6,6 +6,8 @@ import { dataLabel, dict, type Dict, type Lang } from "@/lib/i18n";
 import { Avatar } from "@/components/avatar";
 import { photoKey } from "@/lib/photos";
 import { Club } from "@/components/club-badge";
+import { ClipItem } from "@/components/fan/player-clips";
+import type { PlayerClip } from "@/lib/sources/player-clips";
 
 function Score({ g }: { g: GameRef }) {
   if (g.homeScore == null || g.awayScore == null) return <span className="pg-vs">–</span>;
@@ -96,7 +98,7 @@ function GameLine({ pg, lang, t }: { pg: PlayerGame; lang: Lang; t: Dict }) {
       </div>
       <div className="pg-sub">
         <span className="pg-comp">{dataLabel(g.competition, lang)}</span>
-        {pg.perf ? <PerfLine p={pg.perf} t={t} /> : <span className="perf perf-na">{pg.perfNote ?? t.players.noPlayerData}</span>}
+        {pg.perf ? <PerfLine p={pg.perf} t={t} /> : <span className="perf perf-na">{pg.perfNote ? dataLabel(pg.perfNote, lang) : t.players.noPlayerData}</span>}
       </div>
     </li>
   );
@@ -133,7 +135,7 @@ function NextLine({ n, lang, t }: { n: PlayerNext; lang: Lang; t: Dict }) {
   );
 }
 
-export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
+export function PlayerCard({ p, lang = "de", clips = [] }: { p: PlayerRow; lang?: Lang; clips?: PlayerClip[] }) {
   const t = dict(lang);
   return (
     <article className="player" aria-labelledby={`pl-${p.id}`}>
@@ -142,9 +144,19 @@ export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
           <Avatar pkey={photoKey.soccer(p.id)} name={p.name} size={44} lang={lang} />
           <h3 id={`pl-${p.id}`}>{p.name}</h3>
         </span>
-        <span className="player-club">{p.club ? <Club name={p.club} size={20} /> : t.players.clubUnknown}</span>
+        <span className="player-club">{p.club ? <Club name={p.club} size={20}>{dataLabel(p.club, lang)}</Club> : t.players.clubUnknown}</span>
       </header>
       <FormCurve form={p.form} lang={lang} />
+      {clips.length > 0 && (
+        <>
+          <p className="label">🎯 {x2(lang).clips.title}</p>
+          <ul className="clips pclips pclips-card">
+            {clips.map((c) => (
+              <ClipItem key={c.id} c={c} lang={lang} showPlayer={false} />
+            ))}
+          </ul>
+        </>
+      )}
       <p className="label">{t.players.next}</p>
       {p.next ? <NextLine n={p.next} lang={lang} t={t} /> : <p className="muted small">{t.players.noNext}</p>}
       <p className="label">{t.players.last}</p>

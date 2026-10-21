@@ -3,6 +3,15 @@ import type { FormPoint } from "../sources/players";
 
 /** Texte für Fan-Paket (Spielseiten, Frauen/U21, Quiz, Formkurve) – DE | HR. */
 const de = {
+  clips: {
+    title: "Spieler-Clips / Traumtore",
+    note: "Tore und starke Szenen kroatischer Nationalspieler aus den letzten 21 Tagen – nur von offiziellen Kanälen (Vereine, Ligen, UEFA, HNS, Sender). Video lädt erst nach Klick (youtube-nocookie.com).",
+    load: "Clip laden (YouTube)",
+    own: "Clip",
+    on: "auf YouTube",
+    channel: "Kanal",
+    more: "Alle Spieler →",
+  },
   nav: { women: "Frauen", u21: "U21", quiz: "Quiz", matches: "Spiele" },
   form: {
     title: "Form (letzte 5 Pflichtspiele)",
@@ -108,6 +117,15 @@ const de = {
 };
 
 const hr: typeof de = {
+  clips: {
+    title: "Golovi i potezi igrača",
+    note: "Golovi i najbolji potezi hrvatskih reprezentativaca iz zadnjih 21 dana – samo sa službenih kanala (klubovi, lige, UEFA, HNS, televizije). Video se učitava tek nakon klika (youtube-nocookie.com).",
+    load: "Učitaj isječak (YouTube)",
+    own: "Isječak",
+    on: "na YouTubeu",
+    channel: "Kanal",
+    more: "Svi igrači →",
+  },
   nav: { women: "Žene", u21: "U21", quiz: "Kviz", matches: "Utakmice" },
   form: {
     title: "Forma (zadnjih 5 službenih utakmica)",

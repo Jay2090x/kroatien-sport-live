@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PlayerCard } from "@/components/player-card";
 import { NoData, Stand } from "@/components/stand";
 import { getPlayers, type PlayerRow } from "@/lib/sources/players";
+import { getPlayerClips } from "@/lib/sources/player-clips";
 import { POSITION_GROUP } from "@/lib/players-meta";
 import { formatShortDate } from "@/lib/time";
 import { dict, href, type Lang } from "@/lib/i18n";
@@ -15,6 +16,7 @@ const POS_HR: Record<string, string> = { Tor: "Vratari", Abwehr: "Obrana", Mitte
 export async function SpielerView({ lang }: { lang: Lang }) {
   const t = dict(lang);
   const data = await getPlayers();
+  const clips = data ? (await getPlayerClips(data.players.map((p) => ({ name: p.name, club: p.club }))))?.data ?? [] : [];
 
   const groups = new Map<string, PlayerRow[]>();
   for (const p of data?.players ?? []) {
@@ -72,7 +74,7 @@ export async function SpielerView({ lang }: { lang: Lang }) {
               </p>
               {data.squadNote && (
                 <p className="footnote">
-                  {data.squadNote.text}{" "}
+                  {lang === "hr" ? data.squadNote.textHr : data.squadNote.text}{" "}
                   <a href={data.squadNote.url} rel="noopener" target="_blank">
                     {t.source}: {data.squadNote.source}
                   </a>
@@ -94,7 +96,7 @@ export async function SpielerView({ lang }: { lang: Lang }) {
             <h2 className="pgroup-h">{label}</h2>
             <div className="players">
               {players.map((p) => (
-                <PlayerCard key={p.id} p={p} lang={lang} />
+                <PlayerCard key={p.id} p={p} lang={lang} clips={clips.filter((c) => c.player === p.name).slice(0, 2)} />
               ))}
             </div>
           </section>
