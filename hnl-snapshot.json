@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-21T06:32:20.257Z",
+ "fetchedAt": "2026-10-21T12:18:05.338Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -701,9 +701,9 @@
    "intHomeScore": null,
    "intAwayScore": null,
    "intRound": "11",
-   "strTimestamp": "2026-10-24T15:00:00",
+   "strTimestamp": "2026-10-24T13:00:00",
    "dateEvent": "2026-10-24",
-   "strTime": "15:00:00",
+   "strTime": "13:00:00",
    "strStatus": "NS",
    "strPostponed": "no"
   },
@@ -714,9 +714,9 @@
    "intHomeScore": null,
    "intAwayScore": null,
    "intRound": "11",
-   "strTimestamp": "2026-10-24T15:00:00",
+   "strTimestamp": "2026-10-24T16:00:00",
    "dateEvent": "2026-10-24",
-   "strTime": "15:00:00",
+   "strTime": "16:00:00",
    "strStatus": "NS",
    "strPostponed": "no"
   }
