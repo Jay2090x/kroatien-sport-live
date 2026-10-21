@@ -37,6 +37,8 @@ export interface TlItem {
   photo?: string;
   /** Fußball: Heim/Gast (übersetzt) mit Vereinsfarben-Kreisen */
   teams?: Array<{ name: string; badge: BadgeSpec }>;
+  /** Link zur Spielseite (bereits sprachspezifisch) */
+  link?: string;
 }
 
 export interface Timeline {
@@ -65,6 +67,8 @@ interface Raw {
   photo?: string;
   /** Fußball: Datennamen Heim/Gast */
   teams?: [string, string];
+  /** Spielseite (DE-Pfad) */
+  link?: string;
 }
 
 /** Deutsche Ergebnis-Texte der Quellen-Module für HR übersetzen (nur feste Begriffe). */
@@ -145,6 +149,7 @@ function fromNt(m: NtMatch, lang: Lang): Raw {
     live: m.state === "in",
     result: scored ? `${m.homeScore}:${m.awayScore}${m.extra ? ` (${lang === "hr" ? m.extra.replace("n. E.", "nakon penala") : m.extra})` : ""}` : undefined,
     outcome: m.state === "post" ? ntOutcome(m) : undefined,
+    link: m.id.startsWith("espn-") ? `/vatreni/spiel/${m.id.slice(5)}` : undefined,
   };
 }
 
@@ -200,6 +205,7 @@ function finish(r: Raw, lang: Lang, now: number): TlItem {
     outcome: r.outcome,
     detail: tr(r.detail, lang),
     photo: r.photo,
+    link: r.link ? (lang === "hr" ? `/hr${r.link}` : r.link) : undefined,
     teams: r.teams?.map((n) => ({ name: dataLabel(n, lang), badge: badgeFor(n) })),
   };
 }

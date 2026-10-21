@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Impressum", alternates: { canonical: "/impressum" } };
+export const metadata: Metadata = { title: "Impressum", alternates: { canonical: "/impressum" }, robots: { index: true, follow: true } };
 
 export default function ImpressumPage() {
   return (

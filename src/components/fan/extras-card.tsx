@@ -14,6 +14,10 @@ export function ExtrasCard({ lang }: { lang: Lang }) {
     ["/em-2028", L.euro],
     ["/talente", L.talents],
     ["/kalender", L.calendar],
+    ["/vatreni", lang === "hr" ? "📋 Utakmice Vatrenih" : "📋 Vatreni-Spielberichte"],
+    ["/frauen", lang === "hr" ? "👩 Ženska reprezentacija" : "👩 Frauen-Nationalteam"],
+    ["/u21", "🌱 U21"],
+    ["/quiz", lang === "hr" ? "🧠 Kviz o Vatrenima" : "🧠 Vatreni-Quiz"],
   ];
   return (
     <section id="extras" className="card span-2 extras" aria-labelledby="extras-h">

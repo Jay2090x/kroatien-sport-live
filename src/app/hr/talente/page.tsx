@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { seo } from "@/lib/seo";
 import { TalenteView } from "@/views/talente";
 import { fan } from "@/lib/fan/i18n";
 
@@ -9,8 +10,7 @@ const f = fan("hr").talents;
 export const metadata: Metadata = {
   title: f.metaTitle,
   description: f.metaDesc,
-  alternates: { canonical: "/hr/talente", languages: { de: "/talente", hr: "/hr/talente" } },
-  openGraph: { locale: "hr_HR" },
+  ...seo("/talente", "hr", f.metaTitle, f.metaDesc),
 };
 
 export default function TalentePageHr() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { seo } from "@/lib/seo";
 import { SpielerView } from "@/views/spieler";
 import { dict } from "@/lib/i18n";
 
@@ -13,7 +14,7 @@ const t = dict("de");
 export const metadata: Metadata = {
   title: t.players.metaTitle,
   description: t.players.metaDesc,
-  alternates: { canonical: "/spieler", languages: { de: "/spieler", hr: "/hr/spieler" } },
+  ...seo("/spieler", "de", t.players.metaTitle, t.players.metaDesc),
 };
 
 export default function SpielerPage() {

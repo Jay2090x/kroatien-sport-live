@@ -121,6 +121,9 @@ export function VatreniSection({
                           {m.homeScore}:{m.awayScore}
                         </span>
                         <Team name={m.away} strong={!m.croatiaIsHome} lang={lang} />
+                        <Link className="r-report" href={href(lang, `/vatreni/spiel/${m.id.replace(/^espn-/, "")}`)}>
+                          📋 {lang === "hr" ? "Izvještaj" : "Spielbericht"}
+                        </Link>
                         {m.extra && <span className="r-extra">{lang === "hr" ? m.extra.replace("n. E.", "pen.") : m.extra}</span>}
                         <span className="r-comp">{dataLabel(m.competition, lang)}</span>
                         {clipFor[`m-nt-${m.id}`] && (
@@ -149,6 +152,12 @@ export function VatreniSection({
       <p className="more-link more-link-row">
         <Link href={href(lang, "/live")}>{fan(lang).extras.links.live}</Link>
         <Link href={href(lang, "/kalender")}>{fan(lang).extras.links.calendar}</Link>
+        <Link href={href(lang, "/vatreni")}>📋 {lang === "hr" ? "Sve utakmice" : "Alle Spiele"}</Link>
+      </p>
+      <p className="more-link more-link-row">
+        <Link href={href(lang, "/frauen")}>👩 {lang === "hr" ? "Ženska reprezentacija" : "Frauen-Nationalteam"}</Link>
+        <Link href={href(lang, "/u21")}>🌱 U21</Link>
+        <Link href={href(lang, "/quiz")}>🧠 {lang === "hr" ? "Kviz o Vatrenima" : "Vatreni-Quiz"}</Link>
       </p>
 
       {data.group && (

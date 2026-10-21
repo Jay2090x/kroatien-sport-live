@@ -1,4 +1,5 @@
-import type { GameRef, NextLineup, PlayerGame, PlayerNext, PlayerRow } from "@/lib/sources/players";
+import type { FormPoint, GameRef, NextLineup, PlayerGame, PlayerNext, PlayerRow } from "@/lib/sources/players";
+import { x2 } from "@/lib/fan/i18n2";
 import type { Performance } from "@/lib/sources/espn-summary";
 import { formatKickoff, formatShortDate } from "@/lib/time";
 import { dataLabel, dict, type Dict, type Lang } from "@/lib/i18n";
@@ -66,7 +67,17 @@ export function PerfLine({ p, t }: { p: Performance; t: Dict }) {
           {p.assists > 1 ? `${p.assists} ${T.assists}` : T.assist}
         </span>
       )}
-      {p.ownGoals > 0 && <span className="ev">{T.ownGoal}</span>}
+      {p.ownGoals > 0 && (
+        <span className="ev ev-og" title={T.ownGoal}>
+          {T.ownGoal}
+          {p.ownGoalMinutes.length ? ` ${p.ownGoalMinutes.join(", ")}` : ""}
+        </span>
+      )}
+      {p.penMissMinutes.length > 0 && (
+        <span className="ev ev-penmiss" title={t.langLabel === "Jezik" ? "Promašen jedanaesterac" : "Elfmeter verschossen"}>
+          ✖ {t.langLabel === "Jezik" ? "promašen jedanaesterac" : "Elfmeter verschossen"} {p.penMissMinutes.join(", ")}
+        </span>
+      )}
       {p.yellow.map((m, i) => (
         <Card key={`y${i}`} color="y" minute={m} t={t} />
       ))}
@@ -133,6 +144,7 @@ export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
         </span>
         <span className="player-club">{p.club ? <Club name={p.club} size={20} /> : t.players.clubUnknown}</span>
       </header>
+      <FormCurve form={p.form} lang={lang} />
       <p className="label">{t.players.next}</p>
       {p.next ? <NextLine n={p.next} lang={lang} t={t} /> : <p className="muted small">{t.players.noNext}</p>}
       <p className="label">{t.players.last}</p>
@@ -152,5 +164,75 @@ export function PlayerCard({ p, lang = "de" }: { p: PlayerRow; lang?: Lang }) {
         </p>
       ))}
     </article>
+  );
+}
+
+/** Formkurve: Balken = Minuten (0–90), Punkte = Tore/Vorlagen. Reines SVG, kein JS. */
+export function FormCurve({ form, lang }: { form: FormPoint[]; lang: Lang }) {
+  const X = x2(lang).form;
+  if (!form.length) return null;
+  const W = 34;
+  const H = 46;
+  const known = form.filter((f) => f.minutes != null);
+  const mins = known.reduce((a, f) => a + (f.minutes ?? 0), 0);
+  const g = known.reduce((a, f) => a + (f.goals ?? 0), 0);
+  const as = known.reduce((a, f) => a + (f.assists ?? 0), 0);
+  return (
+    <div className="form">
+      <p className="label">
+        {X.title} <span className="muted small">· {X.summary(known.length, form.length, mins, g, as)}</span>
+      </p>
+      <svg
+        className="form-svg"
+        viewBox={`0 0 ${form.length * W} ${H + 14}`}
+        width={form.length * W}
+        height={H + 14}
+        role="img"
+        aria-label={`${X.title}: ${form.map((f) => X.point(f, formatShortDate(f.kickoff, lang))).join("; ")}`}
+      >
+        {form.map((f, i) => {
+          const x = i * W + 6;
+          const h = f.minutes == null ? 0 : Math.max(2, Math.round((Math.min(f.minutes, 90) / 90) * H));
+          return (
+            <g key={i}>
+              <title>{X.point(f, formatShortDate(f.kickoff, lang))}</title>
+              {f.minutes == null ? (
+                <rect x={x} y={H - 10} width={W - 12} height={10} className="form-na" rx={2} />
+              ) : (
+                <rect x={x} y={H - h} width={W - 12} height={h} className={f.isNationalTeam ? "form-nt" : "form-club"} rx={2} />
+              )}
+              {f.minutes == null && (
+                <text x={x + (W - 12) / 2} y={H - 2} className="form-q" textAnchor="middle">?</text>
+              )}
+              {(f.ownGoalMinutes.length > 0 || f.penMissMinutes.length > 0) && (
+                <text x={x + W - 10} y={10} className="form-x" textAnchor="middle">✖</text>
+              )}
+              {Array.from({ length: f.goals ?? 0 }).map((_, k) => (
+                <circle key={`g${k}`} cx={x + (W - 12) / 2} cy={H - h - 5 - k * 7} r={3} className="form-goal" />
+              ))}
+              {Array.from({ length: f.assists ?? 0 }).map((_, k) => (
+                <circle key={`a${k}`} cx={x + (W - 12) / 2} cy={H - h - 5 - ((f.goals ?? 0) + k) * 7} r={3} className="form-assist" />
+              ))}
+              <text x={x + (W - 12) / 2} y={H + 11} className="form-d" textAnchor="middle">
+                {formatShortDate(f.kickoff, lang).slice(0, 5)}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      {form.some((f) => f.ownGoalMinutes.length || f.penMissMinutes.length || f.redMinute) && (
+        <ul className="form-special small">
+          {form.flatMap((f) => {
+            const d = `${formatShortDate(f.kickoff, lang)} ${f.label}`;
+            return [
+              ...f.ownGoalMinutes.map((m) => <li key={`og${f.kickoff}${m}`} className="ev-og">⚽ {X.ownGoal} {m} · {d}</li>),
+              ...f.penMissMinutes.map((m) => <li key={`pm${f.kickoff}${m}`} className="ev-penmiss">✖ {X.penMiss} {m} · {d}</li>),
+              ...(f.redMinute ? [<li key={`r${f.kickoff}`}><span className="cardicon cardicon-r" aria-hidden="true" /> {X.red} {f.redMinute !== "?" ? f.redMinute : ""} · {d}</li>] : []),
+            ];
+          })}
+        </ul>
+      )}
+      <p className="form-legend small muted">{X.legend}</p>
+    </div>
   );
 }

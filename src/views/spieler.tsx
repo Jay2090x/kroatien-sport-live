@@ -7,6 +7,8 @@ import { getPlayers, type PlayerRow } from "@/lib/sources/players";
 import { POSITION_GROUP } from "@/lib/players-meta";
 import { formatShortDate } from "@/lib/time";
 import { dict, href, type Lang } from "@/lib/i18n";
+import { JsonLd, breadcrumbs } from "@/components/json-ld";
+import { SITE } from "@/lib/site";
 
 const POS_HR: Record<string, string> = { Tor: "Vratari", Abwehr: "Obrana", Mittelfeld: "Vezni red", Angriff: "Napad" };
 
@@ -23,6 +25,32 @@ export async function SpielerView({ lang }: { lang: Lang }) {
 
   return (
     <>
+      {data && (
+        <JsonLd
+          data={[
+            breadcrumbs([
+              { name: SITE.name, url: `${SITE.url}${href(lang, "/")}` },
+              { name: t.players.h1, url: `${SITE.url}${href(lang, "/spieler")}` },
+            ]),
+            {
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: t.players.metaTitle,
+              itemListElement: data.players.map((p, i) => ({
+                "@type": "ListItem",
+                position: i + 1,
+                item: {
+                  "@type": "Person",
+                  name: p.name,
+                  nationality: { "@type": "Country", name: "Croatia" },
+                  ...(p.club ? { affiliation: { "@type": "SportsTeam", name: p.club } } : {}),
+                  memberOf: { "@type": "SportsTeam", name: "Croatia national football team" },
+                },
+              })),
+            },
+          ]}
+        />
+      )}
       <SiteHeader current="spieler" lang={lang} path="/spieler" />
       <main className="container page-spieler">
         <section className="card" aria-labelledby="spieler-h">

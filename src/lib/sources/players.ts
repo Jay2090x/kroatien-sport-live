@@ -101,8 +101,25 @@ export interface PlayerNote {
   text: string;
 }
 
+/** Ein Punkt der Formkurve (abgeschlossenes Pflichtspiel, neuestes zuletzt) */
+export interface FormPoint {
+  kickoff: string;
+  label: string; // "Gegner (Wettbewerb)"
+  isNationalTeam: boolean;
+  /** null = keine Spielerdaten für dieses Spiel */
+  minutes: number | null;
+  played: boolean | null;
+  goals: number | null;
+  assists: number | null;
+  ownGoalMinutes: string[];
+  penMissMinutes: string[];
+  redMinute: string | null;
+}
+
 export interface PlayerRow {
   id: string;
+  /** letzte 5 Pflichtspiele (Verein + Kroatien), ältestes zuerst */
+  form: FormPoint[];
   name: string;
   position: string; // G | D | M | F | ?
   club: string | null;
@@ -289,7 +306,7 @@ export async function loadSquadBase(now: number, opts: { withHnl?: boolean } = {
     let p = summaryMemo.get(key);
     if (!p) {
       p = cachedSource(
-        ["players", "summary", eventId, final ? "final" : "near"],
+        ["players", "summary2", eventId, final ? "final" : "near"],
         final ? PLAYER_REVALIDATE.final : PLAYER_REVALIDATE.near,
         () => loadSummary(slug, eventId)
       );
@@ -370,6 +387,42 @@ export async function loadSquadBase(now: number, opts: { withHnl?: boolean } = {
       fetchedAts.push(s.fetchedAt);
     }
   });
+
+  // 4b) Wettbewerbs-Spielpläne ergänzen: ESPN-Teamspielpläne sind teils lückenhaft
+  //     (z. B. fehlende Pokal-/Ligaspiele). Deshalb zusätzlich die Monats-Scoreboards
+  //     aller Wettbewerbe, in denen die Vereine zuletzt/demnächst spielen.
+  const slugs = new Set<string>();
+  for (const gs of clubGames.values())
+    for (const g of gs)
+      if (g.slug && Math.abs(Date.parse(g.kickoff) - now) <= 150 * 24 * H) slugs.add(g.slug);
+  const monthsAhead = [-1, 0, 1].map((i) => {
+    const d = new Date(now);
+    const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + i, 1));
+    return `${x.getUTCFullYear()}${String(x.getUTCMonth() + 1).padStart(2, "0")}`;
+  });
+  const jobs = [...slugs].flatMap((slug) => monthsAhead.map((m) => ({ slug, m })));
+  const boards = await mapLimit(jobs, 4, ({ slug, m }) =>
+    cachedSource(["players", "board", slug, m], PLAYER_REVALIDATE.base, async () => {
+      const evs = await loadEvents(`${SITE_API}/${slug}/scoreboard?dates=${m}`);
+      return evs.map((e) => mapClubEvent({ ...e, league: { ...(e.league ?? {}), slug } })).filter((g): g is GameRef => !!g);
+    })
+  );
+  const teamSet = new Set(clubGames.keys());
+  let added = 0;
+  for (const b of boards) {
+    for (const g of b?.data ?? []) {
+      for (const tid of [g.homeId, g.awayId]) {
+        if (!tid || !teamSet.has(tid)) continue;
+        const list = clubGames.get(tid)!;
+        const i = list.findIndex((x) => x.id === g.id);
+        if (i === -1) {
+          list.push(g);
+          added++;
+        } else if (list[i].state === "pre" && g.state !== "pre") list[i] = g; // aktuellerer Stand
+      }
+    }
+  }
+  if (added) for (const list of clubGames.values()) list.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
 
   // HNL-Ligaspiele (nicht bei ESPN) über TheSportsDB
   let hnlMatches: HnlMatch[] | null = null;
@@ -501,6 +554,37 @@ async function loadPlayers(now: number): Promise<PlayersData> {
     }
     games.sort((a, b) => Date.parse(b.game.kickoff) - Date.parse(a.game.kickoff));
 
+    // Formkurve: letzte 5 abgeschlossene Pflichtspiele (Verein + Kroatien, ab Kaderphase)
+    const pastNt = finishedNt.filter((g) => Date.parse(g.kickoff) >= windowStart - 60 * 24 * H);
+    const pastClub = cGames.filter((g) => g.state === "post" && g.homeScore != null && Date.parse(g.kickoff) <= now);
+    const last5 = [...pastNt, ...pastClub]
+      .filter((g, i, arr) => arr.findIndex((x) => x.source === g.source && x.id === g.id) === i)
+      .sort((a, b) => Date.parse(b.kickoff) - Date.parse(a.kickoff))
+      .slice(0, 5)
+      .reverse();
+    const form: FormPoint[] = await Promise.all(
+      last5.map(async (g) => {
+        const side = g.isNationalTeam ? ESPN_CROATIA_ID : teamId;
+        const isHome = g.isNationalTeam ? g.homeId === ESPN_CROATIA_ID : isHomeFor(g);
+        const opp = isHome ? g.away : g.home;
+        const base = { kickoff: g.kickoff, label: `${opp} (${g.competition})`, isNationalTeam: g.isNationalTeam };
+        if (g.source !== "espn" || !side) return { ...base, minutes: null, played: null, goals: null, assists: null, ownGoalMinutes: [], penMissMinutes: [], redMinute: null };
+        const s = await summary(g.slug!, g.id, g.kickoff, true);
+        const p = s ? performanceOf(s.data, side, id) : null;
+        if (!p || !p.rosterAvailable) return { ...base, minutes: null, played: null, goals: null, assists: null, ownGoalMinutes: [], penMissMinutes: [], redMinute: null };
+        return {
+          ...base,
+          played: p.played,
+          minutes: p.played ? p.minutes : 0,
+          goals: p.played ? p.goals : 0,
+          assists: p.played ? p.assists ?? 0 : 0,
+          ownGoalMinutes: p.ownGoalMinutes,
+          penMissMinutes: p.penMissMinutes,
+          redMinute: p.red,
+        };
+      })
+    );
+
     // Nächstes Spiel (Verein oder Kroatien)
     const upcoming = (g: GameRef) =>
       (g.state === "pre" && Date.parse(g.kickoff) >= now - 3 * H) || g.state === "in";
@@ -546,6 +630,7 @@ async function loadPlayers(now: number): Promise<PlayersData> {
       position: athlete?.position && POSITION_GROUP[athlete.position] ? athlete.position : "?",
       club,
       games,
+      form,
       next,
       notes,
     };

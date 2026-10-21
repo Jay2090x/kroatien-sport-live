@@ -33,7 +33,7 @@ interface RawSummary {
 }
 
 export interface SummaryEvent {
-  kind: "goal" | "penalty" | "owngoal" | "yellow" | "red" | "sub";
+  kind: "goal" | "penalty" | "owngoal" | "penmiss" | "yellow" | "red" | "sub";
   minute: string; // Anzeige, z. B. "45+2'"
   base: number | null; // Minute ohne Nachspielzeit
   athleteIds: string[]; // bei Wechsel: [rein, raus]
@@ -72,6 +72,7 @@ function kindOf(text: string): SummaryEvent["kind"] | null {
   const t = text.toLowerCase();
   if (t.includes("own goal")) return "owngoal";
   if (t.startsWith("penalty - scored")) return "penalty";
+  if (t.startsWith("penalty - missed") || t.startsWith("penalty - saved")) return "penmiss";
   if (t.startsWith("goal")) return "goal";
   if (t.includes("red card")) return "red";
   if (t.includes("yellow card")) return "yellow";
@@ -141,6 +142,10 @@ export interface Performance {
   goalMinutes: string[];
   assists: number | null;
   ownGoals: number;
+  /** Minuten der Eigentore */
+  ownGoalMinutes: string[];
+  /** Minuten verschossener/gehaltener Elfmeter (im Spiel, nicht im Elfmeterschießen) */
+  penMissMinutes: string[];
   yellow: string[]; // Minuten
   red: string | null; // Minute
 }
@@ -163,6 +168,8 @@ export function performanceOf(
     goalMinutes: [],
     assists: null,
     ownGoals: 0,
+    ownGoalMinutes: [],
+    penMissMinutes: [],
     yellow: [],
     red: null,
   };
@@ -202,6 +209,8 @@ export function performanceOf(
     goalMinutes: goalEvs.map((e) => e.minute),
     assists: stat("goalAssists"),
     ownGoals: stat("ownGoals") ?? mine("owngoal").length,
+    ownGoalMinutes: mine("owngoal").map((e) => e.minute),
+    penMissMinutes: mine("penmiss").map((e) => e.minute),
     yellow: yellowEvs.length
       ? yellowEvs.map((e) => e.minute)
       : Array.from({ length: stat("yellowCards") ?? 0 }, () => "?"),

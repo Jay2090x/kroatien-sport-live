@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { seo } from "@/lib/seo";
 import { Em2028View } from "@/views/em2028";
 import { fan } from "@/lib/fan/i18n";
 
@@ -9,8 +10,7 @@ const f = fan("hr").euro;
 export const metadata: Metadata = {
   title: f.metaTitle,
   description: f.metaDesc,
-  alternates: { canonical: "/hr/em-2028", languages: { de: "/em-2028", hr: "/hr/em-2028" } },
-  openGraph: { locale: "hr_HR" },
+  ...seo("/em-2028", "hr", f.metaTitle, f.metaDesc),
 };
 
 export default function Em2028PageHr() {

@@ -94,6 +94,11 @@ export function TimelineList({
                     </p>
                   )}
                   {i.detail && <p className="si-detail">{i.detail}</p>}
+                  {i.link && (
+                    <p className="si-link">
+                      <a href={i.link}>📋 {lang === "hr" ? "Izvještaj utakmice" : "Spielbericht"} →</a>
+                    </p>
+                  )}
                 </div>
               </li>
             ))}

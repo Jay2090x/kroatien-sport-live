@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { seo } from "@/lib/seo";
 import { SpielerView } from "@/views/spieler";
 import { dict } from "@/lib/i18n";
 
@@ -9,8 +10,7 @@ const t = dict("hr");
 export const metadata: Metadata = {
   title: t.players.metaTitle,
   description: t.players.metaDesc,
-  alternates: { canonical: "/hr/spieler", languages: { de: "/spieler", hr: "/hr/spieler" } },
-  openGraph: { locale: "hr_HR" },
+  ...seo("/spieler", "hr", t.players.metaTitle, t.players.metaDesc),
 };
 
 export default function SpielerPageHr() {

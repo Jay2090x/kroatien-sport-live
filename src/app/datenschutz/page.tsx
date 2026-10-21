@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Datenschutz", alternates: { canonical: "/datenschutz" } };
+export const metadata: Metadata = { title: "Datenschutz", alternates: { canonical: "/datenschutz" }, robots: { index: true, follow: true } };
 
 export default function DatenschutzPage() {
   return (

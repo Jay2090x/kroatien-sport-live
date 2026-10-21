@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Sprachwahl: ?lang=hr|de oder Cookie "lang" (gesetzt beim Umschalten).
  * Nur für die Inhaltsseiten; alles andere (API, Kalenderdateien) bleibt unberührt.
  */
-const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/bildnachweise"]);
+const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/bildnachweise", "/vatreni", "/frauen", "/u21", "/quiz"]);
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -20,7 +20,7 @@ export function middleware(req: NextRequest) {
     res.cookies.set("lang", q, { path: "/", maxAge: 31536000, sameSite: "lax" });
     return res;
   }
-  if (!isHr && DE_PATHS.has(url.pathname) && req.cookies.get("lang")?.value === "hr") {
+  if (!isHr && (DE_PATHS.has(url.pathname) || url.pathname.startsWith("/vatreni/spiel/")) && req.cookies.get("lang")?.value === "hr") {
     const target = url.clone();
     target.pathname = url.pathname === "/" ? "/hr" : `/hr${url.pathname}`;
     return NextResponse.redirect(target);
@@ -39,6 +39,11 @@ export const config = {
     "/talente",
     "/kalender",
     "/bildnachweise",
+    "/vatreni",
+    "/vatreni/spiel/:id",
+    "/frauen",
+    "/u21",
+    "/quiz",
     "/hr",
     "/hr/sport",
     "/hr/spieler",
@@ -48,5 +53,10 @@ export const config = {
     "/hr/talente",
     "/hr/kalender",
     "/hr/bildnachweise",
+    "/hr/vatreni",
+    "/hr/vatreni/spiel/:id",
+    "/hr/frauen",
+    "/hr/u21",
+    "/hr/quiz",
   ],
 };

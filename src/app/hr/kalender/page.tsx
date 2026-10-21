@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { seo } from "@/lib/seo";
 import { KalenderView } from "@/views/kalender";
 import { fan } from "@/lib/fan/i18n";
 
@@ -9,8 +10,7 @@ const f = fan("hr").calendar;
 export const metadata: Metadata = {
   title: f.metaTitle,
   description: f.metaDesc,
-  alternates: { canonical: "/hr/kalender", languages: { de: "/kalender", hr: "/hr/kalender" } },
-  openGraph: { locale: "hr_HR" },
+  ...seo("/kalender", "hr", f.metaTitle, f.metaDesc),
 };
 
 export default function KalenderPageHr() {

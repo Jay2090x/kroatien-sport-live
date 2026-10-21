@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { SITE } from "@/lib/site";
 
-export const metadata: Metadata = { title: "Nutzungshinweise", alternates: { canonical: "/nutzung" } };
+export const metadata: Metadata = { title: "Nutzungshinweise", alternates: { canonical: "/nutzung" }, robots: { index: true, follow: true } };
 
 export default function NutzungPage() {
   return (
