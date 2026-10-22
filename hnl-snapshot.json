@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-22T09:37:21.624Z",
+ "fetchedAt": "2026-10-22T14:40:15.449Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -656,19 +656,6 @@
    "strPostponed": "no"
   },
   {
-   "idEvent": "2482570",
-   "strHomeTeam": "Osijek",
-   "strAwayTeam": "Rudeš",
-   "intHomeScore": null,
-   "intAwayScore": null,
-   "intRound": "11",
-   "strTimestamp": "2026-10-24T15:00:00",
-   "dateEvent": "2026-10-24",
-   "strTime": "15:00:00",
-   "strStatus": "NS",
-   "strPostponed": "no"
-  },
-  {
    "idEvent": "2482571",
    "strHomeTeam": "Dinamo Zagreb",
    "strAwayTeam": "Rijeka",
@@ -717,6 +704,19 @@
    "strTimestamp": "2026-10-24T16:00:00",
    "dateEvent": "2026-10-24",
    "strTime": "16:00:00",
+   "strStatus": "NS",
+   "strPostponed": "no"
+  },
+  {
+   "idEvent": "2482570",
+   "strHomeTeam": "Osijek",
+   "strAwayTeam": "Rudeš",
+   "intHomeScore": null,
+   "intAwayScore": null,
+   "intRound": "11",
+   "strTimestamp": "2026-10-25T17:00:00",
+   "dateEvent": "2026-10-25",
+   "strTime": "17:00:00",
    "strStatus": "NS",
    "strPostponed": "no"
   }
