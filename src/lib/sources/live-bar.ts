@@ -1,0 +1,330 @@
+import { cachedSource } from "../cache";
+import { fetchJson } from "../http";
+import { mapLimit } from "../async";
+import { hnlTeam } from "../names";
+import { NBA_PLAYERS } from "../sport-meta";
+import { CLUB_COMPETITION_DE, ESPN_TEAM_TO_HNL, PLAYER_NAME, clubDe } from "../players-meta";
+import { COMPETITION_DE, loadEspnCroatiaMatches, scoreOf, type EspnEvent } from "./espn";
+import { LIVE_WINDOW, getLiveOverview, getTicker } from "./live";
+import { loadSquadBase } from "./players";
+import { getOfficialSchedule } from "./hnl-official";
+
+/**
+ * Daten für die LIVE-Leiste ganz oben auf jeder Seite.
+ *
+ * Quellen (alle kostenlos, kein Konto):
+ *  - Vatreni: ESPN-Spielbericht (wie der Live-Ticker), nur im Fenster um den Anpfiff
+ *  - Europacup + Ligen der Legionäre: ESPN-Scoreboards (Status "in")
+ *  - NBA (Zubac, Matković, Hezonja): ESPN-NBA-Scoreboard
+ *  - SuperSport HNL: TheSportsDB-Livescore (Free-Key 123) – ESPN führt die HNL nicht
+ *
+ * Es wird nur angezeigt, was eine Quelle ausdrücklich als "läuft gerade" meldet.
+ * Fehlt die Quelle, fehlt der Eintrag – nichts wird geschätzt.
+ */
+
+const H = 3600_000;
+const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports";
+const SB_TTL = 45; // s – Scoreboards
+const EUROPE_SLUGS = ["uefa.champions", "uefa.europa", "uefa.europa.conf"];
+const HNL_LEAGUE = "4629";
+const TSDB_LIVE = "https://www.thesportsdb.com/api/v1/json/123/livescore.php?s=Soccer";
+
+export type LiveKind = "nt" | "hnl" | "europe" | "league" | "nba";
+
+export interface LiveItem {
+  id: string;
+  kind: LiveKind;
+  /** deutsche Datenbezeichnungen (die API übersetzt auf Wunsch ins Kroatische) */
+  competition: string;
+  home: string;
+  away: string;
+  homeScore: number;
+  awayScore: number;
+  /** Spielminute, z. B. "67'", "90+3'", NBA "Q3 5:42"; null = unbekannt */
+  minute: string | null;
+  halftime: boolean;
+  /** Kroaten im Spiel (kurze Namen), leer bei Nationalteam/HNL */
+  players: string[];
+  /** Farbkreis-Kürzel nur für NBA (ESPN-Abkürzung) */
+  abbr?: { home?: string; away?: string };
+}
+
+export interface NextGame {
+  kind: "nt" | "hnl";
+  competition: string;
+  home: string;
+  away: string;
+  kickoff: string;
+}
+
+export interface LiveBarData {
+  items: LiveItem[];
+  next: NextGame | null;
+  fetchedAt: string;
+}
+
+/* ---------- Hilfen (rein, testbar) ---------- */
+
+export function minuteOf(display: string | undefined): string | null {
+  const nums = (display ?? "").match(/\d+/g) ?? [];
+  if (!nums.length) return null;
+  return nums.length > 1 ? `${nums[0]}+${nums[1]}'` : `${nums[0]}'`;
+}
+
+export function surname(full: string): string {
+  const parts = full.trim().split(/\s+/);
+  return parts.length > 1 ? parts.slice(1).join(" ") : full;
+}
+
+interface LiveStatus {
+  live: boolean;
+  halftime: boolean;
+}
+export function liveStatus(e: EspnEvent): LiveStatus {
+  const st = e.competitions?.[0]?.status;
+  const name = (st?.type?.name ?? "").toUpperCase();
+  const live = st?.type?.state === "in" && !st.type.completed;
+  return { live, halftime: live && name.includes("HALFTIME") };
+}
+
+const NBA_PERIOD = (p: number | undefined) => (!p ? "" : p <= 4 ? `Q${p}` : p === 5 ? "OT" : `${p - 4}OT`);
+
+/** ESPN-Event → Live-Eintrag, wenn es läuft und ein getrackter Verein beteiligt ist. */
+export function itemFromEspn(
+  e: EspnEvent,
+  slug: string,
+  kind: LiveKind,
+  tracked: Map<string, string[]>
+): LiveItem | null {
+  const { live, halftime } = liveStatus(e);
+  if (!live) return null;
+  const c = e.competitions?.[0];
+  const home = c?.competitors?.find((x) => x.homeAway === "home");
+  const away = c?.competitors?.find((x) => x.homeAway === "away");
+  if (!home?.team?.id || !away?.team?.id) return null;
+  const hs = scoreOf(home);
+  const as = scoreOf(away);
+  if (hs == null || as == null) return null;
+  const sides = [home.team.id, away.team.id].filter((t) => tracked.has(t));
+  if (!sides.length) return null;
+  const players = [...new Set(sides.flatMap((t) => tracked.get(t) ?? []))];
+  const nba = kind === "nba";
+  const st = c?.status;
+  const minute = nba
+    ? [NBA_PERIOD(st?.period), st?.displayClock].filter(Boolean).join(" ") || null
+    : minuteOf(st?.displayClock);
+  const team = (x: typeof home) => {
+    const n = x.team?.displayName ?? "?";
+    return nba ? n : clubDe(n);
+  };
+  const abbrOf = (x: typeof home) => x.team?.abbreviation;
+  return {
+    id: `${slug}-${e.id}`,
+    kind,
+    competition: nba ? "NBA" : CLUB_COMPETITION_DE[slug] || COMPETITION_DE[slug] || e.league?.name || "Pflichtspiel",
+    home: team(home),
+    away: team(away),
+    homeScore: hs,
+    awayScore: as,
+    minute: halftime ? null : minute,
+    halftime,
+    players,
+    abbr: nba ? { home: abbrOf(home), away: abbrOf(away) } : undefined,
+  };
+}
+
+interface TsdbLive {
+  idEvent?: string;
+  idLeague?: string;
+  strHomeTeam?: string;
+  strAwayTeam?: string;
+  intHomeScore?: string | null;
+  intAwayScore?: string | null;
+  strStatus?: string | null;
+  strProgress?: string | null;
+  strTimestamp?: string | null;
+}
+
+const TSDB_PLAYING = new Set(["1H", "2H", "HT", "ET", "BT", "P", "PEN"]);
+
+/** TheSportsDB-Livescore → SuperSport-HNL-Spiele, die gerade laufen (Zeitstempel-Plausibilität: Anpfiff vor max. 3 h). */
+export function hnlFromLivescore(rows: TsdbLive[], now: number): LiveItem[] {
+  const out: LiveItem[] = [];
+  for (const r of rows) {
+    if (r.idLeague !== HNL_LEAGUE) continue;
+    const status = (r.strStatus ?? "").toUpperCase().trim();
+    if (!TSDB_PLAYING.has(status)) continue;
+    const kick = r.strTimestamp ? Date.parse(`${r.strTimestamp.replace(/Z$/, "")}Z`) : NaN;
+    if (!Number.isFinite(kick) || kick > now + 5 * 60_000 || now - kick > 3 * H) continue;
+    const hs = r.intHomeScore != null && r.intHomeScore !== "" ? Number(r.intHomeScore) : NaN;
+    const as = r.intAwayScore != null && r.intAwayScore !== "" ? Number(r.intAwayScore) : NaN;
+    if (!Number.isFinite(hs) || !Number.isFinite(as) || !r.strHomeTeam || !r.strAwayTeam) continue;
+    const halftime = status === "HT";
+    const prog = r.strProgress && /^\d/.test(r.strProgress) ? minuteOf(r.strProgress) : null;
+    out.push({
+      id: `hnl-${r.idEvent}`,
+      kind: "hnl",
+      competition: "SuperSport HNL",
+      home: hnlTeam(r.strHomeTeam),
+      away: hnlTeam(r.strAwayTeam),
+      homeScore: hs,
+      awayScore: as,
+      minute: halftime ? null : prog,
+      halftime,
+      players: [],
+    });
+  }
+  return out;
+}
+
+const KIND_ORDER: Record<LiveKind, number> = { nt: 0, hnl: 1, europe: 2, league: 3, nba: 4 };
+
+/* ---------- Quellen ---------- */
+
+interface Tracked {
+  /** ESPN-Team-ID → kroatische Spieler (Kurzname) bzw. [] bei kroatischen Vereinen */
+  soccer: Map<string, string[]>;
+  slugs: string[];
+}
+
+/** Kroaten im Nationalkader + ihre Vereine; 30 min gecacht (Basis wird auch von der Spielerseite genutzt). */
+async function trackedSoccer(now: number): Promise<Tracked> {
+  const soccer = new Map<string, string[]>();
+  for (const t of Object.keys(ESPN_TEAM_TO_HNL)) soccer.set(t, []);
+  const slugs = new Set(EUROPE_SLUGS);
+  try {
+    const b = await loadSquadBase(now, { withHnl: false });
+    for (const id of b.ids) {
+      const a = b.athleteById.get(id);
+      if (!a?.teamId) continue;
+      const n = surname(PLAYER_NAME[id] ?? a.name);
+      soccer.set(a.teamId, [...(soccer.get(a.teamId) ?? []), n]);
+    }
+    for (const [t, gs] of b.clubGames)
+      if (soccer.has(t))
+        for (const g of gs)
+          if (g.slug && !/^(uefa|fifa)\./.test(g.slug) && Math.abs(Date.parse(g.kickoff) - now) <= 60 * 24 * H) slugs.add(g.slug);
+  } catch (err) {
+    console.error("[data] live-bar squad failed:", err instanceof Error ? err.message : err);
+  }
+  return { soccer, slugs: [...slugs] };
+}
+
+async function nbaTracked(): Promise<Map<string, string[]>> {
+  const m = new Map<string, string[]>();
+  await mapLimit(NBA_PLAYERS, 3, async (p) => {
+    const a = await cachedSource(["livebar", "nba-athlete", p.espnId], 6 * 3600, async () => {
+      const j = await fetchJson<{ athlete?: { team?: { id?: string } } }>(
+        `https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/${p.espnId}`
+      );
+      if (!j.athlete?.team?.id) throw new Error(`ESPN NBA athlete ${p.espnId}: no team`);
+      return String(j.athlete.team.id);
+    });
+    if (a) m.set(a.data, [...(m.get(a.data) ?? []), surname(p.name)]);
+  });
+  return m;
+}
+
+const ymdUtc = (t: number) => new Date(t).toISOString().slice(0, 10).replace(/-/g, "");
+
+async function scoreboard(path: string, dates: string | null): Promise<EspnEvent[]> {
+  const url = `${ESPN_BASE}/${path}/scoreboard${dates ? `?dates=${dates}` : ""}`;
+  const s = await cachedSource(["livebar", "sb", path, dates ?? "now"], SB_TTL, async () => {
+    const j = await fetchJson<{ events?: EspnEvent[] }>(url, { timeoutMs: 6000, retries: 0 });
+    if (!Array.isArray(j.events)) throw new Error(`ESPN scoreboard ${path}: no events`);
+    return j.events;
+  });
+  return s?.data ?? [];
+}
+
+async function soccerLive(tracked: Tracked, now: number): Promise<LiveItem[]> {
+  // Tagesgrenze UTC: kurz nach Mitternacht läuft noch der Vortag
+  const days = [ymdUtc(now), ...(new Date(now).getUTCHours() < 4 ? [ymdUtc(now - 24 * H)] : [])];
+  const jobs = tracked.slugs.flatMap((slug) => days.map((d) => ({ slug, d })));
+  const res = await mapLimit(jobs, 5, async ({ slug, d }) => {
+    const evs = await scoreboard(`soccer/${slug}`, d);
+    const kind: LiveKind = EUROPE_SLUGS.includes(slug) ? "europe" : "league";
+    return evs.map((e) => itemFromEspn({ ...e, league: { ...(e.league ?? {}), slug } }, slug, kind, tracked.soccer)).filter((x): x is LiveItem => !!x);
+  });
+  return res.flat();
+}
+
+async function nbaLive(): Promise<LiveItem[]> {
+  const tracked = await nbaTracked();
+  if (!tracked.size) return [];
+  const evs = await scoreboard("basketball/nba", null);
+  return evs.map((e) => itemFromEspn(e, "nba", "nba", tracked)).filter((x): x is LiveItem => !!x);
+}
+
+async function hnlLive(now: number): Promise<LiveItem[]> {
+  const s = await cachedSource(["livebar", "tsdb-live"], SB_TTL, async () => {
+    const j = await fetchJson<{ livescore?: TsdbLive[] | null }>(TSDB_LIVE, { timeoutMs: 3000, retries: 0 });
+    if (!("livescore" in j)) throw new Error("TheSportsDB livescore: unexpected format");
+    return j.livescore ?? [];
+  });
+  return s ? hnlFromLivescore(s.data, now) : [];
+}
+
+async function vatreniLive(now: number): Promise<LiveItem[]> {
+  const ov = await getLiveOverview(now);
+  const t = ov?.active;
+  if (!t) return [];
+  const k = Date.parse(t.kickoff);
+  if (now < k - 10 * 60_000 || now > k + LIVE_WINDOW.after) return [];
+  const tk = await getTicker(t.eventId, now);
+  if (!tk || tk.state !== "in" || tk.home.score == null || tk.away.score == null) return [];
+  return [
+    {
+      id: `nt-${tk.eventId}`,
+      kind: "nt",
+      competition: tk.competition,
+      home: tk.home.name,
+      away: tk.away.name,
+      homeScore: tk.home.score,
+      awayScore: tk.away.score,
+      minute: tk.clock === "HT" ? null : minuteOf(tk.clock ?? undefined),
+      halftime: tk.clock === "HT",
+      players: [],
+    },
+  ];
+}
+
+async function nextGame(now: number): Promise<NextGame | null> {
+  const cands: NextGame[] = [];
+  const nt = await cachedSource(["nt", "espn"], 600, loadEspnCroatiaMatches).catch(() => null);
+  const m = nt?.data.matches.find((x) => x.state === "pre" && Date.parse(x.kickoff) > now);
+  if (m) cands.push({ kind: "nt", competition: m.competition, home: m.home, away: m.away, kickoff: m.kickoff });
+  const off = await getOfficialSchedule().catch(() => null);
+  const h = off
+    ?.filter((o) => o.kickoff && Date.parse(o.kickoff) > now && o.homeScore == null)
+    .sort((a, b) => Date.parse(a.kickoff!) - Date.parse(b.kickoff!))[0];
+  if (h?.kickoff) cands.push({ kind: "hnl", competition: "SuperSport HNL", home: h.home, away: h.away, kickoff: h.kickoff });
+  cands.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
+  return cands[0] ?? null;
+}
+
+const settled = async <T>(p: Promise<T[]>, what: string): Promise<T[]> => {
+  try {
+    return await p;
+  } catch (err) {
+    console.error(`[data] live-bar ${what} failed:`, err instanceof Error ? err.message : err);
+    return [];
+  }
+};
+
+export async function getLiveBar(now = Date.now()): Promise<LiveBarData> {
+  const tracked = await trackedSoccer(now);
+  const [nt, hnl, soccer, nba] = await Promise.all([
+    settled(vatreniLive(now), "vatreni"),
+    settled(hnlLive(now), "hnl"),
+    settled(soccerLive(tracked, now), "soccer"),
+    settled(nbaLive(), "nba"),
+  ]);
+  const seen = new Set<string>();
+  const items = [...nt, ...hnl, ...soccer, ...nba]
+    .filter((i) => (seen.has(i.id) ? false : (seen.add(i.id), true)))
+    .sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || b.players.length - a.players.length)
+    .slice(0, 8);
+  const next = items.length ? null : await nextGame(now).catch(() => null);
+  return { items, next, fetchedAt: new Date(now).toISOString() };
+}

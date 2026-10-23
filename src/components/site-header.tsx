@@ -3,6 +3,7 @@ import { SITE } from "@/lib/site";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { LangSwitch } from "./lang-switch";
 import { fan } from "@/lib/fan/i18n";
+import { LiveBar } from "./live-bar";
 
 export function SiteHeader({
   withNav = true,
@@ -19,6 +20,7 @@ export function SiteHeader({
   const t = dict(lang);
   return (
     <header className="site-header">
+      <LiveBar lang={lang} />
       <div className="flagband" aria-hidden="true" />
       <div className="container header-inner">
         <Link href={href(lang, "/")} className="brand">

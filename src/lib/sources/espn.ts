@@ -24,12 +24,13 @@ export interface EspnScore {
 }
 export interface EspnCompetitor {
   homeAway?: "home" | "away";
-  team?: { id?: string; displayName?: string };
+  team?: { id?: string; displayName?: string; abbreviation?: string };
   score?: EspnScore | string | number;
   shootoutScore?: number;
 }
 export interface EspnStatus {
   displayClock?: string;
+  period?: number;
   type?: { name?: string; state?: string; completed?: boolean; shortDetail?: string };
 }
 export interface EspnEvent {
