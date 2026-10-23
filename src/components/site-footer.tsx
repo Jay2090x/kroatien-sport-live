@@ -29,6 +29,9 @@ export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
           <Link href={href(lang, "/bildnachweise")}>{de ? "Bildnachweise" : "izvori fotografija"}</Link>).
         </p>
         <p className="disclaimer">{t.footer.disclaimer}</p>
+        <p className="disclaimer">
+          {de ? "Anonyme, cookielose Besucherstatistik (Vercel Web Analytics)." : "Anonimna statistika posjeta bez kolačića (Vercel Web Analytics)."}
+        </p>
         <nav className="legal" aria-label={t.footer.legal}>
           <Link href="/impressum">{t.footer.imprint}</Link>
           <Link href="/datenschutz">{t.footer.privacy}</Link>
