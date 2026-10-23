@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-23T12:01:27.486Z",
+ "fetchedAt": "2026-10-23T16:58:34.780Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -669,19 +669,6 @@
    "strPostponed": "no"
   },
   {
-   "idEvent": "2482572",
-   "strHomeTeam": "Istra 1961",
-   "strAwayTeam": "Hajduk Split",
-   "intHomeScore": null,
-   "intAwayScore": null,
-   "intRound": "11",
-   "strTimestamp": "2026-10-24T15:00:00",
-   "dateEvent": "2026-10-24",
-   "strTime": "15:00:00",
-   "strStatus": "PST",
-   "strPostponed": "no"
-  },
-  {
    "idEvent": "2482573",
    "strHomeTeam": "HNK Gorica",
    "strAwayTeam": "Lokomotiva Zagreb",
@@ -718,6 +705,19 @@
    "dateEvent": "2026-10-25",
    "strTime": "17:00:00",
    "strStatus": "NS",
+   "strPostponed": "no"
+  },
+  {
+   "idEvent": "2482572",
+   "strHomeTeam": "Istra 1961",
+   "strAwayTeam": "Hajduk Split",
+   "intHomeScore": null,
+   "intAwayScore": null,
+   "intRound": "11",
+   "strTimestamp": "2026-10-26T17:00:00",
+   "dateEvent": "2026-10-26",
+   "strTime": "17:00:00",
+   "strStatus": "PST",
    "strPostponed": "no"
   }
  ]
