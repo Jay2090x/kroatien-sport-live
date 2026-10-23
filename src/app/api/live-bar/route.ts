@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getLiveBar, type LiveBarData, type LiveItem } from "@/lib/sources/live-bar";
+import { attachInfosForFixture, getLiveBar, type LiveBarData, type LiveItem } from "@/lib/sources/live-bar";
 import { badgeFor, type BadgeSpec } from "@/lib/club-badge";
 import { dataLabel, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
+import { playerInfoText } from "@/lib/live-bar-i18n";
 
 /**
  * GET /api/live-bar?lang=de|hr
@@ -26,6 +27,8 @@ export interface LiveBarItemDto {
   minute: string | null;
   halftime: boolean;
   players: string[];
+  /** kurze Live-Infos zu den Kroaten, fertig in der Seitensprache (wichtigste zuerst) */
+  infos: Array<{ text: string; tone: "good" | "warn" | "info" }>;
   href: string;
 }
 
@@ -64,6 +67,7 @@ function toDto(d: LiveBarData, lang: Lang): LiveBarDto {
       minute: i.minute,
       halftime: i.halftime,
       players: i.players.slice(0, 4),
+      infos: (i.infos ?? []).map((x) => ({ text: playerInfoText(lang, x), tone: x.tone })),
       href: href(lang, TARGET[i.kind]),
     })),
     next: d.next
@@ -87,6 +91,7 @@ export async function GET(req: NextRequest) {
   const fixture = process.env.LIVE_BAR_FIXTURE_JSON;
   if (fixture) {
     data = { ...(JSON.parse(fixture) as Omit<LiveBarData, "fetchedAt">), fetchedAt: new Date().toISOString() };
+    await attachInfosForFixture(data.items);
   } else {
     data = await getLiveBar();
   }

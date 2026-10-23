@@ -9,6 +9,8 @@ import type { Lang } from "@/lib/i18n";
 
 const SHOW_DESKTOP = 3;
 const SHOW_MOBILE = 2;
+/** Spieler-Infos je Spiel, die ohne Aufklappen sichtbar sind */
+const INFOS_VISIBLE = 2;
 /** Älter als das → Daten gelten als veraltet, Leiste verschwindet (lieber nichts als falsch). */
 const MAX_AGE_MS = 6 * 60_000;
 
@@ -94,6 +96,8 @@ export function LiveBar({ lang }: { lang: Lang }) {
   const show = mobile ? SHOW_MOBILE : SHOW_DESKTOP;
   const shown = all ? data.items : data.items.slice(0, show);
   const rest = data.items.length - show;
+  const hiddenInfos = shown.reduce((n, i) => n + Math.max(0, i.infos.length - INFOS_VISIBLE), 0);
+  const toggle = rest > 0 ? L.more(rest) : hiddenInfos > 0 ? L.moreInfo(hiddenInfos) : null;
   return (
     <div className="lb lb-live" role="region" aria-label={L.region}>
       <div className="container lb-in">
@@ -102,9 +106,9 @@ export function LiveBar({ lang }: { lang: Lang }) {
             <span className="live-dot" aria-hidden="true" />
             {L.live}
           </span>
-          {rest > 0 && (
+          {toggle && (
             <button type="button" className="lb-more" onClick={() => setAll((v) => !v)} aria-expanded={all}>
-              {all ? L.less : L.more(rest)}
+              {all ? L.less : toggle}
             </button>
           )}
         </div>
@@ -127,10 +131,20 @@ export function LiveBar({ lang }: { lang: Lang }) {
                   </span>
                 </span>
                 <span className="lb-min">{i.halftime ? L.halftime : i.minute ?? ""}</span>
-                {i.players.length > 0 && (
-                  <span className="lb-pl">
-                    {L.croats}: {i.players.join(", ")}
+                {i.infos.length > 0 ? (
+                  <span className="lb-pl lb-infos">
+                    {(all ? i.infos : i.infos.slice(0, INFOS_VISIBLE)).map((x) => (
+                      <span key={x.text} className={`lb-info lb-info-${x.tone}`}>
+                        {x.text}
+                      </span>
+                    ))}
                   </span>
+                ) : (
+                  i.players.length > 0 && (
+                    <span className="lb-pl">
+                      {L.croats}: {i.players.join(", ")}
+                    </span>
+                  )
                 )}
               </Link>
             </li>

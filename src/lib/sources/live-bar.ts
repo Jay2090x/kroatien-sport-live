@@ -4,9 +4,11 @@ import { mapLimit } from "../async";
 import { hnlTeam } from "../names";
 import { NBA_PLAYERS } from "../sport-meta";
 import { CLUB_COMPETITION_DE, ESPN_TEAM_TO_HNL, PLAYER_NAME, clubDe } from "../players-meta";
-import { COMPETITION_DE, loadEspnCroatiaMatches, scoreOf, type EspnEvent } from "./espn";
+import { COMPETITION_DE, ESPN_CROATIA_ID, loadEspnCroatiaMatches, scoreOf, type EspnEvent } from "./espn";
 import { LIVE_WINDOW, getLiveOverview, getTicker } from "./live";
 import { loadSquadBase } from "./players";
+import { nbaInfos, soccerInfos, type PlayerInfo } from "../live-player-info";
+import { parseSummary } from "./espn-summary";
 import { getOfficialSchedule } from "./hnl-official";
 
 /**
@@ -47,6 +49,10 @@ export interface LiveItem {
   players: string[];
   /** Farbkreis-Kürzel nur für NBA (ESPN-Abkürzung) */
   abbr?: { home?: string; away?: string };
+  /** Quelle für die Spieler-Infos (ESPN-Spielbericht), nur für laufende Spiele */
+  ref?: { sport: "soccer" | "nba"; slug: string; eventId: string; sides: string[]; wholeSide?: boolean };
+  /** kurze Live-Infos zu den Kroaten (aus echten Spielberichtsdaten abgeleitet) */
+  infos?: PlayerInfo[];
 }
 
 export interface NextGame {
@@ -130,6 +136,7 @@ export function itemFromEspn(
     halftime,
     players,
     abbr: nba ? { home: abbrOf(home), away: abbrOf(away) } : undefined,
+    ref: { sport: nba ? "nba" : "soccer", slug: nba ? "nba" : slug, eventId: e.id, sides },
   };
 }
 
@@ -185,6 +192,8 @@ interface Tracked {
   /** ESPN-Team-ID → kroatische Spieler (Kurzname) bzw. [] bei kroatischen Vereinen */
   soccer: Map<string, string[]>;
   slugs: string[];
+  /** ESPN-Athleten-ID → Kurzname der Kroaten im Kader */
+  croatById: Map<string, string>;
 }
 
 /** Kroaten im Nationalkader + ihre Vereine; 30 min gecacht (Basis wird auch von der Spielerseite genutzt). */
@@ -192,6 +201,7 @@ async function trackedSoccer(now: number): Promise<Tracked> {
   const soccer = new Map<string, string[]>();
   for (const t of Object.keys(ESPN_TEAM_TO_HNL)) soccer.set(t, []);
   const slugs = new Set(EUROPE_SLUGS);
+  const croatById = new Map<string, string>();
   try {
     const b = await loadSquadBase(now, { withHnl: false });
     for (const id of b.ids) {
@@ -199,6 +209,7 @@ async function trackedSoccer(now: number): Promise<Tracked> {
       if (!a?.teamId) continue;
       const n = surname(PLAYER_NAME[id] ?? a.name);
       soccer.set(a.teamId, [...(soccer.get(a.teamId) ?? []), n]);
+      croatById.set(id, n);
     }
     for (const [t, gs] of b.clubGames)
       if (soccer.has(t))
@@ -207,7 +218,7 @@ async function trackedSoccer(now: number): Promise<Tracked> {
   } catch (err) {
     console.error("[data] live-bar squad failed:", err instanceof Error ? err.message : err);
   }
-  return { soccer, slugs: [...slugs] };
+  return { soccer, slugs: [...slugs], croatById };
 }
 
 async function nbaTracked(): Promise<Map<string, string[]>> {
@@ -285,6 +296,7 @@ async function vatreniLive(now: number): Promise<LiveItem[]> {
       minute: tk.clock === "HT" ? null : minuteOf(tk.clock ?? undefined),
       halftime: tk.clock === "HT",
       players: [],
+      ref: { sport: "soccer", slug: tk.slug, eventId: tk.eventId, sides: [ESPN_CROATIA_ID], wholeSide: true },
     },
   ];
 }
@@ -301,6 +313,44 @@ async function nextGame(now: number): Promise<NextGame | null> {
   if (h?.kickoff) cands.push({ kind: "hnl", competition: "SuperSport HNL", home: h.home, away: h.away, kickoff: h.kickoff });
   cands.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
   return cands[0] ?? null;
+}
+
+const nbaCroats = new Map(NBA_PLAYERS.map((p) => [p.espnId, surname(p.name)]));
+
+/** Spieler-Infos für ein laufendes Spiel: 1 Spielbericht-Abruf, 45 s gecacht; bei Fehler: keine Infos. */
+async function infosFor(item: LiveItem, croatById: Map<string, string>): Promise<PlayerInfo[]> {
+  const r = item.ref;
+  if (!r) return [];
+  const nba = r.sport === "nba";
+  const url = `${ESPN_BASE}/${nba ? "basketball/nba" : `soccer/${r.slug}`}/summary?event=${r.eventId}`;
+  const s = await cachedSource(["livebar", "pinfo2", r.sport, r.eventId], SB_TTL, async () => {
+    const j = await fetchJson<Record<string, unknown>>(url, { timeoutMs: 5000, retries: 0 });
+    if (!j.header) throw new Error(`ESPN summary ${r.eventId}: unexpected format`);
+    if (nba) return nbaInfos(j as Parameters<typeof nbaInfos>[0], nbaCroats);
+    const sum = parseSummary(j as Parameters<typeof parseSummary>[0]);
+    return r.wholeSide
+      ? soccerInfos(sum, r.sides, null, (id, display) => surname(PLAYER_NAME[id] ?? display))
+      : soccerInfos(sum, r.sides, croatById);
+  });
+  return s?.data ?? [];
+}
+
+/** Spieler-Infos nur für die angezeigten, gerade laufenden Spiele (je 1 gecachter Abruf). */
+export async function attachInfos(items: LiveItem[], croatById: Map<string, string>): Promise<void> {
+  await mapLimit(items, 4, async (i) => {
+    try {
+      const infos = await infosFor(i, croatById);
+      if (infos.length) i.infos = infos;
+    } catch (err) {
+      console.error("[data] live-bar infos failed:", err instanceof Error ? err.message : err);
+    }
+  });
+}
+
+/** Nur für lokale Tests mit LIVE_BAR_FIXTURE_JSON: Infos aus echten Spielberichten für Fixture-Spiele mit `ref`. */
+export async function attachInfosForFixture(items: LiveItem[]): Promise<void> {
+  const tracked = await trackedSoccer(Date.now());
+  await attachInfos(items.filter((i) => i.ref), tracked.croatById);
 }
 
 const settled = async <T>(p: Promise<T[]>, what: string): Promise<T[]> => {
@@ -325,6 +375,7 @@ export async function getLiveBar(now = Date.now()): Promise<LiveBarData> {
     .filter((i) => (seen.has(i.id) ? false : (seen.add(i.id), true)))
     .sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || b.players.length - a.players.length)
     .slice(0, 8);
+  await attachInfos(items, tracked.croatById);
   const next = items.length ? null : await nextGame(now).catch(() => null);
   return { items, next, fetchedAt: new Date(now).toISOString() };
 }
