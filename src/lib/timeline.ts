@@ -5,7 +5,7 @@ export type TlLabels = Pick<Dict, "live" | "win" | "loss" | "draw" | "winShort" 
 export function tlLabels(t: Dict): TlLabels {
   return { live: t.live, win: t.win, loss: t.loss, draw: t.draw, winShort: t.winShort, lossShort: t.lossShort, drawShort: t.drawShort };
 }
-import { SPORT_EMOJI, type Sport, type BoxFight } from "./sport-meta";
+import { eventLabel, SPORT_EMOJI, type Sport, type BoxFight } from "./sport-meta";
 import { formatLongDay, formatTime, viennaYmd } from "./time";
 import type { SportData, SportItem } from "./sources/sport";
 import type { VatreniData } from "./sources/vatreni";
@@ -170,7 +170,7 @@ function fromBox(b: BoxerStatus, f: BoxFight, lang: Lang, kind: "next" | "last")
     sport: "boxing",
     who: b.name,
     title: `${t.sport.vs} ${f.opponent}`,
-    meta: [f.event, f.place].filter(Boolean).join(" · "),
+    meta: [f.event ? eventLabel(f.event, lang) : "", f.place].filter(Boolean).join(" · "),
     start: `${f.date}T12:00:00Z`,
     ymd: f.date,
     timeKnown: false,

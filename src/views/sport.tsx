@@ -14,7 +14,7 @@ import { getBoxers, type BoxerStatus } from "@/lib/sources/boxing";
 import { getNews, pickNews } from "@/lib/sources/news";
 import { getVideos, recentVideos } from "@/lib/sources/videos";
 import { buildTimeline, tlLabels } from "@/lib/timeline";
-import { SPORT_EMOJI, type BoxFight } from "@/lib/sport-meta";
+import { eventLabel, SPORT_EMOJI, type BoxFight } from "@/lib/sport-meta";
 import { dict, href, type Dict, type Lang } from "@/lib/i18n";
 import { formatDay, formatKickoff } from "@/lib/time";
 import { Avatar } from "@/components/avatar";
@@ -65,7 +65,7 @@ function BoxFightLine({ f, t, lang, kind }: { f: BoxFight; t: Dict; lang: Lang; 
       <p className="fight-when">
         {formatDay(`${f.date}T12:00:00Z`, lang)}
         {kind === "next" ? ` · ${t.timeOpen}` : ""}
-        {f.event ? ` · ${f.event}` : ""}
+        {f.event ? ` · ${eventLabel(f.event, lang)}` : ""}
         {f.place ? ` · ${f.place}` : ""}
       </p>
       <p className="fight-vs">

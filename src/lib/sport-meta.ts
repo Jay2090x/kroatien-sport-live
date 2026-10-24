@@ -66,6 +66,16 @@ export function sportFromSlug(slug: string | null | undefined): Sport | null {
  * Automatik: Ist auf Wikipedia (Kampfrekord-Tabelle) ein NEUERER Kampf eingetragen
  * als hier, wird der Wikipedia-Eintrag angezeigt. Angekündigte Kämpfe nur mit Quelle.
  */
+/** Event-Namen je Sprache (kuratierte Einträge sind deutsch) */
+const EVENT_HR: Record<string, string> = {
+  "IBF-WM": "borba za IBF naslov svjetskog prvaka",
+  "WBC-Interims-WM": "borba za privremeni WBC naslov",
+  "Profiboxen": "profesionalni boks",
+};
+export function eventLabel(event: string, lang: "de" | "hr"): string {
+  return lang === "hr" ? EVENT_HR[event] ?? event : event;
+}
+
 export interface BoxFight {
   /** Kampftag (Ortszeit) "YYYY-MM-DD" */
   date: string;
