@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-24T12:13:37.226Z",
+ "fetchedAt": "2026-10-24T16:14:25.504Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -672,26 +672,26 @@
    "idEvent": "2482573",
    "strHomeTeam": "HNK Gorica",
    "strAwayTeam": "Lokomotiva Zagreb",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "0",
+   "intAwayScore": "0",
    "intRound": "11",
    "strTimestamp": "2026-10-24T13:00:00",
    "dateEvent": "2026-10-24",
    "strTime": "13:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
    "idEvent": "2482574",
    "strHomeTeam": "Varaždin",
    "strAwayTeam": "Slaven Belupo Koprivnica",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "0",
    "intRound": "11",
    "strTimestamp": "2026-10-24T16:00:00",
    "dateEvent": "2026-10-24",
    "strTime": "16:00:00",
-   "strStatus": "NS",
+   "strStatus": "1H",
    "strPostponed": "no"
   },
   {
