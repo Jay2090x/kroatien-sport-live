@@ -48,3 +48,41 @@ export const REVALIDATE = {
   hnlOldRound: 7 * 24 * 3600, // abgeschlossene, ältere Runden
   day: 24 * 3600,
 } as const;
+
+/* ---------- Kurzzeit-Cache für Live-Daten ---------- */
+
+interface MemoEntry {
+  at: number;
+  data: unknown;
+  pending?: Promise<void>;
+}
+const memo = new Map<string, MemoEntry>();
+
+/**
+ * Live-Quellen (Spielstände): im Speicher der Funktion, `ttlSeconds` frisch.
+ * Anders als unstable_cache wird ein abgelaufener Eintrag NICHT ausgeliefert, sondern
+ * neu geladen (unstable_cache liefert beim ersten Aufruf nach langer Pause den alten Stand).
+ * Schlägt der Abruf fehl, gibt es den letzten guten Stand höchstens `maxStaleSeconds` lang –
+ * mit seinem echten Abrufzeitpunkt, damit die Leiste das Alter ehrlich anzeigen kann.
+ */
+export async function liveSource<T>(
+  keyParts: string[],
+  ttlSeconds: number,
+  loader: () => Promise<T>,
+  maxStaleSeconds = 300
+): Promise<Sourced<T> | null> {
+  const key = keyParts.join("/");
+  const now = Date.now();
+  const e = memo.get(key);
+  if (e && now - e.at < ttlSeconds * 1000) return { data: e.data as T, fetchedAt: new Date(e.at).toISOString() };
+  try {
+    const data = await loader();
+    memo.set(key, { at: Date.now(), data });
+    if (memo.size > 300) memo.delete(memo.keys().next().value as string);
+    return { data, fetchedAt: new Date().toISOString() };
+  } catch (err) {
+    console.error(`[data] ${key} failed:`, err instanceof Error ? err.message : err);
+    if (e && now - e.at < maxStaleSeconds * 1000) return { data: e.data as T, fetchedAt: new Date(e.at).toISOString() };
+    return null;
+  }
+}

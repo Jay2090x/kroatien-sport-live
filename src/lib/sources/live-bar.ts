@@ -1,4 +1,4 @@
-import { cachedSource } from "../cache";
+import { cachedSource, liveSource, type Sourced } from "../cache";
 import { fetchJson } from "../http";
 import { mapLimit } from "../async";
 import { hnlTeam } from "../names";
@@ -26,7 +26,17 @@ import { getOfficialSchedule } from "./hnl-official";
 
 const H = 3600_000;
 const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports";
-const SB_TTL = 45; // s – Scoreboards
+const SB_TTL = 15; // s – Scoreboards/Spielberichte (Kurzzeit-Cache im Speicher, siehe liveSource)
+
+/** ältester Abrufzeitpunkt der Live-Quellen im laufenden getLiveBar-Aufruf */
+let oldestAt: number | null = null;
+function track<T>(s: Sourced<T> | null): Sourced<T> | null {
+  if (s) {
+    const t = Date.parse(s.fetchedAt);
+    if (oldestAt == null || t < oldestAt) oldestAt = t;
+  }
+  return s;
+}
 const EUROPE_SLUGS = ["uefa.champions", "uefa.europa", "uefa.europa.conf"];
 const HNL_LEAGUE = "4629";
 const TSDB_LIVE = "https://www.thesportsdb.com/api/v1/json/123/livescore.php?s=Soccer";
@@ -44,6 +54,8 @@ export interface LiveItem {
   awayScore: number;
   /** Spielminute, z. B. "67'", "90+3'", NBA "Q3 5:42"; null = unbekannt */
   minute: string | null;
+  /** Fußball: läuft die Uhr gerade (nicht Pause/Halbzeit)? Dann darf der Browser die Minute weiterzählen. */
+  clockRunning?: boolean;
   halftime: boolean;
   /** Kroaten im Spiel (kurze Namen), leer bei Nationalteam/HNL */
   players: string[];
@@ -133,6 +145,7 @@ export function itemFromEspn(
     homeScore: hs,
     awayScore: as,
     minute: halftime ? null : minute,
+    clockRunning: !nba && !halftime && minute != null,
     halftime,
     players,
     abbr: nba ? { home: abbrOf(home), away: abbrOf(away) } : undefined,
@@ -177,6 +190,7 @@ export function hnlFromLivescore(rows: TsdbLive[], now: number): LiveItem[] {
       homeScore: hs,
       awayScore: as,
       minute: halftime ? null : prog,
+      clockRunning: !halftime && prog != null && ["1H", "2H", "ET"].includes(status),
       halftime,
       players: [],
     });
@@ -240,11 +254,11 @@ const ymdUtc = (t: number) => new Date(t).toISOString().slice(0, 10).replace(/-/
 
 async function scoreboard(path: string, dates: string | null): Promise<EspnEvent[]> {
   const url = `${ESPN_BASE}/${path}/scoreboard${dates ? `?dates=${dates}` : ""}`;
-  const s = await cachedSource(["livebar", "sb", path, dates ?? "now"], SB_TTL, async () => {
+  const s = track(await liveSource(["livebar", "sb", path, dates ?? "now"], SB_TTL, async () => {
     const j = await fetchJson<{ events?: EspnEvent[] }>(url, { timeoutMs: 6000, retries: 0 });
     if (!Array.isArray(j.events)) throw new Error(`ESPN scoreboard ${path}: no events`);
     return j.events;
-  });
+  }));
   return s?.data ?? [];
 }
 
@@ -268,11 +282,11 @@ async function nbaLive(): Promise<LiveItem[]> {
 }
 
 async function hnlLive(now: number): Promise<LiveItem[]> {
-  const s = await cachedSource(["livebar", "tsdb-live"], SB_TTL, async () => {
+  const s = track(await liveSource(["livebar", "tsdb-live"], SB_TTL, async () => {
     const j = await fetchJson<{ livescore?: TsdbLive[] | null }>(TSDB_LIVE, { timeoutMs: 3000, retries: 0 });
     if (!("livescore" in j)) throw new Error("TheSportsDB livescore: unexpected format");
     return j.livescore ?? [];
-  });
+  }));
   return s ? hnlFromLivescore(s.data, now) : [];
 }
 
@@ -284,6 +298,7 @@ async function vatreniLive(now: number): Promise<LiveItem[]> {
   if (now < k - 10 * 60_000 || now > k + LIVE_WINDOW.after) return [];
   const tk = await getTicker(t.eventId, now);
   if (!tk || tk.state !== "in" || tk.home.score == null || tk.away.score == null) return [];
+  if (tk.fetchedAt) track({ data: null, fetchedAt: tk.fetchedAt });
   return [
     {
       id: `nt-${tk.eventId}`,
@@ -295,6 +310,7 @@ async function vatreniLive(now: number): Promise<LiveItem[]> {
       awayScore: tk.away.score,
       minute: tk.clock === "HT" ? null : minuteOf(tk.clock ?? undefined),
       halftime: tk.clock === "HT",
+      clockRunning: tk.clock !== "HT" && minuteOf(tk.clock ?? undefined) != null,
       players: [],
       ref: { sport: "soccer", slug: tk.slug, eventId: tk.eventId, sides: [ESPN_CROATIA_ID], wholeSide: true },
     },
@@ -323,7 +339,7 @@ async function infosFor(item: LiveItem, croatById: Map<string, string>): Promise
   if (!r) return [];
   const nba = r.sport === "nba";
   const url = `${ESPN_BASE}/${nba ? "basketball/nba" : `soccer/${r.slug}`}/summary?event=${r.eventId}`;
-  const s = await cachedSource(["livebar", "pinfo2", r.sport, r.eventId], SB_TTL, async () => {
+  const s = await liveSource(["livebar", "pinfo2", r.sport, r.eventId], SB_TTL, async () => {
     const j = await fetchJson<Record<string, unknown>>(url, { timeoutMs: 5000, retries: 0 });
     if (!j.header) throw new Error(`ESPN summary ${r.eventId}: unexpected format`);
     if (nba) return nbaInfos(j as Parameters<typeof nbaInfos>[0], nbaCroats);
@@ -363,6 +379,7 @@ const settled = async <T>(p: Promise<T[]>, what: string): Promise<T[]> => {
 };
 
 export async function getLiveBar(now = Date.now()): Promise<LiveBarData> {
+  oldestAt = null;
   const tracked = await trackedSoccer(now);
   const [nt, hnl, soccer, nba] = await Promise.all([
     settled(vatreniLive(now), "vatreni"),
@@ -377,5 +394,7 @@ export async function getLiveBar(now = Date.now()): Promise<LiveBarData> {
     .slice(0, 8);
   await attachInfos(items, tracked.croatById);
   const next = items.length ? null : await nextGame(now).catch(() => null);
-  return { items, next, fetchedAt: new Date(now).toISOString() };
+  // ehrlicher Zeitstempel: Abruf der ältesten verwendeten Live-Quelle
+  const at = oldestAt != null ? Math.min(oldestAt, Date.now()) : now;
+  return { items, next, fetchedAt: new Date(at).toISOString() };
 }

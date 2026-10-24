@@ -8,8 +8,9 @@ import { playerInfoText } from "@/lib/live-bar-i18n";
 /**
  * GET /api/live-bar?lang=de|hr
  * Welche Spiele kroatischer Teams/Spieler laufen gerade? (siehe lib/sources/live-bar.ts)
- * Die Datenquellen sind 45 s gecacht, der CDN-Cache der Antwort 30–60 s – viele Leser
- * lösen so nur wenige Funktionsaufrufe pro Minute aus (Free-Plan-schonend).
+ * Läuft etwas: Quellen 15 s im Speicher, CDN 15 s (+5 s SWR), Browser fragt alle 20 s.
+ * Leerlauf: CDN 60 s (+60 s SWR), Browser alle 3 min – Free-Plan-schonend.
+ * fetchedAt = echter Abrufzeitpunkt der ältesten Live-Quelle, serverTime = Erzeugung der Antwort.
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 25;
@@ -25,6 +26,7 @@ export interface LiveBarItemDto {
   homeScore: number;
   awayScore: number;
   minute: string | null;
+  clockRunning: boolean;
   halftime: boolean;
   players: string[];
   /** kurze Live-Infos zu den Kroaten, fertig in der Seitensprache (wichtigste zuerst) */
@@ -36,6 +38,7 @@ export interface LiveBarDto {
   items: LiveBarItemDto[];
   next: { text: string; competition: string; home: string; away: string; href: string } | null;
   fetchedAt: string;
+  serverTime: string;
   /** Sekunden bis zur nächsten Abfrage */
   pollSec: number;
 }
@@ -65,6 +68,7 @@ function toDto(d: LiveBarData, lang: Lang): LiveBarDto {
       homeScore: i.homeScore,
       awayScore: i.awayScore,
       minute: i.minute,
+      clockRunning: !!i.clockRunning,
       halftime: i.halftime,
       players: i.players.slice(0, 4),
       infos: (i.infos ?? []).map((x) => ({ text: playerInfoText(lang, x), tone: x.tone })),
@@ -80,7 +84,8 @@ function toDto(d: LiveBarData, lang: Lang): LiveBarDto {
         }
       : null,
     fetchedAt: d.fetchedAt,
-    pollSec: d.items.length ? 60 : 180,
+    serverTime: new Date().toISOString(),
+    pollSec: d.items.length ? 20 : 180,
   };
 }
 
@@ -90,7 +95,9 @@ export async function GET(req: NextRequest) {
   // Nur lokal zum Testen der Optik (Umgebungsvariable gibt es auf Vercel nicht).
   const fixture = process.env.LIVE_BAR_FIXTURE_JSON;
   if (fixture) {
-    data = { ...(JSON.parse(fixture) as Omit<LiveBarData, "fetchedAt">), fetchedAt: new Date().toISOString() };
+    // Datei-Pfad erlaubt sich ändernde Fixtures während des Tests
+    const raw = fixture.trim().startsWith("{") ? fixture : (await import("node:fs")).readFileSync(fixture, "utf8");
+    data = { ...(JSON.parse(raw) as Omit<LiveBarData, "fetchedAt">), fetchedAt: new Date().toISOString() };
     await attachInfosForFixture(data.items);
   } else {
     data = await getLiveBar();
@@ -99,7 +106,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(dto, {
     headers: {
       "Cache-Control": dto.items.length
-        ? "public, max-age=0, s-maxage=30, stale-while-revalidate=30"
+        ? "public, max-age=0, s-maxage=15, stale-while-revalidate=5"
         : "public, max-age=0, s-maxage=60, stale-while-revalidate=120",
     },
   });

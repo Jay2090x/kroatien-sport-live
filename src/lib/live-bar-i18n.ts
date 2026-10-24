@@ -13,6 +13,8 @@ export interface LiveBarLabels {
   croats: string;
   oclock: string;
   stand: string;
+  updated: (s: number) => string;
+  delayed: (hhmm: string) => string;
 }
 
 const de: LiveBarLabels = {
@@ -26,6 +28,8 @@ const de: LiveBarLabels = {
   croats: "Kroaten",
   oclock: "Uhr",
   stand: "Stand",
+  updated: (s) => (s < 60 ? `aktualisiert vor ${s} s` : `aktualisiert vor ${Math.floor(s / 60)} min`),
+  delayed: (t) => `Daten verzögert – Stand ${t} Uhr`,
 };
 
 const hr: LiveBarLabels = {
@@ -39,6 +43,8 @@ const hr: LiveBarLabels = {
   croats: "Hrvati",
   oclock: "h",
   stand: "Stanje",
+  updated: (s) => (s < 60 ? `ažurirano prije ${s} s` : `ažurirano prije ${Math.floor(s / 60)} min`),
+  delayed: (t) => `Podaci kasne – stanje ${t} h`,
 };
 
 export const liveBarLabels = (lang: Lang): LiveBarLabels => (lang === "hr" ? hr : de);

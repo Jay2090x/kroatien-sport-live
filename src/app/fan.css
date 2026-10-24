@@ -658,3 +658,22 @@
     flex-basis: 100%;
   }
 }
+.lb-age {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.85;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.lb-age-stale {
+  opacity: 1;
+  font-weight: 800;
+  color: #fff;
+  background: #b45309;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.lb-stale .lb-tag .live-dot {
+  animation: none;
+  opacity: 0.4;
+}
