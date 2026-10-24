@@ -1,7 +1,7 @@
 "use client";
 
 import type { TlItem, TlLabels } from "@/lib/timeline";
-import { SPORT_SLUG } from "@/lib/sport-meta";
+import { sameCategory, SPORT_SLUG } from "@/lib/sport-meta";
 import { useSportFilter } from "./sport-filter";
 import { Avatar } from "./avatar";
 import { BadgeView } from "./badge-view";
@@ -22,7 +22,7 @@ export function TimelineList({
   lang?: Lang;
 }) {
   const [sport] = useSportFilter();
-  const shown = items.filter((i) => !sport || i.sport === sport).slice(0, limit ?? items.length);
+  const shown = items.filter((i) => !sport || sameCategory(i.sport, sport)).slice(0, limit ?? items.length);
   if (shown.length === 0) return <p className="muted">{empty}</p>;
 
   const days: Array<{ ymd: string; label: string; items: TlItem[] }> = [];

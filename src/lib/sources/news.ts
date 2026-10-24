@@ -35,7 +35,7 @@ const g = (q: string, lang: "de" | "hr") =>
   }`;
 
 const GOOGLE_FEEDS: Array<{ url: string; lang: Lang; football: boolean }> = [
-  { url: g("(Kroatien OR Vatreni OR Modrić OR Gvardiol OR Kovačić) Fußball when:2d", "de"), lang: "de", football: true },
+  { url: g("(Kroatien OR Vatreni OR Modrić OR Gvardiol OR Kovačić OR Kramarić OR Perišić OR Livaković OR Baturina) Fußball when:2d", "de"), lang: "de", football: true },
   { url: g("(Soldić OR Hrgović OR Zubac OR Čilić OR Kroatien) (UFC OR Boxen OR NBA OR Tennis OR Handball) when:3d", "de"), lang: "de", football: false },
   { url: g("(HNL OR Vatreni OR Hajduk OR \"Dinamo Zagreb\" OR \"HNK Rijeka\" OR reprezentacija) nogomet when:2d", "hr"), lang: "hr", football: true },
   { url: g("(Soldić OR Hrgović OR Plantić OR Smakići OR UFC OR boks) when:3d", "hr"), lang: "hr", football: false },

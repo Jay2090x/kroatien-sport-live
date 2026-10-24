@@ -6,8 +6,19 @@
 
 export type Sport = "football" | "mma" | "boxing" | "tennis" | "basketball" | "handball";
 
-/** Reihenfolge im Filter */
+/** Alle Sportarten (Daten) */
 export const SPORTS: Sport[] = ["football", "mma", "boxing", "tennis", "basketball", "handball"];
+
+/**
+ * Reihenfolge im Filter. MMA und Boxen sind im Filter eine Kategorie
+ * „Kampfsport“ (Vertreter: "mma"); beide haben denselben Slug.
+ */
+export const FILTER_SPORTS: Sport[] = ["football", "mma", "tennis", "basketball", "handball"];
+
+/** Gleiche Filterkategorie? (MMA und Boxen = Kampfsport) */
+export function sameCategory(a: Sport | "other", b: Sport): boolean {
+  return a !== "other" && SPORT_SLUG[a] === SPORT_SLUG[b];
+}
 
 export const SPORT_EMOJI: Record<Sport, string> = {
   football: "⚽",
@@ -30,17 +41,22 @@ export const SPORT_LABEL: Record<Sport, string> = {
 /** URL-Werte für ?sport= (teilbare Links, in beiden Sprachen gleich) */
 export const SPORT_SLUG: Record<Sport, string> = {
   football: "fussball",
-  mma: "mma",
-  boxing: "boxen",
+  mma: "kampfsport",
+  boxing: "kampfsport",
   tennis: "tennis",
   basketball: "basketball",
   handball: "handball",
 };
 
+/** Alte Filter-URLs bleiben gültig */
+export const LEGACY_SLUGS: Record<string, Sport> = { mma: "mma", boxen: "mma", boks: "mma" };
+
 export function sportFromSlug(slug: string | null | undefined): Sport | null {
   if (!slug) return null;
   const s = slug.toLowerCase();
-  return SPORTS.find((k) => SPORT_SLUG[k] === s) ?? null;
+  // alte Links (?sport=mma / ?sport=boxen) → Kampfsport
+  if (LEGACY_SLUGS[s]) return LEGACY_SLUGS[s];
+  return FILTER_SPORTS.find((k) => SPORT_SLUG[k] === s) ?? null;
 }
 
 /**

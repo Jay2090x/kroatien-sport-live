@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Video } from "@/lib/sources/videos";
-import { SPORT_EMOJI, SPORT_SLUG } from "@/lib/sport-meta";
+import { sameCategory, SPORT_EMOJI, SPORT_SLUG } from "@/lib/sport-meta";
 import { useSportFilter } from "./sport-filter";
 
 /**
@@ -58,7 +58,7 @@ export function Highlights({
   id?: string;
 }) {
   const [sport] = useSportFilter();
-  const shown = videos.filter((v) => !sport || v.sport === sport);
+  const shown = videos.filter((v) => !sport || sameCategory(v.sport, sport));
   if (shown.length === 0) return null; // lieber weglassen als auffüllen
   return (
     <section id={id} className="card span-2" aria-labelledby={`${id}-h`}>

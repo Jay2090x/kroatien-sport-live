@@ -1,6 +1,6 @@
 "use client";
 
-import { SPORT_EMOJI, SPORT_SLUG } from "@/lib/sport-meta";
+import { sameCategory, SPORT_EMOJI, SPORT_SLUG } from "@/lib/sport-meta";
 import type { NewsItem, NewsTag } from "@/lib/sources/news";
 import { useSportFilter } from "./sport-filter";
 
@@ -19,7 +19,7 @@ export function NewsList({
   limit?: number;
 }) {
   const [sport] = useSportFilter();
-  const shown = items.filter((n) => !sport || n.sport === sport).slice(0, limit ?? items.length);
+  const shown = items.filter((n) => !sport || sameCategory(n.sport, sport)).slice(0, limit ?? items.length);
   if (shown.length === 0) return <p className="muted">{empty}</p>;
   return (
     <ul className="news">

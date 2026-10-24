@@ -21,7 +21,7 @@ export function href(lang: Lang, path: string): string {
 }
 
 const de = {
-  tagline: "Vatreni · HNL · MMA · Boxen · mehr",
+  tagline: "Vatreni · HNL · Kampfsport · mehr",
   nav: { vatreni: "Vatreni", players: "Spieler", hnl: "HNL", news: "Feed", sport: "Sport", sections: "Abschnitte" },
   langLabel: "Sprache",
   filter: {
@@ -30,6 +30,7 @@ const de = {
     football: "Fußball",
     mma: "MMA",
     boxing: "Boxen",
+    combat: "Kampfsport",
     tennis: "Tennis",
     basketball: "Basketball",
     handball: "Handball",
@@ -100,7 +101,7 @@ const de = {
   sport: {
     metaTitle: "Alle Sportarten – Termine & Ergebnisse",
     metaDesc:
-      "Kroatische Athletinnen, Athleten und Teams: Fußball, MMA, Boxen, Tennis, Basketball, Handball – Termine chronologisch, Ergebnisse und Schlagzeilen.",
+      "Kroatische Athletinnen, Athleten und Teams: Fußball, Kampfsport (MMA, Boxen), Tennis, Basketball, Handball – Termine chronologisch, Ergebnisse und Schlagzeilen.",
     h1: "Alle Sportarten",
     intro: "Kroatische Athletinnen, Athleten und Teams – alle Termine chronologisch, mit Filter nach Sportart.",
     back: "← Start",
@@ -183,7 +184,7 @@ const de = {
   },
   other: {
     title: "Weitere Sportarten",
-    pill: "MMA · Boxen · Tennis · Basketball · Handball",
+    pill: "Kampfsport · Tennis · Basketball · Handball",
     upcoming: "Demnächst",
     results: "Zuletzt",
     headlines: "Schlagzeilen",
@@ -217,7 +218,7 @@ const de = {
 export type Dict = typeof de;
 
 const hr: Dict = {
-  tagline: "Vatreni · HNL · MMA · Boks · više",
+  tagline: "Vatreni · HNL · borilački sportovi · više",
   nav: { vatreni: "Vatreni", players: "Igrači", hnl: "HNL", news: "Feed", sport: "Sport", sections: "Odjeljci" },
   langLabel: "Jezik",
   filter: {
@@ -226,6 +227,7 @@ const hr: Dict = {
     football: "Nogomet",
     mma: "MMA",
     boxing: "Boks",
+    combat: "Borilački sportovi",
     tennis: "Tenis",
     basketball: "Košarka",
     handball: "Rukomet",
@@ -296,7 +298,7 @@ const hr: Dict = {
   sport: {
     metaTitle: "Svi sportovi – raspored i rezultati",
     metaDesc:
-      "Hrvatski sportaši i momčadi: nogomet, MMA, boks, tenis, košarka, rukomet – termini kronološki, rezultati i naslovi.",
+      "Hrvatski sportaši i momčadi: nogomet, borilački sportovi (MMA, boks), tenis, košarka, rukomet – termini kronološki, rezultati i naslovi.",
     h1: "Svi sportovi",
     intro: "Hrvatske sportašice, sportaši i momčadi – svi termini kronološki, s filtrom po sportu.",
     back: "← Početna",
@@ -379,7 +381,7 @@ const hr: Dict = {
   },
   other: {
     title: "Ostali sportovi",
-    pill: "MMA · boks · tenis · košarka · rukomet",
+    pill: "borilački sportovi · tenis · košarka · rukomet",
     upcoming: "Uskoro",
     results: "Nedavno",
     headlines: "Naslovi",

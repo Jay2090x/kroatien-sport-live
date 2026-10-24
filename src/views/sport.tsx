@@ -92,7 +92,7 @@ function BoxFightLine({ f, t, lang, kind }: { f: BoxFight; t: Dict; lang: Lang; 
 
 function BoxerCard({ b, t, lang }: { b: BoxerStatus; t: Dict; lang: Lang }) {
   return (
-    <section className="card" aria-labelledby={`b-${b.id}`} data-sport="boxen">
+    <section className="card" aria-labelledby={`b-${b.id}`} data-sport="kampfsport">
       <div className="card-head">
         <h2 id={`b-${b.id}`} className="with-av">
           <Avatar pkey={`box:${b.id}`} name={b.name} size={40} lang={lang} />

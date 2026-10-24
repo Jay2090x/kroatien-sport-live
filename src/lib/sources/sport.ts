@@ -29,7 +29,7 @@ const TSDB = "https://www.thesportsdb.com/api/v1/json/123";
 
 export const SPORT_REVALIDATE = {
   base: 3600, // 1 h
-  eventDay: 600, // 10 min, wenn ein Termin in ±3 h liegt
+  eventDay: 300, // 5 min, wenn ein Termin in ±3 h liegt
   mma: 3 * 3600,
   tsdb: 3 * 3600,
   athlete: 6 * 3600,
@@ -97,7 +97,17 @@ async function adaptive<T>(
 ): Promise<Sourced<T> | null> {
   const b = await cachedSource([...key, "base"], base, loader);
   if (b && near(times(b.data), now)) {
-    return (await cachedSource([...key, "near"], SPORT_REVALIDATE.eventDay, loader)) ?? b;
+    const n = (await cachedSource([...key, "near"], SPORT_REVALIDATE.eventDay, loader)) ?? b;
+    // Stale-while-revalidate liefert beim ersten Aufruf nach längerer Pause einen alten
+    // Stand (z. B. Spiel noch „läuft“, obwohl beendet) → dann einmal direkt frisch laden.
+    if (now - Date.parse(n.fetchedAt) > 2 * SPORT_REVALIDATE.eventDay * 1000) {
+      try {
+        return { data: await loader(), fetchedAt: new Date().toISOString() };
+      } catch {
+        return n;
+      }
+    }
+    return n;
   }
   return b;
 }

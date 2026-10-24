@@ -9,8 +9,8 @@ export const maxDuration = 60;
 export const metadata: Metadata = {
   title: { absolute: `${SITE.name} – Vatreni, SuperSport HNL i vijesti` },
   description:
-    "Sljedeća utakmica reprezentacije, rezultati Vatrenih, tablica SuperSport HNL-a, MMA, boks, tenis, košarka, rukomet i vijesti – automatski osvježavano.",
-  ...seo("/", "hr", `${SITE.name} – Vatreni, SuperSport HNL i vijesti`, "Sljedeća utakmica reprezentacije, rezultati Vatrenih, tablica SuperSport HNL-a, MMA, boks, tenis, košarka, rukomet i vijesti – automatski osvježavano.", { title: SITE.name, sub: "Vatreni · SuperSport HNL · Igrači · Live ticker" }),
+    "Sljedeća utakmica reprezentacije, rezultati Vatrenih, tablica SuperSport HNL-a, borilački sportovi (MMA, boks), tenis, košarka, rukomet i vijesti – automatski osvježavano.",
+  ...seo("/", "hr", `${SITE.name} – Vatreni, SuperSport HNL i vijesti`, "Sljedeća utakmica reprezentacije, rezultati Vatrenih, tablica SuperSport HNL-a, borilački sportovi (MMA, boks), tenis, košarka, rukomet i vijesti – automatski osvježavano.", { title: SITE.name, sub: "Vatreni · SuperSport HNL · Igrači · Live ticker" }),
 };
 
 export default function HomePageHr() {
