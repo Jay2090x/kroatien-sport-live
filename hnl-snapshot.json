@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-24T16:14:25.504Z",
+ "fetchedAt": "2026-10-24T18:59:06.471Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -686,12 +686,12 @@
    "strHomeTeam": "Varaždin",
    "strAwayTeam": "Slaven Belupo Koprivnica",
    "intHomeScore": "1",
-   "intAwayScore": "0",
+   "intAwayScore": "2",
    "intRound": "11",
    "strTimestamp": "2026-10-24T16:00:00",
    "dateEvent": "2026-10-24",
    "strTime": "16:00:00",
-   "strStatus": "1H",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
