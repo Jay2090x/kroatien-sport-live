@@ -1490,3 +1490,11 @@ a.av:focus-visible {
 .tk-team .club .cb {
   outline: 2px solid rgba(255, 255, 255, 0.85);
 }
+
+/* Kroatien innovativ */
+.inno-facts { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.inno-fact { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: .7rem .8rem; }
+.inno-fact p { margin: 0 0 .35rem; }
+.inno-fact-title { font-weight: 700; }
+.inno-teaser { padding: .8rem 1rem; }
+.inno-teaser-link { text-decoration: none; display: block; }

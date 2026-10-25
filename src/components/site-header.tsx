@@ -4,6 +4,7 @@ import { dict, href, type Lang } from "@/lib/i18n";
 import { LangSwitch } from "./lang-switch";
 import { fan } from "@/lib/fan/i18n";
 import { LiveBar } from "./live-bar";
+import { inno } from "@/lib/innovation-i18n";
 
 export function SiteHeader({
   withNav = true,
@@ -12,7 +13,7 @@ export function SiteHeader({
   path = "/",
 }: {
   withNav?: boolean;
-  current?: "spieler" | "sport" | "legionaere";
+  current?: "spieler" | "sport" | "legionaere" | "innovativ";
   lang?: Lang;
   /** aktuelle Seite ohne Sprachpräfix, z. B. "/sport" – für den Sprachwechsel */
   path?: string;
@@ -45,6 +46,9 @@ export function SiteHeader({
               <Link href={href(lang, "/#feed")}>{t.nav.news}</Link>
               <Link href={href(lang, "/sport")} aria-current={current === "sport" ? "page" : undefined}>
                 {t.nav.sport}
+              </Link>
+              <Link href={href(lang, "/kroatien-innovativ")} aria-current={path === "/kroatien-innovativ" ? "page" : undefined}>
+                {inno(lang).nav}
               </Link>
               <Link href={href(lang, "/#extras")}>{fan(lang).nav.extras}</Link>
             </nav>

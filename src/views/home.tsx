@@ -24,6 +24,7 @@ import { buildTimeline, tlLabels } from "@/lib/timeline";
 import { buildFeed } from "@/lib/feed";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
+import { inno } from "@/lib/innovation-i18n";
 
 /**
  * Startseite: Fußball zuerst (Vatreni + HNL, darunter der verknüpfte Fußball-Feed
@@ -81,6 +82,11 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <FeedSection feed={feed} lang={lang} fetchedAt={feedFetchedAt} />
           <PlayerClipsSection clips={pclips} lang={lang} />
           <ExtrasCard lang={lang} />
+          <section className="card span-2 inno-teaser" aria-label={inno(lang).h1}>
+            <Link href={href(lang, "/kroatien-innovativ")} className="inno-teaser-link">
+              <span aria-hidden="true">💡</span> <strong>{inno(lang).h1}</strong> · {inno(lang).teaser} →
+            </Link>
+          </section>
         </SportGate>
 
         <NotFootballGate>
