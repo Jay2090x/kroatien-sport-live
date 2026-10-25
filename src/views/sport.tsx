@@ -200,7 +200,7 @@ export async function SportView({ lang }: { lang: Lang }) {
             <h2 className="pgroup-h">{t.sport.notes}</h2>
             {de ? (
               <ul>
-                <li><strong>Reihenfolge:</strong> Termine aufsteigend nach Datum und Uhrzeit (Wiener Zeit), Ergebnisse absteigend. Termine ohne feste Uhrzeit stehen am Ende des jeweiligen Tages („Uhrzeit offen“).</li>
+                <li><strong>Reihenfolge:</strong> Termine aufsteigend nach Datum und Uhrzeit, Ergebnisse absteigend. Termine ohne feste Uhrzeit stehen am Ende des jeweiligen Tages („Uhrzeit offen“).</li>
                 <li><strong>Filter:</strong> gilt für die ganze Seite und steht in der Adresse (z. B. <code>?sport=mma</code>) – Links lassen sich teilen.</li>
                 <li><strong>MMA:</strong> Kampftermine nur, wenn ESPN einen Kampf führt; sonst „kein Kampf angekündigt“. Gerüchte werden nicht angezeigt.</li>
                 <li><strong>Boxen:</strong> Es gibt keine kostenlose Boxen-Datenquelle ohne Konto. Die Kämpfe sind daher von Hand mit mehreren Quellen geprüft (Stand 09.10.2026, Quelle je Kampf angegeben); trägt Wikipedia einen neueren Kampf ein, wird dieser automatisch übernommen. Angekündigt werden nur offiziell bestätigte Kämpfe (z. B. BKFC = Bare-Knuckle-Boxen).</li>

@@ -29,8 +29,8 @@ export async function vatreniCalendar(lang: Lang, now = Date.now()): Promise<Cal
         summary: `${dataLabel(m.home, lang)} – ${dataLabel(m.away, lang)}${score} (${comp})`,
         location: m.venue,
         description: de
-          ? `${comp} · Anstoß ${formatKickoff(m.kickoff, "de")} Uhr (Wiener Zeit). Live-Ticker: ${SITE.url}/live · Quelle: ESPN. Alle Angaben ohne Gewähr.`
-          : `${comp} · Početak ${formatKickoff(m.kickoff, "hr")} (bečko vrijeme). Prijenos uživo: ${SITE.url}/hr/live · Izvor: ESPN. Bez jamstva točnosti.`,
+          ? `${comp} · Anstoß ${formatKickoff(m.kickoff, "de")} Uhr. Live-Ticker: ${SITE.url}/live · Quelle: ESPN. Alle Angaben ohne Gewähr.`
+          : `${comp} · Početak ${formatKickoff(m.kickoff, "hr")}. Prijenos uživo: ${SITE.url}/hr/live · Izvor: ESPN. Bez jamstva točnosti.`,
         url: `${SITE.url}${de ? "/live" : "/hr/live"}`,
         status: m.state === "cancelled" ? "CANCELLED" : m.state === "postponed" ? "TENTATIVE" : "CONFIRMED",
       } satisfies IcsEvent;

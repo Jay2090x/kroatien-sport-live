@@ -164,7 +164,7 @@ const de = {
       "Ob ein Spieler spielt, steht erst mit der offiziellen Aufstellung fest (meist ca. 1 Std. vor Anpfiff). Vorher zeigen wir „Aufstellung noch nicht bekannt“ – es wird nichts geschätzt.",
       "Verletzungen: Dafür gibt es keine verlässliche kostenlose Datenquelle; sie werden daher nicht angezeigt. Sperren werden nur als Regel-Hinweis nach einer Roten Karte genannt.",
       "SuperSport HNL: Ergebnisse und Termine kommen von TheSportsDB; Einsatzdaten (Minuten, Wechsel, Karten) sind dort kostenlos nicht verfügbar.",
-      "Testspiele von Vereinen werden nicht berücksichtigt. Alle Zeiten in Wiener Zeit.",
+      "Testspiele von Vereinen werden nicht berücksichtigt. Alle Zeiten in MEZ/MESZ.",
     ],
   },
   feed: {
@@ -207,7 +207,7 @@ const de = {
   footer: {
     sources: "Datenquellen",
     disclaimer:
-      "Alle Angaben ohne Gewähr. Maßgeblich sind die offiziellen Angaben von HNS, HNL, UEFA und den Veranstaltern. Alle Zeiten in Wiener Zeit (MEZ/MESZ). Kein offizielles Angebot eines Verbands oder Vereins.",
+      "Alle Angaben ohne Gewähr. Maßgeblich sind die offiziellen Angaben von HNS, HNL, UEFA und den Veranstaltern. Alle Zeiten in MEZ/MESZ. Kein offizielles Angebot eines Verbands oder Vereins.",
     legal: "Rechtliches",
     imprint: "Impressum",
     privacy: "Datenschutz",
@@ -361,7 +361,7 @@ const hr: Dict = {
       "Hoće li igrač igrati, zna se tek sa službenim sastavom (obično oko 1 h prije početka). Do tada piše „Sastav još nije poznat“ – ništa se ne procjenjuje.",
       "Ozljede: za to ne postoji pouzdan besplatan izvor podataka pa se ne prikazuju. Suspenzije se navode samo kao napomena nakon crvenog kartona.",
       "SuperSport HNL: rezultati i termini dolaze s TheSportsDB; podaci o nastupima (minute, izmjene, kartoni) ondje nisu besplatno dostupni.",
-      "Prijateljske utakmice klubova se ne uzimaju u obzir. Sva vremena po bečkom (srednjoeuropskom) vremenu.",
+      "Prijateljske utakmice klubova se ne uzimaju u obzir. Sva vremena po srednjoeuropskom vremenu (SEV/SELV).",
     ],
   },
   feed: {
@@ -404,7 +404,7 @@ const hr: Dict = {
   footer: {
     sources: "Izvori podataka",
     disclaimer:
-      "Svi podaci bez jamstva. Mjerodavni su službeni podaci HNS-a, HNL-a, UEFA-e i organizatora. Sva vremena po srednjoeuropskom vremenu (Beč). Nije službena stranica saveza ili kluba.",
+      "Svi podaci bez jamstva. Mjerodavni su službeni podaci HNS-a, HNL-a, UEFA-e i organizatora. Sva vremena po srednjoeuropskom vremenu (SEV/SELV). Nije službena stranica saveza ili kluba.",
     legal: "Pravne informacije",
     imprint: "Impressum",
     privacy: "Zaštita podataka",

@@ -677,3 +677,12 @@
   animation: none;
   opacity: 0.4;
 }
+
+/* LIVE-Leiste beim Scrollen oben anheften (nimmt nur Platz ein, wenn sie angezeigt wird) */
+.lb {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+html:has(.lb-live), html:has(.lb-idle) { scroll-padding-top: 72px; }

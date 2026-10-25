@@ -25,10 +25,10 @@ const de = {
   abroad: {
     metaTitle: "Legionäre & Europacup",
     metaDesc:
-      "Wo spielen Modrić, Gvardiol, Kovačić & Co. am Wochenende? Anstoßzeiten in Wiener Zeit, danach Ergebnis, Minuten, Tore und Karten – plus alle Kroaten im Europacup.",
+      "Wo spielen Modrić, Gvardiol, Kovačić & Co. am Wochenende? Anstoßzeiten, danach Ergebnis, Minuten, Tore und Karten – plus alle Kroaten im Europacup.",
     h1: "Legionäre & Europacup",
     intro:
-      "Alle Spieler des aktuellen Nationalkaders, die im Ausland spielen – mit Anstoß (Wiener Zeit) und nach dem Spiel Minuten, Tore und Karten. Darunter: Kroaten und kroatische Vereine im Europacup.",
+      "Alle Spieler des aktuellen Nationalkaders, die im Ausland spielen – mit Anstoß und nach dem Spiel Minuten, Tore und Karten. Darunter: Kroaten und kroatische Vereine im Europacup.",
     weekend: "Legionäre-Wochenende",
     thisWeekend: "dieses Wochenende",
     nextWeekend: "kommendes Wochenende",
@@ -52,7 +52,7 @@ const de = {
     whatEurope: "Europacup-Daten",
     notes: [
       "„Legionäre“ = Spieler aus den Spieltagskadern der letzten Länderspielphase, deren Verein nicht in der HNL spielt (Quelle: ESPN, Zuordnung über Spieler-IDs).",
-      "Wochenende = Freitag 00:00 bis Montag 24:00 Uhr (Wiener Zeit); von Dienstag bis Donnerstag wird das kommende Wochenende gezeigt.",
+      "Wochenende = Freitag 00:00 bis Montag 24:00 Uhr; von Dienstag bis Donnerstag wird das kommende Wochenende gezeigt.",
       "TV-Sender: Dafür gibt es keine verlässliche kostenlose Datenquelle für Österreich, Deutschland oder Kroatien – deshalb zeigen wir keinen Sender an, statt zu raten.",
       "Ob jemand spielt, steht erst mit der offiziellen Aufstellung fest (meist ca. 1 Std. vor Anpfiff). Vorher steht „Aufstellung noch nicht bekannt“.",
       "Europacup-Spieltag = n-tes Ligaphasen-Spiel des Vereins laut ESPN-Spielplan. Kroaten außerhalb des aktuellen Nationalkaders werden nicht erfasst.",
@@ -98,7 +98,7 @@ const de = {
   },
   euro: {
     metaTitle: "EM-2028-Qualifikation",
-    metaDesc: "Kroatien auf dem Weg zur EURO 2028: Auslosung, Gruppe, Tabelle und Spielplan der Qualifikation in Wiener Zeit.",
+    metaDesc: "Kroatien auf dem Weg zur EURO 2028: Auslosung, Gruppe, Tabelle und Spielplan der Qualifikation.",
     h1: "EM-2028-Qualifikation",
     intro: "Kroatiens Weg zur UEFA EURO 2028 in England, Schottland, Wales, Nordirland und Irland.",
     drawTitle: "Auslosung",
@@ -203,10 +203,10 @@ const hr: FanDict = {
   abroad: {
     metaTitle: "Legionari i europski kupovi",
     metaDesc:
-      "Gdje vikendom igraju Modrić, Gvardiol, Kovačić i ostali? Početak po bečkom vremenu, zatim rezultat, minute, golovi i kartoni – i svi Hrvati u europskim kupovima.",
+      "Gdje vikendom igraju Modrić, Gvardiol, Kovačić i ostali? Početak utakmice, zatim rezultat, minute, golovi i kartoni – i svi Hrvati u europskim kupovima.",
     h1: "Legionari i europski kupovi",
     intro:
-      "Svi igrači aktualnog popisa reprezentacije koji igraju u inozemstvu – s početkom utakmice (bečko vrijeme), a nakon utakmice minute, golovi i kartoni. Ispod: Hrvati i hrvatski klubovi u europskim kupovima.",
+      "Svi igrači aktualnog popisa reprezentacije koji igraju u inozemstvu – s početkom utakmice, a nakon utakmice minute, golovi i kartoni. Ispod: Hrvati i hrvatski klubovi u europskim kupovima.",
     weekend: "Vikend legionara",
     thisWeekend: "ovaj vikend",
     nextWeekend: "nadolazeći vikend",
@@ -230,7 +230,7 @@ const hr: FanDict = {
     whatEurope: "Podaci o europskim kupovima",
     notes: [
       "„Legionari“ = igrači iz zapisnika zadnjeg reprezentativnog okupljanja čiji klub ne igra u HNL-u (izvor: ESPN, povezivanje preko ID-ova igrača).",
-      "Vikend = od petka 00:00 do ponedjeljka 24:00 (bečko vrijeme); od utorka do četvrtka prikazuje se nadolazeći vikend.",
+      "Vikend = od petka 00:00 do ponedjeljka 24:00; od utorka do četvrtka prikazuje se nadolazeći vikend.",
       "TV kanali: za Austriju, Njemačku i Hrvatsku ne postoji pouzdan besplatan izvor podataka – zato ne prikazujemo kanal umjesto da nagađamo.",
       "Tko igra, zna se tek sa službenom postavom (obično oko 1 sat prije početka). Do tada piše „postava još nije poznata“.",
       "Kolo u europskom kupu = n-ta utakmica kluba u ligaškoj fazi prema ESPN rasporedu. Hrvati izvan aktualnog popisa reprezentacije nisu obuhvaćeni.",
@@ -276,7 +276,7 @@ const hr: FanDict = {
   },
   euro: {
     metaTitle: "Kvalifikacije za EURO 2028.",
-    metaDesc: "Hrvatska na putu prema EURU 2028.: ždrijeb, skupina, tablica i raspored kvalifikacija po bečkom vremenu.",
+    metaDesc: "Hrvatska na putu prema EURU 2028.: ždrijeb, skupina, tablica i raspored kvalifikacija.",
     h1: "Kvalifikacije za EURO 2028.",
     intro: "Put Hrvatske do UEFA EURA 2028. u Engleskoj, Škotskoj, Walesu, Sjevernoj Irskoj i Irskoj.",
     drawTitle: "Ždrijeb",

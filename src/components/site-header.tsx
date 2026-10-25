@@ -19,8 +19,9 @@ export function SiteHeader({
 }) {
   const t = dict(lang);
   return (
+    <>
+    <LiveBar lang={lang} />
     <header className="site-header">
-      <LiveBar lang={lang} />
       <div className="flagband" aria-hidden="true" />
       <div className="container header-inner">
         <Link href={href(lang, "/")} className="brand">
@@ -52,5 +53,6 @@ export function SiteHeader({
         </div>
       </div>
     </header>
+    </>
   );
 }
