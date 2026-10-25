@@ -206,7 +206,7 @@ export async function SportView({ lang }: { lang: Lang }) {
                 <li><strong>Boxen:</strong> Es gibt keine kostenlose Boxen-Datenquelle ohne Konto. Die Kämpfe sind daher von Hand mit mehreren Quellen geprüft (Stand 09.10.2026, Quelle je Kampf angegeben); trägt Wikipedia einen neueren Kampf ein, wird dieser automatisch übernommen. Angekündigt werden nur offiziell bestätigte Kämpfe (z. B. BKFC = Bare-Knuckle-Boxen).</li>
                 <li><strong>Tennis:</strong> Matches mit kroatischer Beteiligung (Länderkennung bei ESPN). Bei kommenden Matches nur das Datum – Tennis-Uhrzeiten hängen vom Spielverlauf davor ab.</li>
                 <li><strong>Handball &amp; Basketball:</strong> nächste Spiele über TheSportsDB, Handball-Länderspiele aus dem offiziellen EHF-Spielplan.</li>
-                <li><strong>Schlagzeilen:</strong> nur mit Bezug zu kroatischen Athletinnen, Athleten oder Teams, in Originalsprache, höchstens 36 Stunden alt (sonst werden die jüngsten älteren ergänzt). Gereiht nach Stichwörtern (Derby, Transfer, Vatreni, UFC/Boxen, Rekord …) und Aktualität; es werden keine Texte dazuerfunden.</li>
+                <li><strong>Schlagzeilen:</strong> nur mit Bezug zu kroatischen Athletinnen, Athleten oder Teams, in Originalsprache, bevorzugt höchstens 36 Stunden alt (reicht das nicht, werden die jüngsten älteren bis 7 Tage ergänzt). Dieselbe Geschichte aus mehreren Medien erscheint nur einmal, pro Spieler höchstens zwei Meldungen. Gereiht nach Stichwörtern (Derby, Transfer, Vatreni, UFC/Boxen, Rekord …) und Aktualität; es werden keine Texte dazuerfunden.</li>
                 <li>Für Wasserball, Ski-Weltcup und Leichtathletik gibt es derzeit keine verlässliche kostenlose Datenquelle; sie erscheinen nur in den Schlagzeilen.</li>
                 {data?.gaps.map((g) => <li key={g}>{g}</li>)}
               </ul>
@@ -218,7 +218,7 @@ export async function SportView({ lang }: { lang: Lang }) {
                 <li><strong>Boks:</strong> ne postoji besplatan izvor podataka za boks bez korisničkog računa. Borbe su zato ručno provjerene u više izvora (stanje 9. 10. 2026., izvor naveden uz svaku borbu); ako Wikipedia upiše noviju borbu, automatski se preuzima. Najavljuju se samo službeno potvrđene borbe (npr. BKFC = boks bez rukavica).</li>
                 <li><strong>Tenis:</strong> mečevi s hrvatskim sudjelovanjem (oznaka zemlje na ESPN-u). Za nadolazeće mečeve samo datum.</li>
                 <li><strong>Rukomet i košarka:</strong> sljedeće utakmice preko TheSportsDB-a, utakmice rukometne reprezentacije iz službenog EHF rasporeda.</li>
-                <li><strong>Naslovi:</strong> samo s vezom na hrvatske sportaše ili momčadi, na izvornom jeziku, najviše 36 sati stari. Poredak prema ključnim riječima (derbi, transfer, Vatreni, UFC/boks, rekord …) i svježini; ništa se ne izmišlja.</li>
+                <li><strong>Naslovi:</strong> samo s vezom na hrvatske sportaše ili momčadi, na izvornom jeziku, prvenstveno do 36 sati stari (ako ih je premalo, dodaju se najnoviji stariji do 7 dana). Ista priča iz više medija prikazuje se jednom, najviše dvije vijesti po igraču. Poredak prema ključnim riječima (derbi, transfer, Vatreni, UFC/boks, rekord …) i svježini; ništa se ne izmišlja.</li>
               </ul>
             )}
           </section>

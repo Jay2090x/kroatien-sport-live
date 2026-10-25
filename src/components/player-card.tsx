@@ -244,7 +244,6 @@ export function FormCurve({ form, lang }: { form: FormPoint[]; lang: Lang }) {
           })}
         </ul>
       )}
-      <p className="form-legend small muted">{X.legend}</p>
     </div>
   );
 }

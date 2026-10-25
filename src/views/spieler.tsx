@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlayerCard } from "@/components/player-card";
+import { x2 } from "@/lib/fan/i18n2";
 import { NoData, Stand } from "@/components/stand";
 import { getPlayers, type PlayerRow } from "@/lib/sources/players";
 import { getPlayerClips } from "@/lib/sources/player-clips";
@@ -114,6 +115,12 @@ export async function SpielerView({ lang }: { lang: Lang }) {
               ))}
             </ul>
           </section>
+        )}
+
+        {[...groups.values()].some((ps) => ps.some((p) => p.form?.length)) && (
+          <p className="form-legend small muted" aria-label={lang === "hr" ? "Legenda" : "Legende"}>
+            {x2(lang).form.legend}
+          </p>
         )}
       </main>
       <SiteFooter lang={lang} />

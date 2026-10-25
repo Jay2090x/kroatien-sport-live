@@ -96,7 +96,7 @@ const de = {
     pill: "Links zum Original",
     what: "News",
     sources: "HRT Sport, Google News",
-    note: "Nur deutschsprachige Schlagzeilen, höchstens 36 Stunden alt.",
+    note: "Nur deutschsprachige Schlagzeilen, bevorzugt aus den letzten 36 Stunden; sind es zu wenige, werden ältere bis 7 Tage ergänzt. Gleiche Meldungen mehrerer Medien erscheinen nur einmal.",
   },
   sport: {
     metaTitle: "Alle Sportarten – Termine & Ergebnisse",
@@ -293,7 +293,7 @@ const hr: Dict = {
     pill: "Poveznice na izvor",
     what: "Vijesti",
     sources: "HRT Sport, Google News",
-    note: "Samo naslovi na hrvatskom, najviše 36 sati stari.",
+    note: "Samo naslovi na hrvatskom, prvenstveno iz posljednjih 36 sati; ako ih je premalo, dodaju se stariji do 7 dana. Ista vijest iz više medija prikazuje se samo jednom.",
   },
   sport: {
     metaTitle: "Svi sportovi – raspored i rezultati",

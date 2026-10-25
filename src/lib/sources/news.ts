@@ -232,6 +232,63 @@ export function dedupeNews(all: NewsItem[]): NewsItem[] {
 
 const H = 3600_000;
 
+/** Spielernamen (gefaltet) für Themen-Vielfalt: höchstens PER_PLAYER Meldungen pro Spieler. */
+const PLAYERS = [
+  "modric", "gvardiol", "kovacic", "kramaric", "perisic", "livakovic", "baturina", "budimir", "sucic",
+  "stanisic", "pasalic", "brozovic", "majer", "vlasic", "sosa", "soldic", "hrgovic", "plantic", "smakici",
+  "zubac", "hezonja", "cilic", "dalic",
+];
+const PER_PLAYER = 2;
+/** großgeschriebene Wörter, die kein Ereignis kennzeichnen */
+const GENERIC_CAPS = new Set(
+  "der die das ein eine und mit nach fur bei vor gegen news heute fussball bundesliga liga spieltag zahlen tor tore sieg spiel trainer"
+    .split(" ")
+);
+
+function playersOf(title: string): string[] {
+  const t = fold(title);
+  return PLAYERS.filter((p) => t.includes(p));
+}
+/** Eigennamen-artige Tokens (großgeschrieben, ≥ 3 Zeichen, auch Abkürzungen wie TSG) */
+function capsOf(title: string): Set<string> {
+  const out = new Set<string>();
+  for (const w of title.match(/\p{Lu}[\p{L}\d]{2,}/gu) ?? []) {
+    const f = fold(w).replace(/s$/, "");
+    if (!GENERIC_CAPS.has(f)) out.add(f);
+  }
+  return out;
+}
+
+/**
+ * Gleiche Geschichte aus mehreren Medien zusammenfassen und Themen streuen:
+ *  - gleicher Spieler + gemeinsamer Eigenname (Verein/Gegner) binnen 48 h → dieselbe Geschichte
+ *  - mindestens 3 gemeinsame Eigennamen binnen 48 h → dieselbe Geschichte
+ *  - höchstens PER_PLAYER Meldungen pro Spieler
+ * Erwartet eine nach Wichtigkeit sortierte Liste; die erste Meldung je Geschichte bleibt.
+ */
+export function diversifyNews(ranked: NewsItem[], perPlayer = PER_PLAYER): NewsItem[] {
+  const kept: Array<{ n: NewsItem; pl: string[]; caps: Set<string>; t: number }> = [];
+  const perP = new Map<string, number>();
+  for (const n of ranked) {
+    const pl = playersOf(n.title);
+    const caps = capsOf(n.title);
+    for (const p of pl) caps.delete(p);
+    const t = Date.parse(n.publishedAt);
+    const dup = kept.some((k) => {
+      if (Math.abs(k.t - t) > 48 * H) return false;
+      let shared = 0;
+      for (const c of caps) if (k.caps.has(c)) shared++;
+      const samePlayer = pl.some((p) => k.pl.includes(p));
+      return (samePlayer && shared >= 1) || shared >= 3;
+    });
+    if (dup) continue;
+    if (pl.some((p) => (perP.get(p) ?? 0) >= perPlayer)) continue;
+    for (const p of pl) perP.set(p, (perP.get(p) ?? 0) + 1);
+    kept.push({ n, pl, caps, t });
+  }
+  return kept.map((k) => k.n);
+}
+
 /** Aktualitätsbonus: < 6 h +3, < 12 h +2, < 24 h +1 */
 function recency(n: NewsItem, now: number): number {
   const age = now - Date.parse(n.publishedAt);
@@ -257,7 +314,7 @@ export function pickNews(
   const rank = (a: NewsItem, b: NewsItem) =>
     b.interest + recency(b, now) - (a.interest + recency(a, now)) || Date.parse(b.publishedAt) - Date.parse(a.publishedAt);
   // nur Meldungen in der Seitensprache – lieber weglassen als falsche Sprache zeigen
-  const own = fresh.filter((n) => n.lang === lang).sort(rank);
+  const own = diversifyNews(fresh.filter((n) => n.lang === lang).sort(rank));
   const other: NewsItem[] = [];
   let chosen = [...own, ...other].slice(0, max);
   if (perSport) {
@@ -273,7 +330,9 @@ export function pickNews(
     const older = valid
       .filter((n) => n.lang === lang && !chosen.includes(n))
       .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
-    chosen = [...chosen, ...older.slice(0, min - chosen.length)];
+    // ältere nur ergänzen, wenn sie keine Wiederholung einer gewählten Geschichte sind
+    const merged = diversifyNews([...chosen, ...older]);
+    chosen = [...chosen, ...merged.filter((n) => !chosen.includes(n)).slice(0, min - chosen.length)];
   }
   return chosen.sort(rank);
 }
