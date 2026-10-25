@@ -36,6 +36,9 @@ const g = (q: string, lang: "de" | "hr") =>
 
 const GOOGLE_FEEDS: Array<{ url: string; lang: Lang; football: boolean }> = [
   { url: g("(Kroatien OR Vatreni OR Modrić OR Gvardiol OR Kovačić OR Kramarić OR Perišić OR Livaković OR Baturina) Fußball when:2d", "de"), lang: "de", football: true },
+  { url: g("(\"Dinamo Zagreb\" OR \"Hajduk Split\" OR \"HNK Rijeka\" OR \"NK Osijek\" OR HNL) when:3d", "de"), lang: "de", football: true },
+  { url: g("(Stanišić OR Sučić OR Gvardiol OR Budimir OR Pašalić OR Modrić OR Kovačić OR Baturina OR Dalić) when:2d", "de"), lang: "de", football: true },
+  { url: g("(Zubac OR Hezonja OR Čilić OR Soldić OR Hrgović OR Plantić) when:4d", "de"), lang: "de", football: false },
   { url: g("(Soldić OR Hrgović OR Zubac OR Čilić OR Kroatien) (UFC OR Boxen OR NBA OR Tennis OR Handball) when:3d", "de"), lang: "de", football: false },
   { url: g("(HNL OR Vatreni OR Hajduk OR \"Dinamo Zagreb\" OR \"HNK Rijeka\" OR reprezentacija) nogomet when:2d", "hr"), lang: "hr", football: true },
   { url: g("(Soldić OR Hrgović OR Plantić OR Smakići OR UFC OR boks) when:3d", "hr"), lang: "hr", football: false },
@@ -46,7 +49,7 @@ const FOOTBALL =
 const CROATIAN =
   /hrvat|kroat|croat|vatren|modri[cć]|gvardiol|kova[cč]i[cć]|dali[cć]|bili[cć]|\bhnl\b|hajduk|dinamo|rijek|osijek|livakovi[cć]|kramari[cć]|peri[sš]i[cć]|budimir|baturina|su[cč]i[cć]|stani[sš]i[cć]|pa[sš]ali[cć]|soldi[cć]|hrgovi[cć]|planti[cć]|smaki[cćq]i/i;
 const EXCLUDE =
-  /futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett|\bfilm\b|kino\b|schauspiel|oscar|netflix|dokumentar/i;
+  /statistiken|spielschema|aufstellungen|live-updates|kader (&|und) aufstellung|weitere spiele|\btipp\b|prognose|futsal|\bu-?1[5-9]\b|\bu-?2[01]\b|junior|kadet|transfermarkt|fussballdaten|saison-stats|ligavergleich|spielerprofil|ora[sš]je|negotin|formula|horoskop|kladionic|quote[n]? |wett|\bfilm\b|kino\b|schauspiel|oscar|netflix|dokumentar/i;
 
 /**
  * Spam/Stream-Seiten: Sonderzeichen-Müll (z. B. "^@+$^~![MAXSPORT!]HRT 2] … Nogomet Uživo Fudbal"),
@@ -67,6 +70,9 @@ const REUPLOAD = /\s\|\s[^|]*\s\|\s|\((?=[A-Za-z0-9_-]*\d)(?=[A-Za-z0-9_-]*[A-Za
  * Meldungen: Google News indexiert sie oft Tage nach dem Spiel neu (21.10. für das Spiel vom 06.10.).
  * Die Seite hat einen eigenen Live-Ticker.
  */
+/** Spiel-Stubseiten ohne Meldung, z. B. "NK Osijek - NK Rudes" (nur zwei Teamnamen) */
+const STUB = /^[\p{L}\d .']{3,40} [-–] [\p{L}\d .']{3,40}$/u;
+
 export const LIVETICKER = /live-?ticker/i;
 
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
@@ -194,10 +200,13 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     if (EXCLUDE.test(title) || EXCLUDE.test(source) || looksEnglish(title)) continue;
     if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || titleDateTooOld(title, iso)) continue;
+    if (STUB.test(title)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
     let sport: Sport | "other";
     if (feed.football) {
       if (!FOOTBALL.test(title)) continue;
+      // Basketball-Ergebnis (z. B. "Zadar - Dinamo Zagreb 87:61") ist kein Fußball
+      if (/\b\d{2,3}\s*:\s*\d{2,3}\b/.test(title)) continue;
       sport = "football";
     } else {
       sport = sportOf(title, "other");
@@ -337,7 +346,7 @@ export function pickNews(
   return chosen.sort(rank);
 }
 
-async function loadNews(): Promise<NewsItem[]> {
+export async function loadNews(): Promise<NewsItem[]> {
   const settled = await Promise.allSettled([loadHrt(), ...GOOGLE_FEEDS.map(loadGoogle)]);
   const ok = settled.filter((s): s is PromiseFulfilledResult<NewsItem[]> => s.status === "fulfilled");
   if (ok.length === 0) throw new Error("news: all feeds failed");
@@ -348,5 +357,5 @@ async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v7"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v8"], REVALIDATE.news, loadNews);
 }
