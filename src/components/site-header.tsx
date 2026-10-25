@@ -5,6 +5,7 @@ import { LangSwitch } from "./lang-switch";
 import { fan } from "@/lib/fan/i18n";
 import { LiveBar } from "./live-bar";
 import { inno } from "@/lib/innovation-i18n";
+import { kultur } from "@/lib/culture-i18n";
 
 export function SiteHeader({
   withNav = true,
@@ -49,6 +50,9 @@ export function SiteHeader({
               </Link>
               <Link href={href(lang, "/kroatien-innovativ")} aria-current={path === "/kroatien-innovativ" ? "page" : undefined}>
                 {inno(lang).nav}
+              </Link>
+              <Link href={href(lang, "/kroatien-kultur")} aria-current={path === "/kroatien-kultur" ? "page" : undefined}>
+                {kultur(lang).nav}
               </Link>
               <Link href={href(lang, "/#extras")}>{fan(lang).nav.extras}</Link>
             </nav>

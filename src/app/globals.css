@@ -1498,3 +1498,4 @@ a.av:focus-visible {
 .inno-fact-title { font-weight: 700; }
 .inno-teaser { padding: .8rem 1rem; }
 .inno-teaser-link { text-decoration: none; display: block; }
+.inno-teaser-link + .inno-teaser-link { margin-top: .5rem; }

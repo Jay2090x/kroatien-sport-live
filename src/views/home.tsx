@@ -25,6 +25,7 @@ import { buildFeed } from "@/lib/feed";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
 import { inno } from "@/lib/innovation-i18n";
+import { kultur } from "@/lib/culture-i18n";
 
 /**
  * Startseite: Fußball zuerst (Vatreni + HNL, darunter der verknüpfte Fußball-Feed
@@ -85,6 +86,9 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <section className="card span-2 inno-teaser" aria-label={inno(lang).h1}>
             <Link href={href(lang, "/kroatien-innovativ")} className="inno-teaser-link">
               <span aria-hidden="true">💡</span> <strong>{inno(lang).h1}</strong> · {inno(lang).teaser} →
+            </Link>
+            <Link href={href(lang, "/kroatien-kultur")} className="inno-teaser-link">
+              <span aria-hidden="true">🎬</span> <strong>{kultur(lang).h1}</strong> · {kultur(lang).teaser} →
             </Link>
           </section>
         </SportGate>
