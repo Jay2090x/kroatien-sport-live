@@ -61,14 +61,14 @@ const COMPANIES: Array<[string, RegExp]> = [
   ["span", /\bspan\b(?=.*(tvrtk|kibern|cyber|ugovor|dionic|burz))|(tvrtk|kibern|cyber|ugovor|dionic|burz).*\bspan\b/],
   ["orqa", /\borqa\b/],
 ];
-const CROATIAN = /hrvat|kroat|croat|zagreb|split|rijek|osijek|zadar|varazdin|pula|istr/;
+const CROATIAN = /hrvat|kroat|croat|zagreb|split|rijek|osijek|zadar|varazdin/;
 const TOPIC =
   /startup|start-up|erfind|erfinder|forsch|wissenschaft|ki\b|kunstliche intelligenz|\bai\b|technolog|innovat|investi|auftrag|milliard|million|patent|preis fur|auszeichn|weltweit erst|rekord|robot|elektro|exportschlager|izum|inovac|znanstven|istrazivac|umjetn[ae] inteligencij|tehnolog|ugovor|posao vrijedan|milijun|milijard|nagrad|priznanj|prvi u svijetu|svjetsk|rekord|robota|patent|tvrtk|izvoz|razvil|razvio|razvila|lansira|predstavi/;
 /** Politik, Kriminalität, Unfälle, Steuer-/Ratgeber, Sport, Wetter, Klatsch */
 const EXCLUDE =
-  /wahl|partei|minister|regierung|parlament|sabor|vlad[aei]|izbor|stranka|hdz|sdp|mozemo|plenkovi|milanovi|polizei|festgenommen|verhaft|mord|unfall|tot\b|tote|policij|uhicen|ubojstv|nesrec|poginu|sudar|ozlijed|optuz|sud\b|presud|steuer|finanzamt|ratgeber|porez|savjet|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|\bnba\b|hnl\b|vatren|dinamo|hajduk|wetter|vrijeme sutra|horoskop|urlaub|reise|tourismus|turist|recept|rezept|celebrity|pjevac|sanger|film|kino|rat\b|krieg|ukrain|izrael|gaza|gaste|adria|militar|waffe|rustet|raketen|panzer|vojsk|oruzj|naoruz|\btipp\b|prognose|quoten|wettbasis|sportwett|nations league|liga nacija|kladi|molil|crkv|hodocas|farma|ekolos|limit|pravila za|cijen[ae] goriv/;
+  /wahl|partei|minister|regierung|parlament|sabor|vlad[aei]|izbor|stranka|hdz|sdp|mozemo|plenkovi|milanovi|polizei|festgenommen|verhaft|mord|unfall|tot\b|tote|policij|uhicen|ubojstv|nesrec|poginu|sudar|ozlijed|optuz|sud\b|presud|steuer|finanzamt|ratgeber|porez|savjet|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|\bnba\b|hnl\b|vatren|dinamo|hajduk|wetter|vrijeme sutra|horoskop|urlaub|reise|tourismus|turist|recept|rezept|celebrity|pjevac|sanger|film|kino|rat\b|krieg|ukrain|izrael|gaza|gaste|adria|militar|waffe|rustet|raketen|panzer|vojsk|oruzj|naoruz|\btipp\b|prognose|quoten|wettbasis|sportwett|nations league|liga nacija|kladi|pentagon|drohn|dron|obran|defen|verteidig|rustung|nato\b|molil|crkv|hodocas|farma|ekolos|limit|pravila za|cijen[ae] goriv/;
 /** Netokracija: nur Firmen-/Startup-/Investitions-/Preis-Meldungen, keine Ratgeber */
-const STARTUP = /startup|jednorog|investic|akvizi|preuzim|fond|nagrad|osnivac|runda|financiran|milijun|milijard|hrvatsk/;
+const STARTUP = /startup|jednorog|investic|akvizi|preuzim|fond|nagrad|osnivac|runda|financiran|milijun|milijard|izum|razvi/;
 const SPAM = /\p{Script=Cyrillic}|uzivo|live ?stream/iu;
 
 const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
@@ -96,7 +96,7 @@ async function loadFeed(f: (typeof FEEDS)[number]): Promise<InnoItem[]> {
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     const ok = f.tech
-      ? !EXCLUDE.test(fold(title)) && !SPAM.test(title) && (relevant(title) || STARTUP.test(fold(title)))
+      ? !EXCLUDE.test(fold(title)) && !SPAM.test(title) && (relevant(title) || (STARTUP.test(fold(title)) && CROATIAN.test(fold(title))))
       : relevant(title);
     if (!ok || looksEnglish(title) || title.length < 25) continue;
     const det = detectLang(title);
@@ -109,6 +109,16 @@ async function loadFeed(f: (typeof FEEDS)[number]): Promise<InnoItem[]> {
 
 function tokens(s: string): Set<string> {
   return new Set(fold(s).replace(/[^a-z0-9 ]+/g, " ").split(" ").filter((x) => x.length > 3));
+}
+/** markante Namen (≥ 6 Zeichen, großgeschrieben) als 5-Zeichen-Stamm – "Daytona"/"Daytonu" → "dayto" */
+const GENERIC_STEMS = new Set("hrvat kroat croat zagre europ split rijek osije svjet milij milli dolar umjet kunst googl apple micro amazo".split(" "));
+function stems(title: string): Set<string> {
+  const out = new Set<string>();
+  for (const w of title.match(/\p{Lu}[\p{L}\d]{5,}/gu) ?? []) {
+    const st = fold(w).slice(0, 5);
+    if (!GENERIC_STEMS.has(st)) out.add(st);
+  }
+  return out;
 }
 function similar(a: Set<string>, b: Set<string>): boolean {
   let i = 0;
@@ -125,14 +135,19 @@ export function pickInnovation(pool: InnoItem[], { lang, now = Date.now(), max =
       return age >= -H && age <= 30 * 24 * H;
     })
     .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
-  const kept: Array<{ n: InnoItem; tok: Set<string> }> = [];
+  const kept: Array<{ n: InnoItem; tok: Set<string>; st: Set<string>; t: number }> = [];
   const per = new Map<string, number>();
   for (const n of own) {
     const tok = tokens(n.title);
-    if (kept.some((k) => k.n.url === n.url || similar(k.tok, tok))) continue;
+    const st = stems(n.title);
+    const t = Date.parse(n.publishedAt);
+    // gleiche Geschichte: gleiche URL, ähnlicher Titel oder gemeinsamer markanter Name binnen 7 Tagen
+    const same = (k: (typeof kept)[number]) =>
+      k.n.url === n.url || similar(k.tok, tok) || (Math.abs(k.t - t) <= 7 * 24 * H && [...st].some((x) => k.st.has(x)) && (n.company ?? "") === (k.n.company ?? ""));
+    if (kept.some(same)) continue;
     if (n.company && (per.get(n.company) ?? 0) >= perCompany) continue;
     if (n.company) per.set(n.company, (per.get(n.company) ?? 0) + 1);
-    kept.push({ n, tok });
+    kept.push({ n, tok, st, t });
   }
   const list = kept.map((k) => k.n);
   const fresh = list.filter((n) => now - Date.parse(n.publishedAt) <= 7 * 24 * H);
@@ -150,7 +165,7 @@ async function loadInnovation(): Promise<InnoItem[]> {
 }
 
 export function getInnovation(): Promise<Sourced<InnoItem[]> | null> {
-  return cachedSource(["innovation-v6"], 1800, loadInnovation);
+  return cachedSource(["innovation-v7"], 1800, loadInnovation);
 }
 
 /* ---------- Videos offizieller Firmenkanäle ---------- */
