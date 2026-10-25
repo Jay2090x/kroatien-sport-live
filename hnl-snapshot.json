@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 11,
- "fetchedAt": "2026-10-25T01:35:55.486Z",
+ "fetchedAt": "2026-10-25T06:46:02.351Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -656,19 +656,6 @@
    "strPostponed": "no"
   },
   {
-   "idEvent": "2482571",
-   "strHomeTeam": "Dinamo Zagreb",
-   "strAwayTeam": "Rijeka",
-   "intHomeScore": null,
-   "intAwayScore": null,
-   "intRound": "11",
-   "strTimestamp": "2026-10-24T15:00:00",
-   "dateEvent": "2026-10-24",
-   "strTime": "15:00:00",
-   "strStatus": "PST",
-   "strPostponed": "no"
-  },
-  {
    "idEvent": "2482573",
    "strHomeTeam": "HNK Gorica",
    "strAwayTeam": "Lokomotiva Zagreb",
@@ -716,6 +703,19 @@
    "intRound": "11",
    "strTimestamp": "2026-10-26T17:00:00",
    "dateEvent": "2026-10-26",
+   "strTime": "17:00:00",
+   "strStatus": "NS",
+   "strPostponed": "no"
+  },
+  {
+   "idEvent": "2482571",
+   "strHomeTeam": "Dinamo Zagreb",
+   "strAwayTeam": "Rijeka",
+   "intHomeScore": null,
+   "intAwayScore": null,
+   "intRound": "11",
+   "strTimestamp": "2026-10-27T17:00:00",
+   "dateEvent": "2026-10-27",
    "strTime": "17:00:00",
    "strStatus": "NS",
    "strPostponed": "no"
