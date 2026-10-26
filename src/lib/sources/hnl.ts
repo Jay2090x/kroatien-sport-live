@@ -250,8 +250,8 @@ export async function loadHnl(now = Date.now(), official: OfficialHnlMatch[] | n
     .filter((_, k) => roundNumbers[k] >= current - 3)
     .map((r) => r?.fetchedAt ?? new Date(now).toISOString())
     .sort()[0];
-  const events = rounds.flatMap((r) => r?.data ?? []);
-  return { data: buildHnl(season, current, events, now, official), fetchedAt };
+  const md = await applyMatchday(rounds.flatMap((r) => r?.data ?? []), now);
+  return { data: buildHnl(season, current, md.events, now, official), fetchedAt: md.fetchedAt ?? fetchedAt };
 }
 
 /** Tabelle, aktuelle/letzte Runde und Nachholspiele aus den Rohdaten berechnen. */
@@ -336,12 +336,84 @@ function fromSnapshot(snap: HnlSnapshot, official: OfficialHnlMatch[] | null): S
   return { data: buildHnl(snap.season, current, snap.events, at, official), fetchedAt: snap.fetchedAt };
 }
 
+/**
+ * Spieltags-Nachschärfung: Spiele, die in den letzten 6 h angepfiffen wurden (oder
+ * gleich beginnen) und in den Daten noch nicht beendet sind, werden alle 2 Min. direkt
+ * bei TheSportsDB (eventsday) nachgeladen. Übernommen werden nur echte Quellwerte
+ * (Status + Tore) desselben idEvent – nichts wird geschätzt.
+ */
+const HOT_BEFORE_MS = 15 * 60_000;
+const HOT_AFTER_MS = 6 * 3600_000;
+function hotDates(events: TsdbEvent[], now: number): string[] {
+  const dates = new Set<string>();
+  for (const e of events) {
+    const k = kickoffOf(e);
+    if (!k) continue;
+    const t = Date.parse(k);
+    if (t - HOT_BEFORE_MS > now || now - t > HOT_AFTER_MS) continue;
+    if (FINISHED.has((e.strStatus ?? "").toUpperCase()) && num(e.intHomeScore) != null) continue;
+    dates.add(k.slice(0, 10));
+  }
+  return [...dates];
+}
+
+async function applyMatchday(
+  events: TsdbEvent[],
+  now: number
+): Promise<{ events: TsdbEvent[]; fetchedAt: string | null }> {
+  const dates = hotDates(events, now);
+  if (!dates.length) return { events, fetchedAt: null };
+  const days = await Promise.all(
+    dates.map((d) =>
+      cachedSource(["hnl", "day", d], 120, async () => {
+        const json = await fetchJson<{ events?: TsdbEvent[] | null }>(
+          `${TSDB}/eventsday.php?d=${d}&l=${HNL_LEAGUE_ID}`
+        );
+        return json.events ?? [];
+      })
+    )
+  );
+  const fresh = new Map<string, TsdbEvent>();
+  let fetchedAt: string | null = null;
+  for (const d of days) {
+    if (!d) continue;
+    if (!fetchedAt || d.fetchedAt < fetchedAt) fetchedAt = d.fetchedAt;
+    for (const e of d.data) if (e?.idEvent) fresh.set(e.idEvent, e);
+  }
+  if (!fresh.size) return { events, fetchedAt: null };
+  return {
+    fetchedAt,
+    events: events.map((e) => {
+      const f = fresh.get(e.idEvent);
+      if (!f) return e;
+      return {
+        ...e,
+        strStatus: f.strStatus ?? e.strStatus,
+        strPostponed: f.strPostponed ?? e.strPostponed,
+        intHomeScore: f.intHomeScore ?? e.intHomeScore,
+        intAwayScore: f.intAwayScore ?? e.intAwayScore,
+      };
+    }),
+  };
+}
+
+async function snapshotWithMatchday(
+  snap: HnlSnapshot,
+  official: OfficialHnlMatch[] | null,
+  now: number
+): Promise<Sourced<HnlData>> {
+  const md = await applyMatchday(snap.events, now);
+  if (!md.fetchedAt) return fromSnapshot(snap, official);
+  const current = snap.nextRound > 0 ? Math.min(ROUNDS_PER_SEASON, snap.nextRound) : ROUNDS_PER_SEASON;
+  return { data: buildHnl(snap.season, current, md.events, now, official), fetchedAt: md.fetchedAt };
+}
+
 /** HNL-Daten für die Seite; `null` = derzeit keine Daten. */
 export async function getHnl(now = Date.now()): Promise<Sourced<HnlData> | null> {
   const [snap, official] = await Promise.all([getSnapshot(), getOfficialSchedule()]);
   const age = snap ? now - Date.parse(snap.fetchedAt) : Infinity;
   try {
-    if (snap && age <= SNAPSHOT_FRESH_MS) return fromSnapshot(snap, official);
+    if (snap && age <= SNAPSHOT_FRESH_MS) return await snapshotWithMatchday(snap, official, now);
   } catch (err) {
     console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
   }
@@ -351,7 +423,7 @@ export async function getHnl(now = Date.now()): Promise<Sourced<HnlData> | null>
     console.error("[data] hnl failed:", err instanceof Error ? err.message : err);
   }
   try {
-    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return fromSnapshot(snap, official);
+    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return await snapshotWithMatchday(snap, official, now);
   } catch (err) {
     console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
   }
