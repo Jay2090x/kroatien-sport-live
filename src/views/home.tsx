@@ -1,3 +1,4 @@
+import { FreshGuard } from "@/components/fresh-guard";
 import Link from "next/link";
 import { clipTitle } from "@/lib/clip-title";
 import { SiteHeader } from "@/components/site-header";
@@ -123,6 +124,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <Highlights id="clips-other" videos={otherClips} labels={{ ...t.highlights }} />
         </NotFootballGate>
       </main>
+      <FreshGuard renderedAt={new Date().toISOString()} />
       <SiteFooter lang={lang} />
     </>
   );

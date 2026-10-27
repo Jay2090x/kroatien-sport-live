@@ -1,3 +1,4 @@
+import { FreshGuard } from "@/components/fresh-guard";
 import Link from "next/link";
 import { clipTitle } from "@/lib/clip-title";
 import { SiteHeader } from "@/components/site-header";
@@ -224,6 +225,7 @@ export async function SportView({ lang }: { lang: Lang }) {
           </section>
         </div>
       </main>
+      <FreshGuard renderedAt={new Date().toISOString()} />
       <SiteFooter lang={lang} />
     </>
   );
