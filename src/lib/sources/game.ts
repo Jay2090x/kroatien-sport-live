@@ -36,6 +36,8 @@ export interface GameEvent {
   minute: string;
   side: "home" | "away" | null;
   names: string[];
+  /** ESPN-Athleten-IDs passend zu names */
+  ids: string[];
   croat: boolean;
 }
 export interface GamePlayer {
@@ -205,6 +207,7 @@ export function parseEspnGame(j: RawSum, sport: "soccer" | "nba", league: string
       minute: minuteOf(k.clock?.displayValue) ?? "",
       side: sideOf(k.team?.id),
       names: ps.map(nm),
+      ids: ps.map((a) => String(a?.id ?? "")),
       croat: ps.some(isCro),
     });
   }
