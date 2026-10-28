@@ -15,7 +15,7 @@ function Team({ name, strong, lang = "de" }: { name: string; strong: boolean; la
   );
 }
 
-function outcome(m: NtMatch): "S" | "U" | "N" | null {
+export function outcome(m: NtMatch): "S" | "U" | "N" | null {
   if (m.homeScore == null || m.awayScore == null) return null;
   const cro = m.croatiaIsHome ? m.homeScore : m.awayScore;
   const opp = m.croatiaIsHome ? m.awayScore : m.homeScore;
@@ -39,7 +39,7 @@ function MatchHeadline({ m, lang }: { m: NtMatch; lang: Lang }) {
   );
 }
 
-function LiveCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
+export function LiveCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
   return (
     <div className="feature feature-live" aria-live="polite">
       <p className="eyebrow">
@@ -59,7 +59,7 @@ function LiveCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
   );
 }
 
-function NextCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
+export function NextCard({ m, lang, t }: { m: NtMatch; lang: Lang; t: Dict }) {
   return (
     <div className="feature">
       <p className="eyebrow">{t.vatreni.nextMatch} · {dataLabel(m.competition, lang)}</p>
@@ -77,9 +77,12 @@ export function VatreniSection({
   data,
   lang = "de",
   clipFor = {},
+  showFeature = true,
 }: {
   data: VatreniData;
   lang?: Lang;
+  /** false = nächstes/laufendes Spiel steht schon im Startseiten-Hero */
+  showFeature?: boolean;
   /** Match-Key → Anker einer Feed-Story mit offiziellem Clip */
   clipFor?: Record<string, string>;
 }) {
@@ -98,12 +101,12 @@ export function VatreniSection({
         <NoData what={t.vatreni.what} lang={lang} />
       ) : (
         <>
-          {data.live && <LiveCard m={data.live} lang={lang} t={t} />}
-          {data.next ? (
+          {showFeature && data.live && <LiveCard m={data.live} lang={lang} t={t} />}
+          {showFeature && (data.next ? (
             <NextCard m={data.next} lang={lang} t={t} />
           ) : (
             !data.live && <p className="muted">{t.vatreni.noNext}</p>
-          )}
+          ))}
 
           {data.last.length > 0 && (
             <>

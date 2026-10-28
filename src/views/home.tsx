@@ -5,6 +5,7 @@ import { clipTitle } from "@/lib/clip-title";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VatreniSection } from "@/components/vatreni-section";
+import { HomeHero } from "@/components/home-hero";
 import { HnlSection } from "@/components/hnl-section";
 import { HnlPreview } from "@/components/hnl-preview";
 import { vhist } from "@/lib/vatreni-history-i18n";
@@ -78,12 +79,15 @@ export async function HomeView({ lang }: { lang: Lang }) {
       <SiteHeader lang={lang} path="/" />
       <main lang={lang} className="container grid">
         <h1 className="sr-only">{SITE.name} – {t.tagline}</h1>
+        <SportGate sport="football">
+          <HomeHero data={vatreni} lang={lang} />
+        </SportGate>
         <div className="span-2 filter-row">
           <SportFilterBar t={{ filter: t.filter }} />
         </div>
 
         <SportGate sport="football">
-          <VatreniSection data={vatreni} lang={lang} clipFor={feed?.clipFor} />
+          <VatreniSection data={vatreni} lang={lang} clipFor={feed?.clipFor} showFeature={!(vatreni.live ?? vatreni.next)} />
           <HnlSection hnl={hnl} lang={lang} clipFor={feed?.clipFor} />
           <HnlPreview hnl={hnl} lang={lang} />
           <FeedSection feed={feed} lang={lang} fetchedAt={feedFetchedAt} />

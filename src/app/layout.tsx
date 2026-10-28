@@ -5,6 +5,12 @@ import { SPORT_FILTER_BOOT, SPORT_FILTER_CSS } from "@/components/sport-filter";
 import { HTML_LANG_BOOT, HtmlLang } from "@/components/html-lang";
 import "./globals.css";
 import "./fan.css";
+import "./theme.css";
+import { Inter, Barlow_Condensed } from "next/font/google";
+
+// Schriften werden beim Build heruntergeladen und von der eigenen Domain ausgeliefert (keine Google-Anfrage im Browser).
+const inter = Inter({ subsets: ["latin", "latin-ext"], display: "swap", variable: "--font-inter" });
+const barlow = Barlow_Condensed({ subsets: ["latin", "latin-ext"], weight: ["600", "700", "800"], display: "swap", variable: "--font-display" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -40,7 +46,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning className={`${inter.variable} ${barlow.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: HTML_LANG_BOOT }} />
         <script dangerouslySetInnerHTML={{ __html: SPORT_FILTER_BOOT }} />
