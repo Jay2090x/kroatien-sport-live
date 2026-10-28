@@ -2,8 +2,9 @@ import { pickMoments } from "@/lib/fan/history";
 import { fan } from "@/lib/fan/i18n";
 import { dataLabel, localeOf, type Lang } from "@/lib/i18n";
 import { viennaYmd } from "@/lib/time";
+import { placeLabel } from "@/lib/fan/place-hr";
 
-function dayLabel(ymd: string, lang: Lang): string {
+export function dayLabel(ymd: string, lang: Lang): string {
   const [y, m, d] = ymd.split("-").map(Number);
   return new Intl.DateTimeFormat(localeOf(lang), { day: "numeric", month: "long", timeZone: "UTC" }).format(
     new Date(Date.UTC(y, m - 1, d))
@@ -11,7 +12,7 @@ function dayLabel(ymd: string, lang: Lang): string {
 }
 
 /** Score-Zeile in HR: Ländernamen und "n. V./i. E." übersetzen. */
-function scoreLabel(s: string, lang: Lang): string {
+export function scoreLabel(s: string, lang: Lang): string {
   if (lang === "de") return s;
   return s
     .replace(/n\. V\./g, "prod.")
@@ -42,7 +43,7 @@ export function OnThisDay({ lang, now = Date.now() }: { lang: Lang; now?: number
             <h3 className="otd-title">{txt.title}</h3>
             {m.score && <p className="otd-score">{scoreLabel(m.score, lang)}</p>}
             <p className="otd-text">
-              {txt.text} <span className="muted">({m.place})</span>
+              {txt.text} <span className="muted">({placeLabel(m.place, lang)})</span>
             </p>
             <p className="otd-links">
               {m.clip && (

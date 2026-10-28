@@ -12,6 +12,15 @@ export interface Moment {
   place: string;
   source: string;
   clip?: { url: string; by: "FIFA" | "UEFA" };
+  /** YouTube-ID eines offiziellen FIFA/UEFA-Videos (per oEmbed geprüft), zum Einbetten auf /vatreni-momente */
+  yt?: string;
+}
+
+/** YouTube-ID aus yt oder einer youtube.com-Clip-URL. */
+export function momentYoutubeId(m: Moment): string | null {
+  if (m.yt) return m.yt;
+  const x = m.clip?.url.match(/youtube\.com\/watch\?v=([\w-]{11})/);
+  return x ? x[1] : null;
 }
 
 const WP = {
@@ -37,6 +46,14 @@ export const MOMENTS: Moment[] = [
     source: "https://en.wikipedia.org/wiki/1990_Croatia%E2%80%93United_States_football_match",
   },
   {
+    date: "1996-06-16",
+    score: "Kroatien – Dänemark 3:0",
+    de: { title: "EURO 1996: 3:0 gegen den Europameister", text: "Bei der ersten EM-Teilnahme schlägt Kroatien Titelverteidiger Dänemark – Šuker trifft doppelt (einmal per Elfmeter), dazu Boban." },
+    hr: { title: "EURO 1996.: 3:0 protiv europskog prvaka", text: "Na prvom nastupu na Europskom prvenstvu Hrvatska svladava branitelja naslova Dansku – Šuker zabija dvaput (jednom iz jedanaesterca), uz njega i Boban." },
+    place: "Hillsborough, Sheffield",
+    source: "https://en.wikipedia.org/wiki/UEFA_Euro_1996_Group_D",
+  },
+  {
     date: "1998-07-04",
     score: "Deutschland – Kroatien 0:3",
     de: { title: "WM-Viertelfinale: 3:0 gegen Deutschland", text: "Jarni, Vlaović und Šuker schießen Kroatien bei der ersten WM-Teilnahme ins Halbfinale." },
@@ -44,6 +61,7 @@ export const MOMENTS: Moment[] = [
     place: "Stade de Gerland, Lyon",
     source: WP.r90s,
     clip: { url: "https://www.fifa.com/en/watch/5I2OkhgVD7JaSnvKuxsNTC", by: "FIFA" },
+    yt: "HNWgYk5OwBo",
   },
   {
     date: "1998-07-11",
@@ -151,6 +169,7 @@ export const MOMENTS: Moment[] = [
     place: "Education City Stadium, Al Rayyan",
     source: WP.r20s,
     clip: { url: "https://www.fifa.com/en/watch/7Banu6D0k8OnqDT9iVyQ8x", by: "FIFA" },
+    yt: "wnfiXhNVudk",
   },
   {
     date: "2022-12-17",

@@ -686,3 +686,38 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 html:has(.lb-live), html:has(.lb-idle) { scroll-padding-top: 72px; }
+
+/* Vatreni-Momente */
+.vm-medals { list-style: none; padding: 0; margin: .75rem 0 0; display: grid; gap: .5rem; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.vm-medal { display: flex; flex-direction: column; gap: .1rem; border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: .55rem .7rem; }
+.vm-medal-e { font-size: 1.6rem; line-height: 1; }
+.vm-timeline { list-style: none; padding: 0 0 0 1rem; margin: .5rem 0 0; border-left: 3px solid #d0021b; }
+.vm-item { position: relative; padding: .2rem 0 1.1rem .6rem; }
+.vm-item::before { content: ""; position: absolute; left: -1.55rem; top: .45rem; width: .8rem; height: .8rem; border-radius: 50%; background: #fff; border: 3px solid #d0021b; }
+.vm-title { margin: .1rem 0 .2rem; font-size: 1.05rem; }
+.vm-text { margin: 0 0 .25rem; }
+.vm-video { margin-top: .5rem; max-width: 560px; }
+.vm-table { margin-bottom: 1rem; }
+.vm-caption { text-align: left; font-weight: 700; padding: .4rem 0; caption-side: top; }
+
+/* Kroatien in Zahlen */
+.vz-tiles { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); }
+.vz-tile { border: 1px solid rgba(127,127,127,.25); border-radius: 12px; padding: .75rem .85rem; background: linear-gradient(180deg, rgba(208,2,27,.06), transparent 60%); }
+.vz-tile p { margin: 0 0 .3rem; }
+.vz-big { font-size: 2rem; font-weight: 800; line-height: 1.1; color: #d0021b; }
+.vz-label { font-weight: 700; text-transform: uppercase; font-size: .78rem; letter-spacing: .04em; }
+
+/* HNL-Vorschau */
+.hp-list { list-style: none; padding: 0; margin: .25rem 0 0; display: grid; gap: .6rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.hp-item { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: .6rem .7rem; }
+.hp-item .eyebrow { margin: 0 0 .35rem; }
+.hp-teams { display: grid; grid-template-columns: 1fr auto 1fr; gap: .4rem; align-items: start; }
+.hp-side { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+.hp-vs { font-weight: 700; padding-top: .15rem; }
+.hp-form { display: inline-flex; gap: 3px; }
+.hp-chip { display: inline-grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 4px; font-size: .7rem; font-weight: 700; color: #fff; }
+.hp-W { background: #1a8f3a; }
+.hp-D { background: #8a8f98; }
+.hp-L { background: #c62828; }
+.hp-met { margin: .45rem 0 0; }
+.card h3.vm-title { margin: .15rem 0 .2rem; font-size: 1.12rem; text-transform: none; letter-spacing: 0; color: inherit; font-weight: 800; }

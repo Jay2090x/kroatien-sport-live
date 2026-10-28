@@ -6,6 +6,7 @@ import { fan } from "@/lib/fan/i18n";
 import { LiveBar } from "./live-bar";
 import { inno } from "@/lib/innovation-i18n";
 import { kultur } from "@/lib/culture-i18n";
+import { vhist } from "@/lib/vatreni-history-i18n";
 
 export function SiteHeader({
   withNav = true,
@@ -37,6 +38,12 @@ export function SiteHeader({
           {withNav && (
             <nav aria-label={t.nav.sections} className="nav">
               <Link href={href(lang, "/#vatreni")}>{t.nav.vatreni}</Link>
+              <Link href={href(lang, "/vatreni-momente")} aria-current={path === "/vatreni-momente" ? "page" : undefined}>
+                {vhist(lang).nav}
+              </Link>
+              <Link href={href(lang, "/kroatien-in-zahlen")} aria-current={path === "/kroatien-in-zahlen" ? "page" : undefined}>
+                {vhist(lang).navZ}
+              </Link>
               <Link href={href(lang, "/spieler")} aria-current={current === "spieler" ? "page" : undefined}>
                 {t.nav.players}
               </Link>
