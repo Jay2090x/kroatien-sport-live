@@ -35,6 +35,8 @@ export const FEEDS: Array<{ url: string; lang: Lang; name?: string; section?: bo
   { url: g("(Zagreb OR Split OR Dubrovnik OR Rijeka OR Pula OR Zadar OR Šibenik) (Filmfestival OR Musikfestival OR Konzert OR Oper OR Theater OR Kinofilm) kroatisch when:30d", "de"), lang: "de" },
   { url: g("kroatischer Film OR kroatische Musik OR kroatischer Musiker OR kroatische Künstlerin when:45d", "de"), lang: "de" },
   { url: g('("Kroatien" Kultur OR "kroatische Kultur" OR "kroatisches Kino" OR "kroatischer Rapper" OR "kroatische Popsängerin") when:60d', "de"), lang: "de" },
+  { url: g("Zagreb Konzert when:45d", "de"), lang: "de" },
+  { url: g("Kroatien (Festival OR Musik) when:45d", "de"), lang: "de" },
   { url: "https://www.tportal.hr/rss-kultura.xml", lang: "hr", name: "tportal", section: true },
   { url: "https://www.vecernji.hr/feeds/section/kultura", lang: "hr", name: "Večernji list", section: true },
   { url: "https://www.muzika.hr/feed", lang: "hr", name: "Muzika.hr" },
@@ -70,13 +72,14 @@ const PEOPLE: Array<[string, RegExp]> = [
   ["slijepcevic", /slijepcevic/],
   ["jusic", /hana jusic/],
   ["kesovija", /kesovija/],
+  ["grse", /\bgrs(e|a|as|eov\w*)\b/],
 ];
 const CROATIAN = /hrvat|kroat|croat|\bzagreb|\bsplit|\brijek|\bosijek|\bzadar|\bdubrovn|\bpul[aieu]\b|\bsibenik/;
 const TOPIC =
   /film|kino|festival|album|pjesm|singl|koncert|glum|redatelj|serij|nagrad|pjeva|bend|glazb|musik|musiker|sanger|band\b|schauspiel|regisseur|konzert|\bsong|lied|oscar|berlinale|cannes|venedig|venecij|kazalist|theater|opera|orkest|orchester|nastup|turnej|tournee|spot|hit/;
 /** Klatsch, Kriminalität, Politik, Sport, Krieg, Werbung */
 const EXCLUDE =
-  /trudn|rastav|razvod|ljubav|zarucn|vjencan|cura|decko|bikini|zgodn|seksi|sexy|golisav|obnazen|izgled|liniju|kilogram|tijelo|haljin|outfit|scheidung|affare|liebes|nackt|schwanger|horoskop|uhicen|policij|ubojstv|nesrec|sud\b|presud|optuz|zatvor|polizei|festgenommen|mord|unfall|wahl|partei|minister|regierung|vlad[aei]\b|sabor|izbor|stranka|hdz|sdp|plenkovi|milanovi|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|vatren|dinamo|hajduk|\bhnl\b|rat\b|krieg|ukrain|izrael|gaza|reality|big brother|ljubav je na selu|nagradna igra|gewinnspiel|ticketverlosung|popust|akcij|vucic|srbij|serbien|kroatien-krimi|\btod\b|starb|preminu|umro|umrla|smrt|godisnjic|slik[aeu]\b|aukcij|auktion|serbisch|srpsk|boykott|bojkot|prosvjed|fotk[aeiu]|fotografij[aeu] iz|bazen|pratitelj|komplimen|instagram|snimke iz/;
+  /trudn|rastav|razvod|ljubav|zarucn|vjencan|cura|decko|bikini|zgodn|seksi|sexy|golisav|obnazen|izgled|liniju|kilogram|tijelo|haljin|outfit|scheidung|affare|liebes|nackt|schwanger|horoskop|uhicen|policij|ubojstv|nesrec|sud\b|presud|optuz|zatvor|polizei|festgenommen|mord|unfall|wahl|partei|minister|regierung|vlad[aei]\b|sabor|izbor|stranka|hdz|sdp|plenkovi|milanovi|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|vatren|dinamo|hajduk|\bhnl\b|rat\b|krieg|ukrain|izrael|gaza|reality|big brother|ljubav je na selu|nagradna igra|gewinnspiel|ticketverlosung|popust|akcij|vucic|srbij|serbien|kroatien-krimi|\btod\b|starb|preminu|umro|umrla|smrt|godisnjic|slik[aeu]\b|aukcij|auktion|serbisch|srpsk|boykott|bojkot|prosvjed|fotk[aeiu]|fotografij[aeu] iz|bazen|pratitelj|komplimen|instagram|snimke iz|wetter|urlaub|reise wert|hitze|gestorben|verstorben|torfestival|deklass|\bwm\b|em-quali|nations league|\b\d{1,2}:\d{1,2}\b(?! uhr)/;
 const SPAM = /\p{Script=Cyrillic}|uzivo|live ?stream/iu;
 
 const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
@@ -92,9 +95,9 @@ export function personOf(title: string): string | undefined {
  * Die Rubrik zeigt kroatische Künstlerinnen und Künstler – solche Meldungen fliegen raus,
  * außer der Titel nennt ausdrücklich kroatische Mitwirkende/einen kroatischen Film.
  */
-const FOREIGN_NAMES = /marsden|gervais|malkovich|iron maiden|dickinson|portishead|beth gibbons|fontaines|hollywood/;
+const FOREIGN_NAMES = /marsden|dylan moran|kyoto jazz|gervais|malkovich|iron maiden|dickinson|portishead|beth gibbons|fontaines|hollywood/;
 const GUEST =
-  /stiz[eu] u (?!kin)|dolazi u (?!kin)|dolaze u|vraca se u|vracaju se u|prvi put u hrvatsk|turnej|tournee|kommt nach|kommen nach|erstmals .{0,40}in kroatien|konzert in kroatien|gastspiel|zagreb i beograd|britansk|americk|nigerij|irsk[aio]|engleski|svjetsk\w* zvijezd|weltstar|us-star|hollywood|snima u hrvatsk|dreht in kroatien|drehort/;
+  /stiz[eu] u (?!kin)|dolazi u (?!kin)|dolaze u|vraca se u|vracaju se u|prvi put u hrvatsk|turnej|tournee|kommt nach|kommen nach|erstmals .{0,40}in kroatien|konzert in kroatien|gastspiel|zagreb i beograd|britansk|americk|nigerij|irsk[aio]|engleski|svjetsk\w* zvijezd|weltstar|us-star|hollywood|snima u hrvatsk|dreht in kroatien|drehort|slowenisch|bosnisch|aus nis\b|slovensk|bosansk|lighthouse|japanisch|amerikanisch|britisch|englisch|irisch|franzosisch|italienisch|spanisch|schwedisch|norwegisch|danisch|niederlandisch|australisch|kanadisch|japansk|francusk|talijansk|spanjolsk|svedsk|norvesk|nizozemsk|australsk|kanadsk/;
 const CRO_ARTIST =
   /hrvatsk(i|og|om|ih|im|a|e|oj) (pjev|glazb|glum|bend|sastav|redatelj|film|umjetni|skladatelj|zvijezd|reper|kantautor|pijanist|violonc)|kroatisch\w* (sanger|band|musik|film|schauspiel|regisseur|kunstler|star|pianist|cellist|komponist)|kroatien-film/;
 export function foreignGuest(title: string): boolean {
@@ -172,7 +175,11 @@ export function pickCulture(pool: CultureItem[], { lang, now = Date.now(), max =
     const st = stems(n.title);
     const t = Date.parse(n.publishedAt);
     const same = (k: (typeof kept)[number]) =>
-      k.n.url === n.url || similar(k.tok, tok) || (Math.abs(k.t - t) <= 7 * 24 * H && [...st].some((x) => k.st.has(x)) && (n.person ?? "") === (k.n.person ?? ""));
+      k.n.url === n.url ||
+      similar(k.tok, tok) ||
+      (Math.abs(k.t - t) <= 7 * 24 * H && [...st].some((x) => k.st.has(x)) && (n.person ?? "") === (k.n.person ?? "")) ||
+      // dieselbe Person binnen 3 Tagen = meist dasselbe Ereignis (z. B. ein Konzert, mehrere Berichte)
+      (!!n.person && n.person !== "eurosong" && n.person === k.n.person && Math.abs(k.t - t) <= 3 * 24 * H);
     if (kept.some(same)) continue;
     if (n.person && (per.get(n.person) ?? 0) >= perPerson) continue;
     if (n.person) per.set(n.person, (per.get(n.person) ?? 0) + 1);
@@ -193,7 +200,7 @@ async function loadCulture(): Promise<CultureItem[]> {
 }
 
 export function getCulture(): Promise<Sourced<CultureItem[]> | null> {
-  return cachedSource(["culture-v4"], 1800, loadCulture);
+  return cachedSource(["culture-v5"], 1800, loadCulture);
 }
 
 /* ---------- Videos offizieller Künstler-/Festivalkanäle ---------- */
