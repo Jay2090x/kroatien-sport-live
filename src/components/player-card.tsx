@@ -172,7 +172,7 @@ export function PlayerCard({ p, lang = "de", clips = [] }: { p: PlayerRow; lang?
       {p.notes.map((n, i) => (
         <p key={i} className={`pnote pnote-${n.kind}`}>
           {n.kind === "warn" ? "⚠ " : ""}
-          {n.text}
+          {dataLabel(n.text, lang)}
         </p>
       ))}
     </article>

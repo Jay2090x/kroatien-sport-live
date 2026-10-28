@@ -520,10 +520,24 @@ const DATA_HR: Record<string, string> = {
   "NBA · Playoffs": "NBA · doigravanje",
 };
 
+/** Satzbausteine aus den Datenquellen (Spielerhinweise, Einsatzzeilen) – Muster → HR */
+const PHRASES_HR: Array<[RegExp, string]> = [
+  [/^Rote Karte im letzten Länderspiel \((.+?)\) – nach UEFA-Regeln automatisch mind\. 1 Spiel Sperre im nächsten Pflicht-Länderspiel \(Regelwerk, keine offizielle Meldung\)\.$/, "Crveni karton u zadnjoj utakmici reprezentacije ($1) – prema pravilima UEFA-e automatski najmanje 1 utakmica suspenzije u sljedećoj službenoj utakmici (pravilnik, nije službena obavijest)."],
+  [/^Rote Karte im letzten Vereinsspiel \((.+?)\) – automatische Sperre im selben Wettbewerb laut Regelwerk wahrscheinlich; keine offizielle Sperrmeldung verfügbar\.$/, "Crveni karton u zadnjoj klupskoj utakmici ($1) – prema pravilniku vjerojatna automatska suspenzija u istom natjecanju; nema službene obavijesti o suspenziji."],
+  [/^Im letzten Vereinsspiel nicht im Spieltagskader \(Spiel fiel in die Länderspielphase\)\.$/, "Nije bio u kadru za zadnju klupsku utakmicu (utakmica je bila tijekom reprezentativne stanke)."],
+  [/^Im letzten Vereinsspiel nicht im Spieltagskader \(Grund laut Quelle unbekannt\)\.$/, "Nije bio u kadru za zadnju klupsku utakmicu (razlog prema izvoru nepoznat)."],
+  [/^Verein derzeit nicht ermittelbar \(ESPN-Profil nicht abrufbar\)\.$/, "Klub trenutačno nije moguće utvrditi (ESPN profil nije dostupan)."],
+  [/^Vereinsspielplan derzeit nicht abrufbar\.$/, "Raspored kluba trenutačno nije dostupan."],
+  [/^nicht eingesetzt$/, "nije igrao"],
+  [/^nicht im Spielberichtsbogen$/, "nije u zapisniku"],
+  [/^keine Spielerdaten$/, "nema podataka o igraču"],
+];
+
 /** Übersetzt bekannte Datenbezeichnungen; "A – B" wird teilweise übersetzt. */
 export function dataLabel(s: string, lang: Lang): string {
   if (lang === "de" || !s) return s;
   if (DATA_HR[s]) return DATA_HR[s];
+  for (const [rx, rep] of PHRASES_HR) if (rx.test(s)) return s.replace(rx, rep);
   if (s.includes(" – ")) return s.split(" – ").map((p) => dataLabel(p, lang)).join(" – ");
   if (s.includes(" · ")) return s.split(" · ").map((p) => DATA_HR[p] ?? p).join(" · ");
   return s;

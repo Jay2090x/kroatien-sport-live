@@ -88,6 +88,8 @@ const RESULT_HR: Array<[RegExp, string]> = [
   [/(\d+) Reb\./g, "$1 skokova"],
   [/(\d+) Ass\./g, "$1 asistencija"],
   [/(\d+) Min\./g, "$1 min"],
+  [/^nicht eingesetzt$/, "nije igrao"],
+  [/^nicht im Spielberichtsbogen$/, "nije u zapisniku"],
   [/Einzel/, "pojedinačno"],
   [/Doppel/, "parovi"],
   [/Viertelfinale/, "četvrtfinale"],
@@ -344,11 +346,11 @@ export function buildTimeline(
   return {
     upcoming: uniq(up)
       .map((r) => finish(r, lang, now))
-      .map((i) => ({ ...i, who: dataLabel(i.who, lang) }))
+      .map((i) => ({ ...i, who: dataLabel(i.who, lang), detail: tr(i.detail, lang) }))
       .sort(sortUpcoming),
     results: uniq(res)
       .map((r) => finish(r, lang, now))
-      .map((i) => ({ ...i, who: dataLabel(i.who, lang) }))
+      .map((i) => ({ ...i, who: dataLabel(i.who, lang), detail: tr(i.detail, lang) }))
       .sort(sortResults),
   };
 }

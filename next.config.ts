@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       { source: "/de/:path(impressum|datenschutz|nutzung)", destination: "/:path", permanent: false },
       { source: "/:locale(de|en)/:path*", destination: "/", permanent: false },
       { source: "/en", destination: "/", permanent: false },
+      // Kurzformen ohne Bindestrich
+      { source: "/em2028", destination: "/em-2028", permanent: true },
+      { source: "/hr/em2028", destination: "/hr/em-2028", permanent: true },
       // /hr und /hr/<seite> sind die kroatische Version; alte /hr/...-Pfade → /hr
       { source: "/hr/:path((?!sport$|spieler$|legionaere$|live$|em-2028$|talente$|kalender$|bildnachweise$|vatreni$|vatreni/spiel/\\d+$|frauen$|u21$|quiz$|kroatien-innovativ$|kroatien-kultur$).+)", destination: "/hr", permanent: false },
       { source: "/news/:path*", destination: "/#news", permanent: false },

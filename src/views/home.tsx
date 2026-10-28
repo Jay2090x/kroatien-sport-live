@@ -1,3 +1,4 @@
+import { SITE } from "@/lib/site";
 import { FreshGuard } from "@/components/fresh-guard";
 import Link from "next/link";
 import { clipTitle } from "@/lib/clip-title";
@@ -74,6 +75,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
     <>
       <SiteHeader lang={lang} path="/" />
       <main className="container grid">
+        <h1 className="sr-only">{SITE.name} – {t.tagline}</h1>
         <div className="span-2 filter-row">
           <SportFilterBar t={{ filter: t.filter }} />
         </div>
