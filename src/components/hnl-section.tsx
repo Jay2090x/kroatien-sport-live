@@ -1,7 +1,8 @@
 import type { Sourced } from "@/lib/cache";
 import type { HnlData, HnlMatch } from "@/lib/sources/hnl";
 import { formatDay, formatTime } from "@/lib/time";
-import { dict, type Dict, type Lang } from "@/lib/i18n";
+import Link from "next/link";
+import { dict, href, type Dict, type Lang } from "@/lib/i18n";
 import { NoData, Stand } from "./stand";
 import { Club } from "./club-badge";
 
@@ -24,10 +25,14 @@ function Fixture({ m, lang, t, clip }: { m: HnlMatch; lang: Lang; t: Dict; clip?
       <span className="f-home">
         <Club name={m.home} size={20} after />
       </span>
-      <span className={`f-score${m.state === "live" ? " f-live" : ""}`}>
+      <Link
+        href={href(lang, `/spiel/hnl/${m.id}`)}
+        className={`f-score f-link${m.state === "live" ? " f-live" : ""}`}
+        aria-label={`${m.home} – ${m.away}: ${lang === "hr" ? "detalji i tablica" : "Details & Tabelle"}`}
+      >
         {scored ? `${m.homeScore}:${m.awayScore}` : "–:–"}
         {m.state === "live" && <span className="sr-only"> ({t.hnl.running})</span>}
-      </span>
+      </Link>
       <span className="f-away">
         <Club name={m.away} size={20} />
       </span>

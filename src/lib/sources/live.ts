@@ -103,7 +103,7 @@ interface RawSummary {
   }>;
 }
 
-function kindOf(text: string): TickerKind | null {
+export function kindOf(text: string): TickerKind | null {
   const t = text.toLowerCase();
   if (t.includes("own goal")) return "owngoal";
   if (t.startsWith("penalty - scored")) return "penalty";

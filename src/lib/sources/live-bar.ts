@@ -211,7 +211,7 @@ interface Tracked {
 }
 
 /** Kroaten im Nationalkader + ihre Vereine; 30 min gecacht (Basis wird auch von der Spielerseite genutzt). */
-async function trackedSoccer(now: number): Promise<Tracked> {
+export async function trackedSoccer(now: number): Promise<Tracked> {
   const soccer = new Map<string, string[]>();
   for (const t of Object.keys(ESPN_TEAM_TO_HNL)) soccer.set(t, []);
   const slugs = new Set(EUROPE_SLUGS);

@@ -4,6 +4,7 @@ import { badgeFor, type BadgeSpec } from "@/lib/club-badge";
 import { dataLabel, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
 import { playerInfoText } from "@/lib/live-bar-i18n";
+import { gamePath } from "@/lib/sources/game";
 
 /**
  * GET /api/live-bar?lang=de|hr
@@ -51,6 +52,16 @@ const TARGET: Record<LiveItem["kind"], string> = {
   nba: "/sport",
 };
 
+/** Jedes laufende Spiel bekommt seine Spielseite; Vatreni behalten den ausführlichen Live-Ticker. */
+function itemPath(i: LiveItem): string {
+  if (i.kind === "hnl") {
+    const id = i.id.replace(/^hnl-/, "");
+    return /^\d+$/.test(id) ? gamePath("hnl", id) : TARGET.hnl;
+  }
+  if (i.kind !== "nt" && i.ref) return gamePath(i.ref.slug, i.ref.eventId);
+  return TARGET[i.kind];
+}
+
 function toDto(d: LiveBarData, lang: Lang): LiveBarDto {
   const badge = (n: string, abbr?: string): BadgeSpec => {
     const b = badgeFor(n);
@@ -72,7 +83,7 @@ function toDto(d: LiveBarData, lang: Lang): LiveBarDto {
       halftime: i.halftime,
       players: i.players.slice(0, 4),
       infos: (i.infos ?? []).map((x) => ({ text: playerInfoText(lang, x), tone: x.tone })),
-      href: href(lang, TARGET[i.kind]),
+      href: href(lang, itemPath(i)),
     })),
     next: d.next
       ? {

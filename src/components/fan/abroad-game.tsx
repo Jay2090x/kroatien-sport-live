@@ -1,7 +1,8 @@
 import type { AbroadGame, CroInGame } from "@/lib/sources/abroad";
 import { PerfLine, Teams } from "@/components/player-card";
 import { fan } from "@/lib/fan/i18n";
-import { dataLabel, dict, type Lang } from "@/lib/i18n";
+import Link from "next/link";
+import { dataLabel, dict, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
 import { Avatar } from "@/components/avatar";
 import { photoKey } from "@/lib/photos";
@@ -66,6 +67,11 @@ export function AbroadGameRow({ g, lang, showClubTag = false }: { g: AbroadGame;
         </ul>
       ) : (
         <p className="muted small">{f.abroad.noCroPlayers}</p>
+      )}
+      {ga.source === "espn" && ga.slug && !ga.isNationalTeam && /^\d+$/.test(ga.id) && (
+        <p className="ag-more">
+          <Link href={href(lang, `/spiel/${ga.slug}/${ga.id}`)}>{lang === "hr" ? "Detalji utakmice i tablica →" : "Spiel-Details & Tabelle →"}</Link>
+        </p>
       )}
     </li>
   );
