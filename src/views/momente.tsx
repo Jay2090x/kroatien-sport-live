@@ -59,7 +59,7 @@ export function MomenteView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/vatreni-momente" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="vm-h">
           <h1 id="vm-h" className="h1">🔥 {h.m.h1}</h1>
           <p className="intro">{h.m.intro}</p>

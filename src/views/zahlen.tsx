@@ -35,7 +35,7 @@ export function ZahlenView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/kroatien-in-zahlen" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="vz-h">
           <h1 id="vz-h" className="h1">📊 {h.h1}</h1>
           <p className="intro">{h.intro}</p>
