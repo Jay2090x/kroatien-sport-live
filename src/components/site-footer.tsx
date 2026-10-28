@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { dict, href, type Lang } from "@/lib/i18n";
+import { NAV } from "@/lib/nav";
 
 export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
   const t = dict(lang);
@@ -7,6 +8,27 @@ export function SiteFooter({ lang = "de" }: { lang?: Lang }) {
   return (
     <footer className="site-footer">
       <div className="container">
+        <nav className="footer-map" aria-label={de ? "Alle Seiten" : "Sve stranice"}>
+          <div className="fm-col">
+            <p className="fm-title">{de ? "Rubriken" : "Rubrike"}</p>
+            <ul>
+              <li><Link href={href(lang, "/")}>{de ? "Start" : "Početna"}</Link></li>
+              {NAV.flatMap((i) => (i.kind === "link" ? [i.link] : [])).map((l) => (
+                <li key={l.path}><Link href={href(lang, l.path)}>{l.label[lang]}</Link></li>
+              ))}
+            </ul>
+          </div>
+          {NAV.flatMap((i) => (i.kind === "menu" ? [i] : [])).map((item) => (
+            <div key={item.key} className="fm-col">
+              <p className="fm-title">{item.label[lang]}</p>
+              <ul>
+                {item.groups.flatMap((g) => g.links).map((l) => (
+                  <li key={l.path}><Link href={href(lang, l.path)}>{l.label[lang]}</Link></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
         <p className="credits">
           <strong>{t.footer.sources}:</strong>{" "}
           <a href="https://www.espn.com/soccer/" rel="noopener" target="_blank">ESPN</a>{" "}

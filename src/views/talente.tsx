@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { backLink } from "@/lib/nav";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { NoData, Stand } from "@/components/stand";
@@ -36,7 +37,7 @@ export async function TalenteView({ lang }: { lang: Lang }) {
         <section className="card" aria-labelledby="tal-h">
           <div className="card-head">
             <h1 id="tal-h" className="h1">🌱 {T.h1}</h1>
-            <Link href={href(lang, "/#extras")} className="pill">{F.back}</Link>
+            <Link href={href(lang, backLink("/talente", lang).path)} className="pill">{backLink("/talente", lang).label}</Link>
           </div>
           <p className="intro">{T.intro}</p>
           {data && (

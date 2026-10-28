@@ -2,17 +2,12 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { LangSwitch } from "./lang-switch";
-import { fan } from "@/lib/fan/i18n";
 import { LiveBar } from "./live-bar";
-import { inno } from "@/lib/innovation-i18n";
-import { kultur } from "@/lib/culture-i18n";
-import { vhist } from "@/lib/vatreni-history-i18n";
-import { h2hT } from "@/lib/h2h-i18n";
 import { NavScroll } from "./nav-scroll";
+import { NAV, isCurrent, itemActive } from "@/lib/nav";
 
 export function SiteHeader({
   withNav = true,
-  current,
   lang = "de",
   path = "/",
 }: {
@@ -40,34 +35,41 @@ export function SiteHeader({
           {withNav && (
             <nav aria-label={t.nav.sections} className="nav" id="site-nav">
               <NavScroll />
-              <Link href={href(lang, "/#vatreni")}>{t.nav.vatreni}</Link>
-              <Link href={href(lang, "/spieler")} aria-current={current === "spieler" ? "page" : undefined}>
-                {t.nav.players}
-              </Link>
-              <Link href={href(lang, "/legionaere")} aria-current={current === "legionaere" ? "page" : undefined}>
-                {fan(lang).nav.abroad}
-              </Link>
-              <Link href={href(lang, "/#hnl")}>{t.nav.hnl}</Link>
-              <Link href={href(lang, "/#feed")}>{t.nav.news}</Link>
-              <Link href={href(lang, "/sport")} aria-current={current === "sport" ? "page" : undefined}>
-                {t.nav.sport}
-              </Link>
-              <Link href={href(lang, "/vatreni-momente")} aria-current={path === "/vatreni-momente" ? "page" : undefined}>
-                {vhist(lang).nav}
-              </Link>
-              <Link href={href(lang, "/kroatien-in-zahlen")} aria-current={path === "/kroatien-in-zahlen" ? "page" : undefined}>
-                {vhist(lang).navZ}
-              </Link>
-              <Link href={href(lang, "/bilanz")} aria-current={path === "/bilanz" ? "page" : undefined}>
-                {h2hT(lang).nav}
-              </Link>
-              <Link href={href(lang, "/kroatien-innovativ")} aria-current={path === "/kroatien-innovativ" ? "page" : undefined}>
-                {inno(lang).nav}
-              </Link>
-              <Link href={href(lang, "/kroatien-kultur")} aria-current={path === "/kroatien-kultur" ? "page" : undefined}>
-                {kultur(lang).nav}
-              </Link>
-              <Link href={href(lang, "/#extras")}>{fan(lang).nav.extras}</Link>
+              {NAV.map((item) =>
+                item.kind === "link" ? (
+                  <Link
+                    key={item.key}
+                    href={href(lang, item.link.path)}
+                    className={`nav-top${isCurrent(item.link, path) ? " on" : ""}`}
+                    aria-current={isCurrent(item.link, path) ? "page" : undefined}
+                  >
+                    {item.link.label[lang]}
+                  </Link>
+                ) : (
+                  <details key={item.key} className="nav-menu" data-menu={item.key}>
+                    <summary className={`nav-top${itemActive(item, path) ? " on" : ""}`}>
+                      {item.label[lang]}
+                      <span className="caret" aria-hidden="true" />
+                    </summary>
+                    <div className="nav-panel">
+                      {item.groups.map((g) => (
+                        <div key={g.title.de} className="nav-group">
+                          {item.groups.length > 1 && <p className="nav-gtitle">{g.title[lang]}</p>}
+                          <ul>
+                            {g.links.map((l) => (
+                              <li key={l.path}>
+                                <Link href={href(lang, l.path)} aria-current={isCurrent(l, path) ? "page" : undefined}>
+                                  {l.label[lang]}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                ),
+              )}
             </nav>
           )}
           <LangSwitch lang={lang} paths={{ de: href("de", path), hr: href("hr", path) }} label={t.langLabel} />

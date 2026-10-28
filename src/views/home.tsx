@@ -8,7 +8,6 @@ import { VatreniSection } from "@/components/vatreni-section";
 import { HomeHero } from "@/components/home-hero";
 import { HnlSection } from "@/components/hnl-section";
 import { HnlPreview } from "@/components/hnl-preview";
-import { vhist } from "@/lib/vatreni-history-i18n";
 import { FeedSection } from "@/components/feed-section";
 import { NotFootballGate, SportFilterBar, SportGate } from "@/components/sport-filter";
 import { TimelineList } from "@/components/timeline";
@@ -29,8 +28,6 @@ import { buildTimeline, tlLabels } from "@/lib/timeline";
 import { buildFeed } from "@/lib/feed";
 import { dict, href, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
-import { inno } from "@/lib/innovation-i18n";
-import { kultur } from "@/lib/culture-i18n";
 
 /**
  * Startseite: Fußball zuerst (Vatreni + HNL, darunter der verknüpfte Fußball-Feed
@@ -93,20 +90,6 @@ export async function HomeView({ lang }: { lang: Lang }) {
           <FeedSection feed={feed} lang={lang} fetchedAt={feedFetchedAt} />
           <PlayerClipsSection clips={pclips} lang={lang} />
           <ExtrasCard lang={lang} />
-          <section className="card span-2 inno-teaser" aria-label={inno(lang).h1}>
-            <Link href={href(lang, "/vatreni-momente")} className="inno-teaser-link">
-              <span aria-hidden="true">🔥</span> <strong>{vhist(lang).m.h1}</strong> · {lang === "hr" ? "1998., 2018., 2022. – legendarne utakmice uz videe" : "1998, 2018, 2022 – die legendären Spiele mit Videos"} →
-            </Link>
-            <Link href={href(lang, "/kroatien-in-zahlen")} className="inno-teaser-link">
-              <span aria-hidden="true">📊</span> <strong>{vhist(lang).z.h1}</strong> · {lang === "hr" ? "rekorderi, golovi i rekordi Vatrenih" : "Rekordspieler, Rekordtore und Bestmarken"} →
-            </Link>
-            <Link href={href(lang, "/kroatien-innovativ")} className="inno-teaser-link">
-              <span aria-hidden="true">💡</span> <strong>{inno(lang).h1}</strong> · {inno(lang).teaser} →
-            </Link>
-            <Link href={href(lang, "/kroatien-kultur")} className="inno-teaser-link">
-              <span aria-hidden="true">🎬</span> <strong>{kultur(lang).h1}</strong> · {kultur(lang).teaser} →
-            </Link>
-          </section>
         </SportGate>
 
         <NotFootballGate>

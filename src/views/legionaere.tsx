@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { backLink } from "@/lib/nav";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { NoData, Stand } from "@/components/stand";
@@ -24,7 +25,7 @@ export async function LegionaereView({ lang }: { lang: Lang }) {
         <section className="card" aria-labelledby="leg-h">
           <div className="card-head">
             <h1 id="leg-h" className="h1">{f.h1}</h1>
-            <Link href={href(lang, "/#extras")} className="pill">{fan(lang).back}</Link>
+            <Link href={href(lang, backLink("/legionaere", lang).path)} className="pill">{backLink("/legionaere", lang).label}</Link>
           </div>
           <p className="intro">{f.intro}</p>
         </section>

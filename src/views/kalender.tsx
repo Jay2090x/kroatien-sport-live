@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { backLink } from "@/lib/nav";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { europeCalendar, vatreniCalendar, type CalendarFeed } from "@/lib/fan/calendars";
@@ -53,7 +54,7 @@ export async function KalenderView({ lang }: { lang: Lang }) {
         <section className="card" aria-labelledby="cal-h">
           <div className="card-head">
             <h1 id="cal-h" className="h1">📅 {C.h1}</h1>
-            <Link href={href(lang, "/#extras")} className="pill">{F.back}</Link>
+            <Link href={href(lang, backLink("/kalender", lang).path)} className="pill">{backLink("/kalender", lang).label}</Link>
           </div>
           <p className="intro">{C.intro}</p>
         </section>

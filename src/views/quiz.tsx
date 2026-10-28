@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { backLink } from "@/lib/nav";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Quiz } from "@/components/fan/quiz";
@@ -26,7 +27,7 @@ export function QuizView({ lang }: { lang: Lang }) {
         <section className="card" aria-labelledby="qz-h">
           <div className="card-head">
             <h1 id="qz-h" className="h1">🧠 {X.h1}</h1>
-            <Link href={href(lang, "/#extras")} className="pill">← Vatreni</Link>
+            <Link href={href(lang, backLink("/quiz", lang).path)} className="pill">{backLink("/quiz", lang).label}</Link>
           </div>
           <p className="intro">{X.intro}</p>
           <Quiz qs={QUIZ} lang={lang} L={{ ...labels, n: QUIZ.length }} />

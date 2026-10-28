@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { backLink } from "@/lib/nav";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Stand } from "@/components/stand";
@@ -27,7 +28,7 @@ export async function Em2028View({ lang }: { lang: Lang }) {
         <section className="card" aria-labelledby="em-h">
           <div className="card-head">
             <h1 id="em-h" className="h1">🇪🇺 {E.h1}</h1>
-            <Link href={href(lang, "/#extras")} className="pill">{F.back}</Link>
+            <Link href={href(lang, backLink("/em-2028", lang).path)} className="pill">{backLink("/em-2028", lang).label}</Link>
           </div>
           <p className="intro">{E.intro}</p>
           <div className="countdowns">
