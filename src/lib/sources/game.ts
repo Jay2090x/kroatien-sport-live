@@ -1,4 +1,4 @@
-import { liveSource } from "../cache";
+import { cachedSource, liveSource } from "../cache";
 import { fetchJson } from "../http";
 import { CLUB_COMPETITION_DE, PLAYER_NAME, clubDe } from "../players-meta";
 import { NBA_PLAYERS } from "../sport-meta";
@@ -67,6 +67,8 @@ export interface BoxRow {
 }
 export interface Standing {
   title: string | null;
+  /** fester Tabellen-Titel (Datenname, z. B. "Premier League"), wenn es nicht die Tabelle des Spiels selbst ist */
+  label?: string;
   kind: "soccer" | "nba";
   rows: Array<{ rank: number | null; teamId: string; team: string; c: Record<string, string> }>;
 }
@@ -306,7 +308,62 @@ async function espnGame(sport: "soccer" | "nba", league: string, id: string): Pr
     return j;
   });
   if (!s) return null;
-  return parseEspnGame(s.data, sport, league, id, croatById, s.fetchedAt);
+  const g = parseEspnGame(s.data, sport, league, id, croatById, s.fetchedAt);
+  if (sport === "soccer" && !g.standings.length) g.standings = await fallbackStandings(league, [g.home.id, g.away.id]).catch(() => []);
+  return g;
+}
+
+/* Pokal/K.-o.-Spiele: Tabelle des Wettbewerbs selbst (z. B. UEFA-Ligaphase), sonst die Ligatabelle(n) beider Vereine. */
+interface RawV2 {
+  name?: string;
+  children?: Array<{ name?: string; standings?: { entries?: Array<{ team?: { id?: string; displayName?: string }; stats?: Array<{ name?: string; displayValue?: string }> }> } }>;
+}
+async function v2Standings(slug: string, label: string | undefined, fixed = false): Promise<Standing[]> {
+  const s = await cachedSource(["game", "v2table", slug], 1800, async () => {
+    const j = await fetchJson<RawV2>(`https://site.api.espn.com/apis/v2/sports/soccer/${slug}/standings`, { timeoutMs: 6000, retries: 1 });
+    return j;
+  });
+  const out: Standing[] = [];
+  const kids = s?.data.children ?? [];
+  for (const k of kids) {
+    const entries = k.standings?.entries ?? [];
+    if (!entries.length) continue;
+    out.push({
+      title: k.name ?? null,
+      label: label ?? (kids.length > 1 || fixed ? k.name?.replace(/^\d{4}(-\d{2,4})?\s+/, "") : undefined),
+      kind: "soccer",
+      rows: entries.map((e) => {
+        const c = Object.fromEntries((e.stats ?? []).map((x) => [x.name ?? "", x.displayValue ?? ""]));
+        if (c.pointsFor && c.pointsAgainst) c.goals = `${c.pointsFor}:${c.pointsAgainst}`;
+        const rank = Number(c.rank);
+        return { rank: Number.isFinite(rank) && rank > 0 ? rank : null, teamId: String(e.team?.id ?? ""), team: clubDe(e.team?.displayName ?? "?"), c };
+      }),
+    });
+  }
+  return out;
+}
+async function fallbackStandings(league: string, teamIds: string[]): Promise<Standing[]> {
+  const has = (st: Standing[]) => st.some((x) => x.rows.some((r) => teamIds.includes(r.teamId)));
+  if (/^uefa\./.test(league)) {
+    const own = await v2Standings(league, undefined).catch(() => []);
+    if (has(own)) return own;
+  }
+  const slugs: string[] = [];
+  for (const t of teamIds) {
+    const d = await cachedSource(["game", "teamleague", t], 86400, async () => {
+      const j = await fetchJson<{ team?: { defaultLeague?: { slug?: string } } }>(`${ESPN}/soccer/${league}/teams/${t}`, { timeoutMs: 5000, retries: 1 });
+      const sl = j.team?.defaultLeague?.slug;
+      if (!sl) throw new Error(`ESPN team ${t}: no default league`);
+      return sl;
+    }).catch(() => null);
+    if (d && SOCCER_SLUG.test(d.data) && d.data !== league && !slugs.includes(d.data)) slugs.push(d.data);
+  }
+  const out: Standing[] = [];
+  for (const sl of slugs) {
+    const st = await v2Standings(sl, CLUB_COMPETITION_DE[sl] || COMPETITION_DE[sl] || undefined, true).catch(() => []);
+    if (has(st)) out.push(...st.filter((x) => x.rows.some((r) => teamIds.includes(r.teamId))));
+  }
+  return out;
 }
 
 /* ---------- SuperSport HNL (TheSportsDB + vorhandene Tabelle) ---------- */

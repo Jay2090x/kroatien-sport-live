@@ -74,7 +74,7 @@ function groupTitle(t: string | null, lang: Lang): string | null {
 
 function Table({ st, g, lang, many }: { st: Standing; g: Game; lang: Lang; many: boolean }) {
   const T = gameT(lang);
-  const caption = st.kind === "nba" || many ? groupTitle(st.title, lang) : null;
+  const caption = st.label ? dataLabel(st.label, lang) : st.kind === "nba" || many ? groupTitle(st.title, lang) : null;
   const ids = new Set([g.home.id, g.away.id]);
   const keys = st.kind === "nba" ? ["wins", "losses", "winPercent", "gamesBehind"] : ["gamesPlayed", "wins", "ties", "losses", "goals", "pointDifferential", "points"];
   const cols = st.kind === "nba" ? T.cols.nba : T.cols.soccer;
@@ -334,7 +334,7 @@ export async function GameView({ league, id, lang }: { league: string; id: strin
             {g.standings.map((st, i) => (
               <Table key={i} st={st} g={g} lang={lang} many={g.standings.length > 1} />
             ))}
-            <p className="small muted">{g.sport === "hnl" ? T.tableNoteHnl : T.tableNote}</p>
+            <p className="small muted">{g.sport === "hnl" ? T.tableNoteHnl : g.standings.some((x) => x.label && x.label !== g.competition) ? T.leagueNote : T.tableNote}</p>
           </section>
         )}
         {g.standings.length === 0 && g.sport === "soccer" && (
