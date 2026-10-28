@@ -421,6 +421,12 @@ export function dict(lang: Lang): Dict {
  * Unbekanntes bleibt unverändert – lieber Original als geraten.
  */
 const DATA_HR: Record<string, string> = {
+  "Österreichische Bundesliga": "Austrijska Bundesliga",
+  "Super League (SUI)": "Super League (ŠVI)",
+  "Super League (GRE)": "Super League (GRČ)",
+  "Superliga (DEN)": "Superliga (DAN)",
+  "Pro League (BEL)": "Pro League (BEL)",
+  "UEFA-Supercup": "UEFA Superkup",
   Kroatien: "Hrvatska",
   England: "Engleska",
   Spanien: "Španjolska",
