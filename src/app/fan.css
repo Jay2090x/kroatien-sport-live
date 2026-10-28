@@ -770,3 +770,13 @@ html:has(.lb-live), html:has(.lb-idle) { scroll-padding-top: 72px; }
 .h2h-table tr.h2h-plus td:first-child { box-shadow: inset 3px 0 0 #1a8f3a; }
 .h2h-table tr.h2h-minus td:first-child { box-shadow: inset 3px 0 0 #c62828; }
 .h2h-table tr.h2h-even td:first-child { box-shadow: inset 3px 0 0 #c9a400; }
+
+/* Spielseite: bisherige Duelle */
+.mh-facts { margin: .2rem 0 .7rem; padding-left: 1.1rem; display: grid; gap: .2rem; }
+.mh-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.mh-item { display: grid; grid-template-columns: 6.2rem 1fr; gap: 0 .6rem; padding: .45rem .6rem; border-radius: 8px; border: 1px solid rgba(127,127,127,.2); border-left: 4px solid #8a8f98; }
+.mh-item.mh-W { border-left-color: #1a8f3a; }
+.mh-item.mh-L { border-left-color: #c62828; }
+.mh-date { font-variant-numeric: tabular-nums; font-size: .85rem; color: var(--muted); grid-row: span 2; padding-top: .1rem; }
+.mh-meta { grid-column: 2; }
+.match-countdown { margin: .6rem 0 .2rem; }

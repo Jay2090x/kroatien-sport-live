@@ -14,6 +14,8 @@ import { dataLabel, dict, href, localeOf, type Lang } from "@/lib/i18n";
 import { formatKickoff } from "@/lib/time";
 import { badgeFor } from "@/lib/club-badge";
 import { SITE } from "@/lib/site";
+import { Countdown } from "@/components/countdown";
+import { MatchH2H } from "@/components/match-h2h";
 
 const CRO = "477";
 
@@ -129,6 +131,11 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
             {tk.venue ? ` · ${tk.venue}` : ""}
           </p>
           {tk.state === "pre" && (
+            <div className="match-countdown" aria-label={t.countdown.label}>
+              <Countdown kickoff={tk.kickoff} t={t.countdown} />
+            </div>
+          )}
+          {tk.state === "pre" && (
             <p className="small muted">
               {X.pre} <Link href={href(lang, "/live")}>{X.toLive} →</Link>
             </p>
@@ -159,6 +166,22 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
           </section>
         )}
 
+        {tk.state === "pre" && (
+          <section className="card" aria-labelledby="sq-h">
+            <h2 id="sq-h">👕 {lang === "hr" ? "Igrači i forma" : "Kader & Form"}</h2>
+            <p className="small">
+              {lang === "hr"
+                ? "Službeni sastav HNS objavljuje prije utakmice; postava slijedi oko 1 sat prije početka (gore u najavi). Do tada: kako igraju igrači iz zadnjeg sastava?"
+                : "Den offiziellen Kader gibt der HNS vor dem Spiel bekannt, die Aufstellung folgt etwa 1 Std. vor Anpfiff (unten in der Vorschau). Bis dahin: Wie spielen die Spieler aus dem letzten Aufgebot?"}
+            </p>
+            <p className="more-link">
+              <Link href={href(lang, "/spieler")}>{lang === "hr" ? "👟 Igrači – zadnja i sljedeća utakmica →" : "👟 Spieler – letztes & nächstes Spiel →"}</Link>
+              {" "}
+              <Link href={href(lang, "/legionaere")}>{lang === "hr" ? "🌍 Legionari ovog vikenda →" : "🌍 Legionäre am Wochenende →"}</Link>
+            </p>
+          </section>
+        )}
+
         <section className="card" aria-labelledby="rep-h">
           <h2 id="rep-h">{tk.state === "pre" ? X.preview : X.report}</h2>
           <LiveTicker
@@ -171,6 +194,7 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
             oclock={t.oclock}
           />
         </section>
+        <MatchH2H opponentDe={croHome ? tk.away.name : tk.home.name} lang={lang} />
       </main>
       <SiteFooter lang={lang} />
     </>

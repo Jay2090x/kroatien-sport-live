@@ -1,15 +1,15 @@
 /**
  * Länderspielbilanz Kroatiens (seit der Unabhängigkeit) gegen jeden Gegner.
  * Quelle: Wikipedia "Croatia national football team" › Head-to-head record
- * (Daten des HNS, rezultati.hns.team), Stand 6.10.2026 nach Kroatien – Spanien.
- * Übernommen und Summen geprüft am 28.10.2026: 81 Gegner, 386 Spiele, 202-101-83, 656:391.
+ * (Daten des HNS, rezultati.hns.team), Stand 2026-10-06.
+ * Erzeugt von scripts/refresh-bilanz.mjs am 2026-10-28; Summen und alle Einzelspiele gegengeprüft.
  * Unentschieden schließen im Elfmeterschießen entschiedene Spiele ein. Serbien inkl. BR Jugoslawien.
  */
 export interface H2H { en: string; de: string; hr: string; flag: string; conf: string; p: number; w: number; d: number; l: number; gf: number; ga: number }
 
 export const H2H_ASOF = "2026-10-06";
 export const H2H_SOURCE = "https://en.wikipedia.org/wiki/Croatia_national_football_team#Head-to-head_record";
-export const H2H_TOTAL = {p:386,w:202,d:101,l:83,gf:656,ga:391};
+export const H2H_TOTAL = { p: 386, w: 202, d: 101, l: 83, gf: 656, ga: 391 };
 
 export const H2H_ROWS: H2H[] = [
   { en: "Albania", de: "Albanien", hr: "Albanija", flag: "🇦🇱", conf: "UEFA", p: 1, w: 0, d: 1, l: 0, gf: 2, ga: 2 },

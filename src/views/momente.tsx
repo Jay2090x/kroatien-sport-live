@@ -118,6 +118,9 @@ export function MomenteView({ lang }: { lang: Lang }) {
           <p className="more-link">
             <Link href={href(lang, "/kroatien-in-zahlen")}>{h.m.more}</Link>
           </p>
+          <p className="more-link">
+            <Link href={href(lang, "/quiz#momente-quiz")}>{lang === "hr" ? "🧠 Testiraj se: kviz trenuci i rekordi →" : "🧠 Teste dich: Quiz Momente & Rekorde →"}</Link>
+          </p>
         </section>
       </main>
       <SiteFooter lang={lang} />
