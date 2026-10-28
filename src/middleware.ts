@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Sprachwahl: ?lang=hr|de oder Cookie "lang" (gesetzt beim Umschalten).
  * Nur für die Inhaltsseiten; alles andere (API, Kalenderdateien) bleibt unberührt.
  */
-const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/bildnachweise", "/vatreni", "/frauen", "/u21", "/quiz", "/kroatien-innovativ", "/kroatien-kultur", "/vatreni-momente", "/kroatien-in-zahlen"]);
+const DE_PATHS = new Set(["/", "/sport", "/spieler", "/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/bildnachweise", "/vatreni", "/frauen", "/u21", "/quiz", "/kroatien-innovativ", "/kroatien-kultur", "/vatreni-momente", "/kroatien-in-zahlen", "/bilanz"]);
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -48,6 +48,7 @@ export const config = {
     "/kroatien-kultur",
     "/vatreni-momente",
     "/kroatien-in-zahlen",
+    "/bilanz",
     "/hr",
     "/hr/sport",
     "/hr/spieler",
@@ -66,5 +67,6 @@ export const config = {
     "/hr/kroatien-kultur",
     "/hr/vatreni-momente",
     "/hr/kroatien-in-zahlen",
+    "/hr/bilanz",
   ],
 };

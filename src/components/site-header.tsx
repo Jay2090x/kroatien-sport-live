@@ -7,6 +7,8 @@ import { LiveBar } from "./live-bar";
 import { inno } from "@/lib/innovation-i18n";
 import { kultur } from "@/lib/culture-i18n";
 import { vhist } from "@/lib/vatreni-history-i18n";
+import { h2hT } from "@/lib/h2h-i18n";
+import { NavScroll } from "./nav-scroll";
 
 export function SiteHeader({
   withNav = true,
@@ -36,14 +38,9 @@ export function SiteHeader({
         </Link>
         <div className="header-right">
           {withNav && (
-            <nav aria-label={t.nav.sections} className="nav">
+            <nav aria-label={t.nav.sections} className="nav" id="site-nav">
+              <NavScroll />
               <Link href={href(lang, "/#vatreni")}>{t.nav.vatreni}</Link>
-              <Link href={href(lang, "/vatreni-momente")} aria-current={path === "/vatreni-momente" ? "page" : undefined}>
-                {vhist(lang).nav}
-              </Link>
-              <Link href={href(lang, "/kroatien-in-zahlen")} aria-current={path === "/kroatien-in-zahlen" ? "page" : undefined}>
-                {vhist(lang).navZ}
-              </Link>
               <Link href={href(lang, "/spieler")} aria-current={current === "spieler" ? "page" : undefined}>
                 {t.nav.players}
               </Link>
@@ -54,6 +51,15 @@ export function SiteHeader({
               <Link href={href(lang, "/#feed")}>{t.nav.news}</Link>
               <Link href={href(lang, "/sport")} aria-current={current === "sport" ? "page" : undefined}>
                 {t.nav.sport}
+              </Link>
+              <Link href={href(lang, "/vatreni-momente")} aria-current={path === "/vatreni-momente" ? "page" : undefined}>
+                {vhist(lang).nav}
+              </Link>
+              <Link href={href(lang, "/kroatien-in-zahlen")} aria-current={path === "/kroatien-in-zahlen" ? "page" : undefined}>
+                {vhist(lang).navZ}
+              </Link>
+              <Link href={href(lang, "/bilanz")} aria-current={path === "/bilanz" ? "page" : undefined}>
+                {h2hT(lang).nav}
               </Link>
               <Link href={href(lang, "/kroatien-innovativ")} aria-current={path === "/kroatien-innovativ" ? "page" : undefined}>
                 {inno(lang).nav}

@@ -19,6 +19,7 @@ export function ExtrasCard({ lang }: { lang: Lang }) {
     ["/u21", "🌱 U21"],
     ["/vatreni-momente", lang === "hr" ? "🔥 Trenuci Vatrenih" : "🔥 Vatreni-Momente"],
     ["/kroatien-in-zahlen", lang === "hr" ? "📊 Hrvatska u brojkama" : "📊 Kroatien in Zahlen"],
+    ["/bilanz", lang === "hr" ? "🆚 Hrvatska protiv …" : "🆚 Kroatien gegen …"],
     ["/quiz", lang === "hr" ? "🧠 Kviz o Vatrenima" : "🧠 Vatreni-Quiz"],
   ];
   return (

@@ -721,3 +721,52 @@ html:has(.lb-live), html:has(.lb-idle) { scroll-padding-top: 72px; }
 .hp-L { background: #c62828; }
 .hp-met { margin: .45rem 0 0; }
 .card h3.vm-title { margin: .15rem 0 .2rem; font-size: 1.12rem; text-transform: none; letter-spacing: 0; color: inherit; font-weight: 800; }
+
+/* ── Mobile Navigation: eine waagrechte Wischleiste statt 3 Zeilen ── */
+@media (max-width: 720px) {
+  .header-inner { flex-wrap: wrap; row-gap: 8px; }
+  .header-inner .brand { flex: 1 1 auto; min-width: 0; }
+  .header-right { display: contents; }
+  .header-right .lang { order: 2; flex: none; }
+  .nav {
+    order: 3;
+    flex: 1 0 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    gap: 4px;
+    padding: 2px 0 4px;
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a {
+    flex: none;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    background: var(--blue-soft);
+  }
+  .nav a[aria-current="page"] { background: var(--red-soft); }
+}
+
+/* ── Bilanz ── */
+.bz-tot { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+.bz-tot .vz-tile { padding: .55rem .6rem; text-align: center; }
+.bz-tot .vz-big { font-size: 1.5rem; }
+.h2h-next-title { font-weight: 800; font-size: 1.05rem; margin: 0 0 .4rem; }
+.h2h-bar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; margin: .2rem 0 .35rem; background: #eee; }
+.h2h-bw { background: #1a8f3a; } .h2h-bd { background: #8a8f98; } .h2h-bl { background: #c62828; }
+.h2h-minis { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.h2h-mini { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: .2rem .8rem .6rem; }
+.h2h-mini-list { margin: 0; padding-left: 1.3rem; display: grid; gap: .35rem; }
+.h2h-mini-list li > span { display: block; }
+.h2h-controls { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .25rem 0 .6rem; }
+.h2h-input, .h2h-select { font: inherit; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card, #fff); color: inherit; min-height: 40px; }
+.h2h-input { min-width: 0; width: 220px; max-width: 100%; }
+.h2h-table tr.h2h-plus td:first-child { box-shadow: inset 3px 0 0 #1a8f3a; }
+.h2h-table tr.h2h-minus td:first-child { box-shadow: inset 3px 0 0 #c62828; }
+.h2h-table tr.h2h-even td:first-child { box-shadow: inset 3px 0 0 #c9a400; }

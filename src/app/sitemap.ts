@@ -27,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...["/legionaere", "/live", "/em-2028", "/talente", "/kalender", "/frauen", "/u21", "/kroatien-innovativ", "/kroatien-kultur"].flatMap((p) => both(p, "daily", 0.6, now)),
     ...both("/vatreni-momente", "monthly", 0.6, now),
     ...both("/kroatien-in-zahlen", "monthly", 0.6, now),
+    ...both("/bilanz", "daily", 0.6, now),
     ...both("/quiz", "monthly", 0.5, now),
     ...both("/bildnachweise", "monthly", 0.2, now),
     { url: `${SITE.url}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
