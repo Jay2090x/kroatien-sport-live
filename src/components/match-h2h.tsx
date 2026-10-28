@@ -3,6 +3,13 @@ import { H2H_ASOF, H2H_ROWS, H2H_SOURCE } from "@/data/h2h";
 import { H2H_MATCHES, type H2HMatch } from "@/data/h2h-matches";
 import { href, type Lang } from "@/lib/i18n";
 
+/** Kroatische Zahlformen: 1 / 2–4 / 5+ (11–14 = viele). */
+function hrN(n: number, one: string, few: string, many: string) {
+  const t = n % 100, u = n % 10;
+  if (t >= 11 && t <= 14) return many;
+  return u === 1 ? one : u >= 2 && u <= 4 ? few : many;
+}
+
 const TXT = {
   de: {
     title: (opp: string) => `Kroatien gegen ${opp}: alle Duelle`,
@@ -23,7 +30,8 @@ const TXT = {
   },
   hr: {
     title: (opp: string) => `Hrvatska – ${opp}: svi dvoboji`,
-    rec: (p: number, w: number, d: number, l: number) => `${p} utakmica · ${w} pobjeda · ${d} neriješenih · ${l} poraza`,
+    rec: (p: number, w: number, d: number, l: number) =>
+      `${p} ${hrN(p, "utakmica", "utakmice", "utakmica")} · ${w} ${hrN(w, "pobjeda", "pobjede", "pobjeda")} · ${d} ${hrN(d, "neriješena", "neriješene", "neriješenih")} · ${l} ${hrN(l, "poraz", "poraza", "poraza")}`,
     goals: "Golovi",
     cols: { date: "Datum", match: "Utakmica", comp: "Natjecanje", where: "Teren" },
     where: { H: "doma", A: "u gostima", N: "neutralno" },
@@ -33,7 +41,7 @@ const TXT = {
     biggestW: "Najveća pobjeda",
     biggestL: "Najveći poraz",
     last: "Zadnji dvoboj",
-    note: (d: string) => `Sve utakmice od neovisnosti, stanje ${d}. Izvor: Wikipedijini zapisnici utakmica (podaci HNS-a), za svakog protivnika provjereni prema HNS-ovoj tablici. Rezultat iz perspektive domaćina; raspucavanje se računa kao neriješeno.`,
+    note: (d: string) => `Sve utakmice od neovisnosti, stanje ${d} Izvor: Wikipedijini zapisnici utakmica (podaci HNS-a), za svakog protivnika provjereni prema HNS-ovoj tablici. Rezultat iz perspektive domaćina; raspucavanje se računa kao neriješeno.`,
     source: "Izvor",
     more: "Bilanca protiv svih protivnika →",
     cro: "Hrvatska",
