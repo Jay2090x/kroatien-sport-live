@@ -112,7 +112,7 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
         ]}
       />
       <SiteHeader lang={lang} path={path} />
-      <main className="container page-fan page-match">
+      <main lang={lang} className="container page-fan page-match">
         <nav className="crumbs small" aria-label="Breadcrumb">
           <Link href={href(lang, "/")}>{SITE.name}</Link> › <Link href={href(lang, "/vatreni")}>{X.list}</Link> ›{" "}
           <span>{names.home} – {names.away}</span>

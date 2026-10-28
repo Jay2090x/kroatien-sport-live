@@ -28,7 +28,7 @@ export async function InnovativView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/kroatien-innovativ" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="inno-h">
           <h1 id="inno-h" className="h1">💡 {T.h1}</h1>
           <p className="intro">{T.intro}</p>

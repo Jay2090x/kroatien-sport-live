@@ -56,7 +56,7 @@ export async function SpielerView({ lang }: { lang: Lang }) {
         />
       )}
       <SiteHeader current="spieler" lang={lang} path="/spieler" />
-      <main className="container page-spieler">
+      <main lang={lang} className="container page-spieler">
         <section className="card" aria-labelledby="spieler-h">
           <div className="card-head">
             <h1 id="spieler-h" className="h1">{t.players.h1}</h1>

@@ -20,7 +20,7 @@ export async function LegionaereView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/legionaere" current="legionaere" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="leg-h">
           <div className="card-head">
             <h1 id="leg-h" className="h1">{f.h1}</h1>

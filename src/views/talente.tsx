@@ -32,7 +32,7 @@ export async function TalenteView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/talente" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="tal-h">
           <div className="card-head">
             <h1 id="tal-h" className="h1">🌱 {T.h1}</h1>

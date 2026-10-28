@@ -62,7 +62,7 @@ export function BildnachweiseView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/bildnachweise" />
-      <main className="container legal-page">
+      <main lang={lang} className="container legal-page">
         <article className="card">
           <h1>{T.h1}</h1>
           <p>{T.intro}</p>

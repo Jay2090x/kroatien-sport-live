@@ -23,7 +23,7 @@ export async function Em2028View({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/em-2028" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="em-h">
           <div className="card-head">
             <h1 id="em-h" className="h1">🇪🇺 {E.h1}</h1>

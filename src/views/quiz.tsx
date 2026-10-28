@@ -21,7 +21,7 @@ export function QuizView({ lang }: { lang: Lang }) {
         ])}
       />
       <SiteHeader lang={lang} path="/quiz" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="qz-h">
           <div className="card-head">
             <h1 id="qz-h" className="h1">🧠 {X.h1}</h1>

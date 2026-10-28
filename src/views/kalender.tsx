@@ -49,7 +49,7 @@ export async function KalenderView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/kalender" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="cal-h">
           <div className="card-head">
             <h1 id="cal-h" className="h1">📅 {C.h1}</h1>

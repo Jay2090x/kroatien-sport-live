@@ -1504,3 +1504,18 @@ a.av:focus-visible {
 .clip > :nth-last-child(2) {
   margin-bottom: 8px;
 }
+
+/* Tippflächen mind. 24 px (WCAG 2.2, Mobil) */
+footer a,
+.r-report,
+.r-clip {
+  display: inline-block;
+  padding-block: 3px;
+  min-height: 24px;
+}
+.f-clip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+}

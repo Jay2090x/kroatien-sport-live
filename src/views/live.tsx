@@ -41,7 +41,7 @@ export async function LiveView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/live" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="live-h">
           <div className="card-head">
             <h1 id="live-h" className="h1">📡 {L.h1}</h1>

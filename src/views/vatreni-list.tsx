@@ -53,7 +53,7 @@ export async function VatreniListView({ lang }: { lang: Lang }) {
         ])}
       />
       <SiteHeader lang={lang} path="/vatreni" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="vl-h">
           <div className="card-head">
             <h1 id="vl-h" className="h1">🇭🇷 {X.list}</h1>

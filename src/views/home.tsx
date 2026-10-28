@@ -74,7 +74,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/" />
-      <main className="container grid">
+      <main lang={lang} className="container grid">
         <h1 className="sr-only">{SITE.name} – {t.tagline}</h1>
         <div className="span-2 filter-row">
           <SportFilterBar t={{ filter: t.filter }} />

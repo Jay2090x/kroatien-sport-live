@@ -133,7 +133,7 @@ export async function SportView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader current="sport" lang={lang} path="/sport" />
-      <main className="container page-spieler">
+      <main lang={lang} className="container page-spieler">
         <section className="card" aria-labelledby="sport-h">
           <div className="card-head">
             <h1 id="sport-h" className="h1">{t.sport.h1}</h1>

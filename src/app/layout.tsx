@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SITE } from "@/lib/site";
 import { SPORT_FILTER_BOOT, SPORT_FILTER_CSS } from "@/components/sport-filter";
+import { HTML_LANG_BOOT, HtmlLang } from "@/components/html-lang";
 import "./globals.css";
 import "./fan.css";
 
@@ -41,12 +42,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="de" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: HTML_LANG_BOOT }} />
         <script dangerouslySetInnerHTML={{ __html: SPORT_FILTER_BOOT }} />
         <style dangerouslySetInnerHTML={{ __html: SPORT_FILTER_CSS }} />
       </head>
       <body>
         {children}
         <Analytics />
+        <HtmlLang />
       </body>
     </html>
   );

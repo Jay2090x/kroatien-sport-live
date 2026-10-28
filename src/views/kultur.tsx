@@ -29,7 +29,7 @@ export async function KulturView({ lang }: { lang: Lang }) {
   return (
     <>
       <SiteHeader lang={lang} path="/kroatien-kultur" />
-      <main className="container page-fan">
+      <main lang={lang} className="container page-fan">
         <section className="card" aria-labelledby="kul-h">
           <h1 id="kul-h" className="h1">🎬 {T.h1}</h1>
           <p className="intro">{T.intro}</p>
