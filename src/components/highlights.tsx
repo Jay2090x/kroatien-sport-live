@@ -33,7 +33,6 @@ export function ClipPlayer({ id, title, load }: { id: string; title: string; loa
 function Clip({ v, load, when, channelLabel }: { v: Video; load: string; when: string; channelLabel: string }) {
   return (
     <li className="clip" data-sport={SPORT_SLUG[v.sport]}>
-      <ClipPlayer id={v.id} title={v.title} load={load} />
       <p className="clip-title">
         <span aria-hidden="true">{SPORT_EMOJI[v.sport]} </span>
         <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer">
@@ -43,6 +42,7 @@ function Clip({ v, load, when, channelLabel }: { v: Video; load: string; when: s
       <p className="clip-meta">
         {channelLabel} {v.channel} · <time dateTime={v.publishedAt}>{when}</time>
       </p>
+      <ClipPlayer id={v.id} title={v.title} load={load} />
     </li>
   );
 }

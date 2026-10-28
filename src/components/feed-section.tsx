@@ -65,11 +65,6 @@ function Entry({ e, lang }: { e: FeedEntry; lang: Lang }) {
   }
   return (
     <li className={`fe fe-story${e.clip ? " fe-has-clip" : ""}`} id={e.id}>
-      {e.clip ? (
-        <div className="fe-media">
-          <ClipPlayer id={e.clip.id} title={e.clip.title} load={t.highlights.load} />
-        </div>
-      ) : null}
       <div className="fe-info">
         {e.match ? <MatchHead m={e.match} lang={lang} /> : null}
         {e.clip ? (
@@ -94,6 +89,11 @@ function Entry({ e, lang }: { e: FeedEntry; lang: Lang }) {
           </div>
         )}
       </div>
+      {e.clip ? (
+        <div className="fe-media">
+          <ClipPlayer id={e.clip.id} title={e.clip.title} load={t.highlights.load} />
+        </div>
+      ) : null}
     </li>
   );
 }

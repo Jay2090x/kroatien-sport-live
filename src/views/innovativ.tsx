@@ -71,11 +71,11 @@ export async function InnovativView({ lang }: { lang: Lang }) {
             <ul className="clips">
               {vids.data.map((v) => (
                 <li key={v.id} className="clip">
-                  <ClipPlayer id={v.id} title={v.title} load={T.load} />
                   <p className="clip-title">
                     <a href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noopener noreferrer" lang="en">{v.title}</a>
                   </p>
                   <p className="small muted">{v.channel} · {formatShortDate(v.publishedAt, lang)}</p>
+                  <ClipPlayer id={v.id} title={v.title} load={T.load} />
                 </li>
               ))}
             </ul>

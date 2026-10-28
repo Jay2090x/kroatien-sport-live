@@ -25,12 +25,16 @@ const g = (q: string, lang: Lang) =>
   }`;
 
 /** `section: true` = Kultur-Rubrik eines Mediums – dort reicht Person ODER Kroatien-Bezug */
-const FEEDS: Array<{ url: string; lang: Lang; name?: string; section?: boolean }> = [
+export const FEEDS: Array<{ url: string; lang: Lang; name?: string; section?: boolean }> = [
   { url: g('("Baby Lasagna" OR 2Cellos OR "Stjepan Hauser" OR "Luka Šulić" OR "Maksim Mrvica" OR "Goran Višnjić" OR "Rade Šerbedžija" OR "Zrinka Cvitešić") when:30d', "de"), lang: "de" },
   { url: g("Kroatien (Film OR Filmfestival OR Musik OR Sänger OR Sängerin OR Band OR Schauspieler OR Schauspielerin OR Konzert OR ESC OR Eurovision) when:21d", "de"), lang: "de" },
   { url: g("kroatische (Sängerin OR Sänger OR Band OR Schauspielerin OR Schauspieler OR Regisseurin OR Regisseur OR Film) when:30d", "de"), lang: "de" },
   { url: g('("Hauser" Cellist OR 2Cellos OR "Baby Lasagna" OR Gibonni OR "Prljavo kazalište" OR "Maksim Mrvica") when:30d', "de"), lang: "de" },
   { url: g("(kroatischer OR kroatischen OR kroatische) (Film OR Regisseur OR Musiker OR Pianist OR Cellist OR Komponist OR Festival) when:30d", "de"), lang: "de" },
+  { url: g('("Let 3" OR Severina OR "Petar Grašo" OR "Nina Badrić" OR "Jelena Rozga" OR "Dalibor Matanić" OR "Nebojša Slijepčević" OR "Hana Jušić" OR "Tereza Kesovija") when:60d', "de"), lang: "de" },
+  { url: g("(Zagreb OR Split OR Dubrovnik OR Rijeka OR Pula OR Zadar OR Šibenik) (Filmfestival OR Musikfestival OR Konzert OR Oper OR Theater OR Kinofilm) kroatisch when:30d", "de"), lang: "de" },
+  { url: g("kroatischer Film OR kroatische Musik OR kroatischer Musiker OR kroatische Künstlerin when:45d", "de"), lang: "de" },
+  { url: g('("Kroatien" Kultur OR "kroatische Kultur" OR "kroatisches Kino" OR "kroatischer Rapper" OR "kroatische Popsängerin") when:60d', "de"), lang: "de" },
   { url: "https://www.tportal.hr/rss-kultura.xml", lang: "hr", name: "tportal", section: true },
   { url: "https://www.vecernji.hr/feeds/section/kultura", lang: "hr", name: "Večernji list", section: true },
   { url: "https://www.muzika.hr/feed", lang: "hr", name: "Muzika.hr" },
@@ -57,13 +61,22 @@ const PEOPLE: Array<[string, RegExp]> = [
   ["ultra", /ultra europe/],
   ["eurosong", /eurosong|eurovizij|eurovision|song contest|\besc\b|\bdora\b 20\d\d|dori 20\d\d/],
   ["porin", /\bporin/],
+  ["let3", /\blet ?3\b/],
+  ["severina", /severina/],
+  ["graso", /petar graso|\bgraso\b/],
+  ["badric", /nina badric|badric/],
+  ["rozga", /jelena rozga|\brozga\b/],
+  ["matanic", /dalibor matanic|matanic.{0,40}(film|redatelj|regisseur)/],
+  ["slijepcevic", /slijepcevic/],
+  ["jusic", /hana jusic/],
+  ["kesovija", /kesovija/],
 ];
-const CROATIAN = /hrvat|kroat|croat|zagreb|split|rijek|osijek|zadar|dubrovnik|pula|sibenik/;
+const CROATIAN = /hrvat|kroat|croat|\bzagreb|\bsplit|\brijek|\bosijek|\bzadar|\bdubrovn|\bpul[aieu]\b|\bsibenik/;
 const TOPIC =
   /film|kino|festival|album|pjesm|singl|koncert|glum|redatelj|serij|nagrad|pjeva|bend|glazb|musik|musiker|sanger|band\b|schauspiel|regisseur|konzert|\bsong|lied|oscar|berlinale|cannes|venedig|venecij|kazalist|theater|opera|orkest|orchester|nastup|turnej|tournee|spot|hit/;
 /** Klatsch, Kriminalität, Politik, Sport, Krieg, Werbung */
 const EXCLUDE =
-  /trudn|rastav|razvod|ljubav|zarucn|vjencan|cura|decko|bikini|zgodn|seksi|sexy|golisav|obnazen|izgled|liniju|kilogram|tijelo|haljin|outfit|scheidung|affare|liebes|nackt|schwanger|horoskop|uhicen|policij|ubojstv|nesrec|sud\b|presud|optuz|zatvor|polizei|festgenommen|mord|unfall|wahl|partei|minister|regierung|vlad[aei]\b|sabor|izbor|stranka|hdz|sdp|plenkovi|milanovi|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|vatren|dinamo|hajduk|\bhnl\b|rat\b|krieg|ukrain|izrael|gaza|reality|big brother|ljubav je na selu|nagradna igra|gewinnspiel|ticketverlosung|popust|akcij|vucic|srbij|serbien|kroatien-krimi|\btod\b|starb|preminu|umro|umrla|smrt|godisnjic|slik[aeu]\b|aukcij|auktion/;
+  /trudn|rastav|razvod|ljubav|zarucn|vjencan|cura|decko|bikini|zgodn|seksi|sexy|golisav|obnazen|izgled|liniju|kilogram|tijelo|haljin|outfit|scheidung|affare|liebes|nackt|schwanger|horoskop|uhicen|policij|ubojstv|nesrec|sud\b|presud|optuz|zatvor|polizei|festgenommen|mord|unfall|wahl|partei|minister|regierung|vlad[aei]\b|sabor|izbor|stranka|hdz|sdp|plenkovi|milanovi|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|vatren|dinamo|hajduk|\bhnl\b|rat\b|krieg|ukrain|izrael|gaza|reality|big brother|ljubav je na selu|nagradna igra|gewinnspiel|ticketverlosung|popust|akcij|vucic|srbij|serbien|kroatien-krimi|\btod\b|starb|preminu|umro|umrla|smrt|godisnjic|slik[aeu]\b|aukcij|auktion|serbisch|srpsk|boykott|bojkot|prosvjed|fotk[aeiu]|fotografij[aeu] iz|bazen|pratitelj|komplimen|instagram|snimke iz/;
 const SPAM = /\p{Script=Cyrillic}|uzivo|live ?stream/iu;
 
 const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
@@ -74,23 +87,47 @@ export function personOf(title: string): string | undefined {
   return PEOPLE.find(([, rx]) => rx.test(t))?.[0];
 }
 
+/**
+ * Ausländische Stars auf Gastspiel/Dreh in Kroatien (Konzerte, Tourneen, Hollywood-Drehs):
+ * Die Rubrik zeigt kroatische Künstlerinnen und Künstler – solche Meldungen fliegen raus,
+ * außer der Titel nennt ausdrücklich kroatische Mitwirkende/einen kroatischen Film.
+ */
+const FOREIGN_NAMES = /marsden|gervais|malkovich|iron maiden|dickinson|portishead|beth gibbons|fontaines|hollywood/;
+const GUEST =
+  /stiz[eu] u (?!kin)|dolazi u (?!kin)|dolaze u|vraca se u|vracaju se u|prvi put u hrvatsk|turnej|tournee|kommt nach|kommen nach|erstmals .{0,40}in kroatien|konzert in kroatien|gastspiel|zagreb i beograd|britansk|americk|nigerij|irsk[aio]|engleski|svjetsk\w* zvijezd|weltstar|us-star|hollywood|snima u hrvatsk|dreht in kroatien|drehort/;
+const CRO_ARTIST =
+  /hrvatsk(i|og|om|ih|im|a|e|oj) (pjev|glazb|glum|bend|sastav|redatelj|film|umjetni|skladatelj|zvijezd|reper|kantautor|pijanist|violonc)|kroatisch\w* (sanger|band|musik|film|schauspiel|regisseur|kunstler|star|pianist|cellist|komponist)|kroatien-film/;
+export function foreignGuest(title: string): boolean {
+  const t = fold(title);
+  if (personOf(title) && personOf(title) !== "eurosong") return false;
+  if (CRO_ARTIST.test(t)) return false;
+  return FOREIGN_NAMES.test(t) || GUEST.test(t);
+}
+
 export function relevantCulture(title: string, section = false): boolean {
   const t = fold(title);
   if (EXCLUDE.test(t) || SPAM.test(title)) return false;
+  if (foreignGuest(title)) return false;
   const p = personOf(title);
   if (p === "eurosong") return CROATIAN.test(t) || /baby lasagna|dora/.test(t);
   if (p) return true;
   return CROATIAN.test(t) && (section || TOPIC.test(t));
 }
 
-async function loadFeed(f: (typeof FEEDS)[number]): Promise<CultureItem[]> {
+export async function loadFeed(f: (typeof FEEDS)[number]): Promise<CultureItem[]> {
   const out: CultureItem[] = [];
-  for (const it of parseRss(await fetchText(f.url))) {
+  const xml = await fetchText(f.url);
+  // Bot-Schutzseiten (z. B. Netokracija: HTTP 202 mit leerer/HTML-Seite) als Fehler werten
+  if (!/<(rss|feed|rdf:RDF)\b/i.test(xml)) throw new Error(`no RSS from ${f.url}`);
+  for (const it of parseRss(xml)) {
     const t = it.pubDate ? Date.parse(it.pubDate) : NaN;
     if (Number.isNaN(t)) continue;
     const source = f.name ?? (it.source?.trim() || "Google News");
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
+    title = title.replace(/^(.{1,30}?\p{Ll})(Das|Die|Der|Ein|Eine|Im|Am|Zum) /u, "$1: $2 ");
+    // kaputte Feed-Titel (Teaser-Reste, leere Überschrift) überspringen
+    if (/:\s*-\s|^\p{Lu}\p{Ll}+ (Sie|Er|Es|Wir|Ihr) /u.test(title)) continue;
     if (!relevantCulture(title, f.section) || SPAM.test(source) || looksEnglish(title) || title.length < 25) continue;
     const det = detectLang(title);
     if (det !== f.lang && !(det === null && !looksEnglish(title))) continue;
@@ -119,11 +156,13 @@ function similar(a: Set<string>, b: Set<string>): boolean {
 
 /** Seitensprache, ≤ 7 Tage zuerst, sonst bis 30 Tage; gleiche Geschichte einmal; max. 2 je Person/Festival. */
 export function pickCulture(pool: CultureItem[], { lang, now = Date.now(), max = 12, perPerson = 2 }: { lang: Lang; now?: number; max?: number; perPerson?: number }): CultureItem[] {
+  // DE-Medien berichten seltener über kroatische Kultur → längeres Fenster
+  const window = (lang === "de" ? 60 : 30) * 24 * H;
   const own = pool
     .filter((n) => n.lang === lang)
     .filter((n) => {
       const age = now - Date.parse(n.publishedAt);
-      return age >= -H && age <= 30 * 24 * H;
+      return age >= -H && age <= window;
     })
     .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
   const kept: Array<{ n: CultureItem; tok: Set<string>; st: Set<string>; t: number }> = [];
@@ -154,7 +193,7 @@ async function loadCulture(): Promise<CultureItem[]> {
 }
 
 export function getCulture(): Promise<Sourced<CultureItem[]> | null> {
-  return cachedSource(["culture-v3"], 1800, loadCulture);
+  return cachedSource(["culture-v4"], 1800, loadCulture);
 }
 
 /* ---------- Videos offizieller Künstler-/Festivalkanäle ---------- */

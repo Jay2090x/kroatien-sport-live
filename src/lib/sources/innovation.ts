@@ -30,10 +30,12 @@ const g = (q: string, lang: Lang) =>
  * kroatischer Medien: Netokracija (Tech/Startups, `tech: true` = ganzer Feed ist Themen-passend)
  * und Poslovni dnevnik (Wirtschaft, nur mit Relevanzfilter).
  */
-const FEEDS: Array<{ url: string; lang: Lang; name?: string; tech?: boolean }> = [
+export const FEEDS: Array<{ url: string; lang: Lang; name?: string; tech?: boolean }> = [
   { url: "https://www.netokracija.com/feed", lang: "hr", name: "Netokracija", tech: true },
   { url: "https://www.netokracija.com/feed?paged=2", lang: "hr", name: "Netokracija", tech: true },
   { url: "https://www.netokracija.com/feed?paged=3", lang: "hr", name: "Netokracija", tech: true },
+  // Ersatz, falls Netokracija direkt blockt (Google News liefert dieselben Artikel-Titel)
+  { url: g("site:netokracija.com when:14d", "hr"), lang: "hr", name: "Netokracija", tech: true },
   { url: "https://www.poslovni.hr/feed", lang: "hr", name: "Poslovni dnevnik" },
   { url: "https://www.poslovni.hr/hrvatska/feed", lang: "hr", name: "Poslovni dnevnik" },
   { url: "https://www.index.hr/rss/vijesti", lang: "hr", name: "Index.hr" },
@@ -63,10 +65,10 @@ const COMPANIES: Array<[string, RegExp]> = [
 ];
 const CROATIAN = /hrvat|kroat|croat|zagreb|split|rijek|osijek|zadar|varazdin/;
 const TOPIC =
-  /startup|start-up|erfind|erfinder|forsch|wissenschaft|ki\b|kunstliche intelligenz|\bai\b|technolog|innovat|investi|auftrag|milliard|million|patent|preis fur|auszeichn|weltweit erst|rekord|robot|elektro|exportschlager|izum|inovac|znanstven|istrazivac|umjetn[ae] inteligencij|tehnolog|ugovor|posao vrijedan|milijun|milijard|nagrad|priznanj|prvi u svijetu|svjetsk|rekord|robota|patent|tvrtk|izvoz|razvil|razvio|razvila|lansira|predstavi/;
+  /startup|start-up|erfind|erfinder|forsch|wissenschaft|\bki\b|kunstliche intelligenz|\bai\b|technolog|innovat|investi|auftrag|milliard|million|patent|preis fur|auszeichn|weltweit erst|rekord|robot|elektro|exportschlager|izum|inovac|znanstven|istrazivac|umjetn[ae] inteligencij|tehnolog|ugovor|posao vrijedan|milijun|milijard|nagrad|priznanj|prvi u svijetu|svjetsk|rekord|robota|patent|tvrtk|izvoz|razvil|razvio|razvila|lansira|predstavi/;
 /** Politik, Kriminalität, Unfälle, Steuer-/Ratgeber, Sport, Wetter, Klatsch */
 const EXCLUDE =
-  /wahl|partei|minister|regierung|parlament|sabor|vlad[aei]|izbor|stranka|hdz|sdp|mozemo|plenkovi|milanovi|polizei|festgenommen|verhaft|mord|unfall|tot\b|tote|policij|uhicen|ubojstv|nesrec|poginu|sudar|ozlijed|optuz|sud\b|presud|steuer|finanzamt|ratgeber|porez|savjet|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|\bnba\b|hnl\b|vatren|dinamo|hajduk|wetter|vrijeme sutra|horoskop|urlaub|reise|tourismus|turist|recept|rezept|celebrity|pjevac|sanger|film|kino|rat\b|krieg|ukrain|izrael|gaza|gaste|adria|militar|waffe|rustet|raketen|panzer|vojsk|oruzj|naoruz|\btipp\b|prognose|quoten|wettbasis|sportwett|nations league|liga nacija|kladi|pentagon|drohn|dron|obran|defen|verteidig|rustung|nato\b|molil|crkv|hodocas|farma|ekolos|limit|pravila za|cijen[ae] goriv/;
+  /wahl|partei|minister|regierung|parlament|sabor|vlad[aei]|izbor|stranka|hdz|sdp|mozemo|plenkovi|milanovi|polizei|festgenommen|verhaft|mord|unfall|tot\b|tote|policij|uhicen|ubojstv|nesrec|poginu|sudar|ozlijed|optuz|sud\b|presud|steuer|finanzamt|ratgeber|porez|savjet|nogomet|fussball|kosark|basketball|tenis|tennis|rukomet|handball|\bufc\b|\bboks|\bnba\b|hnl\b|vatren|dinamo|hajduk|wetter|vrijeme sutra|horoskop|urlaub|reise|tourismus|turist|recept|rezept|celebrity|pjevac|sanger|film|kino|rat\b|krieg|ukrain|izrael|gaza|gaste|adria|militar|waffe|rustet|raketen|panzer|vojsk|oruzj|naoruz|\btipp\b|prognose|quoten|wettbasis|sportwett|nations league|liga nacija|kladi|pentagon|drohn|dron|obran|defen|verteidig|rustung|nato\b|molil|crkv|hodocas|farma|ekolos|limit|pravila za|cijen[ae] goriv|ratn[aiu] brod|ratni|vojn[aieo]|grafit|navijac|duzan|duzn[aiu]|stecaj|insolvenz|pleite|kamp(ovi|ova|ing)|camping|tomasevi|gradonacelni|burgermeister|luksuz|luxus|marin[aeiu]\b|jaht|yacht|nekretnin|immobili/;
 /** Netokracija: nur Firmen-/Startup-/Investitions-/Preis-Meldungen, keine Ratgeber */
 const STARTUP = /startup|jednorog|investic|akvizi|preuzim|fond|nagrad|osnivac|runda|financiran|milijun|milijard|izum|razvi/;
 const SPAM = /\p{Script=Cyrillic}|uzivo|live ?stream/iu;
@@ -87,9 +89,12 @@ export function relevant(title: string): boolean {
   return CROATIAN.test(t) && TOPIC.test(t);
 }
 
-async function loadFeed(f: (typeof FEEDS)[number]): Promise<InnoItem[]> {
+export async function loadFeed(f: (typeof FEEDS)[number]): Promise<InnoItem[]> {
   const out: InnoItem[] = [];
-  for (const it of parseRss(await fetchText(f.url))) {
+  const xml = await fetchText(f.url);
+  // Bot-Schutzseiten (z. B. Netokracija: HTTP 202 mit leerer/HTML-Seite) als Fehler werten
+  if (!/<(rss|feed|rdf:RDF)\b/i.test(xml)) throw new Error(`no RSS from ${f.url}`);
+  for (const it of parseRss(xml)) {
     const t = it.pubDate ? Date.parse(it.pubDate) : NaN;
     if (Number.isNaN(t)) continue;
     const source = f.name ?? (it.source?.trim() || "Google News");
@@ -165,7 +170,7 @@ async function loadInnovation(): Promise<InnoItem[]> {
 }
 
 export function getInnovation(): Promise<Sourced<InnoItem[]> | null> {
-  return cachedSource(["innovation-v7"], 1800, loadInnovation);
+  return cachedSource(["innovation-v8"], 1800, loadInnovation);
 }
 
 /* ---------- Videos offizieller Firmenkanäle ---------- */

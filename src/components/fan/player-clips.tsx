@@ -17,7 +17,6 @@ export function ClipItem({ c, lang, showPlayer = true }: { c: PlayerClip; lang: 
   const caption = [showPlayer ? c.player : null, c.club ? dataLabel(c.club, lang) : null, formatShortDate(c.publishedAt, lang)].filter(Boolean).join(" · ");
   return (
     <li className="clip pclip">
-      <ClipPlayer id={c.id} title={`${X.own}: ${c.player}`} load={X.load} />
       <p className="clip-title">
         <strong>{caption}</strong>
         {own ? <> – {own}</> : null}
@@ -28,6 +27,7 @@ export function ClipItem({ c, lang, showPlayer = true }: { c: PlayerClip; lang: 
           {X.on}
         </a>
       </p>
+      <ClipPlayer id={c.id} title={`${X.own}: ${c.player}`} load={X.load} />
     </li>
   );
 }

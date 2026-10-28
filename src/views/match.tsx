@@ -147,11 +147,11 @@ export async function MatchView({ id, lang }: { id: string; lang: Lang }) {
             <h2 id="clip-h">🎬 {X.clip}</h2>
             {clip ? (
               <div className="clip clip-single">
-                <ClipPlayer id={clip.id} title={clip.title} load={X.clipLoad} />
                 <p className="clip-title">
                   <a href={`https://www.youtube.com/watch?v=${clip.id}`} target="_blank" rel="noopener noreferrer">{clip.title}</a>
                 </p>
                 <p className="footnote">{X.clipNote}</p>
+                <ClipPlayer id={clip.id} title={clip.title} load={X.clipLoad} />
               </div>
             ) : (
               <p className="muted small">{X.noClip}</p>

@@ -307,7 +307,40 @@ export function buildTimeline(
     if (b.last && b.last.outcome && Date.parse(`${b.last.date}T12:00:00Z`) >= now - RESULT_WINDOW) res.push(fromBox(b, b.last, lang, "last"));
   }
 
-  const uniq = (xs: Raw[]) => [...new Map(xs.map((x) => [x.key, x])).values()];
+  // Gleiches Spiel aus zwei Quellen (z. B. "FC Thun – Hajduk" und "Thun – Hajduk Split"):
+  // gleiche Sportart, Anstoß ±3 h und dieselben Mannschaften (Kernname) → nur einmal.
+  const STOP = new Set(["fc", "hnk", "nk", "gnk", "rk", "kk", "bsc", "sc", "afc", "cf", "ac", "fk", "sk", "1961", "split", "zagreb", "koprivnica"]);
+  const core = (t: string) =>
+    t
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length > 1 && !STOP.has(w))
+      .sort()
+      .join(" ");
+  const sides = (x: Raw) => {
+    const parts = (x.teams?.length === 2 ? x.teams : x.title.split(/\s+[–-]\s+/)).map(core);
+    return parts.length === 2 && parts.every(Boolean) ? [...parts].sort().join("|") : null;
+  };
+  const uniq = (xs: Raw[]) => {
+    const byKey = [...new Map(xs.map((x) => [x.key, x])).values()];
+    const out: Raw[] = [];
+    for (const x of byKey) {
+      const sx = sides(x);
+      const dup = sx
+        ? out.findIndex(
+            (y) =>
+              y.sport === x.sport &&
+              sides(y) === sx &&
+              Math.abs(Date.parse(y.start) - Date.parse(x.start)) <= 3 * 3600_000
+          )
+        : -1;
+      if (dup < 0) out.push(x);
+      else if (!out[dup].result && x.result) out[dup] = x; // Eintrag mit Ergebnis bevorzugen
+    }
+    return out;
+  };
   return {
     upcoming: uniq(up)
       .map((r) => finish(r, lang, now))

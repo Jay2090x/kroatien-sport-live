@@ -1272,21 +1272,10 @@ details.prev summary {
   display: grid;
   gap: 12px;
 }
-@media (min-width: 760px) {
-  .fe-has-clip {
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
-    gap: 16px;
-    align-items: start;
-  }
-}
+/* Video immer unter dem zugehörigen Text (Wunsch 28.10.2026) */
 .fe-media {
-  margin-bottom: 8px;
-}
-@media (min-width: 760px) {
-  .fe-media {
-    margin-bottom: 0;
-  }
+  margin-top: 10px;
+  max-width: 640px;
 }
 .fe-clip-meta {
   margin: 0 0 4px;
@@ -1499,3 +1488,19 @@ a.av:focus-visible {
 .inno-teaser { padding: .8rem 1rem; }
 .inno-teaser-link { text-decoration: none; display: block; }
 .inno-teaser-link + .inno-teaser-link { margin-top: .5rem; }
+
+/* Videos stehen immer UNTER Titel/Text (Wunsch 28.10.2026); im Raster bündig unten */
+.clip {
+  display: flex;
+  flex-direction: column;
+}
+.clip > .clip-title:first-child {
+  margin-top: 0;
+}
+.clip > .clip-frame,
+.clip > .clip-cover {
+  margin-top: auto;
+}
+.clip > :nth-last-child(2) {
+  margin-bottom: 8px;
+}
