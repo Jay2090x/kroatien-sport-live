@@ -102,7 +102,7 @@ export function clubKey(name: string): string {
 }
 
 async function loadOfficial(): Promise<OfficialHnlMatch[]> {
-  const list = parseOfficialSchedule(await fetchText(OFFICIAL_URL, { timeoutMs: 6000, retries: 0 }));
+  const list = parseOfficialSchedule(await fetchText(OFFICIAL_URL, { timeoutMs: 9000, retries: 1 }));
   // Plausibilität: 10 Vereine, 36 Runden à 5 Spiele – bei Layout-Änderung lieber gar nicht nutzen
   const rounds = new Set(list.map((m) => m.round));
   if (list.length < 100 || rounds.size < 20) throw new Error(`hnl.hr: unexpected schedule (${list.length} rows)`);

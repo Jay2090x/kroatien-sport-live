@@ -10,6 +10,7 @@ import { loadSquadBase } from "./players";
 import { nbaInfos, soccerInfos, type PlayerInfo } from "../live-player-info";
 import { parseSummary } from "./espn-summary";
 import { getOfficialSchedule } from "./hnl-official";
+import { getHnl } from "./hnl";
 
 /**
  * Daten für die LIVE-Leiste ganz oben auf jeder Seite.
@@ -317,17 +318,29 @@ async function vatreniLive(now: number): Promise<LiveItem[]> {
   ];
 }
 
-async function nextGame(now: number): Promise<NextGame | null> {
+/**
+ * Nächstes relevantes Spiel (Vatreni oder SuperSport HNL), nur wenn gerade nichts läuft.
+ * Deterministisch: nur Spiele mit Anpfiff in der Zukunft und ohne Ergebnis, nach echtem Anpfiff sortiert.
+ * HNL: offizieller Spielplan (hnl.hr); ist er gerade nicht erreichbar, die HNL-Daten (TheSportsDB/Snapshot,
+ * dort mit hnl.hr abgeglichen) – damit springt die Anzeige nicht auf ein ganz anderes Spiel.
+ */
+export async function nextGame(now: number): Promise<NextGame | null> {
   const cands: NextGame[] = [];
+  const future = (k: string | null | undefined): k is string => !!k && Number.isFinite(Date.parse(k)) && Date.parse(k) > now;
   const nt = await cachedSource(["nt", "espn"], 600, loadEspnCroatiaMatches).catch(() => null);
-  const m = nt?.data.matches.find((x) => x.state === "pre" && Date.parse(x.kickoff) > now);
-  if (m) cands.push({ kind: "nt", competition: m.competition, home: m.home, away: m.away, kickoff: m.kickoff });
+  for (const m of nt?.data.matches ?? [])
+    if (m.state === "pre" && future(m.kickoff)) cands.push({ kind: "nt", competition: m.competition, home: m.home, away: m.away, kickoff: m.kickoff });
   const off = await getOfficialSchedule().catch(() => null);
-  const h = off
-    ?.filter((o) => o.kickoff && Date.parse(o.kickoff) > now && o.homeScore == null)
-    .sort((a, b) => Date.parse(a.kickoff!) - Date.parse(b.kickoff!))[0];
-  if (h?.kickoff) cands.push({ kind: "hnl", competition: "SuperSport HNL", home: h.home, away: h.away, kickoff: h.kickoff });
-  cands.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
+  const offNext = (off ?? []).filter((o) => future(o.kickoff) && o.homeScore == null && o.awayScore == null);
+  if (offNext.length) {
+    for (const o of offNext) cands.push({ kind: "hnl", competition: "SuperSport HNL", home: o.home, away: o.away, kickoff: o.kickoff! });
+  } else {
+    const h = await getHnl(now).catch(() => null);
+    for (const m of h?.data.matches ?? [])
+      if (m.state === "scheduled" && m.homeScore == null && future(m.kickoff))
+        cands.push({ kind: "hnl", competition: "SuperSport HNL", home: m.home, away: m.away, kickoff: m.kickoff });
+  }
+  cands.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.home.localeCompare(b.home));
   return cands[0] ?? null;
 }
 
