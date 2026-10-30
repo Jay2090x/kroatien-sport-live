@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 12,
- "fetchedAt": "2026-10-30T14:06:39.905Z",
+ "fetchedAt": "2026-10-30T19:21:17.720Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -724,13 +724,13 @@
    "idEvent": "2482578",
    "strHomeTeam": "Slaven Belupo Koprivnica",
    "strAwayTeam": "Istra 1961",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "0",
+   "intAwayScore": "2",
    "intRound": "12",
    "strTimestamp": "2026-10-30T17:00:00",
    "dateEvent": "2026-10-30",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
