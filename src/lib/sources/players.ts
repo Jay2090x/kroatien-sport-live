@@ -393,7 +393,7 @@ export async function loadSquadBase(now: number, opts: { withHnl?: boolean } = {
   // 3) Athleten → Verein (ID-basiert)
   const ids = [...squad.keys()];
   const athletes = await mapLimit(ids, 6, (id) =>
-    cachedSource(["players", "athlete", id], PLAYER_REVALIDATE.athlete, () => loadAthlete(id))
+    cachedSource(["players", "athlete-v2", id], PLAYER_REVALIDATE.athlete, () => loadAthlete(id))
   );
   const athleteById = new Map<string, Athlete>();
   athletes.forEach((a, i) => {

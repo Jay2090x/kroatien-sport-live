@@ -377,7 +377,8 @@ a { text-underline-offset: 3px; }
 .gm-table tr.gm-hl td:first-child { box-shadow: inset 4px 0 0 var(--red); }
 .gm-boxwrap + .gm-boxwrap { margin-top: 14px; }
 .gm-stand { margin: 4px 2px 0; }
-.f-link { text-decoration: none; color: inherit; }
+.f-link { text-decoration: none; }
+.f-score.f-link, .f-score.f-link:visited, .f-score.f-link:hover { color: #fff; }
 .f-link:hover, .f-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .ag-more { margin: 8px 0 0; font-size: .88rem; font-weight: 600; }
 .ag-more a { color: var(--blue); }
