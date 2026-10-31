@@ -223,18 +223,44 @@ async function loadAthlete(id: string): Promise<Athlete> {
       id?: string;
       displayName?: string;
       position?: { abbreviation?: string };
-      team?: { id?: string; displayName?: string };
+      team?: { id?: string; displayName?: string; slug?: string; isAllStar?: boolean };
     };
   }>(`${WEB_API}/athletes/${id}`);
   const a = json.athlete;
   if (!a?.id || String(a.id) !== id) throw new Error(`ESPN athlete ${id}: unexpected format`);
+  let teamId = a.team?.id ? String(a.team.id) : null;
+  let teamName = a.team?.displayName ?? null;
+  // ESPN setzt nach einem All-Star-Spiel teils die Auswahl (z. B. "MLS All-Stars") als
+  // Profil-Team. Dann den Stammverein aus dem Team-Filter des Gamelogs nehmen.
+  if (a.team && (a.team.isAllStar || /all-?stars?/i.test(`${a.team.slug ?? ""} ${a.team.displayName ?? ""}`))) {
+    const club = await loadGamelogClub(id).catch(() => null);
+    if (club) {
+      teamId = club.id;
+      teamName = club.name;
+    } else {
+      teamId = null;
+      teamName = null;
+    }
+  }
   return {
     id,
     name: a.displayName ?? id,
     position: a.position?.abbreviation ?? null,
-    teamId: a.team?.id ? String(a.team.id) : null,
-    teamName: a.team?.displayName ?? null,
+    teamId,
+    teamName,
   };
+}
+
+/** Aktueller Verein laut ESPN-Gamelog (Team-Filter), ohne Nationalteams. */
+async function loadGamelogClub(id: string): Promise<{ id: string; name: string } | null> {
+  const json = await fetchJson<{
+    filters?: { name?: string; value?: string; options?: { value?: string; displayValue?: string }[] }[];
+  }>(`${WEB_API}/athletes/${id}/gamelog`);
+  const f = json.filters?.find((x) => x.name === "team");
+  const opt = f?.options?.find((o) => o.value === f.value);
+  if (!f?.value || !opt?.displayValue) return null;
+  if (/croatia|kroatien|hrvatska|all-?stars?/i.test(opt.displayValue)) return null;
+  return { id: String(f.value), name: opt.displayValue };
 }
 
 function hnlGame(m: HnlMatch): GameRef | null {
