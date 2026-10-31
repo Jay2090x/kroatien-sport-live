@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 12,
- "fetchedAt": "2026-10-31T14:47:28.943Z",
+ "fetchedAt": "2026-10-31T18:54:58.454Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -737,26 +737,26 @@
    "idEvent": "2482576",
    "strHomeTeam": "Hajduk Split",
    "strAwayTeam": "HNK Gorica",
-   "intHomeScore": "3",
+   "intHomeScore": "5",
    "intAwayScore": "0",
    "intRound": "12",
    "strTimestamp": "2026-10-31T14:00:00",
    "dateEvent": "2026-10-31",
    "strTime": "14:00:00",
-   "strStatus": "1H",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
    "idEvent": "2482579",
    "strHomeTeam": "Rudeš",
    "strAwayTeam": "Dinamo Zagreb",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "0",
    "intRound": "12",
    "strTimestamp": "2026-10-31T17:00:00",
    "dateEvent": "2026-10-31",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "2H",
    "strPostponed": "no"
   },
   {
