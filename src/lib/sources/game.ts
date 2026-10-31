@@ -4,7 +4,7 @@ import { CLUB_COMPETITION_DE, PLAYER_NAME, clubDe } from "../players-meta";
 import { NBA_PLAYERS } from "../sport-meta";
 import { COMPETITION_DE } from "./espn";
 import { kindOf, type TickerKind } from "./live";
-import { minuteOf, surname, trackedSoccer } from "./live-bar";
+import { minuteOf, hnlLivescore, scoreboardEvent, surname, trackedSoccer, withHnlLive } from "./live-bar";
 import { getHnl } from "./hnl";
 
 /**
@@ -312,8 +312,60 @@ async function espnGame(sport: "soccer" | "nba", league: string, id: string): Pr
   });
   if (!s) return null;
   const g = parseEspnGame(s.data, sport, league, id, croatById, s.fetchedAt);
+  if (g.state !== "post") await overlayScoreboard(g, sport, league, id, croatById).catch(() => {});
   if (sport === "soccer" && !g.standings.length) g.standings = await fallbackStandings(league, [g.home.id, g.away.id]).catch(() => []);
   return g;
+}
+
+/* Spielbericht (summary) hinkt dem Scoreboard oft 1–2 Minuten hinterher. Die LIVE-Leiste liest das Scoreboard –
+   also übernimmt die Spielseite Stand, Minute und Status aus genau demselben Abruf und ergänzt fehlende Tore/Karten. */
+type SbDetail = { type?: { text?: string }; clock?: { displayValue?: string }; team?: { id?: string }; shootout?: boolean; athletesInvolved?: Array<{ id?: string; displayName?: string }> };
+const minVal = (m: string) => {
+  const r = /^(\d+)(?:\+(\d+))?/.exec(m);
+  return r ? Number(r[1]) + Number(r[2] ?? 0) / 100 : 999;
+};
+export async function overlayScoreboard(g: Game, sport: "soccer" | "nba", league: string, id: string, croatById: Map<string, string>) {
+  const e = await scoreboardEvent(sport, league, id);
+  const c = e?.competitions?.[0];
+  if (!c) return;
+  const st = c.status as { displayClock?: string; period?: number; type?: { state?: string; name?: string; completed?: boolean } } | undefined;
+  const comps = (c.competitors ?? []) as Array<{ homeAway?: string; score?: string | number; team?: { id?: string } }>;
+  const num = (v: unknown) => (v != null && v !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
+  const h = comps.find((x) => x.homeAway === "home");
+  const a = comps.find((x) => x.homeAway === "away");
+  const ss = st?.type?.state;
+  if (ss === "in" || ss === "post") {
+    g.state = ss === "post" || st?.type?.completed ? "post" : "in";
+    g.halftime = g.state === "in" && (st?.type?.name ?? "").toUpperCase().includes("HALFTIME");
+    g.clock = g.state !== "in" || g.halftime ? null : sport === "nba" ? [NBA_PERIOD(st?.period), st?.displayClock].filter(Boolean).join(" ") || null : minuteOf(st?.displayClock);
+    const hs = num(h?.score);
+    const as = num(a?.score);
+    if (hs != null) g.home.score = hs;
+    if (as != null) g.away.score = as;
+  }
+  if (sport !== "soccer") return;
+  const details = ((c as { details?: SbDetail[] }).details ?? []).filter((d) => !d.shootout);
+  const dup = (kind: string, minute: string, ids: string[]) =>
+    g.events.some((ev) => ev.minute === minute && (ev.kind === kind || ev.ids.some((i) => i && ids.includes(i))));
+  let added = false;
+  for (const d of details) {
+    const kind = kindOf(d.type?.text ?? "");
+    if (!kind || kind === "half" || kind === "end") continue;
+    const minute = minuteOf(d.clock?.displayValue) ?? "";
+    const ps = d.athletesInvolved ?? [];
+    if (dup(kind, minute, ps.map((p) => String(p.id ?? "")))) continue;
+    const side: GameEvent["side"] = d.team?.id === g.home.id ? "home" : d.team?.id === g.away.id ? "away" : null;
+    g.events.push({
+      kind,
+      minute,
+      side,
+      names: ps.map((p) => (p.id && croatById.has(p.id) ? PLAYER_NAME[p.id] : null) || p.displayName || "?"),
+      ids: ps.map((p) => String(p.id ?? "")),
+      croat: ps.some((p) => !!p.id && croatById.has(p.id)),
+    });
+    added = true;
+  }
+  if (added) g.events.sort((x, y) => minVal(x.minute) - minVal(y.minute));
 }
 
 /* Pokal/K.-o.-Spiele: Tabelle des Wettbewerbs selbst (z. B. UEFA-Ligaphase), sonst die Ligatabelle(n) beider Vereine. */
@@ -388,19 +440,20 @@ const TSDB_LIVE = new Set(["1H", "2H", "HT", "ET", "BT", "P", "PEN", "LIVE"]);
 const TSDB_DONE = new Set(["FT", "AET", "PEN", "MATCH FINISHED", "AFTER EXTRA TIME", "AFTER PENALTIES"]);
 
 async function hnlGame(id: string): Promise<Game | null> {
-  const ev = await liveSource(["game", "hnl", id], 20, async () => {
-    const [one, live] = await Promise.all([
-      fetchJson<{ events?: TsdbEv[] | null }>(`${TSDB}/lookupevent.php?id=${id}`, { timeoutMs: 5000, retries: 1 }),
-      fetchJson<{ livescore?: TsdbEv[] | null }>(`${TSDB}/livescore.php?s=Soccer`, { timeoutMs: 4000, retries: 0 }).catch(() => ({ livescore: null })),
-    ]);
-    const e = one.events?.[0];
-    if (!e || e.idEvent !== id || e.idLeague !== "4629") throw new Error(`TheSportsDB event ${id}: not an HNL match`);
-    const l = (live.livescore ?? []).find((x) => x.idEvent === id);
-    return l ? { ...e, ...Object.fromEntries(Object.entries(l).filter(([, v]) => v != null && v !== "")), strVenue: e.strVenue } : e;
-  });
+  const [ev, live] = await Promise.all([
+    liveSource(["game", "hnl", id], 20, async () => {
+      const one = await fetchJson<{ events?: TsdbEv[] | null }>(`${TSDB}/lookupevent.php?id=${id}`, { timeoutMs: 5000, retries: 1 });
+      const e = one.events?.[0];
+      if (!e || e.idEvent !== id || e.idLeague !== "4629") throw new Error(`TheSportsDB event ${id}: not an HNL match`);
+      return e;
+    }),
+    // derselbe Livescore-Abruf wie die LIVE-Leiste → Leiste und Spielseite zeigen denselben Stand
+    hnlLivescore().catch(() => []),
+  ]);
   if (!ev) return null;
-  const e = ev.data;
-  const hnl = await getHnl().catch(() => null);
+  const l = live.find((x) => x.idEvent === id) as TsdbEv | undefined;
+  const e: TsdbEv = l ? { ...ev.data, ...Object.fromEntries(Object.entries(l).filter(([, v]) => v != null && v !== "")), strVenue: ev.data.strVenue } : ev.data;
+  const hnl = await withHnlLive(await getHnl().catch(() => null));
   const m = hnl?.data.matches.find((x) => x.id === id);
   const status = (e.strStatus ?? "").toUpperCase().trim();
   const state: Game["state"] = TSDB_LIVE.has(status) || m?.state === "live"

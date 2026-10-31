@@ -5,13 +5,10 @@ import { dataLabel } from "@/lib/i18n";
 import { gamePath } from "@/lib/sources/game";
 import { seo } from "@/lib/seo";
 
-export const revalidate = 20;
+// Live-Spielstände: immer frisch rendern (Daten 15 s im Speicher, derselbe Abruf wie die LIVE-Leiste)
+export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  return [];
-}
 
 type Props = { params: Promise<{ liga: string; id: string }> };
 

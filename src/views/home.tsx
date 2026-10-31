@@ -21,6 +21,7 @@ import { getPlayerClips } from "@/lib/sources/player-clips";
 import { NoData, Stand } from "@/components/stand";
 import { getVatreni } from "@/lib/sources/vatreni";
 import { getHnl } from "@/lib/sources/hnl";
+import { withHnlLive } from "@/lib/sources/live-bar";
 import { getNews, pickNews } from "@/lib/sources/news";
 import { getSport } from "@/lib/sources/sport";
 import { getBoxers } from "@/lib/sources/boxing";
@@ -39,7 +40,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
   const now = Date.now();
   const [vatreni, hnl, news, sport, boxers, videos, players] = await Promise.all([
     getVatreni(),
-    getHnl(),
+    getHnl().then(withHnlLive),
     getNews(),
     getSport(),
     getBoxers(),

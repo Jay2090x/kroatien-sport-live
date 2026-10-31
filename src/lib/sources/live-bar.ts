@@ -411,3 +411,45 @@ export async function getLiveBar(now = Date.now()): Promise<LiveBarData> {
   const at = oldestAt != null ? Math.min(oldestAt, Date.now()) : now;
   return { items, next, fetchedAt: new Date(at).toISOString() };
 }
+
+/* ---------- Gemeinsame Live-Quelle für Spielseiten & HNL-Box (gleiche Abrufe wie die LIVE-Leiste) ---------- */
+
+/** Rohes Scoreboard-Event – exakt derselbe Abruf/Cache wie die LIVE-Leiste, damit Leiste und Spielseite nie auseinanderlaufen. */
+export async function scoreboardEvent(sport: "soccer" | "nba", league: string, id: string, now = Date.now()): Promise<EspnEvent | null> {
+  if (sport === "nba") return (await scoreboard("basketball/nba", null)).find((e) => e.id === id) ?? null;
+  const days = [ymdUtc(now), ...(new Date(now).getUTCHours() < 4 ? [ymdUtc(now - 24 * H)] : [])];
+  for (const d of days) {
+    const e = (await scoreboard(`soccer/${league}`, d)).find((x) => x.id === id);
+    if (e) return e;
+  }
+  return null;
+}
+
+/** TheSportsDB-Livescore (gleicher Cache wie die Leiste), nur HNL-Zeilen */
+export async function hnlLivescore(): Promise<TsdbLive[]> {
+  const s = await liveSource(["livebar", "tsdb-live"], SB_TTL, async () => {
+    const j = await fetchJson<{ livescore?: TsdbLive[] | null }>(TSDB_LIVE, { timeoutMs: 3000, retries: 0 });
+    if (!("livescore" in j)) throw new Error("TheSportsDB livescore: unexpected format");
+    return j.livescore ?? [];
+  });
+  return (s?.data ?? []).filter((r) => r.idLeague === HNL_LEAGUE);
+}
+
+/** HNL-Daten mit den Live-Ständen der Leiste überlagern (Spielplan/Box zeigen denselben Stand wie die Leiste). */
+export async function withHnlLive<T extends { data: { matches: Array<{ id: string; homeScore: number | null; awayScore: number | null; state: string }> } }>(hnl: T | null): Promise<T | null> {
+  if (!hnl) return hnl;
+  const rows = await hnlLivescore().catch(() => []);
+  const byId = new Map(rows.filter((r) => r.idEvent).map((r) => [r.idEvent!, r]));
+  if (!byId.size) return hnl;
+  const n = (v: string | null | undefined) => (v != null && v !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
+  const matches = hnl.data.matches.map((m) => {
+    const r = byId.get(m.id);
+    if (!r) return m;
+    const st = (r.strStatus ?? "").toUpperCase().trim();
+    const playing = TSDB_PLAYING.has(st);
+    const done = ["FT", "AET", "AP", "MATCH FINISHED"].includes(st);
+    if (!playing && !done) return m;
+    return { ...m, homeScore: n(r.intHomeScore) ?? m.homeScore, awayScore: n(r.intAwayScore) ?? m.awayScore, state: playing ? "live" : "finished" } as typeof m;
+  });
+  return { ...hnl, data: { ...hnl.data, matches } } as T;
+}
