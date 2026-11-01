@@ -215,11 +215,17 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     // Sprache des Titels prüfen: Google liefert in hl=de auch kroatische/englische Titel und umgekehrt
     const det = detectLang(title);
     if (det === "en") continue;
+    // Nicht erkennbar (null) und typische Wörter anderer Sprachen (z. B. Indonesisch, Spanisch, Italienisch, Französisch) → nicht übernehmen
+    if (det === null && OTHER_LANG.test(title)) continue;
     const lang = det ?? feed.lang;
     out.push(make(title, it.link, source, iso, lang, sport));
   }
   return out;
 }
+
+/** Funktionswörter anderer Sprachen, die in deutschen/kroatischen Titeln praktisch nie vorkommen. */
+const OTHER_LANG =
+  /\b(yang|lewat|dengan|untuk|tidak|samakan|skor|cetak|menang|kalah|el|los|las|del|que|con|por|para|il|della|delle|dello|che|per|nel|gli|une|les|avec|pour|dans|sur|os|não|uma)\b/i;
 
 /** Duplikate entfernen (gleiche URL oder sehr ähnlicher Titel; HRT bevorzugt). */
 export function dedupeNews(all: NewsItem[]): NewsItem[] {
