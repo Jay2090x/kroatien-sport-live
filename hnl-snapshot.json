@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 12,
- "fetchedAt": "2026-11-01T08:08:59.684Z",
+ "fetchedAt": "2026-11-01T15:08:15.457Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -763,13 +763,13 @@
    "idEvent": "2482575",
    "strHomeTeam": "Rijeka",
    "strAwayTeam": "Varaždin",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "0",
    "intRound": "12",
    "strTimestamp": "2026-11-01T14:00:00",
    "dateEvent": "2026-11-01",
    "strTime": "14:00:00",
-   "strStatus": "NS",
+   "strStatus": "2H",
    "strPostponed": "no"
   },
   {
