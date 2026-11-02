@@ -428,7 +428,8 @@ export async function loadSquadBase(now: number, opts: { withHnl?: boolean } = {
   });
   const jobs = [...slugs].flatMap((slug) => monthsAhead.map((m) => ({ slug, m })));
   const boards = await mapLimit(jobs, 4, ({ slug, m }) =>
-    cachedSource(["players", "board", slug, m], PLAYER_REVALIDATE.base, async () => {
+    // Vormonat ändert sich kaum noch → seltener abrufen (weniger ESPN-Last)
+    cachedSource(["players", "board", slug, m], m === monthsAhead[0] ? PLAYER_REVALIDATE.final : PLAYER_REVALIDATE.base, async () => {
       const evs = await loadEvents(`${SITE_API}/${slug}/scoreboard?dates=${m}`);
       return evs.map((e) => mapClubEvent({ ...e, league: { ...(e.league ?? {}), slug } })).filter((g): g is GameRef => !!g);
     })

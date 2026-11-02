@@ -11,6 +11,11 @@ function sleep(ms: number) {
  * (2026-11-02). Deshalb höchstens ESPN_MAX gleichzeitige ESPN-Abrufe.
  */
 const ESPN_MAX = 6;
+/* Sperrt ESPN uns (403/429), pausieren wir alle ESPN-Abrufe dieser Instanz für ESPN_BACKOFF_MS,
+   statt bei jedem Seitenaufbau erneut ~100 Anfragen zu schicken (das hielt die Sperre aufrecht).
+   Bis dahin liefern die Caches den letzten guten Stand. */
+const ESPN_BACKOFF_MS = 10 * 60_000;
+let espnBlockedUntil = 0;
 let espnActive = 0;
 const espnQueue: Array<() => void> = [];
 async function espnSlot<T>(fn: () => Promise<T>): Promise<T> {
@@ -44,6 +49,7 @@ export async function fetchText(
     waitMs = 1500 * (attempt + 1);
     // Timeout erst ab Start des Abrufs (nicht schon in der ESPN-Warteschlange)
     const doFetch = async () => {
+      if (isEspn && Date.now() < espnBlockedUntil) throw new Error(`ESPN backoff (until ${new Date(espnBlockedUntil).toISOString()})`);
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -60,6 +66,12 @@ export async function fetchText(
     try {
       const res = isEspn ? await espnSlot(doFetch) : await doFetch();
       if (res.ok) return res.body;
+      if (isEspn && (res.status === 403 || res.status === 429)) {
+        if (Date.now() >= espnBlockedUntil) console.warn(`[http] ESPN ${res.status} – pausing ESPN requests for ${ESPN_BACKOFF_MS / 60_000} min`);
+        espnBlockedUntil = Date.now() + ESPN_BACKOFF_MS;
+        lastError = new Error(`HTTP ${res.status} for ${url}`);
+        break;
+      }
       lastError = new Error(`HTTP ${res.status} for ${url}`);
       if (res.status === 429) {
         // Rate-Limit respektieren (Retry-After in Sekunden, max. 10 s)
@@ -69,6 +81,7 @@ export async function fetchText(
       if (res.status !== 429 && res.status < 500) break;
     } catch (err) {
       lastError = err;
+      if (isEspn && Date.now() < espnBlockedUntil) break; // gesperrt → nicht erneut versuchen
     }
     if (attempt < retries) await sleep(waitMs);
   }
