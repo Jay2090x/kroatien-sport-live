@@ -59,6 +59,13 @@ const SPAM =
   /\[\[|\]\]|==|'''|\+~|[\^~@$][\^~@$+!\[\]]{2,}|[\^~@$+!\[\]]{2,}[\^~@$]|\[[^\]]*!\]|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\bfudbal\b.*\bu[zž]ivo\b|\bu[zž]ivo\b.*\bfudbal\b|\p{Script=Cyrillic}/iu;
 
 /**
+ * Maschinell übersetzte Aggregator-Seiten ohne eigene Redaktion (z. B. Vietnam.vn: "Luka Modric ist
+ * verletzt und wird den Rest der Saison verpassen" am 03.11.2026, obwohl Modrić laut Milan-Berichten
+ * fit ist). Solche Meldungen lassen sich nicht prüfen und kommen nicht in den Feed.
+ */
+const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn/i;
+
+/**
  * Video-Reuploads fremder Kanäle (z. B. "A - B | Highlights 3. Liga | MAGENTA SPORT Kovacic (9nvLDcUBHQ)"):
  * zwei oder mehr " | "-Trenner oder eine angehängte YouTube-ID in Klammern. Solche Titel
  * erwähnen einen kroatischen Namen oft nur als Schlagwort und gehören nicht in den Feed.
@@ -198,7 +205,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     // Google hängt " - Quelle" an den Titel an
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
-    if (EXCLUDE.test(title) || EXCLUDE.test(source) || looksEnglish(title)) continue;
+    if (EXCLUDE.test(title) || EXCLUDE.test(source) || UNRELIABLE_SOURCE.test(source) || looksEnglish(title)) continue;
     if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || titleDateTooOld(title, iso)) continue;
     if (STUB.test(title)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
@@ -363,5 +370,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v8"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v9"], REVALIDATE.news, loadNews);
 }
