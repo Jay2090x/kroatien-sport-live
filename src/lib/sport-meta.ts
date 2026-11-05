@@ -270,9 +270,9 @@ export const NT_FIXTURES: Array<{
   competition: string;
   source: string;
 }> = [
-  // EHF-Spielplan „European Championship Men 2028 Qualifiers“, Gruppe 1 (statistics.eurohandball.com, Stand 08.10.2026)
+  // EHF-Spielplan „European Championship Men 2028 Qualifiers“, Gruppe 1 (statistics.eurohandball.com, Stand 08.10.2026; Vantaa 17:00 Ortszeit = 16:00 MEZ laut EHF-Spielbericht M805, geprüft 05.11.2026)
   { sport: "handball", start: "2026-11-04T16:00:00Z", timeKnown: true, home: "Kroatien", away: "Litauen", competition: "Handball-EM-Qualifikation · Split", source: "EHF" },
-  { sport: "handball", start: "2026-11-07T12:00:00Z", timeKnown: false, home: "Finnland", away: "Kroatien", competition: "Handball-EM-Qualifikation · Vantaa", source: "EHF" },
+  { sport: "handball", start: "2026-11-07T15:00:00Z", timeKnown: true, home: "Finnland", away: "Kroatien", competition: "Handball-EM-Qualifikation · Vantaa", source: "EHF" },
 ];
 
 /** HRT-Kategorien (URL-Pfad) für Nicht-Fußball-Schlagzeilen */
