@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 13,
- "fetchedAt": "2026-11-06T15:00:47.823Z",
+ "fetchedAt": "2026-11-06T20:53:29.728Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -789,13 +789,13 @@
    "idEvent": "2482582",
    "strHomeTeam": "Lokomotiva Zagreb",
    "strAwayTeam": "Rudeš",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "0",
+   "intAwayScore": "1",
    "intRound": "13",
    "strTimestamp": "2026-11-06T17:00:00",
    "dateEvent": "2026-11-06",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
