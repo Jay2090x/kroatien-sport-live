@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 13,
- "fetchedAt": "2026-11-07T13:35:56.589Z",
+ "fetchedAt": "2026-11-07T18:19:56.115Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -802,26 +802,26 @@
    "idEvent": "2482581",
    "strHomeTeam": "Istra 1961",
    "strAwayTeam": "Rijeka",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "2",
+   "intAwayScore": "1",
    "intRound": "13",
    "strTimestamp": "2026-11-07T17:00:00",
    "dateEvent": "2026-11-07",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "2H",
    "strPostponed": "no"
   },
   {
    "idEvent": "2482583",
    "strHomeTeam": "HNK Gorica",
    "strAwayTeam": "Slaven Belupo Koprivnica",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "3",
+   "intAwayScore": "5",
    "intRound": "13",
    "strTimestamp": "2026-11-07T14:00:00",
    "dateEvent": "2026-11-07",
    "strTime": "14:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
