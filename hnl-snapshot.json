@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 13,
- "fetchedAt": "2026-11-08T07:58:28.034Z",
+ "fetchedAt": "2026-11-08T15:08:18.116Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -828,13 +828,13 @@
    "idEvent": "2482580",
    "strHomeTeam": "Osijek",
    "strAwayTeam": "Hajduk Split",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "0",
+   "intAwayScore": "0",
    "intRound": "13",
    "strTimestamp": "2026-11-08T14:00:00",
    "dateEvent": "2026-11-08",
    "strTime": "14:00:00",
-   "strStatus": "NS",
+   "strStatus": "2H",
    "strPostponed": "no"
   },
   {
