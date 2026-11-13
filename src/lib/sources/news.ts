@@ -53,10 +53,11 @@ const EXCLUDE =
 
 /**
  * Spam/Stream-Seiten: Sonderzeichen-Müll (z. B. "^@+$^~![MAXSPORT!]HRT 2] … Nogomet Uživo Fudbal"),
- * "live gucken"-Köder, kyrillische Quellen
+ * "live gucken"-Köder, kyrillische Quellen, Stream-Köder wie "!$>[LIVE!#Ansehen]* Kroatien England …" (13.11.2026)
+ * von fremden Seiten mit japanischem/chinesischem Quellnamen (z. B. "日本取引所グループ")
  */
 const SPAM =
-  /\[\[|\]\]|==|'''|\+~|[\^~@$][\^~@$+!\[\]]{2,}|[\^~@$+!\[\]]{2,}[\^~@$]|\[[^\]]*!\]|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\bfudbal\b.*\bu[zž]ivo\b|\bu[zž]ivo\b.*\bfudbal\b|\p{Script=Cyrillic}/iu;
+  /\[\[|\]\]|==|'''|\+~|[\^~@$][\^~@$+!\[\]]{2,}|[\^~@$+!\[\]]{2,}[\^~@$]|\[[^\]]*!\]|u[zž]ivo prijenos gledati|gledati online|live ?stream|stream kostenlos|free live|\bfudbal\b.*\bu[zž]ivo\b|\bu[zž]ivo\b.*\bfudbal\b|[!$>][!$>]+\[|\[live!|ansehen\]|\p{Script=Cyrillic}|\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/iu;
 
 /**
  * Maschinell übersetzte Aggregator-Seiten ohne eigene Redaktion (z. B. Vietnam.vn: "Luka Modric ist
@@ -92,7 +93,8 @@ export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2
 
 const SPORT_RX: Array<[Sport, RegExp]> = [
   ["mma", /\bufc\b|\bmma\b|soldi[cć]|oktagon|\bfnc\b/i],
-  ["boxing", /\bboks|\bbox(en|er|kampf)|hrgovi[cć]|planti[cć]|smaki[cćq]i|\bbkfc\b/i],
+  // Šimun Hrgović ist Fußballer (Vatreni-Kader), nur Filip Hrgović boxt
+  ["boxing", /\bboks|\bbox(en|er|kampf)|(?<![sš]imun\s)hrgovi[cć]|planti[cć]|smaki[cćq]i|\bbkfc\b/i],
   ["tennis", /tenis|tennis|[cč]ili[cć]|mekti[cć]|pavi[cć]|veki[cć]|dodig|gojo|prizmi[cć]/i],
   ["basketball", /ko[sš]ark|basketball|\bnba\b|\baba\b|zubac|hezonja|matkovi[cć]|cibona|cedevita/i],
   ["handball", /rukomet|handball|\behf\b|nexe|kauboj/i],
@@ -103,13 +105,13 @@ const INTEREST: Array<{ rx: RegExp; pts: number; tag?: NewsTag }> = [
   { rx: /derbi|derby|vjecni|hajduk.{0,40}dinam|dinam.{0,40}hajduk/, pts: 5, tag: "derby" },
   { rx: /transfer|prelaz|potpis|ugovor|wechsel|vertrag|produzi|odlazi u|stize u|zeli .{0,20}(napadac|igrac)/, pts: 3, tag: "transfer" },
   { rx: /\bufc\b|soldic/, pts: 3, tag: "ufc" },
-  { rx: /hrgovic|plantic|smakic|\bboks|\bboxen|\bbkfc\b/, pts: 3, tag: "boxing" },
+  { rx: /(?<!simun )hrgovic|plantic|smakic|\bboks|\bboxen|\bbkfc\b/, pts: 3, tag: "boxing" },
   { rx: /vatren|reprezentacij|nationalteam|nationalmannschaft|dalic|bilic|\bnations league\b|liga nacija/, pts: 2, tag: "vatreni" },
   // Verletzung ohne Etikett: aus dem Titel ist oft nicht klar, wen es betrifft
   { rx: /ozljed|verletz|operacij|out za|pauzira/, pts: 1 },
   { rx: /rekord|povijes|histor|prvi put|erstmals|sensation|senzacij|\bsok\b|schock|spektak|preokret|nokaut|knockout|\bko\b|titul|prvak svijeta|weltmeister|\bfinale\b|\bfinalu\b/, pts: 2, tag: "record" },
   { rx: /pobjed|poraz|remi|sieg|niederlage|pleite|\d+\s*:\s*\d+|\d+-\d+/, pts: 1 },
-  { rx: /modric|gvardiol|kovacic|zubac|cilic|soldic|hrgovic|livakovic|kramaric|perisic|budimir|baturina/, pts: 1 },
+  { rx: /modric|gvardiol|kovacic|zubac|cilic|soldic|(?<!simun )hrgovic|livakovic|kramaric|perisic|budimir|baturina/, pts: 1 },
 ];
 /** Routine-Meldungen, die nach hinten rutschen */
 const ROUTINE =
@@ -232,7 +234,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
 
 /** Funktionswörter anderer Sprachen, die in deutschen/kroatischen Titeln praktisch nie vorkommen. */
 const OTHER_LANG =
-  /\b(yang|lewat|dengan|untuk|tidak|samakan|skor|cetak|menang|kalah|el|los|las|del|que|con|por|para|il|della|delle|dello|che|per|nel|gli|une|les|avec|pour|dans|sur|os|não|uma)\b/i;
+  /\b(yang|lewat|dengan|untuk|tidak|samakan|skor|cetak|menang|kalah|el|los|las|del|que|con|por|para|il|della|delle|dello|che|per|nel|gli|une|les|avec|pour|dans|sur|os|não|uma|una|sul|cosa|succede)\b/i;
 
 /** Duplikate entfernen (gleiche URL oder sehr ähnlicher Titel; HRT bevorzugt). */
 export function dedupeNews(all: NewsItem[]): NewsItem[] {
