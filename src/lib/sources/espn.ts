@@ -152,6 +152,39 @@ export async function loadEspnCroatiaMatches(): Promise<{
   ]);
   const byId = new Map<string, EspnEvent>();
   for (const e of [...results, ...fixtures]) byId.set(e.id, e);
+
+  // Ergänzung: ESPN-Team-Spielplan hinkt nach Abpfiff teils Tage hinterher (Spiel fällt aus
+  // "fixtures" heraus, steht aber noch nicht in "results"). Daher die Monats-Scoreboards der
+  // Wettbewerbe aus den letzten/kommenden Wochen dazunehmen (Scoreboard gewinnt bei gleicher ID).
+  const now = Date.now();
+  const slugs = new Set<string>(["uefa.nations", "fifa.friendly"]);
+  for (const e of byId.values()) {
+    const t = Date.parse(e.date);
+    const slug = leagueSlugOf(e);
+    if (slug && Number.isFinite(t) && Math.abs(t - now) <= 60 * 86_400_000) slugs.add(slug);
+  }
+  const monthsToCheck = [-1, 0].map((i) => {
+    const d = new Date(now);
+    const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + i, 1));
+    return `${x.getUTCFullYear()}${String(x.getUTCMonth() + 1).padStart(2, "0")}`;
+  });
+  const extra = await Promise.all(
+    [...slugs].flatMap((slug) =>
+      monthsToCheck.map(async (m) => {
+        try {
+          const evs = await loadEvents(ESPN_URLS.scoreboard(slug, m));
+          return evs.map((ev) => ({ ...ev, league: ev.league?.slug ? ev.league : { ...ev.league, slug } }));
+        } catch {
+          return [] as EspnEvent[];
+        }
+      })
+    )
+  );
+  for (const ev of extra.flat()) {
+    if (!mapEspnEvent(ev)) continue; // nur Kroatien-Spiele
+    byId.set(ev.id, ev);
+  }
+
   const raw = [...byId.values()].map((e) => ({ id: e.id, slug: leagueSlugOf(e), date: e.date }));
   const matches = [...byId.values()]
     .map(mapEspnEvent)
