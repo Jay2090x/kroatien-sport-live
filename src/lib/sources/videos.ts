@@ -32,7 +32,7 @@ export interface Video {
 
 /** Jugend, Frauen, Futsal, Reserve, Testspiele – nicht Teil des Feeds */
 const NOT_FIRST_TEAM =
-  /\bii\b|u-?1[5-9]\b|u-?2[0-3]\b|junior|kadet|pionir|\bnl\b|3\. ?nl|hnl[zž]|[zž]nk|žene|women|futsal|hmnl|iyc|youth|pripremn/i;
+  /\bii\b|u-?1[5-9]\b|u-?2[0-3]\b|junior|kadet|pionir|\bnl\b|3\. ?nl|hnl[zž]|[zž]nk|žene|[zž]ensk|women|futsal|hmnl|iyc|youth|pripremn/i;
 
 type Accept = (t: string) => Sport | null;
 const CHANNELS: Array<{ id: string; name: string; maxDays: number; accept: Accept }> = [
@@ -202,7 +202,7 @@ async function loadVideos(): Promise<Video[]> {
 
 /** Pool (bis 21 Tage, Feed verknüpft mit Spielen); für reine Listen `recentVideos` nutzen. */
 export async function getVideos(): Promise<Sourced<Video[]> | null> {
-  return cachedSource(["videos-v3"], 1800, loadVideos);
+  return cachedSource(["videos-v4"], 1800, loadVideos);
 }
 
 /** nur Clips der letzten `days` Tage (für Listen ohne Spielbezug) */
