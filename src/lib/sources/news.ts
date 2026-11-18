@@ -63,8 +63,12 @@ const SPAM =
  * Maschinell übersetzte Aggregator-Seiten ohne eigene Redaktion (z. B. Vietnam.vn: "Luka Modric ist
  * verletzt und wird den Rest der Saison verpassen" am 03.11.2026, obwohl Modrić laut Milan-Berichten
  * fit ist). Solche Meldungen lassen sich nicht prüfen und kommen nicht in den Feed.
+ * Ebenso von Google maschinell übersetzte Titel italienischer Regionalzeitungen: L'Unione Sarda tauchte
+ * am 17.11.2026 mit "Luka Modric unterzieht sich einer Operation wegen eines Jochbeinbruchs." und
+ * frischem Datum auf – die Meldung stammt vom 27.04.2026 ("Frattura allo zigomo per Luka Modric"),
+ * Modrić spielte am 15.11.2026 90 Minuten gegen Tschechien.
  */
-const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn/i;
+const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda/i;
 
 /**
  * Video-Reuploads fremder Kanäle (z. B. "A - B | Highlights 3. Liga | MAGENTA SPORT Kovacic (9nvLDcUBHQ)"):
@@ -372,5 +376,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v10"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v11"], REVALIDATE.news, loadNews);
 }
