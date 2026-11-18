@@ -50,12 +50,14 @@ const CHANNELS: Array<{ id: string; name: string; maxDays: number; accept: Accep
     accept: (t) => {
       // Match-Zusammenfassungen tragen das Ergebnis "A vs B 2:1 (...)"; keine Livestreams
       if (/u[zž]ivo|\blive\b/i.test(t) || !/\bvs\b.*\d+:\d+/i.test(t)) return null;
-      if (NOT_FIRST_TEAM.test(t)) return null;
       // Volleyball (z. B. "PAFIAKOS vs HAOK MLADOST 1:3 (Kvalifikacije, CEV Champions League Volley …)")
       // ist keine eigene Sportart der Seite und darf nicht über "kvalifikacij" als Fußball durchrutschen
       if (/volley|odbojk|\bcev\b/i.test(t)) return null;
       if (/fiba|aba liga|ko[sš]ark|premijer liga.*ko[sš]/i.test(t)) return "basketball";
+      // Frauen-Basketball-EM-Quali: typische Ergebnisse (72:91, 69:82), oft ohne „košarka“ im Titel
+      if (/[zž]ensk/i.test(t) && /\b(?:[5-9]\d|1\d{2})\s*:\s*(?:[5-9]\d|1\d{2})\b/.test(t)) return "basketball";
       if (/ehf|seha|rukomet/i.test(t)) return "handball";
+      if (NOT_FIRST_TEAM.test(t)) return null;
       if (/supersport ?hnl|\bhnk\b|kup|liga prvaka|europa|konferencijsk|kvalifikacij|prijateljsk/i.test(t)) return "football";
       return null;
     },
@@ -202,7 +204,7 @@ async function loadVideos(): Promise<Video[]> {
 
 /** Pool (bis 21 Tage, Feed verknüpft mit Spielen); für reine Listen `recentVideos` nutzen. */
 export async function getVideos(): Promise<Sourced<Video[]> | null> {
-  return cachedSource(["videos-v4"], 1800, loadVideos);
+  return cachedSource(["videos-v5"], 1800, loadVideos);
 }
 
 /** nur Clips der letzten `days` Tage (für Listen ohne Spielbezug) */
