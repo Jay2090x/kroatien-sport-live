@@ -87,6 +87,17 @@ const STUB = /^[\p{L}\d .']{3,40} [-–] [\p{L}\d .']{3,40}$/u;
 
 export const LIVETICKER = /live-?ticker/i;
 
+/**
+ * Spieldaten-, Ticket- und Spielplan-Seiten ohne Meldung, die Google News Tage später mit frischem
+ * Datum neu indexiert (19.11.2026):
+ * - BILD "England gegen Kroatien Aufstellung - Nations League A Gruppe 3 2026/2027" (Spiel vom 12.11.)
+ * - sport.de "Aufstellung Kroatien - Deutschland 3:2 | November, U21 Testspiele 2026"
+ * - Goal.com "Tickets für Hajduk Split gegen FC Nordsjaelland: Preise, Spielinfos, Last-Minute-Angebote …"
+ * - Forza Football "Lokomotiva Zagreb - Rudeš, 1st HNL 2027, Croatia" (Spiel vom 06.11.)
+ */
+export const MATCHPAGE =
+  /^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
+
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
   const m = title.match(/\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/);
@@ -212,7 +223,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     if (EXCLUDE.test(title) || EXCLUDE.test(source) || UNRELIABLE_SOURCE.test(source) || looksEnglish(title)) continue;
-    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || titleDateTooOld(title, iso)) continue;
+    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || MATCHPAGE.test(title) || titleDateTooOld(title, iso)) continue;
     if (STUB.test(title)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
     let sport: Sport | "other";
@@ -376,5 +387,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v11"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v12"], REVALIDATE.news, loadNews);
 }
