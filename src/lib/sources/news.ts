@@ -68,7 +68,9 @@ const SPAM =
  * frischem Datum auf – die Meldung stammt vom 27.04.2026 ("Frattura allo zigomo per Luka Modric"),
  * Modrić spielte am 15.11.2026 90 Minuten gegen Tschechien.
  */
-const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda/i;
+// Podcast-Verzeichnisse liefern Episodentitel statt Meldungen (20.11.2026: Howl.Link
+// "Roberto Soldic kämpft wieder UFC, Max Holzer Statement und wieso nichts zu …")
+const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda|howl\.link|podtail|podbean|podcasts\.apple|spreaker/i;
 
 /**
  * Video-Reuploads fremder Kanäle (z. B. "A - B | Highlights 3. Liga | MAGENTA SPORT Kovacic (9nvLDcUBHQ)"):
@@ -94,9 +96,12 @@ export const LIVETICKER = /live-?ticker/i;
  * - sport.de "Aufstellung Kroatien - Deutschland 3:2 | November, U21 Testspiele 2026"
  * - Goal.com "Tickets für Hajduk Split gegen FC Nordsjaelland: Preise, Spielinfos, Last-Minute-Angebote …"
  * - Forza Football "Lokomotiva Zagreb - Rudeš, 1st HNL 2027, Croatia" (Spiel vom 06.11.)
+ * Kader-/Positionsseiten (20.11.2026):
+ * - sport.de "⚽ Hajduk Split - Fußball - Kader 2027/2028"
+ * - kicker.ch "Torhüter NK Varazdin | 1. HNL 2026/27"
  */
 export const MATCHPAGE =
-  /^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
+  /[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
 
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
@@ -180,7 +185,11 @@ function toIso(pub: string | null): string | null {
 }
 
 function make(title: string, url: string, source: string, iso: string, lang: Lang, sport: Sport | "other"): NewsItem {
-  return { title, url, source, publishedAt: iso, lang, sport, ...scoreHeadline(title) };
+  const scored = scoreHeadline(title);
+  // "Vatreni" = Fußball-Nationalteam. "reprezentacija" allein trifft auch andere Sportarten
+  // (19.11.2026: HRT "Hrvatska reprezentacija otputovala u Kinu na SP" – Karate-Team-WM) → kein Vatreni-Etikett.
+  if (scored.tag === "vatreni" && sport !== "football") scored.tag = undefined;
+  return { title, url, source, publishedAt: iso, lang, sport, ...scored };
 }
 
 async function loadHrt(): Promise<NewsItem[]> {
@@ -387,5 +396,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v12"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v14"], REVALIDATE.news, loadNews);
 }

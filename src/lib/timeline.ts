@@ -325,6 +325,10 @@ export function buildTimeline(
     const parts = (x.teams?.length === 2 ? x.teams : x.title.split(/\s+[–-]\s+/)).map(core);
     return parts.length === 2 && parts.every(Boolean) ? [...parts].sort().join("|") : null;
   };
+  // NBA-Einträge sind pro Spieler (Schlüssel nba-<Spiel>-<Spieler>): spielen zwei Kroaten gegeneinander
+  // (z. B. Cleveland – Indiana 21.11.2026: Hezonja gegen Zubac), ist das kein Doppel aus zwei Quellen –
+  // beide behalten (eigene Zeile, eigenes Ergebnis W/L und eigene Statistik).
+  const samePerPlayerSource = (a: Raw, b: Raw) => a.key.startsWith("nba-") && b.key.startsWith("nba-") && a.who !== b.who;
   const uniq = (xs: Raw[]) => {
     const byKey = [...new Map(xs.map((x) => [x.key, x])).values()];
     const out: Raw[] = [];
@@ -334,6 +338,7 @@ export function buildTimeline(
         ? out.findIndex(
             (y) =>
               y.sport === x.sport &&
+              !samePerPlayerSource(x, y) &&
               sides(y) === sx &&
               Math.abs(Date.parse(y.start) - Date.parse(x.start)) <= 3 * 3600_000
           )
