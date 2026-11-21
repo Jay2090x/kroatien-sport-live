@@ -100,8 +100,10 @@ export const LIVETICKER = /live-?ticker/i;
  * - sport.de "⚽ Hajduk Split - Fußball - Kader 2027/2028"
  * - kicker.ch "Torhüter NK Varazdin | 1. HNL 2026/27"
  */
+// TV-/Programmhinweise im Format "26.11. — UEFA Europa League: Dinamo Zagreb — Bayer 04 Leverkusen"
+// (WDR, 21.11.2026) sind Termineinträge, keine Meldungen.
 export const MATCHPAGE =
-  /[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
+  /^\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\s*[—–-]\s*[^:]{3,60}:\s*.{3,50}\s[—–-]\s.{3,50}$|[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
 
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
@@ -396,5 +398,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v14"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v15"], REVALIDATE.news, loadNews);
 }

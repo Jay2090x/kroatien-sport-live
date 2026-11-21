@@ -468,6 +468,7 @@ interface TsdbEvent {
   idAwayTeam?: string;
   strHomeTeam: string;
   strAwayTeam: string;
+  strEvent?: string | null;
   strTimestamp?: string | null;
   dateEvent?: string | null;
   strTime?: string | null;
@@ -479,6 +480,38 @@ interface TsdbEvent {
 function cleanTsdbName(name: string, national: boolean): string {
   const base = name.replace(/\s+(Handball|Basketball)(\s+Women)?$/i, "").trim();
   return national ? countryDe(base) : base;
+}
+
+const normTeam = (s: string) =>
+  s
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+const sameTeam = (a: string, b: string) => {
+  const x = normTeam(a);
+  const y = normTeam(b);
+  return !!x && !!y && (x === y || x.startsWith(`${y} `) || y.startsWith(`${x} `));
+};
+
+/**
+ * Heim/Gast: TheSportsDB führt bei manchen Spielen strHomeTeam/strAwayTeam vertauscht
+ * gegenüber dem Spieltitel strEvent ("Heim vs Gast"). Beispiel 21.11.2026: Event 2601556
+ * strEvent "Saint-Raphaël Var Handball vs RK Nexe Našice", aber strHomeTeam "RK Nexe Našice" –
+ * laut offiziellem EHF-Spielplan/Spielbericht spielt Saint-Raphaël zu Hause (24.11.2026, Palais
+ * des Sports J.-F. Krakowski, Saint-Raphaël). Widersprechen sich die Felder, gilt strEvent.
+ */
+export function tsdbSides(e: Pick<TsdbEvent, "strHomeTeam" | "strAwayTeam" | "strEvent" | "idHomeTeam" | "idAwayTeam">) {
+  const keep = { home: e.strHomeTeam, away: e.strAwayTeam, idHome: e.idHomeTeam, idAway: e.idAwayTeam };
+  const parts = (e.strEvent ?? "").split(/\s+vs\.?\s+/i);
+  if (parts.length !== 2) return keep;
+  const [evHome, evAway] = parts;
+  const swapped =
+    sameTeam(evHome, e.strAwayTeam) &&
+    sameTeam(evAway, e.strHomeTeam) &&
+    !(sameTeam(evHome, e.strHomeTeam) && sameTeam(evAway, e.strAwayTeam));
+  return swapped ? { home: e.strAwayTeam, away: e.strHomeTeam, idHome: e.idAwayTeam, idAway: e.idHomeTeam } : keep;
 }
 
 /**
@@ -503,8 +536,9 @@ async function loadTsdbNext(team: (typeof TSDB_TEAMS)[number]): Promise<SportIte
     start = new Date(`${e.dateEvent}T${e.strTime || "00:00:00"}Z`).toISOString();
     timeKnown = Boolean(e.strTime && e.strTime !== "00:00:00");
   }
-  const homeName = e.idHomeTeam === team.id ? team.name : cleanTsdbName(e.strHomeTeam, team.national);
-  const awayName = e.idAwayTeam === team.id ? team.name : cleanTsdbName(e.strAwayTeam, team.national);
+  const sides = tsdbSides(e);
+  const homeName = sides.idHome === team.id ? team.name : cleanTsdbName(sides.home, team.national);
+  const awayName = sides.idAway === team.id ? team.name : cleanTsdbName(sides.away, team.national);
   return {
     key: `tsdb-${e.idEvent}`,
     sport: team.sport,
@@ -561,7 +595,7 @@ async function loadSport(now: number): Promise<SportData> {
     }),
     mapLimit(TSDB_TEAMS, 3, async (t) => ({
       t,
-      s: await cachedSource(["sport", "tsdb-next", t.id], SPORT_REVALIDATE.tsdb, () => loadTsdbNext(t)),
+      s: await cachedSource(["sport", "tsdb-next-v2", t.id], SPORT_REVALIDATE.tsdb, () => loadTsdbNext(t)),
     })),
   ]);
 
