@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 14,
- "fetchedAt": "2026-11-21T18:37:59.524Z",
+ "fetchedAt": "2026-11-21T23:37:32.732Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -873,7 +873,7 @@
    "strTimestamp": "2026-11-21T17:00:00",
    "dateEvent": "2026-11-21",
    "strTime": "17:00:00",
-   "strStatus": "2H",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
