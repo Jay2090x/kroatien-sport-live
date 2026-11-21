@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 14,
- "fetchedAt": "2026-11-21T11:53:00.786Z",
+ "fetchedAt": "2026-11-21T18:37:59.524Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -854,26 +854,26 @@
    "idEvent": "2482586",
    "strHomeTeam": "Lokomotiva Zagreb",
    "strAwayTeam": "Hajduk Split",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "2",
    "intRound": "14",
    "strTimestamp": "2026-11-21T14:00:00",
    "dateEvent": "2026-11-21",
    "strTime": "14:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
    "idEvent": "2482589",
    "strHomeTeam": "Rudeš",
    "strAwayTeam": "Varaždin",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "0",
+   "intAwayScore": "2",
    "intRound": "14",
    "strTimestamp": "2026-11-21T17:00:00",
    "dateEvent": "2026-11-21",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "2H",
    "strPostponed": "no"
   },
   {
