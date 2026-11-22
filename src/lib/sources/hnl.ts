@@ -417,15 +417,24 @@ export async function getHnl(now = Date.now()): Promise<Sourced<HnlData> | null>
   } catch (err) {
     console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
   }
+  let direct: Sourced<HnlData> | null = null;
   try {
-    return await loadHnl(now, official);
+    direct = await loadHnl(now, official);
   } catch (err) {
     console.error("[data] hnl failed:", err instanceof Error ? err.message : err);
   }
-  try {
-    if (snap && age <= SNAPSHOT_MAX_AGE_MS) return await snapshotWithMatchday(snap, official, now);
-  } catch (err) {
-    console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
+  // Der Direktabruf kann ein alter Cache-Stand sein: schlägt die Revalidierung bei
+  // TheSportsDB fehl (aus Vercel oft 429/Timeout), liefert unstable_cache weiter den
+  // letzten guten Stand – am 22.11. z. B. vom 21.11. 09:12, sodass Lokomotiva – Hajduk 1:2
+  // und Rudeš – Varaždin 0:2 als "verschoben" standen, obwohl der Schnappschuss
+  // (22.11. 04:31) beide Ergebnisse hatte. Daher immer den jüngeren Stand nehmen.
+  const snapUsable = !!snap && age <= SNAPSHOT_MAX_AGE_MS;
+  if (snap && snapUsable && (!direct || Date.parse(snap.fetchedAt) > Date.parse(direct.fetchedAt))) {
+    try {
+      return await snapshotWithMatchday(snap, official, now);
+    } catch (err) {
+      console.error("[data] hnl snapshot unusable:", err instanceof Error ? err.message : err);
+    }
   }
-  return null;
+  return direct;
 }
