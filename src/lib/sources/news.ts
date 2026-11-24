@@ -90,6 +90,24 @@ const STUB = /^[\p{L}\d .']{3,40} [-–] [\p{L}\d .']{3,40}$/u;
 export const LIVETICKER = /live-?ticker/i;
 
 /**
+ * Wien/Vienna darf nirgends auf der Seite stehen (Wunsch der Betreiberin) – Schlagzeilen und Clip-Titel,
+ * die die Stadt nennen, fallen weg, z. B. HRT "CROVOX Vienna 2026: Erstes Festival kroatischer Stimmen
+ * vorgestellt" (Musik & Film, 24.11.2026). Erkennt Wien/Wiener/Vienna und kroatisch Beč/Beča/Beču/bečki ….
+ */
+const VIENNA_RX = /(?<![\p{L}\d])(?:wien(?:er|erin|erinnen|s)?|vienna|viennese|beč(?:a|u|om|k[aeiou]\p{L}*)?)(?![\p{L}\d])/iu;
+export function mentionsVienna(text: string): boolean {
+  return VIENNA_RX.test(text);
+}
+
+/**
+ * "Wo läuft …"-Serviceartikel zu einem kommenden Spiel (TV-/Stream-Hinweise, keine Meldung), z. B.
+ * Frankfurter Rundschau "Dinamo Zagreb gegen Bayer 04 Leverkusen live im TV und Stream: Hier sehen Sie
+ * die Europa League" (24.11.2026, stand als neueste Fußball-Schlagzeile ganz oben).
+ */
+export const TVGUIDE =
+  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b/iu;
+
+/**
  * Spieldaten-, Ticket- und Spielplan-Seiten ohne Meldung, die Google News Tage später mit frischem
  * Datum neu indexiert (19.11.2026):
  * - BILD "England gegen Kroatien Aufstellung - Nations League A Gruppe 3 2026/2027" (Spiel vom 12.11.)
@@ -208,7 +226,7 @@ async function loadHrt(): Promise<NewsItem[]> {
       continue;
     }
     const iso = toIso(it.pubDate);
-    if (!iso || EXCLUDE.test(it.title)) continue;
+    if (!iso || EXCLUDE.test(it.title) || mentionsVienna(it.title)) continue;
     let sport: Sport | "other" | null = null;
     if (path === "hrvatski-nogomet") sport = "football";
     else if (path === "medunarodni-nogomet") sport = CROATIAN.test(it.title) ? "football" : null;
@@ -234,7 +252,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
     if (EXCLUDE.test(title) || EXCLUDE.test(source) || UNRELIABLE_SOURCE.test(source) || looksEnglish(title)) continue;
-    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || MATCHPAGE.test(title) || titleDateTooOld(title, iso)) continue;
+    if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || TVGUIDE.test(title) || mentionsVienna(title) || MATCHPAGE.test(title) || titleDateTooOld(title, iso)) continue;
     if (STUB.test(title)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
     let sport: Sport | "other";
@@ -398,5 +416,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v15"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v16"], REVALIDATE.news, loadNews);
 }

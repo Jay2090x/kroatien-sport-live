@@ -3,7 +3,7 @@ import { fetchText } from "../http";
 import type { Lang } from "../i18n";
 import { parseRss } from "./rss";
 import { detectLang } from "../lang-detect";
-import { looksEnglish } from "./news";
+import { looksEnglish, mentionsVienna } from "./news";
 
 /**
  * "Musik & Film": Schlagzeilen über kroatische Musiker, Bands, Schauspieler, Filme und Festivals.
@@ -131,7 +131,7 @@ export async function loadFeed(f: (typeof FEEDS)[number]): Promise<CultureItem[]
     title = title.replace(/^(.{1,30}?\p{Ll})(Das|Die|Der|Ein|Eine|Im|Am|Zum) /u, "$1: $2 ");
     // kaputte Feed-Titel (Teaser-Reste, leere Überschrift) überspringen
     if (/:\s*-\s|^\p{Lu}\p{Ll}+ (Sie|Er|Es|Wir|Ihr) /u.test(title)) continue;
-    if (!relevantCulture(title, f.section) || SPAM.test(source) || looksEnglish(title) || title.length < 25) continue;
+    if (!relevantCulture(title, f.section) || SPAM.test(source) || mentionsVienna(title) || looksEnglish(title) || title.length < 25) continue;
     const det = detectLang(title);
     if (det !== f.lang && !(det === null && !looksEnglish(title))) continue;
     out.push({ title, url: it.link, source, publishedAt: new Date(t).toISOString(), lang: f.lang, person: personOf(title) });
@@ -200,7 +200,7 @@ async function loadCulture(): Promise<CultureItem[]> {
 }
 
 export function getCulture(): Promise<Sourced<CultureItem[]> | null> {
-  return cachedSource(["culture-v5"], 1800, loadCulture);
+  return cachedSource(["culture-v6"], 1800, loadCulture);
 }
 
 /* ---------- Videos offizieller Künstler-/Festivalkanäle ---------- */
@@ -236,7 +236,7 @@ async function loadChannel(ch: (typeof CHANNELS)[number]): Promise<CultureVideo[
     const title = dec(e.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? "");
     const pub = e.match(/<published>([^<]+)<\/published>/)?.[1];
     // Shorts und Hashtag-Clips überspringen
-    if (!id || !title || !pub || /#shorts/i.test(title) || (title.match(/#/g) ?? []).length >= 2) continue;
+    if (!id || !title || !pub || /#shorts/i.test(title) || (title.match(/#/g) ?? []).length >= 2 || mentionsVienna(title)) continue;
     if (await embeddable(id)) return [{ id, title, channel: ch.name, publishedAt: new Date(pub).toISOString() }];
   }
   return [];
@@ -250,5 +250,5 @@ async function loadVideos(): Promise<CultureVideo[]> {
 }
 
 export function getCultureVideos(): Promise<Sourced<CultureVideo[]> | null> {
-  return cachedSource(["culture-videos-v1"], 6 * 3600, loadVideos);
+  return cachedSource(["culture-videos-v2"], 6 * 3600, loadVideos);
 }

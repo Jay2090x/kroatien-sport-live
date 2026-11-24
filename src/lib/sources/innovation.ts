@@ -3,7 +3,7 @@ import { fetchText } from "../http";
 import type { Lang } from "../i18n";
 import { parseRss } from "./rss";
 import { detectLang } from "../lang-detect";
-import { looksEnglish } from "./news";
+import { looksEnglish, mentionsVienna } from "./news";
 
 /**
  * "Kroatien innovativ": Schlagzeilen über kroatische Erfindungen, Forschung, Firmen,
@@ -103,7 +103,7 @@ export async function loadFeed(f: (typeof FEEDS)[number]): Promise<InnoItem[]> {
     const ok = f.tech
       ? !EXCLUDE.test(fold(title)) && !SPAM.test(title) && (relevant(title) || (STARTUP.test(fold(title)) && CROATIAN.test(fold(title))))
       : relevant(title);
-    if (!ok || looksEnglish(title) || title.length < 25) continue;
+    if (!ok || mentionsVienna(title) || looksEnglish(title) || title.length < 25) continue;
     const det = detectLang(title);
     // strikt: nur Titel in der Sprache des Feeds
     if (det !== f.lang && !(det === null && !looksEnglish(title))) continue;
@@ -170,7 +170,7 @@ async function loadInnovation(): Promise<InnoItem[]> {
 }
 
 export function getInnovation(): Promise<Sourced<InnoItem[]> | null> {
-  return cachedSource(["innovation-v8"], 1800, loadInnovation);
+  return cachedSource(["innovation-v9"], 1800, loadInnovation);
 }
 
 /* ---------- Videos offizieller Firmenkanäle ---------- */
@@ -207,7 +207,7 @@ async function loadChannel(ch: (typeof CHANNELS)[number]): Promise<InnoVideo[]> 
     const title = dec(e.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? "");
     const pub = e.match(/<published>([^<]+)<\/published>/)?.[1];
     // Shorts/Trailer ohne Inhalt überspringen
-    if (!id || !title || !pub || /#shorts/i.test(title)) continue;
+    if (!id || !title || !pub || /#shorts/i.test(title) || mentionsVienna(title)) continue;
     out.push({ id, title, channel: ch.name, publishedAt: new Date(pub).toISOString() });
     if (out.length >= 4) break;
   }
@@ -227,5 +227,5 @@ async function loadVideos(): Promise<InnoVideo[]> {
 }
 
 export function getInnovationVideos(): Promise<Sourced<InnoVideo[]> | null> {
-  return cachedSource(["innovation-videos-v1"], 6 * 3600, loadVideos);
+  return cachedSource(["innovation-videos-v2"], 6 * 3600, loadVideos);
 }
