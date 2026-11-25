@@ -103,9 +103,11 @@ export function mentionsVienna(text: string): boolean {
  * "Wo läuft …"-Serviceartikel zu einem kommenden Spiel (TV-/Stream-Hinweise, keine Meldung), z. B.
  * Frankfurter Rundschau "Dinamo Zagreb gegen Bayer 04 Leverkusen live im TV und Stream: Hier sehen Sie
  * die Europa League" (24.11.2026, stand als neueste Fußball-Schlagzeile ganz oben).
+ * Ebenso Livestream-Programmseiten der Sender im Format "Wettbewerb: A - B, <Datum> live", z. B. ZDF
+ * "Frauenhandball-EM: Kroatien - Niederlande, 8. Dezember live" (live 25.11.2026 unter den Sport-Schlagzeilen).
  */
 export const TVGUIDE =
-  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b/iu;
+  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b|,\s*\d{1,2}\.\s*(?:\d{1,2}\.|j(?:ä|a)nner|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)\s*(?:(?:ab\s*)?\d{1,2}[:.]\d{2}\s*(?:uhr\s*)?)?live\s*$/iu;
 
 /**
  * Spieldaten-, Ticket- und Spielplan-Seiten ohne Meldung, die Google News Tage später mit frischem
@@ -142,7 +144,9 @@ const SPORT_RX: Array<[Sport, RegExp]> = [
 
 /** Interesse-Stichwörter (ohne Diakritika, Kleinbuchstaben) */
 const INTEREST: Array<{ rx: RegExp; pts: number; tag?: NewsTag }> = [
-  { rx: /derbi|derby|vjecni|hajduk.{0,40}dinam|dinam.{0,40}hajduk/, pts: 5, tag: "derby" },
+  // Hajduk/Dinamo nur als Paarung ("Hajduk – Dinamo", "Dinamo protiv Hajduka", "Hajduk gegen Dinamo 2:1"), nicht bei
+  // bloßer Aufzählung: HRT "Određeni suci Dinamu i Hajduku u europskim izazovima" (24.11.2026) stand als "Derbi".
+  { rx: /derbi|derby|vjecni|hajduk\p{L}*\s*(?:[-–—:]|\bvs\.?|\bprotiv\b|\bgegen\b)\s*(?:\d+\s*[:-]\s*\d+\s*)?dinam|dinam\p{L}*\s*(?:[-–—:]|\bvs\.?|\bprotiv\b|\bgegen\b)\s*(?:\d+\s*[:-]\s*\d+\s*)?hajduk/u, pts: 5, tag: "derby" },
   { rx: /transfer|prelaz|potpis|ugovor|wechsel|vertrag|produzi|odlazi u|stize u|zeli .{0,20}(napadac|igrac)/, pts: 3, tag: "transfer" },
   { rx: /\bufc\b|soldic/, pts: 3, tag: "ufc" },
   { rx: /(?<!simun )hrgovic|plantic|smakic|\bboks|\bboxen|\bbkfc\b/, pts: 3, tag: "boxing" },
@@ -416,5 +420,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v16"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v17"], REVALIDATE.news, loadNews);
 }
