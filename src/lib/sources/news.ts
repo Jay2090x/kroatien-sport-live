@@ -105,10 +105,11 @@ export function mentionsVienna(text: string): boolean {
  * die Europa League" (24.11.2026, stand als neueste Fußball-Schlagzeile ganz oben).
  * Ebenso Livestream-Programmseiten der Sender im Format "Wettbewerb: A - B, <Datum> live", z. B. ZDF
  * "Frauenhandball-EM: Kroatien - Niederlande, 8. Dezember live" (live 25.11.2026 unter den Sport-Schlagzeilen),
- * und Programmhinweise wie "Fußball heute im TV am Donnerstag, 26.11.: Leverkusen fordert Dinamo Zagreb" (25.11.2026).
+ * und Programmhinweise wie "Fußball heute im TV am Donnerstag, 26.11.: Leverkusen fordert Dinamo Zagreb" oder
+ * "Gorica gegen Dinamo: Anstoß und TV-Übertragung auf HRT 2" (beide 25.11.2026).
  */
 export const TVGUIDE =
-  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b|\b(?:heute|morgen|jetzt) im (?:free-?)?tv\b|\bim (?:free-?)?tv am\b|,\s*\d{1,2}\.\s*(?:\d{1,2}\.|j(?:ä|a)nner|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)\s*(?:(?:ab\s*)?\d{1,2}[:.]\d{2}\s*(?:uhr\s*)?)?live\s*$/iu;
+  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b|\b(?:heute|morgen|jetzt) im (?:free-?)?tv\b|\bim (?:free-?)?tv am\b|\b(?:anstoß|anstoss|anpfiff|uhrzeit)\b.{0,20}\btv-?(?:ü|ue)bertragung\b|\btv-?(?:ü|ue)bertragung (?:auf|bei|im|in der)\b|,\s*\d{1,2}\.\s*(?:\d{1,2}\.|j(?:ä|a)nner|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)\s*(?:(?:ab\s*)?\d{1,2}[:.]\d{2}\s*(?:uhr\s*)?)?live\s*$/iu;
 
 /**
  * Spieldaten-, Ticket- und Spielplan-Seiten ohne Meldung, die Google News Tage später mit frischem
@@ -421,5 +422,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v18"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v19"], REVALIDATE.news, loadNews);
 }
