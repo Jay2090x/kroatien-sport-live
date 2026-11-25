@@ -104,10 +104,11 @@ export function mentionsVienna(text: string): boolean {
  * Frankfurter Rundschau "Dinamo Zagreb gegen Bayer 04 Leverkusen live im TV und Stream: Hier sehen Sie
  * die Europa League" (24.11.2026, stand als neueste Fußball-Schlagzeile ganz oben).
  * Ebenso Livestream-Programmseiten der Sender im Format "Wettbewerb: A - B, <Datum> live", z. B. ZDF
- * "Frauenhandball-EM: Kroatien - Niederlande, 8. Dezember live" (live 25.11.2026 unter den Sport-Schlagzeilen).
+ * "Frauenhandball-EM: Kroatien - Niederlande, 8. Dezember live" (live 25.11.2026 unter den Sport-Schlagzeilen),
+ * und Programmhinweise wie "Fußball heute im TV am Donnerstag, 26.11.: Leverkusen fordert Dinamo Zagreb" (25.11.2026).
  */
 export const TVGUIDE =
-  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b|,\s*\d{1,2}\.\s*(?:\d{1,2}\.|j(?:ä|a)nner|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)\s*(?:(?:ab\s*)?\d{1,2}[:.]\d{2}\s*(?:uhr\s*)?)?live\s*$/iu;
+  /\blive im (?:free-?)?tv\b|\bim (?:free-?)?tv und (?:im )?(?:live-?)?stream\b|\bhier sehen sie\b|\bwo l(?:ä|ae)uft\b|\bwer (?:zeigt|überträgt|uebertraegt)\b|\b(?:heute|morgen|jetzt) im (?:free-?)?tv\b|\bim (?:free-?)?tv am\b|,\s*\d{1,2}\.\s*(?:\d{1,2}\.|j(?:ä|a)nner|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)\s*(?:(?:ab\s*)?\d{1,2}[:.]\d{2}\s*(?:uhr\s*)?)?live\s*$/iu;
 
 /**
  * Spieldaten-, Ticket- und Spielplan-Seiten ohne Meldung, die Google News Tage später mit frischem
