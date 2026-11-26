@@ -93,9 +93,11 @@ const STUB = /^[\p{L}\d .']{3,40} [-–] [\p{L}\d .']{3,40}$/u;
 /**
  * Ebenso Live-Seiten im Format "LIVE: A – B" (Sky Sport Austria, live 26.11.2026 morgens:
  * "LIVE: Dinamo Zagreb – Bayer 04 Leverkusen", "LIVE: Hajduk Split – St. Truidense" – beide Spiele
- * erst am Abend, die Seiten enthalten nur den leeren Ticker).
+ * erst am Abend, die Seiten enthalten nur den leeren Ticker) und einzelne Ticker-Ereignisse wie
+ * "Tor – 1:0 Petar Sucic (57./Elfmeter) | INT-STU" (Sky Sport Austria, 25.11.2026).
  */
-export const LIVETICKER = /live-?ticker|^live\s*[:|]\s*[^:]{3,60}\s[-–—]\s[^:]{3,60}$/i;
+export const LIVETICKER =
+  /live-?ticker|^live\s*[:|]\s*[^:]{3,60}\s[-–—]\s[^:]{3,60}$|^(?:tor|gelbe karte|gelb-?rote karte|rote karte|elfmeter|wechsel)\s+[-–—]\s|\|\s*[a-z]{2,4}-[a-z]{2,4}\s*$/i;
 
 /**
  * Wien/Vienna darf nirgends auf der Seite stehen (Wunsch der Betreiberin) – Schlagzeilen und Clip-Titel,
@@ -431,5 +433,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v20"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v21"], REVALIDATE.news, loadNews);
 }
