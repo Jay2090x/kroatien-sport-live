@@ -70,6 +70,9 @@ const SPAM =
  */
 // Podcast-Verzeichnisse liefern Episodentitel statt Meldungen (20.11.2026: Howl.Link
 // "Roberto Soldic kämpft wieder UFC, Max Holzer Statement und wieso nichts zu …")
+// TV-Programmzeitschriften liefern Sendungseinträge statt Meldungen (26.11.2026: tele.at
+// "Handball Damen Europameisterschaft 2026: Österreich - Kroatien" unter den Sport-Schlagzeilen).
+export const TV_GUIDE_SOURCE = /tele\.at|tvspielfilm|tv spielfilm|tv-?today|tv-?media|h(?:ö|oe)rzu|prisma\.de|klack\.de|tvmovie|tv movie|tv digital/i;
 const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda|howl\.link|podtail|podbean|podcasts\.apple|spreaker/i;
 
 /**
@@ -87,7 +90,12 @@ const REUPLOAD = /\s\|\s[^|]*\s\|\s|\((?=[A-Za-z0-9_-]*\d)(?=[A-Za-z0-9_-]*[A-Za
 /** Spiel-Stubseiten ohne Meldung, z. B. "NK Osijek - NK Rudes" (nur zwei Teamnamen) */
 const STUB = /^[\p{L}\d .']{3,40} [-–] [\p{L}\d .']{3,40}$/u;
 
-export const LIVETICKER = /live-?ticker/i;
+/**
+ * Ebenso Live-Seiten im Format "LIVE: A – B" (Sky Sport Austria, live 26.11.2026 morgens:
+ * "LIVE: Dinamo Zagreb – Bayer 04 Leverkusen", "LIVE: Hajduk Split – St. Truidense" – beide Spiele
+ * erst am Abend, die Seiten enthalten nur den leeren Ticker).
+ */
+export const LIVETICKER = /live-?ticker|^live\s*[:|]\s*[^:]{3,60}\s[-–—]\s[^:]{3,60}$/i;
 
 /**
  * Wien/Vienna darf nirgends auf der Seite stehen (Wunsch der Betreiberin) – Schlagzeilen und Clip-Titel,
@@ -121,11 +129,12 @@ export const TVGUIDE =
  * Kader-/Positionsseiten (20.11.2026):
  * - sport.de "⚽ Hajduk Split - Fußball - Kader 2027/2028"
  * - kicker.ch "Torhüter NK Varazdin | 1. HNL 2026/27"
+ * Fantasy-Vergleichsseiten (26.11.2026): LigaInsider "Wer punktet besser | Josip Stanišić VS Chris Führich"
  */
 // TV-/Programmhinweise im Format "26.11. — UEFA Europa League: Dinamo Zagreb — Bayer 04 Leverkusen"
 // (WDR, 21.11.2026) sind Termineinträge, keine Meldungen.
 export const MATCHPAGE =
-  /^\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\s*[—–-]\s*[^:]{3,60}:\s*.{3,50}\s[—–-]\s.{3,50}$|[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
+  /^\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\s*[—–-]\s*[^:]{3,60}:\s*.{3,50}\s[—–-]\s.{3,50}$|[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^wer punktet besser\b|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
 
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
@@ -257,7 +266,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
     // Google hängt " - Quelle" an den Titel an
     let title = it.title;
     if (it.source && title.endsWith(` - ${it.source}`)) title = title.slice(0, -(it.source.length + 3)).trim();
-    if (EXCLUDE.test(title) || EXCLUDE.test(source) || UNRELIABLE_SOURCE.test(source) || looksEnglish(title)) continue;
+    if (EXCLUDE.test(title) || EXCLUDE.test(source) || UNRELIABLE_SOURCE.test(source) || TV_GUIDE_SOURCE.test(source) || looksEnglish(title)) continue;
     if (SPAM.test(title) || SPAM.test(source) || REUPLOAD.test(title) || LIVETICKER.test(title) || TVGUIDE.test(title) || mentionsVienna(title) || MATCHPAGE.test(title) || titleDateTooOld(title, iso)) continue;
     if (STUB.test(title)) continue;
     if (!CROATIAN.test(title) && !isCroatianHeadline(title)) continue;
@@ -422,5 +431,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v19"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v20"], REVALIDATE.news, loadNews);
 }
