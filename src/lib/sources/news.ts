@@ -73,7 +73,9 @@ const SPAM =
 // TV-Programmzeitschriften liefern Sendungseinträge statt Meldungen (26.11.2026: tele.at
 // "Handball Damen Europameisterschaft 2026: Österreich - Kroatien" unter den Sport-Schlagzeilen).
 export const TV_GUIDE_SOURCE = /tele\.at|tvspielfilm|tv spielfilm|tv-?today|tv-?media|h(?:ö|oe)rzu|prisma\.de|klack\.de|tvmovie|tv movie|tv digital/i;
-const UNRELIABLE_SOURCE = /vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda|howl\.link|podtail|podbean|podcasts\.apple|spreaker/i;
+// Ebenso indonesische Regionalportale mit maschinell übersetzten deutschen Titeln (27.11.2026: SuaraGarut.ID
+// "Leverkusen trifft erstmals auf Dinamo Zagreb und ehrt Kroaten-Legenden").
+const UNRELIABLE_SOURCE = /suara[a-z]*\.id|\bsuara\b|vietnam\.vn|baomoi|vietnamplus|vtc\.vn|znews|24h\.com\.vn|unione ?sarda|howl\.link|podtail|podbean|podcasts\.apple|spreaker/i;
 
 /**
  * Video-Reuploads fremder Kanäle (z. B. "A - B | Highlights 3. Liga | MAGENTA SPORT Kovacic (9nvLDcUBHQ)"):
@@ -132,11 +134,12 @@ export const TVGUIDE =
  * - sport.de "⚽ Hajduk Split - Fußball - Kader 2027/2028"
  * - kicker.ch "Torhüter NK Varazdin | 1. HNL 2026/27"
  * Fantasy-Vergleichsseiten (26.11.2026): LigaInsider "Wer punktet besser | Josip Stanišić VS Chris Führich"
+ * Statistik-Vergleichsseiten (27.11.2026): weltfussball.de "Hajduk Split - Sint-Truidense VV: Direkter Vergleich & Bilanz"
  */
 // TV-/Programmhinweise im Format "26.11. — UEFA Europa League: Dinamo Zagreb — Bayer 04 Leverkusen"
 // (WDR, 21.11.2026) sind Termineinträge, keine Meldungen.
 export const MATCHPAGE =
-  /^\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\s*[—–-]\s*[^:]{3,60}:\s*.{3,50}\s[—–-]\s.{3,50}$|[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^wer punktet besser\b|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
+  /^\d{1,2}\.\d{1,2}\.(?:\d{2,4})?\s*[—–-]\s*[^:]{3,60}:\s*.{3,50}\s[—–-]\s.{3,50}$|[-–|]\s*(?:fu(?:ß|ss)ball\s*[-–|]\s*)?kader\s+20\d{2}\/(?:20)?\d{2}\s*$|\|\s*1\.\s*hnl\s+20\d{2}\/\d{2,4}\s*$|^aufstellung\s|\bgegen\b.{3,60}\baufstellung\s*[-–|]|^tickets? (f[uü]r|for)\b|last-minute-angebote|tickets?.{0,20}preise|^wer punktet besser\b|:\s*direkter vergleich\b|\bdirekter vergleich\s*(?:&|und)\s*bilanz\b|^[^,]{3,60} [-–] [^,]{3,60}, [^,]{0,20}\b(?:hnl|liga|league|cup|kup|division)\b[^,]{0,20} 20\d{2}(\/\d{2,4})?, [\p{L} ]{3,30}$/iu;
 
 /** Datum im Titel (z. B. "29.09.2026") deutlich vor dem Veröffentlichungstag → alte Meldung */
 export function titleDateTooOld(title: string, publishedIso: string, maxDays = 2): boolean {
@@ -295,7 +298,7 @@ async function loadGoogle(feed: (typeof GOOGLE_FEEDS)[number]): Promise<NewsItem
 
 /** Funktionswörter anderer Sprachen, die in deutschen/kroatischen Titeln praktisch nie vorkommen. */
 const OTHER_LANG =
-  /\b(yang|lewat|dengan|untuk|tidak|samakan|skor|cetak|menang|kalah|el|los|las|del|que|con|por|para|il|della|delle|dello|che|per|nel|gli|une|les|avec|pour|dans|sur|os|não|uma|una|sul|cosa|succede)\b/i;
+  /\b(yang|lewat|dengan|untuk|tidak|samakan|skor|cetak|menang|kalah|el|los|las|del|que|con|por|para|il|della|delle|dello|che|per|nel|gli|une|les|avec|pour|dans|sur|os|não|uma|una|sul|cosa|succede|ecco|quando|abbiamo|voluto|guardare|anche|sono|questo|questa|perch[eé]|siamo|ancora|rigorista)\b/i;
 
 /** Duplikate entfernen (gleiche URL oder sehr ähnlicher Titel; HRT bevorzugt). */
 export function dedupeNews(all: NewsItem[]): NewsItem[] {
@@ -433,5 +436,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v21"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v22"], REVALIDATE.news, loadNews);
 }
