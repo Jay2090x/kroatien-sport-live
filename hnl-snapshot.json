@@ -3,7 +3,7 @@
  "league": "4629",
  "season": "2026-2027",
  "nextRound": 15,
- "fetchedAt": "2026-11-28T12:20:23.730Z",
+ "fetchedAt": "2026-11-28T20:25:44.192Z",
  "events": [
   {
    "idEvent": "2482521",
@@ -932,26 +932,26 @@
    "idEvent": "2482591",
    "strHomeTeam": "Osijek",
    "strAwayTeam": "Rijeka",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "1",
+   "intAwayScore": "0",
    "intRound": "15",
    "strTimestamp": "2026-11-28T17:00:00",
    "dateEvent": "2026-11-28",
    "strTime": "17:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
    "idEvent": "2482593",
    "strHomeTeam": "Lokomotiva Zagreb",
    "strAwayTeam": "Slaven Belupo Koprivnica",
-   "intHomeScore": null,
-   "intAwayScore": null,
+   "intHomeScore": "2",
+   "intAwayScore": "1",
    "intRound": "15",
    "strTimestamp": "2026-11-28T14:00:00",
    "dateEvent": "2026-11-28",
    "strTime": "14:00:00",
-   "strStatus": "NS",
+   "strStatus": "FT",
    "strPostponed": "no"
   },
   {
