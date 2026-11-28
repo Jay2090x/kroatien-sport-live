@@ -333,6 +333,32 @@ const GENERIC_CAPS = new Set(
     .split(" ")
 );
 
+/**
+ * Vereinsnamen vereinheitlichen, damit dieselbe Partie in verschiedenen Medien erkannt wird
+ * (live 28.11.2026: "Die Highlights des 2:0-Erfolgs bei Dinamo Zagreb" (Bayer04.de),
+ * "Bayer gewann 0:2 gegen Dinamo Zagreb …" (Portal.hr) und "Tillman und Quansah hebeln Dinamo aus:
+ * Leverkusen gewinnt …" (Kicker) standen alle drei im Fußball-Feed).
+ */
+const CAP_ALIAS: Record<string, string> = {
+  bayer: "leverkusen", "bayer04": "leverkusen", b04: "leverkusen", werkself: "leverkusen",
+  gnk: "", hnk: "",
+};
+/** Stadtnamen, die nur Teil des Vereinsnamens sind ("Dinamo Zagreb", "Hajduk Split") */
+const CLUB_CITY: Record<string, string> = { dinamo: "zagreb", hajduk: "split" };
+/** Kroatische Vereine (gefaltet) – gleicher Verein + Ergebnis oder gleicher Gegner = dasselbe Spiel */
+const CRO_CLUBS = new Set(["dinamo", "hajduk", "rijeka", "osijek", "istra", "varazdin", "gorica", "lokomotiva", "slaven", "rudes"]);
+/** Wettbewerbs-/Länderwörter – kein Hinweis auf denselben Gegner */
+const NOT_OPPONENT = new Set(
+  "hnl supersport uefa europa league conference champions liga prva kroatien hrvatska kroatische ranking"
+    .split(" ")
+);
+/** Ergebnis "2:0", "0:2" bzw. "0-2" (Tu Futbolero) → "0-2" (Reihenfolge egal, Heim/Gast-Sicht der Medien unterschiedlich) */
+function scoreOf(title: string): string | null {
+  const m = title.match(/(?<![\d:]|\d[–-])(\d{1,2})\s*[:–-]\s*(\d{1,2})(?!\d|[:–-]\d)/);
+  if (!m) return null;
+  return [Number(m[1]), Number(m[2])].sort((a, b) => a - b).join("-");
+}
+
 function playersOf(title: string): string[] {
   const t = fold(title);
   return PLAYERS.filter((p) => t.includes(p));
@@ -341,9 +367,11 @@ function playersOf(title: string): string[] {
 function capsOf(title: string): Set<string> {
   const out = new Set<string>();
   for (const w of title.match(/\p{Lu}[\p{L}\d]{2,}/gu) ?? []) {
-    const f = fold(w).replace(/s$/, "");
-    if (!GENERIC_CAPS.has(f)) out.add(f);
+    let f = fold(w).replace(/s$/, "");
+    if (f in CAP_ALIAS) f = CAP_ALIAS[f];
+    if (f && !GENERIC_CAPS.has(f)) out.add(f);
   }
+  for (const [club, city] of Object.entries(CLUB_CITY)) if (out.has(club)) out.delete(city);
   return out;
 }
 
@@ -355,24 +383,39 @@ function capsOf(title: string): Set<string> {
  * Erwartet eine nach Wichtigkeit sortierte Liste; die erste Meldung je Geschichte bleibt.
  */
 export function diversifyNews(ranked: NewsItem[], perPlayer = PER_PLAYER): NewsItem[] {
-  const kept: Array<{ n: NewsItem; pl: string[]; caps: Set<string>; t: number }> = [];
+  const kept: Array<{ n: NewsItem; pl: string[]; caps: Set<string>; scores: Set<string>; t: number }> = [];
   const perP = new Map<string, number>();
   for (const n of ranked) {
     const pl = playersOf(n.title);
     const caps = capsOf(n.title);
     for (const p of pl) caps.delete(p);
+    const score = scoreOf(n.title);
     const t = Date.parse(n.publishedAt);
-    const dup = kept.some((k) => {
+    const dup = kept.find((k) => {
       if (Math.abs(k.t - t) > 48 * H) return false;
       let shared = 0;
-      for (const c of caps) if (k.caps.has(c)) shared++;
+      let sharedClub = false;
+      let sharedOther = 0;
+      for (const c of caps)
+        if (k.caps.has(c)) {
+          shared++;
+          if (CRO_CLUBS.has(c)) sharedClub = true;
+          else if (!NOT_OPPONENT.has(c)) sharedOther++;
+        }
       const samePlayer = pl.some((p) => k.pl.includes(p));
-      return (samePlayer && shared >= 1) || shared >= 3;
+      // gleiche Partie: gleicher kroatischer Verein + gleiches Ergebnis oder gleicher Gegner
+      const sameMatch = sharedClub && ((score != null && k.scores.has(score)) || sharedOther >= 1);
+      return (samePlayer && shared >= 1) || shared >= 3 || sameMatch;
     });
-    if (dup) continue;
+    if (dup) {
+      // Geschichte merkt sich Namen/Ergebnis aller Meldungen (z. B. "Bayer" aus der einen, "2:0" aus der anderen)
+      for (const c of caps) dup.caps.add(c);
+      if (score) dup.scores.add(score);
+      continue;
+    }
     if (pl.some((p) => (perP.get(p) ?? 0) >= perPlayer)) continue;
     for (const p of pl) perP.set(p, (perP.get(p) ?? 0) + 1);
-    kept.push({ n, pl, caps, t });
+    kept.push({ n, pl, caps, scores: new Set(score ? [score] : []), t });
   }
   return kept.map((k) => k.n);
 }
@@ -436,5 +479,5 @@ export async function loadNews(): Promise<NewsItem[]> {
 
 /** Gesamter Pool (alle Sportarten, beide Sprachen), 5 min gecacht. */
 export function getNews(): Promise<Sourced<NewsItem[]> | null> {
-  return cachedSource(["news-v22"], REVALIDATE.news, loadNews);
+  return cachedSource(["news-v23"], REVALIDATE.news, loadNews);
 }
